@@ -221,16 +221,8 @@ function appendLog(boxId, className, text){
 function join() {
   myJob = Number(document.getElementById("job").value);
 
-  let wsUrl;
-
-  if (location.protocol === "file:") {
-    // file:// で開いている場合（ローカルHTML）
-    wsUrl = "wss://cardbattle-server.onrender.com";
-  } else {
-    // http / https で開いている場合
-    const protocol = location.protocol === "https:" ? "wss" : "ws";
-    wsUrl = `${protocol}://${location.host}`;
-  }
+  // ★ 常に Render の WebSocket サーバーへ接続
+  const wsUrl = "wss://cardbattle-server.onrender.com";
 
   ws = new WebSocket(wsUrl);
 
@@ -247,6 +239,8 @@ function join() {
     appendLog("systemBox", "system-log", "❌ サーバー接続に失敗しました");
     console.error("WebSocket error:", e);
   };
+
+
 
 
 
@@ -754,3 +748,4 @@ Lv: 1
 
 </body>
 </html>
+
