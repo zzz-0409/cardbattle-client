@@ -239,6 +239,8 @@ function join() {
     appendLog("systemBox", "system-log", "❌ サーバー接続に失敗しました");
     console.error("WebSocket error:", e);
   };
+}
+
 
 
 
@@ -497,7 +499,7 @@ function join() {
     }
 
   };
-}
+
 
 function rerollShop() {
     ws.send(JSON.stringify({ type: "shop_reroll" }));
@@ -748,4 +750,5 @@ Lv: 1
 
 </body>
 </html>
+
 
