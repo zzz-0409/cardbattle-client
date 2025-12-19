@@ -85,6 +85,8 @@
   <option value="6">陰陽師</option>
   <option value="7">錬金術師</option>
   <option value="8">弓兵</option>
+  <option value="9">人形使い</option>
+
 </select>
 <button onclick="join()">接続</button>
 
@@ -174,19 +176,40 @@
 
 
 <script>
+/* ====================
+   グローバル変数
+==================== */
+
+let currentItemCategory = null;
+let isItemUIOpen = false; // ★ 追加
 let ws;
 let myTurn = false;
 let myJob = null;
 let myLevel = 1;
 
+// ==================== 環境自動判定 ====================
+// ローカル（file://, localhost）かどうか
+const IS_LOCAL =
+  location.protocol === "file:" ||
+  location.hostname === "localhost";
+
+// WebSocket 接続先を自動切替
+const WS_URL = IS_LOCAL
+  ? "ws://localhost:8080"
+  : "wss://cardbattle-server.onrender.com";
+
+console.log("ENV:", IS_LOCAL ? "LOCAL" : "PRODUCTION");
+console.log("WS_URL:", WS_URL);
+
+
 /* ================= スキル定義（あなたの仕様そのまま） ================= */
 const SKILLS = {
   1:[ {name:"パワースラッシュ",desc:"防御無視20ダメージ。"},
-      {name:"ブレイブチャージ",desc:"防御無視30＋攻撃+3（3T）"},
-      {name:"ラストブレード",desc:"防御無視(10＋攻撃力)"} ],
-  2:[ {name:"シールドブレイク",desc:"20＋防御+2（4T）"},
-      {name:"アイアンチャージ",desc:"15＋防御力＋防御+4（3T）"},
-      {name:"ジャスティスブレード",desc:"25＋防御力"} ],
+      {name:"ブレイブチャージ",desc:"防御無視30＋攻撃+3（3R）"},
+      {name:"ラストブレード",desc:"防御無視(10＋自身の攻撃力分ダメージ増加)"} ],
+  2:[ {name:"シールドブレイク",desc:"20＋防御+2（4R）"},
+      {name:"アイアンチャージ",desc:"15＋防御力＋防御+4（3R）"},
+      {name:"ジャスティスブレード",desc:"25＋自身の防御力分ダメージ増加"} ],
   3:[ {name:"ヒール",desc:"HP27回復"},
       {name:"ディスペルヒール",desc:"HP32＋デバフ解除"},
       {name:"グレーターヒール",desc:"HP37＋デバフ解除"} ],
@@ -205,7 +228,24 @@ const SKILLS = {
   8:[ {name:"集中射撃",desc:"3T追撃+1"},
       {name:"狙い撃ち＋矢拡張",desc:"矢スロ+1＆追撃+1"},
       {name:"貫通の矢",desc:"全矢が防御貫通化"} ],
+  9:[
+    {
+      name:"仕立て直し",
+      desc:"人形の衣装を1つを選び、★を+1する（最大★4）"
+    },
+    {
+      name:"生命縫合",
+      desc:"自身のHPを消費し、人形の耐久力を回復する（HP0不可）"
+    },
+    {
+      name:"人形暴走",
+      desc:"人形を暴走状態にし、破壊されるまでパーツ効果が2倍になる"
+    },
+  ],
+
 };
+
+
 
 /* ==================== ログ追加 ==================== */
 function appendLog(boxId, className, text){
@@ -221,10 +261,7 @@ function appendLog(boxId, className, text){
 function join() {
   myJob = Number(document.getElementById("job").value);
 
-  // ★ 常に Render の WebSocket サーバーへ接続
-  const wsUrl = "wss://cardbattle-server.onrender.com";
-
-  ws = new WebSocket(wsUrl);
+  ws = new WebSocket(WS_URL);
 
   ws.onopen = () => {
     appendLog("systemBox", "system-log", "🌐 接続しました。対戦相手を待機中…");
@@ -242,18 +279,43 @@ function join() {
 
 
 
-
-
-
-
-
-
   /* ============================================
      WebSocket メッセージ受信
      （ここだけで全処理するよう統一）
      ============================================ */
   ws.onmessage = (msg)=>{
     const data = JSON.parse(msg.data);
+
+    // 人形使い：着せ替え部位選択（簡易UI）
+    if (data.type === "request_doll_part_select") {
+
+      const parts = [
+        { key: "head", label: "帽子" },
+        { key: "body", label: "服" },
+        { key: "leg",  label: "ズボン" },
+        { key: "foot", label: "靴" }
+      ];
+
+      const popup = document.getElementById("skillPopup");
+      const list  = document.getElementById("skillList");
+
+      let html = `<div style="font-weight:bold; margin-bottom:8px;">
+        強化する部位を選んでください
+      </div>`;
+
+      for (const p of parts) {
+        html += `
+          <button onclick="selectDollPart('${p.key}')" style="margin:4px;">
+            ${p.label}
+          </button><br>
+        `;
+      }
+
+      list.innerHTML = html;
+      popup.style.display = "flex";
+      return;
+    }
+
 
     if (data.type === "status_simple") {
 
@@ -319,12 +381,17 @@ function join() {
       return;
     }
 
-        /* --- HP --- */
-    if(data.type==="hp"){
-      document.getElementById("hp").textContent =
-        `あなたのHP ${data.myHP} / 敵HP ${data.enemyHP}`;
+    /* --- HP --- */
+    if (data.type === "hp") {
+      const hpEl = document.getElementById("hp");
+      if (hpEl) {
+        hpEl.textContent =
+          `あなたのHP ${data.myHP} / 敵HP ${data.enemyHP}`;
+      }
       return;
-    }
+}
+
+
     
     if (data.type === "job_info") {
         window.myJob = data.job;
@@ -333,80 +400,120 @@ function join() {
     }
 
     if (data.type === "mana_info") {
-        const now = data.mana;
-        const max = data.mana_max;
+      const nowEl = document.getElementById("mana_now");
+      const maxEl = document.getElementById("mana_max");
+      const blockEl = document.getElementById("mana_block");
 
-        // ステータス欄に魔力を表示
-        document.getElementById("mana_now").textContent = now;
-        document.getElementById("mana_max").textContent = max;
+      if (nowEl && maxEl) {
+        nowEl.textContent = data.mana;
+        maxEl.textContent = data.mana_max;
+      }
 
-        // 魔導士以外の場合は空欄にする仕様にするならこの一行
-        document.getElementById("mana_block").style.display = "block";
+      if (blockEl) {
+        blockEl.style.display = "block";
+      }
+      return;
     }
 
     /* --- EXP --- */
-    if(data.type==="exp_info"){
-      document.getElementById("exp").textContent = data.exp;
+    if (data.type === "exp_info") {
+      const expEl = document.getElementById("exp");
+      if (expEl) {
+        expEl.textContent = data.exp;
+      }
       return;
     }
+
 
     /* --- レベル情報 --- */
-    if(data.type==="level_info"){
+    if (data.type === "level_info") {
       myLevel = data.level;
-      document.getElementById("level").textContent = "Lv "+data.level;
 
-      // 自分のラウンドなら押せる
-      // レベルアップボタンは、自分のラウンドなら常に押せる
-      document.getElementById("lvupBtn").disabled = !myTurn;
+      const levelEl = document.getElementById("level");
+      if (levelEl) {
+        levelEl.textContent = "Lv " + data.level;
+      }
 
+      const lvupBtn = document.getElementById("lvupBtn");
+      if (lvupBtn) {
+        lvupBtn.disabled = !myTurn;
+      }
 
       return;
     }
+
 
 
     if (data.type === "item_list") {
-      window.itemList = data.items;  // グローバル保存
-      renderItemList(data.items);
+      window.itemList = data.items;
+
+      // ★「開いているときだけ」再描画
+      if (isItemUIOpen && currentItemCategory !== null) {
+        openItemCategory(currentItemCategory);
+      }
       return;
     }
+
+
     
     if (data.type === "status_info") {
 
-        window.arrowSlots = data.arrow_slots ?? 1;
+      window.arrowSlots = data.arrow_slots ?? 1;
+      const isOnmyoji = (window.myJob === "陰陽師");
 
-        // ★ 自分の職業を参照（サーバーから初回受信時に window.myJob にセットされている前提）
-        const isOnmyoji = (window.myJob === "陰陽師");
-
-        // ★ 式神表示（陰陽師だけ）
-        let shikiHTML = "";
-        if (isOnmyoji) {
-            shikiHTML = `
-                <div id="shikigami-list" style="margin-top:8px; font-size:12px; color:#6cf;">
-                    ${
-                        !data.shikigami || data.shikigami.length === 0
-                        ? "（式神なし）"
-                        : data.shikigami.map(s => `${s}`).join("<br>")
-                    }
-                </div>
-            `;
-        }
-
-        document.getElementById("status-panel").innerHTML = `
-            攻撃力：${data.attack}<br>
-            防御力：${data.defense}<br>
-
-            <div id="buff-list" style="margin-top:8px; font-size:12px; color:#ccc;">
-                ${
-                    data.buffs.length === 0
-                    ? "（バフなし）"
-                    : data.buffs.map(b => `${b}`).join("<br>")
-                }
-            </div>
-
-            ${shikiHTML}  <!-- ★ 陰陽師のときだけ表示される -->
+      // ---------------------------
+      // 式神表示（陰陽師）
+      // ---------------------------
+      let shikiHTML = "";
+      if (isOnmyoji) {
+        shikiHTML = `
+          <div id="shikigami-list" style="margin-top:8px; font-size:12px; color:#6cf;">
+            ${
+              !data.shikigami || data.shikigami.length === 0
+                ? "（式神なし）"
+                : data.shikigami.map(s => `${s}`).join("<br>")
+            }
+          </div>
         `;
-        return;
+      }
+
+      // ---------------------------
+      // 人形表示（人形使い）
+      // ---------------------------
+      let dollHTML = "";
+      if (data.doll) {
+        const state = data.doll.is_broken ? "（破壊）" : "";
+        dollHTML = `
+          <hr>
+          <div style="margin-top:6px; color:#f6c;">
+            🪆 人形耐久：${data.doll.durability} / ${data.doll.max_durability} ${state}
+          </div>
+        `;
+      }
+
+      const panel = document.getElementById("status-panel");
+      if (!panel) return;
+
+      panel.innerHTML = `
+        攻撃力：${data.attack}<br>
+        防御力：${data.defense}<br>
+
+        <div id="buff-list" style="margin-top:8px; font-size:12px; color:#ccc;">
+          ${
+            data.buffs.length === 0
+              ? "（バフなし）"
+              : data.buffs.map(b => `${b}`).join("<br>")
+          }
+        </div>
+
+        ${shikiHTML}
+        ${dollHTML}
+      `;
+
+      return;
     }
+
+
 
 
 
@@ -418,8 +525,11 @@ function join() {
 
 
     /* --- コイン --- */
-    if(data.type==="coin_info"){
-      document.getElementById("coins").textContent = data.coins;
+    if (data.type === "coin_info") {
+      const coinEl = document.getElementById("coins");
+      if (coinEl) {
+        coinEl.textContent = data.coins;
+      }
       return;
     }
 
@@ -498,6 +608,21 @@ function join() {
       alert("❌ EXPもコインも足りません！");
     }
 
+    // ---------- アイテム使用結果 ----------
+    if (data.type === "use_item_result") {
+        if (data.success) {
+            // 正常使用 → アイテムUIを閉じて行動に戻る
+            closeItemUI();
+        } else {
+            // 失敗 → カテゴリ選択に戻す
+            document.getElementById("itemCategoryPopup").style.display = "flex";
+            if (data.message) {
+                alert(data.message);
+            }
+        }
+        return;
+    }
+
   };
 }
 
@@ -522,18 +647,34 @@ function openSkillUI(){
     const row=document.createElement("div");
     row.className="skillRow";
 
+    const isDoll = (Number(myJob) === 9 || myJob === "人形使い");
+    const isDollSkill1 = isDoll && i === 0;
+    const isDollSkill2 = isDoll && i === 1;
+    const isDollSkill3 = isDoll && i === 2;
+
+
     row.innerHTML =
       `<div class="skillName">【${i+1}】${s.name}</div>
-       <div class="skillDesc">${s.desc}</div>
-       <button onclick="useSkill(${i+1})" ${myLevel<needLv?"disabled":""}>
-         使用
-       </button>`;
+      <div class="skillDesc">${s.desc}</div>
+      <button
+        onclick="${
+          isDollSkill1 ? "useDollSkill1()"
+          : isDollSkill2 ? "useDollSkill2Prompt()"
+          : isDollSkill3 ? "useDollSkill3()"
+          : `useSkill(${i+1})`
+        }"
+
+        ${myLevel<needLv?"disabled":""}>
+        使用
+      </button>`;
+
 
     list.appendChild(row);
   });
 
   document.getElementById("skillPopup").style.display="flex";
 }
+
 
 function closeSkillUI(){
   document.getElementById("skillPopup").style.display="none";
@@ -542,6 +683,51 @@ function closeSkillUI(){
 function useSkill(num){
   if(!myTurn) return;
   ws.send(JSON.stringify({type:"action", action:"スキル"+num}));
+  closeSkillUI();
+}
+// ================================
+// 人形使い：スキル1専用入口
+// ================================
+function useDollSkill1(){
+  if(!myTurn) return;
+
+  ws.send(JSON.stringify({
+    type: "request_doll_skill1"
+  }));
+  console.log("[client] request_doll_skill1 sent");
+  closeSkillUI();
+}
+
+// ================================
+// 人形使い：スキル2（生命縫合）HP→耐久
+// ================================
+function useDollSkill2Prompt(){
+  if(!myTurn) return;
+
+  const s = prompt("消費するHPを入力（10の倍数 / 10〜100）", "10");
+  if (s === null) return;
+
+  const hpCost = Number(s);
+
+  ws.send(JSON.stringify({
+    type: "use_doll_skill2",
+    hpCost
+  }));
+
+  console.log("[client] use_doll_skill2 sent:", hpCost);
+  closeSkillUI();
+}
+// ================================
+// 人形使い：スキル3（暴走）
+// ================================
+function useDollSkill3(){
+  if(!myTurn) return;
+
+  ws.send(JSON.stringify({
+    type: "request_doll_skill3"
+  }));
+
+  console.log("[client] request_doll_skill3 sent");
   closeSkillUI();
 }
 
@@ -556,13 +742,15 @@ function openItemUI(){
 
 
 function useItem(id, action, slot = 1){
+  console.log("[CLIENT] useItem called", id, action, slot);
+
   ws.send(JSON.stringify({
     type: "use_item",
     item_id: id,
     action: action,
     slot: slot
   }));
-  closeItemUI();
+
 }
 
 
@@ -575,14 +763,19 @@ function closeItemCategory(){
   document.getElementById("itemCategoryPopup").style.display = "none";
 }
 
+
+
 function openItemCategory(category){
+  currentItemCategory = category;
+  isItemUIOpen = true; // ★ 開いた
+
   const all = window.itemList || [];
   const list = all.filter(it => it.category === category);
 
   const titleMap = {
     item: "アイテム一覧",
     equip: "装備一覧",
-    special: "特殊装備一覧" // ★矢もここに含める
+    special: "特殊装備一覧"
   };
   document.getElementById("itemPopupTitle").innerText = titleMap[category];
 
@@ -594,9 +787,16 @@ function openItemCategory(category){
     row.className = "skillRow";
 
     let btn = "";
-    if (category === "item") {
+
+    // ★ 使用できるアイテム（回復・修理キットなど）
+    if (
+      category === "item" ||
+      (category === "special" && it.name === "修理キット")
+    ) {
       btn = `<button onclick="useItem('${it.uid}','use')">使用</button>`;
-    } else if (category === "equip" || category === "special") {
+    }
+    // ★ 装備系
+    else {
       btn = `<button onclick="onEquipButtonByUid('${it.uid}')">装備</button>`;
     }
 
@@ -604,23 +804,24 @@ function openItemCategory(category){
     row.innerHTML = `
       <div class="skillName">${it.name}</div>
       <div style="font-size:12px; color:#ccc; white-space:pre-line;">
-          ${it.effect_text ?? ""}
+        ${it.effect_text ?? ""}
       </div>
-      <div style="margin-top:5px;">
-          ${btn}
-      </div>
+      <div style="margin-top:5px;">${btn}</div>
     `;
 
     box.appendChild(row);
   });
 
-  closeItemCategory();
   document.getElementById("itemPopup").style.display = "flex";
 }
 
 function closeItemUI(){
   document.getElementById("itemPopup").style.display = "none";
+  isItemUIOpen = false;        // ★ 閉じた
+  currentItemCategory = null; // ★ リセット
 }
+
+
 
 // ========================
 // ★ ショップ機能追加
@@ -670,6 +871,11 @@ function closeStatusDetail() {
 }
 
 function onEquipButton(item) {
+  // ★ 人形衣装は special 扱い
+  if (item.is_doll_costume) {
+    useItem(item.uid, "special");
+    return;
+  }  
 
   // 矢だけ特別扱い
   if (item.is_arrow || item.equip_type === "arrow") {
@@ -706,6 +912,16 @@ function onEquipButtonByUid(uid) {
 }
 
 
+function selectDollPart(part){
+  console.log("[client] selectDollPart:", part);
+
+  ws.send(JSON.stringify({
+    type: "use_doll_skill1",
+    part
+  }));
+
+  closeSkillUI();   // ★ 既存の関数に合わせる
+}
 
 
 function buyItem(index){
@@ -750,6 +966,3 @@ Lv: 1
 
 </body>
 </html>
-
-
-
