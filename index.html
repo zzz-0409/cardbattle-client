@@ -427,7 +427,12 @@ function join() {
         for (const [part, label] of Object.entries(parts)) {
           const c = data.doll.costumes[part];
           if (c) {
-            html += `${label}：★${c.star ?? 1} ${c.name ?? "衣装"}<br>`;
+            const cleanName = c.name
+              ? c.name.replace(/^★\d+/, "")
+              : "衣装";
+
+            html += `${label}：★${c.star ?? 1} ${cleanName}<br>`;
+
           } else {
             html += `${label}：なし<br>`;
           }
