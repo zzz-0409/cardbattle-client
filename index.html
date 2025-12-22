@@ -186,6 +186,7 @@ let ws;
 let myTurn = false;
 let myJob = null;
 let myLevel = 1;
+let pendingArrowItem = null;   // ★ 追加：装備待ちの矢
 
 // ==================== 環境自動判定 ====================
 // ローカル（file://, localhost）かどうか
@@ -746,9 +747,16 @@ function closeSkillUI(){
 
 function useSkill(num){
   if(!myTurn) return;
+
+  // ★ 弓兵スキル2：arrowSlots を先に反映（表示用）
+  if (window.myJob === "弓兵" && num === 2) {
+    window.arrowSlots = 2;
+  }
+
   ws.send(JSON.stringify({type:"action", action:"スキル"+num}));
   closeSkillUI();
 }
+
 // ================================
 // 人形使い：スキル1専用入口
 // ================================
@@ -934,19 +942,39 @@ function closeStatusDetail() {
   document.getElementById("statusDetailPopup").style.display = "none";
 }
 
-function onEquipButton(item) {
-  // ★ 人形衣装は special 扱い
-  if (item.is_doll_costume) {
-    useItem(item.uid, "special");
-    return;
-  }  
+function openArrowSlotSelect(item) {
+  pendingArrowItem = item;
 
-  // 矢だけ特別扱い
-  if (item.is_arrow || item.equip_type === "arrow") {
+  // slot2 が使えるかは「最後に受信した値」で判断
+  if (window.arrowSlots >= 2) {
+    const slot = confirm(
+      "どちらのスロットに装備しますか？\nOK: スロット2 / キャンセル: スロット1"
+    )
+      ? 2
+      : 1;
+
+    useItem(item.uid, "arrow", slot);
+  } else {
+    useItem(item.uid, "arrow", 1);
+  }
+
+  pendingArrowItem = null;
+}
+function onEquipButton(item) {
+ 
+
+  // ===== 矢判定（名前 or 装備種別で判断）=====
+  const isArrow =
+    item.equip_type?.includes("arrow") ||
+    item.name?.includes("矢");
+
+  if (isArrow) {
 
     // slot2 が使えるなら選ばせる
     if (window.arrowSlots >= 2) {
-      const slot = confirm("スロット2に装備しますか？\nOK: スロット2 / キャンセル: スロット1")
+      const slot = confirm(
+        "スロット2に装備しますか？\nOK: スロット2 / キャンセル: スロット1"
+      )
         ? 2
         : 1;
 
@@ -954,19 +982,32 @@ function onEquipButton(item) {
     } else {
       useItem(item.uid, "arrow", 1);
     }
+    return; // ★ ここで必ず終了
+  }
+
+  // ★ 人形衣装は special 扱い
+  if (item.is_doll_costume) {
+    useItem(item.uid, "special");
     return;
   }
 
   // 以下は今まで通り
-  if (item.equip_type === "mage_equip" ||
-      item.equip_type === "alchemist_unique") {
+  if (
+    item.equip_type === "mage_equip" ||
+    item.equip_type === "alchemist_unique"
+  ) {
     useItem(item.uid, "special");
   } else {
     useItem(item.uid, "equip");
   }
 }
 
+
+
 function onEquipButtonByUid(uid) {
+  console.log("[DEBUG] onEquipButtonByUid uid =", uid);
+  console.log("[DEBUG] itemList =", window.itemList);
+
   const item = (window.itemList || []).find(it => it.uid === uid);
   if (!item) {
     console.error("item not found:", uid);
