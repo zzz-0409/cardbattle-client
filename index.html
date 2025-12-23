@@ -66,13 +66,66 @@
     }
     
 
+#phase0 {
+  text-align: center;
+}
+
+#phase0 .subtitle {
+  font-size: 1.00em;
+  letter-spacing: 0.25em;
+  opacity: 0.8;
+  margin-top: -20px; 
+  margin-bottom: 30px;
+}
+
+
 
 
   </style>
 </head>
 
 <body>
-<h2>オンライン対戦（完全版）</h2>
+<!-- ================= フェーズ0：モード選択 ================= -->
+<div id="phase0">
+  <h1>Guild System</h1>
+  <div class="subtitle">ギルドシステム</div>
+
+  <button id="btnRandom">ランダム対戦</button><br><br>
+  <button disabled>ルーム対戦（未実装）</button><br><br>
+  <button disabled>CPU戦（未実装）</button><br><br>
+  <button disabled>レイド戦（未実装）</button>
+</div>
+
+
+<!-- ================= フェーズ1：ランダム対戦準備 ================= -->
+<div id="phase1" style="display:none;">
+  <h2>ランダム対戦</h2>
+  <input id="name_phase1" placeholder="名前">
+  <button id="btnConnectPhase1">接続</button>
+  <button id="btnCancelRandom">タイトルに戻る</button>
+  <p id="connectStatus"></p>
+<select id="job_phase1">
+  <option value="1">戦士</option>
+  <option value="2">騎士</option>
+  <option value="3">僧侶</option>
+  <option value="4">盗賊</option>
+  <option value="5">魔導士</option>
+  <option value="6">陰陽師</option>
+  <option value="7">錬金術師</option>
+  <option value="8">弓兵</option>
+  <option value="9">人形使い</option>
+</select>
+  
+</div>
+<button id="btnBackToMenu"
+        style="display:none; margin-bottom:10px;">
+  タイトルに戻る
+</button>
+
+<!-- ================= フェーズ2：バトル画面 ================= -->
+<div id="phase2" style="display:none;">
+
+  <h2>オンライン対戦（完全版）</h2>
 
 <!-- ================= プレイヤー情報入力 ================= -->
 <input id="name" placeholder="名前">
@@ -176,6 +229,28 @@
 
 
 <script>
+// ==================== フェーズ管理 ====================
+const PHASE = {
+  MODE_SELECT: 0,
+  RANDOM_READY: 1,
+  BATTLE: 2
+};
+
+let currentPhase = PHASE.MODE_SELECT;
+
+function setPhase(p) {
+  currentPhase = p;
+
+  document.getElementById("phase0").style.display =
+    p === PHASE.MODE_SELECT ? "block" : "none";
+
+  document.getElementById("phase1").style.display =
+    p === PHASE.RANDOM_READY ? "block" : "none";
+
+  document.getElementById("phase2").style.display =
+    p === PHASE.BATTLE ? "block" : "none";
+}
+
 /* ====================
    グローバル変数
 ==================== */
@@ -187,6 +262,7 @@ let myTurn = false;
 let myJob = null;
 let myLevel = 1;
 let pendingArrowItem = null;   // ★ 追加：装備待ちの矢
+let battleEnded = false;
 
 // ==================== 環境自動判定 ====================
 // ローカル（file://, localhost）かどうか
@@ -260,6 +336,7 @@ function appendLog(boxId, className, text){
 
 /* ==================== 接続 ==================== */
 function join() {
+  if (ws) return;
   myJob = Number(document.getElementById("job").value);
 
   ws = new WebSocket(WS_URL);
@@ -267,11 +344,12 @@ function join() {
   ws.onopen = () => {
     appendLog("systemBox", "system-log", "🌐 接続しました。対戦相手を待機中…");
     ws.send(JSON.stringify({
-      type: "join",
+      type: "join_random",
       name: document.getElementById("name").value,
       job: myJob
     }));
   };
+
 
   ws.onerror = (e) => {
     appendLog("systemBox", "system-log", "❌ サーバー接続に失敗しました");
@@ -284,8 +362,19 @@ function join() {
      WebSocket メッセージ受信
      （ここだけで全処理するよう統一）
      ============================================ */
-  ws.onmessage = (msg)=>{
+  ws.onmessage = (msg) => {
+    console.log("[WS RECEIVE RAW]", msg.data);
+
     const data = JSON.parse(msg.data);
+
+    // ★ マッチ成立 → フェーズ2へ
+    if (data.type === "match_start") {
+      setPhase(PHASE.BATTLE);
+      return;
+    }
+
+    // ↓↓↓ 既存の大量の if (data.type === "...") はこの下 ↓↓↓
+
 
     // 人形使い：着せ替え部位選択（簡易UI）
     if (data.type === "request_doll_part_select") {
@@ -631,10 +720,21 @@ function join() {
     }
 
     /* --- 戦闘ログ --- */
-    if(data.type==="battle_log"){
-      appendLog("battleBox","battle-log",data.msg);
+    if (data.type === "battle_log") {
+      appendLog("battleBox", "battle-log", data.msg);
+
+      // ★ 勝敗確定ログを検知（server.js の実文言に完全一致）
+      if (
+        data.msg.includes("の勝利！！") ||
+        data.msg.includes("引き分け！")
+      ) {
+        battleEnded = true;
+        document.getElementById("btnBackToMenu").style.display = "inline-block";
+      }
+
       return;
     }
+
     if(data.type==="skill_log"){
       appendLog("battleBox","skill-log",data.msg);
       return;
@@ -1067,7 +1167,71 @@ COIN: 3<br>
 Lv: 1
 `;
 
-</script>
+setPhase(PHASE.MODE_SELECT);
 
+document.getElementById("btnRandom").onclick = () => { 
+  setPhase(PHASE.RANDOM_READY);
+};
+
+document.getElementById("btnConnectPhase1").onclick = () => {
+  const name = document.getElementById("name_phase1").value.trim();
+  const job  = document.getElementById("job_phase1").value;
+
+  if (!name) return;
+
+  document.getElementById("connectStatus").textContent =
+    "対戦相手を探しています...";
+
+  // フェーズ2用 input / select にコピー
+  document.getElementById("name").value = name;
+  document.getElementById("job").value  = job;
+
+  join();
+};
+
+document.getElementById("btnCancelRandom").onclick = () => {
+  // マッチング待機中なら接続を切る
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.close();
+  }
+
+  ws = null;
+
+  // 表示リセット
+  document.getElementById("connectStatus").textContent = "";
+
+  // タイトルへ戻る
+  setPhase(PHASE.MODE_SELECT);
+};
+
+document.getElementById("btnBackToMenu").onclick = () => {
+  // 通信を完全に切る
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.close();
+  }
+
+  ws = null;
+
+  // ローカル状態をリセット
+  myTurn = false;
+  myLevel = 1;
+  battleEnded = false;
+  window.itemList = [];
+  window.arrowSlots = 1;
+
+  // ボタンを再び隠す
+  document.getElementById("btnBackToMenu").style.display = "none";
+
+  // ログクリア（任意）
+  document.getElementById("battleBox").innerHTML = "";
+  document.getElementById("systemBox").innerHTML = "";
+  document.getElementById("debugBox").innerHTML = "";
+
+  // タイトルへ
+  setPhase(PHASE.MODE_SELECT);
+};
+
+</script>
+</div>
 </body>
 </html>
