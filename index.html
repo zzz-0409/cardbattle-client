@@ -815,7 +815,7 @@ function openSkillUI(){
     const row=document.createElement("div");
     row.className="skillRow";
 
-    const isDoll = (Number(myJob) === 9 || myJob === "人形使い");
+    const isDoll = (myJob === "人形使い");
     const isDollSkill1 = isDoll && i === 0;
     const isDollSkill2 = isDoll && i === 1;
     const isDollSkill3 = isDoll && i === 2;
