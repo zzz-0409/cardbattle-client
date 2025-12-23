@@ -278,6 +278,18 @@ const WS_URL = IS_LOCAL
 console.log("ENV:", IS_LOCAL ? "LOCAL" : "PRODUCTION");
 console.log("WS_URL:", WS_URL);
 
+// 職業名 → スキルID 変換
+const JOB_ID_MAP = {
+  "戦士": 1,
+  "騎士": 2,
+  "僧侶": 3,
+  "盗賊": 4,
+  "魔導士": 5,
+  "陰陽師": 6,
+  "錬金術師": 7,
+  "弓兵": 8,
+  "人形使い": 9
+};
 
 /* ================= スキル定義（あなたの仕様そのまま） ================= */
 const SKILLS = {
@@ -806,42 +818,65 @@ function attack(){
 
 /* ================= スキル系 ================= */
 function openSkillUI(){
-  const list=document.getElementById("skillList");
-  list.innerHTML="";
+  const list = document.getElementById("skillList");
+  list.innerHTML = "";
 
-  SKILLS[myJob].forEach((s,i)=>{
-    const needLv=i+1;
+  const jobId =
+    typeof myJob === "number"
+      ? myJob
+      : JOB_ID_MAP[myJob];
 
-    const row=document.createElement("div");
-    row.className="skillRow";
+  if (!SKILLS[jobId]) {
+    console.error("スキル定義が見つかりません:", myJob, jobId);
+    return;
+  }
 
-    const isDoll = (myJob === "人形使い");
+
+  SKILLS[jobId].forEach((s, i) => {
+    const needLv = i + 1;
+
+    const row = document.createElement("div");
+    row.className = "skillRow";
+
+    const isDoll = (myJob === "人形使い" || myJob === 9);
     const isDollSkill1 = isDoll && i === 0;
     const isDollSkill2 = isDoll && i === 1;
     const isDollSkill3 = isDoll && i === 2;
 
+    // ← ここが差し替え部分
+    const nameDiv = document.createElement("div");
+    nameDiv.className = "skillName";
+    nameDiv.textContent = `【${i+1}】${s.name}`;
 
-    row.innerHTML =
-      `<div class="skillName">【${i+1}】${s.name}</div>
-      <div class="skillDesc">${s.desc}</div>
-      <button
-        onclick="${
-          isDollSkill1 ? "useDollSkill1()"
-          : isDollSkill2 ? "useDollSkill2Prompt()"
-          : isDollSkill3 ? "useDollSkill3()"
-          : `useSkill(${i+1})`
-        }"
+    const descDiv = document.createElement("div");
+    descDiv.className = "skillDesc";
+    descDiv.textContent = s.desc;
 
-        ${myLevel<needLv?"disabled":""}>
-        使用
-      </button>`;
+    const btn = document.createElement("button");
+    btn.textContent = "使用";
+    if (myLevel < needLv) btn.disabled = true;
 
+    if (isDollSkill1) {
+      btn.addEventListener("click", useDollSkill1);
+    } else if (isDollSkill2) {
+      btn.addEventListener("click", useDollSkill2Prompt);
+    } else if (isDollSkill3) {
+      btn.addEventListener("click", useDollSkill3);
+    } else {
+      btn.addEventListener("click", () => useSkill(i + 1));
+    }
+
+    row.appendChild(nameDiv);
+    row.appendChild(descDiv);
+    row.appendChild(btn);
 
     list.appendChild(row);
   });
 
-  document.getElementById("skillPopup").style.display="flex";
+  document.getElementById("skillPopup").style.display = "flex";
 }
+
+
 
 
 function closeSkillUI(){
@@ -869,8 +904,7 @@ function useDollSkill1(){
   ws.send(JSON.stringify({
     type: "request_doll_skill1"
   }));
-  console.log("[client] request_doll_skill1 sent");
-  closeSkillUI();
+
 }
 
 // ================================
