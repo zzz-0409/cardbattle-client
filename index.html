@@ -416,7 +416,10 @@ function join() {
 
       let html = `
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <strong>${data.side === "self" ? "あなた" : "相手"}</strong>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <strong>${data.side === "self" ? "あなた" : "相手"}</strong>
+            <span style="opacity:0.9;">${data.job ?? "?"}</span>
+          </div>
           <button onclick="openStatusDetail('${data.side}')">詳細</button>
         </div>
 
