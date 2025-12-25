@@ -92,7 +92,7 @@
 
   <button id="btnRandom">ランダム対戦</button><br><br>
   <button disabled>ルーム対戦（未実装）</button><br><br>
-  <button disabled>CPU戦（未実装）</button><br><br>
+  <button id="btnCPU">CPU戦</button><br><br>
   <button disabled>レイド戦（未実装）</button>
 </div>
 
@@ -115,6 +115,25 @@
   <option value="8">弓兵</option>
   <option value="9">人形使い</option>
 </select>
+<!-- ========================= -->
+<!-- CPU職業選択（CPU戦のみ表示） -->
+<!-- ========================= -->
+<div id="cpuJobArea" style="margin-top:8px; display:none;">
+  <label for="cpuJob">CPUの職業：</label>
+  <select id="cpuJob">
+    <option value="">ランダム</option>
+    <option value="戦士">戦士</option>
+    <option value="騎士">騎士</option>
+    <option value="僧侶">僧侶</option>
+    <option value="盗賊">盗賊</option>
+    <option value="魔導士">魔導士</option>
+    <option value="弓兵">弓兵</option>
+    <option value="陰陽師">陰陽師</option>
+    <option value="錬金術師">錬金術師</option>
+    <option value="人形使い">人形使い</option>
+  </select>
+</div>
+
   
 </div>
 <button id="btnBackToMenu"
@@ -346,34 +365,16 @@ function appendLog(boxId, className, text){
   box.scrollTop=box.scrollHeight;
 }
 
-/* ==================== 接続 ==================== */
-function join() {
-  if (ws) return;
-  myJob = Number(document.getElementById("job").value);
-
-  ws = new WebSocket(WS_URL);
-
-  ws.onopen = () => {
-    appendLog("systemBox", "system-log", "🌐 接続しました。対戦相手を待機中…");
-    ws.send(JSON.stringify({
-      type: "join_random",
-      name: document.getElementById("name").value,
-      job: myJob
-    }));
-  };
-
+// ============================================
+// ★ WebSocket 受信処理 共通化（CPU戦 / 対人 共通）
+// ============================================
+function attachWsHandlers() {
 
   ws.onerror = (e) => {
     appendLog("systemBox", "system-log", "❌ サーバー接続に失敗しました");
     console.error("WebSocket error:", e);
   };
 
-
-
-  /* ============================================
-     WebSocket メッセージ受信
-     （ここだけで全処理するよう統一）
-     ============================================ */
   ws.onmessage = (msg) => {
     console.log("[WS RECEIVE RAW]", msg.data);
 
@@ -385,9 +386,10 @@ function join() {
       return;
     }
 
-    // ↓↓↓ 既存の大量の if (data.type === "...") はこの下 ↓↓↓
-
-
+    // ===============================
+    // ↓↓↓ ここから下は「元の ws.onmessage の中身」を
+    //     そのまま全部コピペして置き換える ↓↓↓
+    // ===============================
     // 人形使い：着せ替え部位選択（簡易UI）
     if (data.type === "request_doll_part_select") {
 
@@ -805,6 +807,50 @@ function join() {
 
   };
 }
+/* ==================== 接続（対人戦） ==================== */
+function join() {
+  if (ws) return;
+
+  myJob = Number(document.getElementById("job").value);
+  ws = new WebSocket(WS_URL);
+
+  attachWsHandlers();
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "join",   // ★ 対人戦
+      name: document.getElementById("name").value,
+      job: myJob
+    }));
+  };
+}
+
+
+
+function joinCpu() {
+  if (ws) return;
+
+  myJob = Number(document.getElementById("job").value);
+
+  const cpuJobSelect = document.getElementById("cpuJob");
+  const cpuJobValue = cpuJobSelect ? cpuJobSelect.value : null;
+
+  console.log("[SEND JOIN_CPU]", cpuJobValue);
+
+  ws = new WebSocket(WS_URL);
+
+  attachWsHandlers(); // ★ 必須
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "join_cpu",
+      name: document.getElementById("name").value,
+      job: myJob,
+      cpu_job: cpuJobValue || null   // ★ これが本命
+    }));
+  };
+}
+
 
 function rerollShop() {
     ws.send(JSON.stringify({ type: "shop_reroll" }));
@@ -1208,7 +1254,13 @@ setPhase(PHASE.MODE_SELECT);
 
 document.getElementById("btnRandom").onclick = () => { 
   setPhase(PHASE.RANDOM_READY);
+
+  window.isCpuMode = false;
+
+  // ★ CPU職業選択を隠す
+  document.getElementById("cpuJobArea").style.display = "none";
 };
+
 
 document.getElementById("btnConnectPhase1").onclick = () => {
   const name = document.getElementById("name_phase1").value.trim();
@@ -1223,7 +1275,12 @@ document.getElementById("btnConnectPhase1").onclick = () => {
   document.getElementById("name").value = name;
   document.getElementById("job").value  = job;
 
-  join();
+  if (window.isCpuMode) {
+    joinCpu();
+  } else {
+    join();
+  }
+
 };
 
 document.getElementById("btnCancelRandom").onclick = () => {
@@ -1241,6 +1298,20 @@ document.getElementById("btnCancelRandom").onclick = () => {
   setPhase(PHASE.MODE_SELECT);
 };
 
+document.getElementById("btnCPU").onclick = () => {
+  setPhase(PHASE.RANDOM_READY);
+
+  window.isCpuMode = true;
+
+  // ★ CPU職業選択を表示
+  document.getElementById("cpuJobArea").style.display = "block";
+
+  document.getElementById("connectStatus").textContent =
+    "CPUと対戦します（職業を選んで接続してください）";
+};
+
+
+
 document.getElementById("btnBackToMenu").onclick = () => {
   // 通信を完全に切る
   if (ws && ws.readyState === WebSocket.OPEN) {
@@ -1256,6 +1327,8 @@ document.getElementById("btnBackToMenu").onclick = () => {
   window.itemList = [];
   window.arrowSlots = 1;
 
+  document.getElementById("cpuJobArea").style.display = "none";
+
   // ボタンを再び隠す
   document.getElementById("btnBackToMenu").style.display = "none";
 
@@ -1266,6 +1339,8 @@ document.getElementById("btnBackToMenu").onclick = () => {
 
   // タイトルへ
   setPhase(PHASE.MODE_SELECT);
+  window.isCpuMode = false;
+
 };
 
 </script>
