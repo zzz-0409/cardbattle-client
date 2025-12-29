@@ -208,6 +208,7 @@
 <!-- CPU職業選択（CPU戦のみ表示） -->
 <!-- ========================= -->
 <div id="cpuJobArea" style="margin-top:8px; display:none;">
+
   <label for="cpuJob">CPUの職業：</label>
   <select id="cpuJob">
     <option value="">ランダム</option>
@@ -221,7 +222,18 @@
     <option value="錬金術師">錬金術師</option>
     <option value="人形使い">人形使い</option>
   </select>
+
+  <div id="cpuTurnOrderArea" style="margin-top:8px;">
+    <label>先攻・後攻：</label>
+    <select id="cpuTurnOrder">
+      <option value="random">ランダム</option>
+      <option value="first">自分が先攻</option>
+      <option value="second">CPUが先攻</option>
+    </select>
+  </div>
+
 </div>
+
 
 <!-- ================= 職業詳細ポップアップ（body直下） ================= -->
 <div id="jobDetailPopup"
@@ -1434,11 +1446,15 @@ function joinCpu() {
   attachWsHandlers();
 
   ws.onopen = () => {
+    const turnOrder =
+      document.getElementById("cpuTurnOrder")?.value ?? "random";
+
     ws.send(JSON.stringify({
       type: "join_cpu",
       name: document.getElementById("name_phase1").value || "Player",
       job: myJob,
-      cpu_job: cpuJobValue || null
+      cpu_job: cpuJobValue || null,
+      turn_order: turnOrder
     }));
   };
 }
