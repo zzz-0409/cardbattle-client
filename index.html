@@ -15,11 +15,20 @@
     button:disabled { background:#666; cursor:default; }
 
     .log-container { display: flex; gap: 12px; margin-top: 10px;}
-    .log-box {
-      flex: 1; background:#111; border-radius:6px;
-      padding:6px; height:220px; overflow-y: auto;
-      font-size: 12px; font-family: Consolas;
+    .log-box { 
+      flex: 1;
+      background:#111;
+      border-radius:6px;
+      padding:6px;
+
+      height:140px;          /* ★ 縦幅を縮小 */
+      overflow-y: auto;
+
+      font-size: 11px;       /* ★ 少し小さく */
+      line-height: 1.35;     /* ★ 読みやすさ維持 */
+      font-family: Consolas;
     }
+
     .battle-log{ color:#ffd54f;}
     .skill-log{ color:#81d4fa;}
     .system-log{ color:#a5d6a7;}
@@ -174,6 +183,276 @@
   z-index: 9999; /* ★ ここを強くする */
 }
 
+/* ===============================
+   戦闘演出エリア
+================================ */
+
+
+@keyframes playerAttack {
+  50% { transform: translateX(20px); }
+}
+
+@keyframes enemyAttack {
+  50% { transform: translateX(-20px); }
+}
+
+/* ===== ダメージ数表示 ===== */
+.damage-popup {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff6b6b;
+  pointer-events: none;
+  opacity: 0;
+  animation: damageFloat 0.7s ease-out forwards;
+}
+
+/* ★ 追加：ダメージ種別ごとの色 */
+.damage-popup.kind-dot {
+  color: #b388ff; /* DOT */
+}
+
+.damage-popup.kind-pursuit {
+  color: #ffd166; /* 追撃 */
+}
+
+
+@keyframes damageFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -30px);
+  }
+}
+
+/* ===== 回復数表示 ===== */
+.heal-popup {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: bold;
+  color: #6bff95;
+  pointer-events: none;
+  opacity: 0;
+  animation: healFloat 0.7s ease-out forwards;
+}
+
+@keyframes healFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -30px);
+  }
+}
+/* ============================
+   簡易バトル演出（ステージ/箱/数字）
+============================ */
+#battleStage{ 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+
+  margin: 10px 0 16px 0;   /* ★ 下余白を少し増やす */
+  padding: 18px 16px;     /* ★ 縦を広げる */
+
+  min-height: 220px;      /* ★ 縦拡張の本体 */
+
+  background: #151515;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+
+/* ===== HPバー ===== */
+.hp-bar {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  right: 8px;
+  height: 10px;
+  background: #111;
+  border-radius: 6px;
+  border: 1px solid #333;
+  overflow: hidden;
+}
+
+/* ===== 人形専用 ===== */
+.sprite.doll {
+  width: 110px;
+  height: 100px;
+  background: #262026;
+  border: 1px solid #664466;
+}
+
+/* 人形の耐久バー色 */
+.hp-fill.doll {
+  background: linear-gradient(90deg, #ce93d8, #f3e5f5);
+}
+
+/* 人形バーは少し下げる */
+.doll-bar {
+  top: 8px;
+}
+
+.hp-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  transition: width 0.25s ease;
+}
+
+.hp-fill.enemy {
+  background: linear-gradient(90deg, #e53935, #ef9a9a);
+}
+
+.sprite{
+  position:relative;
+  width:160px;
+  height:140px;
+  border-radius:12px;
+  background:#2a2a2a;
+  border:1px solid #444;
+  overflow:hidden;
+}
+
+.sprite.player{ --attackX: 22px; }
+.sprite.enemy { --attackX:-22px; }
+
+.sprite-label{
+  position:absolute;
+  left:8px;
+  bottom:8px;
+  font-size:12px;
+  padding:2px 8px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.45);
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+@keyframes attackMove{
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(var(--attackX)); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes hitShake{
+  0%   { transform: translateX(0); filter:brightness(1); }
+  30%  { transform: translateX(-4px); filter:brightness(1.25); }
+  60%  { transform: translateX(4px);  filter:brightness(1.25); }
+  100% { transform: translateX(0); filter:brightness(1); }
+}
+
+@keyframes healGlow{
+  0%   { filter:brightness(1); }
+  40%  { filter:brightness(1.35); }
+  100% { filter:brightness(1); }
+}
+
+.sprite.attack{ animation: attackMove 0.26s ease-in-out; }
+.sprite.hit   { animation: hitShake 0.26s ease-in-out; }
+.sprite.heal  { animation: healGlow 0.45s ease-in-out; }
+
+@keyframes floatUp{
+  0%   { opacity:1; transform: translate(-50%, -50%) translateY(0); }
+  100% { opacity:0; transform: translate(-50%, -50%) translateY(-34px); }
+}
+
+.damage-popup,
+.heal-popup{
+  position:absolute;
+  left:50%;
+  top:40%;
+  font-weight:800;
+  font-size:22px;
+  pointer-events:none;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.65);
+  animation: floatUp 0.85s ease-out forwards;
+  white-space:nowrap;
+}
+
+.damage-popup{ color:#ffb3b3; }
+.heal-popup  { color:#b7ffb7; }
+
+/* 種類別（dot / pursuit） */
+.damage-popup.kind-dot{ color:#c7b3ff; }
+.damage-popup.kind-pursuit{ color:#ffd28a; }
+
+
+/* 左右それぞれの陣営 */
+.side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 左陣営は左寄せ */
+.side-self {
+  justify-content: flex-start;
+}
+
+/* 右陣営は右寄せ */
+.side-enemy {
+  justify-content: flex-end;
+}
+
+/* =========================
+   ステータス＋行動：横3カラム
+========================= */
+.status-area{
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* 左右のステータス */
+.status-simple{
+  flex: 1;
+  min-width: 240px;
+}
+
+/* =========================
+   行動エリア（中央・縦一列）
+========================= */
+#action-area{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  justify-content: center;
+  align-items: stretch;
+
+  width: 120px;
+  flex: 0 0 120px;
+
+  padding: 8px 6px;
+  background: #1b1b1b;
+  border: 1px solid #444;
+  border-radius: 8px;
+}
+
+#action-area button{
+  width: 100%;
+  padding: 6px 0;
+  font-size: 12px;
+}
 
   </style>
 </head>
@@ -265,18 +544,71 @@
 <!-- ================= フェーズ2：バトル画面 ================= -->
 <div id="phase2" style="display:none;">
 
-<!-- ===== 簡易ステータス（自分 / 相手） ===== -->
-<div class="status-area">
-  <div id="my-status-simple" class="status-simple"></div>
-  <div id="enemy-status-simple" class="status-simple"></div>
+  <!-- ===== 簡易バトル演出ステージ（自分が左） ===== -->
+<div id="battleStage">
+
+  <!-- ===== 左陣営（自分） ===== -->
+  <div class="side side-self">
+
+    <div id="playerSprite" class="sprite player">
+      <div class="hp-bar">
+        <div id="playerHpFill" class="hp-fill"></div>
+      </div>
+      <div class="sprite-label">あなた</div>
+    </div>
+
+    <div id="dollSprite" class="sprite doll" style="display:none;">
+      <div class="hp-bar doll-bar">
+        <div id="dollHpFill" class="hp-fill doll"></div>
+      </div>
+      <div class="sprite-label">人形</div>
+    </div>
+
+  </div>
+
+  <!-- ===== 右陣営（相手） ===== -->
+  <div class="side side-enemy">
+
+    <div id="dollSpriteEnemy" class="sprite doll enemy" style="display:none;">
+      <div class="hp-bar doll-bar">
+        <div id="enemyDollHpFill" class="hp-fill doll enemy"></div>
+      </div>
+      <div class="sprite-label">人形</div>
+    </div>
+
+    <div id="enemySprite" class="sprite enemy">
+      <div class="hp-bar">
+        <div id="enemyHpFill" class="hp-fill enemy"></div>
+      </div>
+      <div class="sprite-label">相手</div>
+    </div>
+
+  </div>
+
 </div>
 
-<h3>行動</h3>
-<button id="atkBtn" disabled onclick="attack()">攻撃</button>
-<button id="skillBtn" disabled onclick="openSkillUI()">スキル</button>
-<button id="lvupBtn" disabled onclick="tryLevelUp()">レベルアップ</button>
-<button id="itemBtn" disabled onclick="openItemUI()">持ち物</button>
-<button id="shopBtn" disabled onclick="openShop()">ショップ</button>
+
+
+
+
+
+<!-- ===== 簡易ステータス（自分 / 相手） ===== -->
+<div class="status-area">
+
+  <div id="my-status-simple" class="status-simple"></div>
+
+  <div id="action-area">
+    <button id="atkBtn" disabled onclick="attack()">攻撃</button>
+    <button id="skillBtn" disabled onclick="openSkillUI()">スキル</button>
+    <button id="lvupBtn" disabled onclick="tryLevelUp()">LvUP</button>
+    <button id="itemBtn" disabled onclick="openItemUI()">持ち物</button>
+    <button id="shopBtn" disabled onclick="openShop()">ショップ</button>
+  </div>
+
+  <div id="enemy-status-simple" class="status-simple"></div>
+
+</div>
+
 
 
 
@@ -936,6 +1268,91 @@ function appendLog(boxId, className, text){
   box.scrollTop=box.scrollHeight;
 }
 
+// ============================
+// 演出：数字ポップの段積み管理
+// ============================
+const popupStacks = {
+  self: 0,
+  enemy: 0,
+  self_doll: 0,
+  enemy_doll: 0
+};
+
+
+function getSprites() {
+  return {
+    self: document.getElementById("playerSprite"),
+    enemy: document.getElementById("enemySprite"),
+    self_doll: document.getElementById("dollSprite"),
+    enemy_doll: document.getElementById("dollSpriteEnemy"),
+  };
+}
+
+function bumpStack(targetKey) {
+  const idx = popupStacks[targetKey] ?? 0;
+  popupStacks[targetKey] = idx + 1;
+
+  // 上にずらす（同時発生で重ならない）
+  const offsetPx = -idx * 18;
+
+  setTimeout(() => {
+    popupStacks[targetKey] = Math.max(0, (popupStacks[targetKey] ?? 1) - 1);
+  }, 900);
+
+  return offsetPx;
+}
+
+function spawnPopup(sprite, className, text, offsetPx) {
+  if (!sprite) return;
+
+  const el = document.createElement("div");
+  el.className = className;
+  el.textContent = text;
+  el.style.top = `calc(40% + ${offsetPx}px)`;
+
+  sprite.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+// ============================
+// ★ 人形使い：人形スプライト更新（共通）
+// ============================
+function updateDollSprite(side, job, doll) {
+  const isSelf = side === "self";
+
+  const dollBox = document.getElementById(
+    isSelf ? "dollSprite" : "dollSpriteEnemy"
+  );
+  const dollBar = document.getElementById(
+    isSelf ? "dollHpFill" : "enemyDollHpFill"
+  );
+
+  if (!dollBox || !dollBar) return;
+
+  // 人形使い以外は常に非表示
+  if (job !== "人形使い") {
+    dollBox.style.display = "none";
+    return;
+  }
+
+  // 人形情報がまだ来ていない場合は何もしない
+  if (!doll) return;
+
+  // 表示
+  dollBox.style.display = "block";
+
+  const ratio = doll.durability / doll.max_durability;
+  const percent = Math.max(0, Math.min(100, ratio * 100));
+  dollBar.style.width = `${percent}%`;
+
+  // 破壊時の見た目
+  if (doll.is_broken) {
+    dollBox.style.filter = "grayscale(1) brightness(0.6)";
+  } else {
+    dollBox.style.filter = "";
+  }
+}
+
 // ============================================
 // ★ WebSocket 受信処理 共通化（CPU戦 / 対人 共通）
 // ============================================
@@ -1069,8 +1486,26 @@ function attachWsHandlers() {
         </div>
       `;
 
-
       box.innerHTML = html;
+
+      // ============================
+      // ★ HPバー更新
+      // ============================
+      const ratio = data.hp / data.max_hp;
+      const percent = Math.max(0, Math.min(100, ratio * 100));
+
+      if (data.side === "self") {
+        const bar = document.getElementById("playerHpFill");
+        if (bar) bar.style.width = `${percent}%`;
+      } else {
+        const bar = document.getElementById("enemyHpFill");
+        if (bar) bar.style.width = `${percent}%`;
+      }      
+      // ============================
+      // ★ 人形使い：人形スプライト更新（self / enemy）
+      // ============================
+      updateDollSprite(data.side, data.job, data.doll);
+
       return;
     }
 
@@ -1333,7 +1768,9 @@ function attachWsHandlers() {
       return;
     }
 
-    /* --- 戦闘ログ --- */
+
+
+    /* --- 戦闘ログ（表示専用） --- */
     if (data.type === "battle_log") {
       appendLog("battleBox", "battle-log", data.msg);
 
@@ -1348,6 +1785,74 @@ function attachWsHandlers() {
 
       return;
     }
+
+    // ============================
+    // ★ ダメージ演出（damage_event）
+    // ============================
+    if (data.type === "damage_event") {
+      console.log("★ damage_event 到達", data);
+      const sprites = getSprites();
+
+      const targetSprite = sprites[data.target];
+
+      // ★ ここを追加
+      if (!targetSprite) {
+        console.warn("damage_event: invalid target", data.target, sprites);
+        return;
+      }
+
+      const attackerSprite =
+        data.target === "self" || data.target === "self_doll"
+          ? sprites.enemy
+          : sprites.self;
+
+      if (attackerSprite) attackerSprite.classList.add("attack");
+      targetSprite.classList.add("hit");
+
+      setTimeout(() => {
+        if (attackerSprite) attackerSprite.classList.remove("attack");
+        targetSprite.classList.remove("hit");
+      }, 280);
+
+      const offsetPx = bumpStack(data.target);
+      const kind = data.kind ?? "normal";
+      const amount = Number(data.amount ?? 0);
+
+      spawnPopup(
+        targetSprite,
+        `damage-popup kind-${kind}`,
+        amount ? `-${amount}` : "-",
+        offsetPx
+      );
+      return;
+    }
+
+
+    // ============================
+    // ★ 回復演出（heal_event）
+    // ============================
+    if (data.type === "heal_event") {
+      const sprites = getSprites();
+      const targetSprite = sprites[data.target];
+
+      if (targetSprite) targetSprite.classList.add("heal");
+
+      setTimeout(() => {
+        if (targetSprite) targetSprite.classList.remove("heal");
+      }, 480);
+
+      const offsetPx = bumpStack(data.target);
+      const amount = Number(data.amount ?? 0);
+
+      spawnPopup(
+        targetSprite,
+        "heal-popup",
+        amount ? `+${amount}` : "+",
+        offsetPx
+      );
+      return;
+    }
+
 
     if(data.type==="skill_log"){
       appendLog("battleBox","skill-log",data.msg);
@@ -1616,11 +2121,6 @@ function useItem(id, action, slot = 1){
 }
 
 
-
-function openItemUI(){
-  document.getElementById("itemCategoryPopup").style.display = "flex";
-}
-
 function closeItemCategory(){
   document.getElementById("itemCategoryPopup").style.display = "none";
 }
@@ -1839,23 +2339,6 @@ function toggleEnemyDetail() {
   const el = document.getElementById("enemy-detail");
   el.style.display = (el.style.display === "none") ? "block" : "none";
 }
-document.getElementById("my-status-simple").innerHTML = `
-<b>あなた</b><br>
-HP: 200<br>
-ATK: 30<br>
-DEF: 20<br>
-COIN: 5<br>
-Lv: 1
-`;
-
-document.getElementById("enemy-status-simple").innerHTML = `
-<b>相手</b><br>
-HP: 180<br>
-ATK: 25<br>
-DEF: 15<br>
-COIN: 3<br>
-Lv: 1
-`;
 
 setPhase(PHASE.MODE_SELECT);
 
