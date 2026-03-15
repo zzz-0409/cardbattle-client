@@ -1,0 +1,4571 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>オンライン対戦（完全版）</title>
+<style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #202020;
+      color: #f5f5f5;
+    }
+    /* =========================
+      ★ 画面横幅制御（超重要）
+    ========================= */
+    #game-wrapper {
+      position: relative;
+      max-width: 1100px;   /* ← 半画面でちょうどいい正体 */
+      width: 100%;
+      margin: 0 auto;      /* 中央寄せ */
+    }
+
+    /* フルスクリーン時の余白背景 */
+    body {
+      background: #202020;
+    }
+
+    button { padding: 5px 12px; cursor:pointer; }
+    button:disabled { background:#666; cursor:default; }
+
+    .log-container { display: flex; gap: 12px; margin-top: 10px;}
+    .log-box { 
+      flex: 1;
+      background:#111;
+      border-radius:6px;
+      padding:6px;
+
+      height:160px;          /* ★ 縦幅を縮小 */
+      overflow-y: auto;
+
+      font-size: 11px;       /* ★ 少し小さく */
+      line-height: 1.35;     /* ★ 読みやすさ維持 */
+      font-family: Consolas;
+    }
+    
+    /* --- 演出用アニメーション --- */
+    .shake {
+        animation: shake-anim 0.3s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes shake-anim {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+    .hit-flash {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(255, 255, 255, 0.3); pointer-events: none;
+        z-index: 9999; opacity: 0; animation: flash-anim 0.2s ease-out;
+    }
+    @keyframes flash-anim {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+
+    /* =========================
+      ★ 開発者専用ログ制御
+    ========================= */
+    .log-container,
+    h3 + .log-container {
+      display: none;
+    }
+
+    /* DEBUG_MODE 用 */
+    body.debug .log-container {
+      display: flex;
+    }
+
+    .battle-log{ color:#ffd54f;}
+    .skill-log{ color:#81d4fa;}
+    .system-log{ color:#a5d6a7;}
+    .error-log{ color:#ef9a9a;}
+    .debug-log{ color:#b0bec5;}
+
+    #skillPopup{
+      display:none; position:fixed; top:0; left:0;
+      width:100%; height:100%; background:rgba(0,0,0,0.7);
+      justify-content:center; align-items:center;
+      z-index:10000; /* ★ 追加：最前面へ */
+    }
+    #skillBox{
+      position: relative; /* ★ 追加：z-index有効化 */
+      z-index:10001;      /* ★ 追加：背景より前 */
+      background:#2b2b2b; padding:20px; border-radius:10px;
+      width:380px;
+    }
+
+    .skillRow{ margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #555;}
+    .skillName{ color:#81d4fa; font-size:16px; }
+    .skillDesc{ white-space:pre-line; font-size:13px; color:#ddd; }
+
+    /* ★ スキル使用済み（回数0）のボタン */
+    .skillRow button.used-up{
+      background:#333 !important;
+      color:#bbb !important;
+      border:1px solid #555 !important;
+      opacity:0.75;
+      cursor:not-allowed;
+    }
+
+    /* ============================
+       ★ 共通ポップアップ（ショップ用）
+    ============================ */
+    .popup{
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.7);
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+    }
+    .popup-inner{
+      background:#2b2b2b;
+      padding:20px;
+      border-radius:10px;
+      width:380px;
+      max-height:80vh;
+      display:flex;
+      flex-direction:column;
+    }
+    #shopList{
+      overflow-y:auto;
+      flex:1;
+      margin-bottom:12px;
+    }
+
+
+
+   
+    /* ===== 簡易ステータス全体 ===== */
+    .status-area {
+      margin-top: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 12px;
+    }
+
+    /* ===== 自分 / 相手 共通 ===== */
+    .status-simple {
+      width: 240px;
+      padding: 10px;
+      background: #222;
+      border: 1px solid #555;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    /* ===== 相手側は少し色を変える ===== */
+    #enemy-status-simple {
+      background: #1a1a1a;
+      border-color: #666;
+    }
+    
+
+#phase0 {
+  text-align: center;
+  position: relative;
+  min-height: 560px;
+}
+
+#titleModePanel {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 260px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+#titleModePanel button {
+  width: 200px;
+}
+
+#phase0 .subtitle {
+  font-size: 1.00em;
+  letter-spacing: 0.25em;
+  opacity: 0.8;
+  margin-top: -20px; 
+  margin-bottom: 30px;
+}
+
+/* ================= 職業カード配置 ================= */
+
+#jobSelectArea {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+/* ================= Title Ranking Panel ================= */
+#titleRankingPanel {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 280px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: left;
+}
+#titleRankingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+#titleRankingHeader .name {
+  font-size: 12px;
+  opacity: 0.85;
+}
+#titleRankingHeader .job {
+  font-size: 14px;
+  font-weight: 700;
+}
+#titleRankingJobs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 10px 0;
+}
+#titleRankingJobs button {
+  font-size: 11px;
+  padding: 4px 8px;
+}
+#titleRankingList {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.title-rank-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.title-rank-row .left {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.title-rank-row .right {
+  white-space: nowrap;
+  opacity: 0.9;
+}
+
+/* ================= 職業カードUI ================= */
+
+.job-card {
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #444;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-height: 160px;
+}
+.job-header {
+  font-size: 16px;
+}
+
+.job-stats {
+  font-size: 13px;
+}
+
+.job-card.selected {
+  outline: 3px solid #ffd54f;
+}
+
+
+.job-detail-btn {
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+/* ================= 職業特性バー ================= */
+
+.job-bars {
+  margin: 6px 0 8px 0;
+  font-size: 11px;
+}
+
+.job-bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.job-bar-label {
+  width: 52px;
+  opacity: 0.8;
+}
+
+.job-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.job-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #81d4fa, #4fc3f7);
+  border-radius: 4px;
+}
+
+.job-rank-progress {
+  font-size: 11px;
+  opacity: 0.75;
+  margin: 0 6px;
+  white-space: nowrap;
+}
+
+#phase1 {
+  position: relative;
+  z-index: 1;
+}
+
+#jobDetailPopup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999; /* ★ ここを強くする */
+}
+
+/* ===============================
+   戦闘演出エリア
+================================ */
+
+
+@keyframes playerAttack {
+  50% { transform: translateX(20px); }
+}
+
+@keyframes enemyAttack {
+  50% { transform: translateX(-20px); }
+}
+
+/* ===== ダメージ数表示 ===== */
+.damage-popup {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff6b6b;
+  pointer-events: none;
+  opacity: 0;
+  animation: damageFloat 0.7s ease-out forwards;
+}
+
+/* ★ 追加：ダメージ種別ごとの色 */
+.damage-popup.kind-dot {
+  color: #b388ff; /* DOT */
+}
+
+.damage-popup.kind-pursuit {
+  color: #ffd166; /* 追撃 */
+}
+
+
+@keyframes damageFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -30px);
+  }
+}
+
+/* ===== 回復数表示 ===== */
+.heal-popup {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: bold;
+  color: #6bff95;
+  pointer-events: none;
+  opacity: 0;
+  animation: healFloat 0.7s ease-out forwards;
+}
+
+@keyframes healFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -30px);
+  }
+}
+/* ============================
+   簡易バトル演出（ステージ/箱/数字）
+============================ */
+#battleStage{
+  position: relative; /* ★ ラウンド/ターン表示用 */ 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  max-width: 1000px;   /* ★ 追加 */
+  margin-left: auto;  /* ★ 追加 */
+  margin-right: auto; /* ★ 追加 */
+  gap: 16px;
+
+  margin: 10px auto 16px auto;/* ★ 下余白を少し増やす */
+  padding: 18px 16px;     /* ★ 縦を広げる */
+
+  min-height: 220px;      /* ★ 縦拡張の本体 */
+
+  background: #151515;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+/* ============================
+   ★ ラウンド / ターン表示
+============================ */
+#roundTurnInfo{
+  position:absolute;
+  top:6px;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  font-size:13px;
+  line-height:1.2;
+  padding:6px 10px;
+  background:rgba(0,0,0,0.35);
+  border:1px solid #333;
+  border-radius:8px;
+  pointer-events:none;
+}
+#roundTurnInfo #roundLabel{
+  font-weight:700;
+}
+#roundTurnInfo #turnLabel{
+  opacity:0.9;
+  margin-top:2px;
+}
+
+/* =========================
+   ★ 非デバッグ時：バトルエリア縦拡張
+========================= */
+
+/* 通常プレイ（ログ非表示） */
+body:not(.debug) #battleStage {
+  min-height: 360px;   /* ← 好みで 320〜420 調整OK */
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+/* デバッグ時（ログ表示） */
+body.debug #battleStage {
+  min-height: 220px;   /* ← 今まで通り */
+}
+
+.status-area,
+.log-container {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ★ ステータス領域を最前面へ（人形UIのオーバーフロー対策） */
+.status-area{ position:relative; z-index:20; }
+
+/* ===== HPバー ===== */
+.hp-bar {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  right: 8px;
+  height: 10px;
+  background: #111;
+  border-radius: 6px;
+  border: 1px solid #333;
+  overflow: hidden;
+}
+
+/* ===== 人形専用 ===== */
+.sprite.doll {
+  width: 110px;
+  height: 100px;
+  background: #262026;
+  border: 1px solid #664466;
+
+  overflow: visible; /* ★ 人形の外にはみ出すUIを表示させる */
+}
+
+
+/* 人形の耐久バー色 */
+.hp-fill.doll {
+  background: linear-gradient(90deg, #ce93d8, #f3e5f5);
+}
+
+/* 人形バーは少し下げる */
+.doll-bar {
+  top: 8px;
+}
+
+/* =========================
+   ★ 装備表示（キャラ下）
+========================= */
+
+.equip-area {
+  margin-top: 6px;
+  display: flex;
+  justify-content: center;
+}
+
+.equip-area.enemy {
+  justify-content: center;
+}
+
+.equip-slot {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #666;
+  border-radius: 6px;
+  background: #1c1c1c;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+  color: #aaa;
+
+  cursor: default;
+
+  position: relative; /* ★ これを追加 */
+}
+
+
+/* 未装備状態 */
+.equip-slot.empty {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+/* 将来：装備中 */
+.equip-slot.filled {
+  opacity: 1;
+  border-color: #ffd54f;
+  color: #ffd54f;
+}
+
+/* =========================
+   ★ 装備ツールチップ
+========================= */
+.equip-slot .equip-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: #111;
+  border: 1px solid #666;
+  border-radius: 6px;
+  padding: 6px 8px;
+
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: pre-line;
+  z-index: 100;
+  width: max-content;
+  max-width: 200px;
+}
+
+.equip-slot:hover .equip-tooltip {
+  display: block;
+}
+
+
+.equip-slot.tooltip-open .equip-tooltip {
+  display: block;
+}
+/* =========================
+   ★ 特殊装備のツールチップ（通常装備と同等）
+========================= */
+.special-equip-slot {
+  position: relative;
+}
+
+.special-equip-slot .equip-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: #111;
+  border: 1px solid #666;
+  border-radius: 6px;
+  padding: 6px 8px;
+
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: pre-line;
+  z-index: 100;
+  width: max-content;
+  max-width: 220px;
+}
+
+.special-equip-slot:hover .equip-tooltip {
+  display: block;
+}
+
+
+.special-equip-slot.tooltip-open .equip-tooltip {
+  display: block;
+}
+/* =========================
+   ★ 特殊装備エリア
+========================= */
+
+.special-equip-area {
+  margin-top: 4px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.special-equip-area.enemy {
+  justify-content: center;
+}
+
+.special-equip-slot {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #1a1a1a;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+  color: #aaa;
+}
+
+/* 空枠 */
+.special-equip-slot.empty {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+/* 装備あり */
+.special-equip-slot.filled {
+  border-color: #4fc3f7;
+  color: #4fc3f7;
+}
+
+/* ロック枠 */
+.special-equip-slot.locked {
+  opacity: 0.25;
+}
+
+/* 人形下の特殊装備 */
+.special-equip-area.doll {
+  margin-top: 110px; /* ★ 人形と被らないように下げる */
+  justify-content: center;
+}
+
+/* =========================
+   ★ 特殊装備ホバー演出
+========================= */
+
+.special-equip-slot {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.special-equip-slot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 8px rgba(120, 200, 255, 0.6);
+}
+
+/* 装備ありは少し強め */
+.special-equip-slot.filled:hover {
+  box-shadow: 0 0 10px rgba(255, 215, 100, 0.8);
+}
+
+/* ロック枠は反応しない */
+.special-equip-slot.locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* =========================
+   ★ 特殊装備 点灯状態
+========================= */
+
+.special-equip-slot.active {
+  box-shadow:
+    0 0 6px rgba(120, 200, 255, 0.8),
+    0 0 12px rgba(120, 200, 255, 0.4);
+  border-color: #7ecbff;
+}
+
+/* 装備あり＋ホバー時は強調 */
+.special-equip-slot.active:hover {
+  box-shadow:
+    0 0 10px rgba(255, 215, 100, 0.9),
+    0 0 16px rgba(255, 215, 100, 0.6);
+}
+
+.hp-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  transition: width 0.25s ease;
+}
+
+.hp-fill.enemy {
+  background: linear-gradient(90deg, #e53935, #ef9a9a);
+}
+
+.sprite{
+  position:relative;
+  width:160px;
+  height:160px;
+  border-radius:12px;
+  background:#2a2a2a;
+  border:1px solid #444;
+  overflow:hidden;
+}
+
+.sprite.player{ --attackX: 22px; }
+.sprite.enemy { --attackX:-22px; }
+
+.sprite-label-row{
+  position:absolute;
+  left:8px;
+  bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  max-width:144px;
+}
+
+.sprite-label{
+  position:static;
+  font-size:12px;
+  padding:2px 8px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.45);
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+/* =========================
+   ★ バフ表示（キャラ箱用）
+========================= */
+.buff-strip{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  flex-wrap:wrap;
+}
+
+.buff-strip-sprite{ /* sprite用：サイズを小さめに */
+  max-width:144px;
+}
+
+.buff-slot{
+  width:26px;
+  height:26px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  position:relative;
+}
+
+.buff-slot.atk_up{ background:rgba(30,136,229,0.95); }
+.buff-slot.def_up{ background:rgba(79,195,247,0.95); }
+.buff-slot.atk_down{ background:rgba(120,120,120,0.9); }
+.buff-slot.def_down{ background:rgba(120,120,120,0.9); }
+.buff-slot.freeze{ background:rgba(90,180,255,0.85); }
+.buff-slot.other{ background:rgba(60,120,200,0.65); }
+
+.buff-slot .buff-tooltip{
+  display:none;
+  position:absolute;
+  bottom:32px;
+  left:50%;
+  transform:translateX(-50%);
+
+  background:#111;
+  border:1px solid #666;
+  border-radius:6px;
+  padding:6px 8px;
+
+  font-size:11px;
+  line-height:1.4;
+  white-space:pre-line;
+  z-index:200;
+  width:max-content;
+  max-width:240px;
+}
+
+.buff-slot:hover .buff-tooltip{ display:block; }
+
+.buff-slot.tooltip-open .buff-tooltip{ display:block; }
+
+@keyframes attackMove{
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(var(--attackX)); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes hitShake{
+  0%   { transform: translateX(0); filter:brightness(1); }
+  30%  { transform: translateX(-4px); filter:brightness(1.25); }
+  60%  { transform: translateX(4px);  filter:brightness(1.25); }
+  100% { transform: translateX(0); filter:brightness(1); }
+}
+
+@keyframes healGlow{
+  0%   { filter:brightness(1); }
+  40%  { filter:brightness(1.35); }
+  100% { filter:brightness(1); }
+}
+
+.sprite.attack{ animation: attackMove 0.26s ease-in-out; }
+.sprite.hit   { animation: hitShake 0.26s ease-in-out; }
+.sprite.heal  { animation: healGlow 0.45s ease-in-out; }
+
+@keyframes floatUp{
+  0%   { opacity:1; transform: translate(-50%, -50%) translateY(0); }
+  100% { opacity:0; transform: translate(-50%, -50%) translateY(-34px); }
+}
+
+.damage-popup,
+.heal-popup{
+  position:absolute;
+  left:50%;
+  top:40%;
+  font-weight:800;
+  font-size:22px;
+  pointer-events:none;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.65);
+  animation: floatUp 0.85s ease-out forwards;
+  white-space:nowrap;
+}
+
+.damage-popup{ color:#ffb3b3; }
+.heal-popup  { color:#b7ffb7; }
+
+/* 種類別（dot / pursuit） */
+.damage-popup.kind-dot{ color:#c7b3ff; }
+.damage-popup.kind-pursuit{ color:#ffd28a; }
+
+
+/* 左右それぞれの陣営 */
+.side {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+
+/* 左陣営は左寄せ */
+.side-self {
+  justify-content: flex-start;
+}
+
+/* 右陣営は右寄せ */
+.side-enemy {
+  justify-content: flex-end;
+}
+
+/* キャラ＋装備を縦にまとめる */
+.main-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  justify-content: flex-start; /* ★ 装備分で下に引っ張られない */
+}
+
+/* 人形の底をキャラ箱の底に合わせる */
+.side .sprite.doll {
+  margin-bottom: 52px; /* ★ 装備枠の高さ分 */
+}
+
+/* =========================
+   ステータス＋行動：横3カラム
+========================= */
+.status-area{
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* 左右のステータス */
+.status-simple{
+  flex: 1;
+  min-width: 240px;
+}
+
+/* =========================
+   行動エリア（中央・縦一列）
+========================= */
+#action-area{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  justify-content: center;
+  align-items: stretch;
+
+  width: 120px;
+  flex: 0 0 120px;
+
+  padding: 8px 6px;
+  background: #1b1b1b;
+  border: 1px solid #444;
+  border-radius: 8px;
+}
+
+#action-area button{
+  width: 100%;
+  padding: 6px 0;
+  font-size: 12px;
+}
+
+  
+
+
+/* ================================
+   Cyber Theme Overrides
+   - 既存UIを壊さず上書き
+================================= */
+:root{
+  --cy-bg0:#0b0f1a;
+  --cy-bg1:#050816;
+  --cy-panel:rgba(17,24,39,0.78);
+  --cy-panel2:rgba(15,23,42,0.72);
+  --cy-line:rgba(34,211,238,0.40);
+  --cy-line2:rgba(167,139,250,0.34);
+  --cy-cyan:#22d3ee;
+  --cy-purple:#a78bfa;
+  --cy-text:#e5e7eb;
+  --cy-muted:#9ca3af;
+  --cy-danger:#ff4d6d;
+  --cy-ok:#22d3ee;
+}
+
+body{
+  color:var(--cy-text) !important;
+  background:
+    radial-gradient(1200px 520px at 18% -10%, rgba(34,211,238,0.16), transparent 62%),
+    radial-gradient(900px 520px at 84% 0%, rgba(167,139,250,0.14), transparent 58%),
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 4px),
+    linear-gradient(180deg, var(--cy-bg1), var(--cy-bg0));
+  background-attachment: fixed;
+}
+
+/* パネル/箱 */
+#titlePanel, #titleRankingPanel, #phase1, #phase2, #cpuOptionArea{
+  background: var(--cy-panel) !important;
+  border: 1px solid rgba(34,211,238,0.22) !important;
+  box-shadow: 0 0 14px rgba(34,211,238,0.08), 0 0 28px rgba(167,139,250,0.05) !important;
+  backdrop-filter: blur(6px);
+}
+
+/* タイトル右：自分成績 */
+.title-my-stats{
+  margin-top:6px;
+  font-size:12px;
+  line-height:1.45;
+  color: var(--cy-text);
+  opacity:0.92;
+}
+.cyber-accent{ color: var(--cy-cyan); text-shadow: 0 0 8px rgba(34,211,238,0.35); font-weight: 800; }
+.cyber-muted{ color: var(--cy-muted); }
+
+/* ボタン（全体） */
+button{
+  background: rgba(15,23,42,0.92) !important;
+  color: var(--cy-text) !important;
+  border: 1px solid rgba(34,211,238,0.34) !important;
+  border-radius: 10px !important;
+  transition: box-shadow .15s ease, transform .08s ease, border-color .15s ease, background .15s ease;
+}
+button:hover:not(:disabled){
+  border-color: rgba(34,211,238,0.65) !important;
+  box-shadow: 0 0 12px rgba(34,211,238,0.22), inset 0 0 10px rgba(34,211,238,0.10) !important;
+  transform: translateY(-1px);
+}
+button:active:not(:disabled){
+  transform: translateY(0px);
+  box-shadow: 0 0 10px rgba(34,211,238,0.18), inset 0 0 14px rgba(34,211,238,0.12) !important;
+}
+button:disabled{
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* 入力 */
+input, select{
+  background: rgba(2,6,23,0.75) !important;
+  color: var(--cy-text) !important;
+  border: 1px solid rgba(34,211,238,0.24) !important;
+  border-radius: 10px !important;
+  outline: none;
+}
+input:focus, select:focus{
+  border-color: rgba(34,211,238,0.60) !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.14) !important;
+}
+
+/* バトルステージ枠 */
+#battleStage{
+  background: var(--cy-panel2) !important;
+  border: 1px solid rgba(34,211,238,0.20) !important;
+  box-shadow: inset 0 0 22px rgba(34,211,238,0.06) !important;
+}
+
+/* 簡易ステータス枠 */
+.status-simple{
+  background: rgba(2,6,23,0.55) !important;
+  border: 1px solid rgba(34,211,238,0.18) !important;
+  box-shadow: 0 0 12px rgba(34,211,238,0.06) !important;
+}
+
+/* ログ箱 */
+.log-box{
+  background: rgba(2,6,23,0.55) !important;
+  border: 1px solid rgba(34,211,238,0.15) !important;
+}
+
+/* HPバー発光 */
+.hp-fill{
+  box-shadow: 0 0 10px rgba(34,211,238,0.18);
+}
+.hp-fill.doll{
+  box-shadow: 0 0 10px rgba(167,139,250,0.18);
+}
+
+/* ダメージ表示 */
+.damage-popup{
+  text-shadow: 0 0 10px rgba(255,77,109,0.30), 0 0 18px rgba(255,77,109,0.18);
+}
+
+/* 勝敗オーバーレイ（inline style を上書き） */
+#resultOverlay{
+  background: rgba(0,0,0,0.82) !important;
+}
+#resultPanel{
+  background: rgba(2,6,23,0.88) !important;
+  border: 1px solid rgba(34,211,238,0.28) !important;
+  box-shadow: 0 0 18px rgba(34,211,238,0.12), 0 0 40px rgba(167,139,250,0.08) !important;
+}
+#resultTitle{
+  color: var(--cy-cyan) !important;
+  text-shadow: 0 0 14px rgba(34,211,238,0.35) !important;
+  letter-spacing: 0.22em !important;
+}
+
+/* 人形スプライト：ツールチップ（hover/tap）を使うため pointer-events は無効化しない */
+/* =========================
+   ★ モバイル最適化
+   - レイアウト崩れ防止
+   - ポップアップ幅を画面に収める
+========================= */
+@media (max-width: 768px) {
+  body { padding: 8px; }
+  #game-wrapper { max-width: 100%; }
+
+  #battleStage {
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    padding: 10px;
+  }
+  .side {
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .status-area {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .status-simple {
+    width: 100%;
+  }
+
+  /* ポップアップ類は画面幅に合わせる */
+  #skillBox, #itemBox, #shopBox, #statusDetailBox {
+    width: min(92vw, 420px);
+  }
+
+  /* ボタンのタップ性を少し上げる */
+  button { padding: 10px 14px; }
+}
+
+</style>
+</head>
+<body>
+<div id="game-wrapper">
+<!-- ================= フェーズ0：モード選択 ================= -->
+<div id="phase0">
+<h1>Guild System</h1>
+<div class="subtitle">ギルドシステム</div>
+<div id="titleModePanel">
+<button id="btnRandom">ランダム対戦</button>
+<button id="btnRoom">ルーム対戦</button>
+<button id="btnCPU">CPU戦</button>
+<button disabled="">レイド戦（未実装）</button>
+</div>
+<!-- ================= Title Ranking (Job Ratings) ================= -->
+<div id="titleRankingPanel">
+<div id="titleRankingHeader">
+<div>
+<div class="job" id="titleRankingJobLabel">戦士 ランキング</div>
+<div class="name" id="titleAccountName">名前：-</div>
+<div class="title-my-stats" id="titleMyStats">あなたの成績：-</div>
+</div>
+<button id="btnChangeName" style="font-size:11px; padding:4px 8px;">名前変更</button>
+</div>
+<div id="titleRankingJobs"></div>
+<div id="titleRankingList">読み込み中...</div>
+</div>
+</div>
+<!-- ================= フェーズ1：ランダム対戦準備 ================= -->
+<div id="phase1" style="display:none;">
+<h2 id="phase1Title">ランダム対戦</h2>
+<div id="accountNamePhase1" style="margin:6px 0; opacity:0.9;"></div>
+<div id="roomCodeArea" style="margin:6px 0; display:none;">
+<input id="roomCodeInput" inputmode="numeric" maxlength="4" placeholder="ルーム番号(4桁)" style="width:160px; text-align:center; padding:6px;"/>
+</div>
+<input id="name_phase1" placeholder="名前" style="display:none;"/>
+<button id="btnConnectPhase1">接続</button>
+<button id="btnCancelRandom">タイトルに戻る</button>
+<!-- ★ ここに追加 -->
+<div id="jobSelectArea"></div>
+<p id="connectStatus"></p>
+<!-- ========================= -->
+<!-- CPU職業選択（CPU戦のみ表示） -->
+<!-- ========================= -->
+<div id="cpuJobArea" style="margin-top:8px; display:none;">
+<label for="cpuJob">CPUの職業：</label>
+<select id="cpuJob">
+<option value="">ランダム</option>
+<option value="戦士">戦士</option>
+<option value="騎士">騎士</option>
+<option value="僧侶">僧侶</option>
+<option value="盗賊">盗賊</option>
+<option value="魔導士">魔導士</option>
+<option value="弓兵">弓兵</option>
+<option value="陰陽師">陰陽師</option>
+<option value="錬金術師">錬金術師</option>
+<option value="人形使い">人形使い</option>
+</select>
+<div id="cpuTurnOrderArea" style="margin-top:8px;">
+<label>先攻・後攻：</label>
+<select id="cpuTurnOrder">
+<option value="random">ランダム</option>
+<option value="first">自分が先攻</option>
+<option value="second">CPUが先攻</option>
+</select>
+</div>
+</div>
+<!-- ================= 職業詳細ポップアップ（body直下） ================= -->
+<div id="jobDetailPopup" style="display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,0.7);
+            justify-content:center; align-items:center;
+            z-index:9999;">
+<div style="background:#2b2b2b; padding:20px; border-radius:10px;
+              width:420px; max-height:80%; overflow-y:auto;">
+<h3 id="jobDetailTitle">職業詳細</h3>
+<div id="jobDetailBody" style="font-size:13px; line-height:1.6; white-space:pre-line;">
+</div>
+<div style="text-align:right; margin-top:10px;">
+<button onclick="closeJobDetail()">閉じる</button>
+</div>
+</div>
+</div>
+</div>
+<button id="btnBackToMenu" style="display:none; margin-bottom:10px;">
+  タイトルに戻る
+</button>
+<!-- ================= フェーズ2：バトル画面 ================= -->
+<div id="phase2" style="display:none;">
+<!-- ★ バトルステージ -->
+<div id="battleStage">
+<!-- ★ ラウンド / ターン表示（中央上） -->
+<div id="roundTurnInfo">
+<div id="roundLabel">ラウンド 0</div>
+<div id="turnLabel">ターン 0</div>
+</div>
+<!-- ===== 左陣営（自分） ===== -->
+<div class="side side-self">
+<!-- ★ キャラ＋装備をまとめる -->
+<div class="main-unit">
+<div class="sprite player" id="playerSprite">
+<div class="hp-bar">
+<div class="hp-fill" id="playerHpFill"></div>
+</div>
+<div class="sprite-label-row">
+<div class="sprite-label">あなた</div>
+<div class="buff-strip buff-strip-sprite" data-side="self" id="buffStripSelf"></div>
+</div>
+</div>
+<!-- ★ 通常装備表示（自分） -->
+<div class="equip-area">
+<div class="equip-slot empty" title="通常装備（未装備）">
+          装備
+        </div>
+</div>
+<!-- ★ 特殊装備（自分） ← ここが正解 -->
+<div class="special-equip-area" data-side="self"></div>
+</div>
+<!-- ★ 人形は横（中央寄り） -->
+<div class="sprite doll" id="dollSprite" style="display:none;">
+<div class="hp-bar doll-bar">
+<div class="hp-fill doll" id="dollHpFill"></div>
+</div>
+<div class="sprite-label">人形</div>
+<!-- ★ 人形下・特殊装備用 -->
+<div class="special-equip-area doll" data-side="self"></div>
+</div>
+</div>
+<!-- ===== 右陣営（相手） ===== -->
+<div class="side side-enemy">
+<!-- ★ 人形（中央寄り） -->
+<div class="sprite doll enemy" id="dollSpriteEnemy" style="display:none;">
+<div class="hp-bar doll-bar">
+<div class="hp-fill doll enemy" id="enemyDollHpFill"></div>
+</div>
+<div class="sprite-label">人形</div>
+<div class="special-equip-area doll enemy" data-side="enemy"></div>
+</div>
+<!-- ★ キャラ＋装備 -->
+<div class="main-unit">
+<div class="sprite enemy" id="enemySprite">
+<div class="hp-bar">
+<div class="hp-fill enemy" id="enemyHpFill"></div>
+</div>
+<div class="sprite-label-row">
+<div class="sprite-label">相手</div>
+<div class="buff-strip buff-strip-sprite" data-side="enemy" id="buffStripEnemy"></div>
+</div>
+</div>
+<!-- ★ 通常装備表示（相手） -->
+<div class="equip-area enemy">
+<div class="equip-slot empty" title="通常装備（未装備）">
+          装備
+        </div>
+</div>
+<div class="special-equip-area enemy" data-side="enemy"></div>
+</div>
+</div>
+</div> <!-- ★★★ ← battleStage をここで閉じる（重要） -->
+<!-- ===== 簡易ステータス（自分 / 相手） ===== -->
+<div class="status-area">
+<!-- ===== 簡易ステータス（自分 / 相手） ===== -->
+<div class="status-area">
+<div class="status-simple" id="my-status-simple"></div>
+<div id="action-area">
+<button disabled="" id="atkBtn" onclick="attack()">攻撃</button>
+<button disabled="" id="skillBtn" onclick="openSkillUI()">スキル</button>
+<button disabled="" id="lvupBtn" onclick="tryLevelUp()">LvUP</button>
+<button disabled="" id="itemBtn" onclick="openItemUI()">持ち物</button>
+<button disabled="" id="shopBtn" onclick="openShop()">ショップ</button>
+</div>
+<div class="status-simple" id="enemy-status-simple"></div>
+</div>
+<div class="log-container">
+<div class="log-box" id="battleBox"><div class="log-title">⚔ 戦闘ログ</div></div>
+<div class="log-box" id="systemBox"><div class="log-title">▶ システムログ</div></div>
+<div class="log-box" id="debugBox"><div class="log-title">🛠 デバッグログ</div></div>
+</div>
+<!-- ================= スキルポップアップ ================= -->
+<div id="skillPopup">
+<div id="skillBox">
+<h3>スキル一覧</h3>
+<div id="skillList"></div>
+<button onclick="closeSkillUI()">閉じる</button>
+</div>
+</div>
+<!-- ▼ カテゴリ選択ポップアップ（新規追加） -->
+<div id="itemCategoryPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
+<div style="background:#2b2b2b; padding:20px; border-radius:10px; width:260px;">
+<h3>カテゴリ選択</h3>
+<button onclick="openItemCategory('item')">アイテム</button><br/><br/>
+<button onclick="openItemCategory('equip')">装備</button><br/><br/>
+<button onclick="openItemCategory('special')">特殊装備</button><br/><br/>
+<button onclick="closeItemCategory()">閉じる</button>
+</div>
+</div>
+<!-- ================= アイテムポップアップ ================= -->
+<div id="itemPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
+<div id="itemBox" style="background:#2b2b2b; padding:20px; border-radius:10px; width:380px; max-height:80vh; display:flex; flex-direction:column;">
+<h3 id="itemPopupTitle">アイテム一覧</h3>
+<div id="itemList" style="overflow-y:auto; flex:1; margin-bottom:12px;"></div>
+<button onclick="closeItemUI()">閉じる</button>
+</div>
+</div>
+<!-- ★ 追加：ショップポップアップ -->
+<div class="popup" id="shopPopup" style="display:none;">
+<div class="popup-inner">
+<h3>ショップ</h3>
+<div id="shopList"></div>
+<!-- ★ ここに移動させる（popup と連動して消える） -->
+<button onclick="rerollShop()">ショップ更新(5コイン)</button>
+<button onclick="closeShopUI()">閉じる</button>
+</div>
+</div>
+<!-- ================= ステータス詳細ポップアップ ================= -->
+<div id="statusDetailPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
+<div style="background:#2b2b2b; padding:20px; border-radius:10px; width:420px;">
+<h3 id="statusDetailTitle">ステータス詳細</h3>
+<div id="statusDetailBody" style="font-size:13px; line-height:1.6;"></div>
+<div style="text-align:right; margin-top:10px;">
+<button onclick="closeStatusDetail()">閉じる</button>
+</div>
+</div>
+</div>
+
+<!-- ================= 中央ポップアップ（汎用トースト） ================= -->
+<div id="centerToast" style="display:none; position:fixed; inset:0;
+  justify-content:center; align-items:center; z-index:99998; pointer-events:none;">
+  <div id="centerToastBox" style="
+    max-width: 82vw;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid #666;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-align: center;
+    transform: translateY(-6px);
+    opacity: 0;
+    transition: opacity 180ms ease, transform 180ms ease;">
+    Toast
+  </div>
+</div>
+
+<!-- ================= 勝利/敗北演出オーバーレイ ================= -->
+<div id="resultOverlay" style="display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.78); justify-content:center; align-items:center;
+  z-index:99999;">
+<div id="resultPanel" style="text-align:center; padding:22px 26px;
+    border-radius:14px; background:rgba(20,20,20,0.95);
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:0 10px 40px rgba(0,0,0,0.55);
+    min-width:320px;">
+<div id="resultTitle" style="font-size:34px; font-weight:900; letter-spacing:0.18em;
+      margin-bottom:10px;">結果</div>
+<div id="resultSub" style="font-size:13px; opacity:0.85; margin-bottom:18px;">
+      対戦が終了しました
+    </div>
+<button onclick="backToMenuFromResult()" style="padding:8px 16px;">タイトルに戻る</button>
+</div>
+</div>
+<script>
+
+// ====================
+// ★ デバッグモード
+// ====================
+const DEBUG_MODE = false; // ← 開発中 true / 通常プレイ false
+
+// ==================== フェーズ管理 ====================
+const PHASE = {
+  MODE_SELECT: 0,
+  RANDOM_READY: 1,
+  BATTLE: 2
+};
+
+let currentPhase = PHASE.MODE_SELECT;
+
+
+function setPhase(p) {
+  // 視覚演出のトリガー
+  function triggerHitEffect() {
+      // 1. フラッシュ
+      const flash = document.createElement("div");
+      flash.className = "hit-flash";
+      document.body.appendChild(flash);
+      setTimeout(() => flash.remove(), 200);
+
+      // 2. 画面揺れ
+      const wrapper = document.getElementById("game-wrapper");
+      if (wrapper) {
+          wrapper.classList.add("shake");
+          setTimeout(() => wrapper.classList.remove("shake"), 300);
+      }
+  }
+  currentPhase = p;
+
+  document.getElementById("phase0").style.display =
+    p === PHASE.MODE_SELECT ? "block" : "none";
+
+  document.getElementById("phase1").style.display =
+    p === PHASE.RANDOM_READY ? "block" : "none";
+
+  document.getElementById("phase2").style.display =
+    p === PHASE.BATTLE ? "block" : "none";
+
+  if (p === PHASE.RANDOM_READY) {
+    // ★ 職業未選択時は接続ボタンを押せないようにする
+    const btn = document.getElementById("btnConnectPhase1");
+    if (btn) btn.disabled = !selectedJobId;
+
+    // refresh job record from server, then re-render cards
+    refreshSummary().then(() => renderJobCards());
+  }
+
+  if (p === PHASE.MODE_SELECT) {
+    // refresh title UI (ranking + name)
+    setAccountNameUI();
+    fetchAndRenderRanking(currentRankingJob);
+  }
+
+  // ★ デバッグモード反映（ここから）
+  if (DEBUG_MODE) {
+    document.body.classList.add("debug");
+  } else {
+    document.body.classList.remove("debug");
+  }
+  // ★ デバッグモード反映（ここまで）
+
+}
+
+
+/* ====================
+   グローバル変数
+==================== */
+
+let currentItemCategory = null;
+let isItemUIOpen = false; // ★ 追加
+let ws;
+let myTurn = false;
+let myJob = null;
+let myLevel = 1;
+let pendingArrowItem = null;   // ★ 追加：装備待ちの矢
+let battleEnded = false;
+
+// ====================
+// ★ スキル残り回数（server の status_simple.skill_remaining を反映）
+// ====================
+window.skillRemaining = { 1: 1, 2: 1, 3: 1 };
+
+// ====================
+// ★ ラウンド / ターン表示用カウンタ
+// ====================
+let roundCount = 0; // 自分ターン開始時に +1
+let turnCount = 0;  // 誰かのターン開始時に +1
+
+function resetRoundTurnCounter() {
+  roundCount = 0;
+  turnCount = 0;
+  updateRoundTurnUI();
+}
+
+function updateRoundTurnUI() {
+  const roundEl = document.getElementById("roundLabel");
+  const turnEl  = document.getElementById("turnLabel");
+  if (roundEl) roundEl.textContent = `ラウンド ${roundCount}`;
+  if (turnEl)  turnEl.textContent  = `ターン ${turnCount}`;
+}
+
+
+// ==================== 環境自動判定 ====================
+// ローカル（file://, localhost）かどうか
+const IS_LOCAL =
+  location.protocol === "file:" ||
+  location.hostname === "localhost";
+
+// WebSocket 接続先を自動切替
+const WS_URL = IS_LOCAL
+  ? "ws://localhost:8080"
+  : "wss://cardbattle-server.onrender.com";
+
+console.log("ENV:", IS_LOCAL ? "LOCAL" : "PRODUCTION");
+console.log("WS_URL:", WS_URL);
+
+// HTTP API base (for ranking/summary/name registration)
+const API_BASE = IS_LOCAL
+  ? "http://localhost:8080"
+  : "https://cardbattle-server.onrender.com";
+
+// ================= Account (localStorage + server) =================
+const LS_ACCOUNT_ID = "gs_account_id";
+const LS_ACCOUNT_NAME = "gs_account_name";
+
+const LS_JOB_RECORD_KEY = (aid) => `gs_job_record_${aid}`;
+
+function loadLocalJobRecord(aid) {
+  try {
+    const raw = localStorage.getItem(LS_JOB_RECORD_KEY(aid));
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || typeof obj !== "object") return null;
+    return obj;
+  } catch (e) {
+    console.warn("loadLocalJobRecord failed:", e);
+    return null;
+  }
+}
+
+function saveLocalJobRecord(aid, jobs) {
+  try {
+    localStorage.setItem(LS_JOB_RECORD_KEY(aid), JSON.stringify(jobs || {}));
+  } catch (e) {
+    console.warn("saveLocalJobRecord failed:", e);
+  }
+}
+
+function mergeJobRecords(serverJobs, localJobs) {
+  const out = { ...(serverJobs || {}) };
+  const l = localJobs || {};
+  for (const [job, rec] of Object.entries(l)) {
+    const s = out[job];
+    const su = Number(s?.updatedAt ?? 0) || 0;
+    const lu = Number(rec?.updatedAt ?? 0) || 0;
+    const hasLocalProgress =
+      (Number(rec?.wins ?? 0) || 0) + (Number(rec?.losses ?? 0) || 0) > 0 ||
+      (Number(rec?.rating ?? 1000) || 1000) !== 1000;
+    const hasServerProgress =
+      (Number(s?.wins ?? 0) || 0) + (Number(s?.losses ?? 0) || 0) > 0 ||
+      (Number(s?.rating ?? 1000) || 1000) !== 1000;
+
+    // 優先順位：
+    // 1) updatedAt が新しい方
+    // 2) サーバが“初期化状態”っぽいならローカル優先
+    if (!s) {
+      out[job] = rec;
+    } else if (lu > su) {
+      out[job] = rec;
+    } else if (!hasServerProgress && hasLocalProgress) {
+      out[job] = rec;
+    }
+  }
+  return out;
+}
+
+window.accountId = null;
+window.accountName = null;
+window.jobRecord = {}; // per job: {wins, losses, rating}
+
+function validateNameClient(name) {
+  if (typeof name !== "string") return { ok: false, reason: "名前が不正です" };
+  if (/[\n\r\t]/.test(name)) return { ok: false, reason: "改行・タブは禁止です" };
+  if (name !== name.trim()) return { ok: false, reason: "先頭・末尾スペースは禁止です" };
+  if (/ {2,}/.test(name)) return { ok: false, reason: "連続スペースは禁止です" };
+  const len = [...name].length;
+  if (len < 2 || len > 12) return { ok: false, reason: "名前は2〜12文字です" };
+  return { ok: true };
+}
+
+function uuid() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  // fallback
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === "x" ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+async function apiPost(path, body) {
+  const r = await fetch(API_BASE + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+async function apiGet(path) {
+  const r = await fetch(API_BASE + path);
+  return r.json();
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => {
+    switch (c) {
+      case "&": return "&amp;";
+      case "<": return "&lt;";
+      case ">": return "&gt;";
+      case '"': return "&quot;";
+      case "'": return "&#39;";
+      default: return c;
+    }
+  });
+}
+
+function setAccountNameUI() {
+  const t = document.getElementById("titleAccountName");
+  if (t) t.textContent = `名前：${window.accountName || "-"}`;
+  const p1 = document.getElementById("accountNamePhase1");
+  if (p1) p1.textContent = `名前：${window.accountName || "-"}`;
+}
+
+async function ensureAccount() {
+  let aid = localStorage.getItem(LS_ACCOUNT_ID);
+  let aname = localStorage.getItem(LS_ACCOUNT_NAME);
+
+  if (!aid) {
+    aid = uuid();
+    localStorage.setItem(LS_ACCOUNT_ID, aid);
+  }
+
+  if (!aname) {
+    while (true) {
+      const input = prompt("初回ログイン：名前を入力してください（2〜12文字）");
+      if (input === null) {
+        // cancel -> default name
+        aname = "Player";
+        break;
+      }
+      const name = String(input);
+      const v = validateNameClient(name);
+      if (!v.ok) {
+        alert(v.reason);
+        continue;
+      }
+      aname = name;
+      break;
+    }
+    localStorage.setItem(LS_ACCOUNT_NAME, aname);
+  }
+
+
+window.accountId = aid;
+window.accountName = aname;
+
+// localStorage から職業別戦績を先に復元（サーバが落ちていても表示できる）
+const localJobs = loadLocalJobRecord(window.accountId);
+if (localJobs) {
+  window.jobRecord = localJobs;
+}
+
+setAccountNameUI();
+
+  // register (server-side)
+  try {
+    await apiPost("/api/account/register", {
+      account_id: window.accountId,
+      name: window.accountName,
+      backup_jobs: window.jobRecord
+    });
+  } catch (e) {
+    console.warn("register failed:", e);
+  }
+}
+
+async function refreshSummary() {
+  if (!window.accountId) return;
+  try {
+    const data = await apiGet(`/api/account/summary?account_id=${encodeURIComponent(window.accountId)}`);
+    
+if (data?.ok && data.jobs) {
+  const localJobs = loadLocalJobRecord(window.accountId) || {};
+  const merged = mergeJobRecords(data.jobs, localJobs);
+  window.jobRecord = merged;
+  saveLocalJobRecord(window.accountId, merged);
+
+  // 画面反映
+  renderTitleMyStats(currentRankingJob);
+  if (document.getElementById("jobSelectArea")) {
+    renderJobCards();
+  }
+}
+  } catch (e) {
+    console.warn("summary failed:", e);
+    // サーバ取得に失敗しても、ローカルを表示
+    const localJobs = loadLocalJobRecord(window.accountId);
+    if (localJobs) {
+      window.jobRecord = localJobs;
+      renderTitleMyStats(currentRankingJob);
+      if (document.getElementById("jobSelectArea")) {
+        renderJobCards();
+      }
+    }
+  }
+}
+
+// ================= Title Ranking UI =================
+let currentRankingJob = "戦士";
+
+function renderRankingButtons() {
+  const box = document.getElementById("titleRankingJobs");
+  if (!box) return;
+  box.innerHTML = "";
+  JOB_LIST.forEach(j => {
+    const b = document.createElement("button");
+    b.textContent = j.name;
+    b.onclick = () => { fetchAndRenderRanking(j.name); };
+    box.appendChild(b);
+  });
+}
+
+function renderRankingList(data) {
+  const box = document.getElementById("titleRankingList");
+  const lbl = document.getElementById("titleRankingJobLabel");
+  if (lbl) lbl.textContent = `${currentRankingJob} ランキング`;
+
+  if (!box) return;
+  if (!data?.ok) {
+    box.textContent = "取得に失敗しました";
+    return;
+  }
+
+  const rows = (data.top || []).map(r => {
+    return `
+      <div class="title-rank-row">
+        <div class="left">${r.rank}. ${escapeHtml(r.name)}</div>
+        <div class="right">レート ${r.rating}</div>
+      </div>
+    `;
+  }).join("");
+
+  box.innerHTML = rows || "データがありません";
+}
+
+
+function renderTitleMyStats(jobName) {
+  const el = document.getElementById("titleMyStats");
+  if (!el) return;
+
+  const rec = window.jobRecord?.[jobName] ?? null;
+  const wins = Number(rec?.wins ?? 0) || 0;
+  const losses = Number(rec?.losses ?? 0) || 0;
+  const rating = Number(rec?.rating ?? 1000) || 1000;
+  const rank = getRankByWins(wins);
+  const nextNeed = getNextRankNeed(wins);
+
+  const needText =
+    nextNeed === null ? "（MAX）" : `（次Rまで ${Math.max(0, nextNeed - wins)} 勝）`;
+
+  el.innerHTML = `
+    あなたの成績：
+    <span class="cyber-accent">R${rank}</span>
+    / ${wins}勝${losses}敗
+    / レート ${rating}
+    <span class="cyber-muted">${needText}</span>
+  `;
+}async function fetchAndRenderRanking(jobName) {
+  currentRankingJob = jobName;
+  renderTitleMyStats(jobName);
+  try {
+    const data = await apiGet(`/api/ranking?job=${encodeURIComponent(jobName)}`);
+    renderRankingList(data);
+  } catch (e) {
+    console.warn("ranking failed:", e);
+    renderRankingList({ ok: false });
+  }
+}
+
+async function changeNameFlow() {
+  const input = prompt("新しい名前を入力してください（2〜12文字）", window.accountName || "");
+  if (input === null) return;
+  const name = String(input);
+  const v = validateNameClient(name);
+  if (!v.ok) {
+    alert(v.reason);
+    return;
+  }
+
+  try {
+    const data = await apiPost("/api/account/change_name", {
+      account_id: window.accountId,
+      name
+    });
+
+    if (!data?.ok) {
+      if (data?.nextNameChangeAt) {
+        const d = new Date(data.nextNameChangeAt);
+        alert(`${data.reason}
+次回変更可能：${d.toLocaleString()}`);
+      } else {
+        alert(data?.reason || "変更に失敗しました");
+      }
+      return;
+    }
+
+    window.accountName = name;
+    localStorage.setItem(LS_ACCOUNT_NAME, name);
+    setAccountNameUI();
+    await fetchAndRenderRanking(currentRankingJob);
+  } catch (e) {
+    console.warn("change name failed:", e);
+    alert("変更に失敗しました");
+  }
+}
+
+// ================= 職業定義 =================
+const JOB_LIST = [
+  {
+    id: 1, name: "戦士", atk: 23, def: 10, coin: 10,
+    stats: { luck: 1, burst: 3, difficulty: 1, stability: 5 }
+  },
+  {
+    id: 2, name: "騎士", atk: 20, def: 13, coin: 10,
+    stats: { luck: 1, burst: 2, difficulty: 2, stability: 5 }
+  },
+  {
+    id: 3, name: "僧侶", atk: 20, def: 10, coin: 10,
+    stats: { luck: 2, burst: 2, difficulty: 3, stability: 4 }
+  },
+  {
+    id: 4, name: "盗賊", atk: 20, def: 10, coin: 15,
+    stats: { luck: 5, burst: 4, difficulty: 4, stability: 2 }
+  },
+  {
+    id: 5, name: "魔導士", atk: 20, def: 10, coin: 10,
+    stats: { luck: 3, burst: 5, difficulty: 4, stability: 2 }
+  },
+  {
+    id: 6, name: "陰陽師", atk: 20, def: 10, coin: 10,
+    stats: { luck: 4, burst: 3, difficulty: 5, stability: 2 }
+  },
+  {
+    id: 7, name: "錬金術師", atk: 20, def: 10, coin: 10,
+    stats: { luck: 3, burst: 4, difficulty: 5, stability: 2 }
+  },
+  {
+    id: 8, name: "弓兵", atk: 10, def: 10, coin: 10,
+    stats: { luck: 2, burst: 4, difficulty: 3, stability: 3 }
+  },
+  {
+    id: 9, name: "人形使い", atk: 1, def: 10, coin: 10,
+    stats: { luck: 4, burst: 5, difficulty: 5, stability: 1 }
+  }
+];
+
+// ================= 職業詳細（ヘルプ／ヒント用） =================
+
+// 全職業共通説明
+const COMMON_JOB_DESCRIPTION = `
+【ターン(T)】
+ターン継続効果は自身と相手のターン両方でカウントされる。お互いのターン終了時に残り継続ターン減少
+
+【ラウンド(R)】
+ラウンドはプレイヤーごとでカウントされる。自身のターンが回ってくるごとにラウンド+1。ラウンド継続効果はラウンド開始時に残り継続ラウンド減少
+
+【コイン】
+ターン開始時10コイン配布。
+
+【EXP】
+自身のターン終了時に10配布。
+
+【レベルアップ】
+レベル2必要EXP:40、レベル3必要EXP:50。最大レベル3
+レベルに応じて基礎攻撃力が上がる。レベル2基礎攻撃力+3、レベル3基礎攻撃力+5
+所持EXPが必要EXPまで貯まるとEXPを消費して自動でレベルアップ。
+コインとEXPの合計が必要EXPを超えている場合コインを不足EXP分支払いレベルアップすることも可能。
+
+【ショップ】
+毎ラウンド開始時に更新される。コインを支払うことでも更新可能。
+
+【アイテム】
+毎ターン2つまで使用できる。効果は重ね掛け可能。
+
+【装備】
+1つまで装備可能、装備中永続的に効果が適用される。
+
+【特殊装備】
+職業専用の装備、通常装備とは別枠。盗まれない。
+`;
+
+// 職業別詳細
+const JOB_DESCRIPTIONS = {
+
+  1: { // 戦士
+    name: "戦士",
+    skills: {
+      1: "相手の防御力を無視して20ダメージ",
+      2: "相手の防御力を無視して30ダメージ+3R攻撃力+3アップ",
+      3: "相手の防御力を無視して10+自身の攻撃力合計分ダメージ"
+    },
+    playstyle: `
+常時基礎攻撃力+3
+`
+  },
+
+  2: { // 騎士
+    name: "騎士",
+    skills: {
+      1: "20ダメージ+4R防御力+2アップ",
+      2: "15ダメージ+3R防御力+4アップ",
+      3: "25+自身の防御力合計分ダメージ"
+    },
+    playstyle: `
+常時基礎防御力+3
+`
+  },
+
+  3: { // 僧侶
+    name: "僧侶",
+    skills: {
+      1: "自身のHP27回復",
+      2: "自身のHPを32回復＆デバフ解除",
+      3: "自身のHPを37回復＆デバフ解除"
+    },
+    playstyle: `
+自身の回復効果が+3
+
+`
+  },
+
+  4: { // 盗賊
+    name: "盗賊",
+    skills: {
+      1: "25ダメージ+相手の持ち物を1つ盗む",
+      2: "25+自身の所持しているアイテム数×2ダメージ+相手の持ち物を1つ盗む",
+      3: "所持アイテムをコピーして全使用"
+    },
+    playstyle: `
+初期コイン+5
+
+【盗む】
+相手の持ち物の通常アイテムまたは通常装備を奪う。ただし相手の持ち物に盗めるアイテムがない場合、自分のショップのアイテムから奪う。
+`
+  },
+
+  5: { // 魔導士
+    name: "魔導士",
+    skills: {
+      1: "魔力を20回復(1回のみ)",
+      2: "魔力を30消費して30ダメージ(必要魔力30以上)",
+      3: "魔力を全て消費して消費魔力-30ダメージ(必要魔力60以上)"
+    },
+    playstyle: `
+魔力を持つ。    
+ショップに3種類の魔導士専用アイテムと4種類の魔導士専用装備が並ぶようになる。
+同じ種類の魔導士装備は1つまで装備可能。
+
+【魔力】
+初期魔力0
+最大200までためることができ、必要魔力があれば何度でもスキルを使うことができる。
+
+【魔導士アイテム】
+・魔力水(小・中・大)：価格10・15・20/魔力を10・20・30回復
+
+【魔導士装備】
+・魔導士の杖:価格：15/毎ラウンド魔力+2/毎ラウンドコイン+3
+・魔導士のローブ：価格：10/毎ラウンド魔力+3/防御+2
+・魔導士の指輪:価格：10/毎ラウンド魔力+3/毎ラウンドHP+2
+・古代魔導書:価格：25/毎ラウンド魔力+5/スキルが防御貫通
+`
+  },
+
+  6: { // 陰陽師
+    name: "陰陽師",
+    skills: {
+      1: "下級式神をランダムで1体召喚する。",
+      2: "上級または下級の式神をランダムで1体召喚する。",
+      3: "上級または下級の式神をランダムで2体召喚する。(同じ式神は出ない)"
+    },
+    playstyle: `
+なし
+`,
+    shikigami: [
+      "(下級)猫又：相手のスキルを2ラウンド封印する",
+      "(下級)玄武：次に受けるダメージを無効化＆3ラウンド防御力+5",
+      "(下級)烏天狗：3ラウンドの間追撃が発生、自身の攻撃力合計×0.5+5ダメージ",
+      "(下級)鬼火：5ターンの間お互いの行動後に防御貫通の5ダメージ",
+      "(上級)九尾：防御無視30ダメージ+相手の装備中の装備破壊+相手のバフ効果を解除",
+      "(上級)白竜：30+自身の防御力合計回復"
+      
+    ]
+  },
+
+  7: { // 錬金術師
+    name: "錬金術師",
+    skills: {
+      1: "ランダムな通常装備を2つ生成",
+      2: "所持または装備している装備の★を+1",
+      3: "所持または装備している装備を3つランダムに選び合成し特殊武器を作る"
+    },
+    playstyle: `
+ショップの装備が2割引きの値段で買える。
+
+【特殊武器について】
+合成した武器の効果をすべて足し算した能力になる。
+
+`
+  },
+
+  8: { // 弓兵
+    name: "弓兵",
+    skills: {
+      1: "3ラウンドの間追撃回数が+1。",
+      2: "矢の装備枠+1＆3R追撃回数+1",
+      3: "すべての矢が防御貫通効果を得る。"
+    },
+    playstyle: `
+ショップに矢が出現する。
+
+【追撃】
+弓兵は攻撃時に攻撃力ではなく矢の効果を参照する。
+矢の初期スロットは1本。対戦開始時に普通の矢を装備してスタート。
+
+`,
+    arrows: [
+      "普通の矢：15ダメージの追撃",
+      "毒の矢：15ダメ+毒付与(3ダメージ×2ラウンド)",
+      "氷結の矢： 15ダメージの追撃+氷結付与(相手の攻撃力-2、累積効果)",
+      "反撃の矢：10+前のラウンドの被ダメの半分ダメージ増加の追撃",
+      "会心の矢：20ダメージ+装備している全ての矢に1ラウンドの間会心率50% 会心ダメ+50%付与"
+    ]
+  },
+
+  9: { // 人形使い
+    name: "人形使い",
+    skills: {
+      1: "人形の衣装を1つを選び、★を+1",
+      2: "自身のHPを10の倍数選んで消費(最大100)、消費したHPの半分人形の耐久力を回復する",
+      3: "人形を暴走状態にし、破壊されるまで衣装効果が2倍になる"
+    },
+    playstyle: `
+ショップには修理キットと衣装しか並ばなくなる。
+人形が壊れていないときダメージは人形が代わりに受け、壊れているときは人形使い本体が2倍のダメージを受ける。
+
+【修理キット】
+人形が壊れているときは復活し人形の耐久力を15回復、壊れていないときは20回復。
+人形が復活した次のターンは人形がダメージを受けない。
+
+【衣装】
+4部位に1つずつ装備可能。
+人形が壊れた時装備中の衣装はぼろぼろ状態になり効果が弱体化される。
+人形が壊れた時装備中のぼろぼろ状態の衣装は消失する。
+
+【暴走状態】
+この状態で人形が壊れると自身に防御貫通40ダメージ、相手に防御貫通20ダメージを与える。
+3Rの間破壊されなかった場合自爆し、自身に防御貫通20ダメージ、相手に防御貫通20ダメージを与える。
+この状態では耐久力は回復しない。
+`,
+    doll: `
+基礎攻撃力13/基礎防御力8/耐久力50
+対戦開始時4部位にランダムな★1衣装を装備してスタート。
+人形が壊れた時装備中の衣装はぼろぼろ状態になり効果が弱体化される。
+人形が壊れた時装備中のぼろぼろ状態の衣装は消失する。
+
+
+`
+  }
+
+};
+
+function openJobDetail(jobId) {
+  const data = JOB_DESCRIPTIONS[jobId];
+  if (!data) return;
+
+  document.getElementById("jobDetailTitle").textContent =
+    `職業詳細：${data.name}`;
+
+  let html = "";
+
+  // ================= 共通説明（折りたたみ） =================
+  html += `
+    <div style="margin-bottom:12px; border-bottom:1px solid #444;">
+      <button
+        onclick="toggleCommonJobDesc()"
+        style="background:none; border:none; color:#9fd3ff; cursor:pointer;">
+        ▶ 共通ルール・基本説明
+      </button>
+
+      <div id="commonJobDesc"
+           style="display:none; font-size:12px; line-height:1.6; margin-top:6px; white-space:pre-line;">
+        ${COMMON_JOB_DESCRIPTION.trim()}
+      </div>
+    </div>
+  `;
+
+  // ================= スキル =================
+  html += `<h4>スキル</h4><ul>`;
+  for (const [k, v] of Object.entries(data.skills)) {
+    html += `<li>スキル${k}：${v}</li>`;
+  }
+  html += `</ul>`;
+
+  // ================= 立ち回り / パッシブ =================
+  html += `
+    <h4>パッシブ効果</h4>
+    <div style="white-space:pre-line; margin-bottom:10px;">
+      ${data.playstyle.trim()}
+    </div>
+  `;
+
+  // ================= 陰陽師：式神 =================
+  if (data.shikigami) {
+    html += `<h4>式神一覧</h4><ul>`;
+    data.shikigami.forEach(s => {
+      html += `<li>${s}</li>`;
+    });
+    html += `</ul>`;
+  }
+
+  // ================= 弓兵：矢 =================
+  if (data.arrows) {
+    html += `<h4>矢一覧</h4><ul>`;
+    data.arrows.forEach(a => {
+      html += `<li>${a}</li>`;
+    });
+    html += `</ul>`;
+  }
+
+  // ================= 人形使い：人形 =================
+  if (data.doll) {
+    html += `
+      <h4>人形について</h4>
+      <div style="white-space:pre-line;">
+        ${data.doll.trim()}
+      </div>
+    `;
+  }
+
+  document.getElementById("jobDetailBody").innerHTML = html;
+  document.getElementById("jobDetailPopup").style.display = "flex";
+}
+
+function toggleCommonJobDesc() {
+  const el = document.getElementById("commonJobDesc");
+  if (!el) return;
+
+  const isOpen = el.style.display === "block";
+  el.style.display = isOpen ? "none" : "block";
+}
+
+function closeJobDetail() {
+  document.getElementById("jobDetailPopup").style.display = "none";
+}
+
+let selectedJobId = null;
+let isConnecting = false; // ★ これを追加
+
+// ================================
+// マッチング表示（秒数） & CPU自動切替
+// ================================
+let matchTimerId = null;
+let matchSeconds = 0;
+let autoCpuTriggered = false;
+let roomTimeoutTriggered = false;
+let cpuConnectFailTimerId = null;
+
+window.matchMode = "random"; // "random" | "room" | "cpu"
+
+function stopMatchTimer() {
+  if (matchTimerId) {
+    clearInterval(matchTimerId);
+    matchTimerId = null;
+  }
+  matchSeconds = 0;
+  autoCpuTriggered = false;
+  roomTimeoutTriggered = false;
+}
+
+function clearCpuFailTimer() {
+  if (cpuConnectFailTimerId) {
+    clearTimeout(cpuConnectFailTimerId);
+    cpuConnectFailTimerId = null;
+  }
+}
+
+function updateMatchStatusText() {
+  const status = document.getElementById("connectStatus");
+  if (!status) return;
+  if (!isConnecting) return;
+
+  if (window.matchMode === "random") {
+    status.textContent = `マッチング中... ${matchSeconds}秒`;
+    return;
+  }
+
+  if (window.matchMode === "room") {
+    status.textContent = `ルーム待機中... ${matchSeconds}秒`;
+    return;
+  }
+
+  // CPU
+  status.textContent = `CPUと接続中... ${matchSeconds}秒`;
+}
+
+function startMatchTimer() {
+  stopMatchTimer();
+  matchSeconds = 0;
+  autoCpuTriggered = false;
+  roomTimeoutTriggered = false;
+
+  updateMatchStatusText();
+
+  matchTimerId = setInterval(() => {
+    matchSeconds += 1;
+
+    // ランダム対戦のみ：60秒超でCPUへ自動切替
+    if (window.matchMode === "random" && !autoCpuTriggered && matchSeconds >= 30) {
+      autoCpuTriggered = true;
+      triggerAutoCpuMatch();
+      // 以降も秒数は数え続ける（表示は match_start で消える）
+    }
+
+    // ルーム対戦のみ：60秒経過でタイムアウト（CPUへは行かない）
+    if (window.matchMode === "room" && !roomTimeoutTriggered && matchSeconds >= 60) {
+      roomTimeoutTriggered = true;
+      handleRoomTimeout();
+      return;
+    }
+
+    updateMatchStatusText();
+  }, 1000);
+}
+
+function handleRoomTimeout() {
+  // ルーム対戦：1分待っても相手がいない場合は接続を切って再接続可能にする
+  cleanupSocket();
+  stopMatchTimer();
+  clearCpuFailTimer();
+
+  isConnecting = false;
+  const btn = document.getElementById("btnConnectPhase1");
+  if (btn) btn.disabled = false;
+
+  const status = document.getElementById("connectStatus");
+  if (status) status.textContent = "相手が見つかりませんでした";
+}
+
+function cleanupSocket() {
+  if (ws) {
+    try { ws.close(); } catch (e) {}
+    ws = null;
+  }
+}
+
+function backToTitleWithError(message) {
+  cleanupSocket();
+  stopMatchTimer();
+  clearCpuFailTimer();
+
+  isConnecting = false;
+  const btn = document.getElementById("btnConnectPhase1");
+  if (btn) btn.disabled = false;
+
+  const status = document.getElementById("connectStatus");
+  if (status) status.textContent = message || "通信エラーです";
+
+  setTimeout(() => {
+    const st = document.getElementById("connectStatus");
+    if (st) st.textContent = "";
+    setPhase(PHASE.MODE_SELECT);
+    refreshSummary();
+    fetchAndRenderRanking(currentRankingJob);
+  }, 1200);
+}
+
+function triggerAutoCpuMatch() {
+  // 1分経過 → CPU戦へ
+  cleanupSocket();
+
+  window.isCpuMode = true;
+  window.matchMode = "cpu";
+  // ★ ランダム対戦からの自動CPU（レート変動対象）
+  window.cpuKind = "auto";
+
+  const roomArea = document.getElementById("roomCodeArea");
+  if (roomArea) roomArea.style.display = "none";
+
+  const cpuArea = document.getElementById("cpuJobArea");
+  if (cpuArea) cpuArea.style.display = "none";
+
+  const title = document.getElementById("phase1Title");
+  if (title) title.textContent = "CPU戦（自動）";
+
+  const status = document.getElementById("connectStatus");
+  if (status) status.textContent = "1分経過：CPUとマッチングします...";
+
+  // CPU接続が成立しない場合は通信エラーにする
+  clearCpuFailTimer();
+  cpuConnectFailTimerId = setTimeout(() => {
+    if (isConnecting) {
+      backToTitleWithError("通信エラーです");
+    }
+  }, 8000);
+
+  joinCpu();
+}
+
+
+const RANK_THRESHOLDS = [
+  10, 25, 50, 100, 200, 400, 600, 800, 1000
+];
+
+// ================= 勝利数 → ランク変換 =================
+function getRankByWins(wins) {
+  if (wins >= 1000) return 10;
+  if (wins >= 800)  return 9;
+  if (wins >= 600)  return 8;
+  if (wins >= 400)  return 7;
+  if (wins >= 200)  return 6;
+  if (wins >= 100)  return 5;
+  if (wins >= 50)   return 4;
+  if (wins >= 25)   return 3;
+  if (wins >= 10)   return 2;
+  return 1; // 0〜9勝
+}
+
+function getNextRankNeed(wins) {
+  for (let i = 0; i < RANK_THRESHOLDS.length; i++) {
+    if (wins < RANK_THRESHOLDS[i]) {
+      return RANK_THRESHOLDS[i];
+    }
+  }
+  return null; // MAXランク
+}
+
+function renderJobBars(stats) {
+  const MAX = 5;
+
+  const map = [
+    { key: "luck", label: "運要素" },
+    { key: "burst", label: "爆発力" },
+    { key: "difficulty", label: "難易度" },
+    { key: "stability", label: "安定感" }
+  ];
+
+  return map.map(m => {
+    const v = stats[m.key] ?? 0;
+    const percent = (v / MAX) * 100;
+
+    return `
+      <div class="job-bar-row">
+        <div class="job-bar-label">${m.label}</div>
+        <div class="job-bar-bg">
+          <div class="job-bar-fill" style="width:${percent}%"></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// ================= 職業カード描画 =================
+function renderJobCards() {
+  const area = document.getElementById("jobSelectArea");
+  area.innerHTML = "";
+
+  JOB_LIST.forEach(job => {
+
+    const rec = window.jobRecord?.[job.name] ?? null;
+    const wins = rec?.wins ?? 0;
+    const rating = rec?.rating ?? 1000;
+    const rank = getRankByWins(wins);
+    const nextNeed = getNextRankNeed(wins);
+
+
+    const card = document.createElement("div");
+    card.className = "job-card";
+    card.onclick = () => selectJob(job.id);
+
+    card.innerHTML = `
+      <div class="job-header">
+        <span>${job.name}（R${rank}）</span>
+
+        <span class="job-rank-progress">
+          ${
+            nextNeed === null
+              ? `${wins} 勝（MAX）`
+              : `${wins} / ${nextNeed} 勝`
+          }
+          <br>
+          レート ${rating}
+        </span>
+
+        <button class="job-detail-btn"
+          onclick="event.stopPropagation(); openJobDetail(${job.id})">
+          詳細
+        </button>
+      </div>
+
+
+      <div class="job-bars">
+        ${renderJobBars(job.stats)}
+      </div>
+
+      <div class="job-stats">
+        <div>基礎攻撃力：${job.atk}</div>
+        <div>基礎防御力：${job.def}</div>
+        <div>初期コイン：${job.coin}</div>
+      </div>
+    `;
+
+
+    area.appendChild(card);
+  });
+}
+
+// ================= 職業選択 =================
+function selectJob(jobId) {
+  selectedJobId = jobId;
+
+  document.querySelectorAll(".job-card")
+    .forEach(c => c.classList.remove("selected"));
+
+  const index = JOB_LIST.findIndex(j => j.id === jobId);
+  if (index >= 0) {
+    document.querySelectorAll(".job-card")[index]
+      .classList.add("selected");
+  }
+
+  // ★ 職業を選んだら接続ボタンを有効化（接続中は除く）
+  const btn = document.getElementById("btnConnectPhase1");
+  if (btn && !isConnecting) btn.disabled = false;
+}
+
+
+
+// 職業名 → スキルID 変換
+const JOB_ID_MAP = {
+  "戦士": 1,
+  "騎士": 2,
+  "僧侶": 3,
+  "盗賊": 4,
+  "魔導士": 5,
+  "陰陽師": 6,
+  "錬金術師": 7,
+  "弓兵": 8,
+  "人形使い": 9
+};
+
+/* ================= スキル定義（あなたの仕様そのまま） ================= */
+const SKILLS = {
+  1:[ {name:"パワースラッシュ",desc:"防御無視20ダメージ。"},
+      {name:"ブレイブチャージ",desc:"防御無視30＋攻撃+3（3R）"},
+      {name:"ラストブレード",desc:"防御無視(10＋自身の攻撃力分ダメージ増加)"} ],
+  2:[ {name:"シールドブレイク",desc:"20＋防御力+2（4R）"},
+      {name:"アイアンチャージ",desc:"15＋防御力+4（3R）"},
+      {name:"ジャスティスブレード",desc:"25＋自身の防御力分ダメージ増加"} ],
+  3:[ {name:"ヒール",desc:"HP27回復"},
+      {name:"ディスペルヒール",desc:"HP32＋デバフ解除"},
+      {name:"グレーターヒール",desc:"HP37＋デバフ解除"} ],
+  4:[ {name:"スラッシュ＆スティール",desc:"25＋盗む"},
+      {name:"ダガーレイド",desc:"25+(アイテム数×2)+盗む"},
+      {name:"シャドウバースト",desc:"所持アイテムをコピーして全発動"} ],
+  5:[ {name:"魔力チャージ",desc:"魔力+20（1回のみ）"},
+      {name:"エレメントバースト",desc:"魔力30消費・30ダメージ"},
+      {name:"メテオインパクト",desc:"魔力全消費→消費魔力-30ダメージ(必要魔力60以上)"} ],
+  6:[ {name:"式神召喚・初級",desc:"鬼火/猫又/玄武/烏天狗"},
+      {name:"式神召喚・上級",desc:"九尾/白龍含む式神1体"},
+      {name:"二重召喚",desc:"式神2体同時召喚"} ],
+  7:[ {name:"錬成",desc:"装備を2つ生成"},
+      {name:"精錬",desc:"全装備★+1"},
+      {name:"三重合成",desc:"装備3つ合成→特殊武器生成"} ],
+  8:[ {name:"集中射撃",desc:"3R追撃+1"},
+      {name:"狙い撃ち＋矢拡張",desc:"矢の装備枠+1＆3R追撃+1"},
+      {name:"貫通の矢",desc:"全矢が防御貫通化"} ],
+  9:[
+    {
+      name:"仕立て直し",
+      desc:"人形の衣装を1つを選び、★を+1する（最大★4）"
+    },
+    {
+      name:"生命縫合",
+      desc:"自身のHPを消費し、人形の耐久力を回復する（HP0不可）"
+    },
+    {
+      name:"人形暴走",
+      desc:"人形を暴走状態にし、破壊されるまで衣装効果が2倍になる"
+    },
+  ],
+
+};
+
+
+
+/* ==================== ログ追加 ==================== */
+function appendLog(boxId, className, text){
+  const box=document.getElementById(boxId);
+  const div=document.createElement("div");
+  div.className="log-line "+className;
+  div.textContent=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+// ============================
+// 演出：数字ポップの段積み管理
+// ============================
+const popupStacks = {
+  self: 0,
+  enemy: 0,
+  self_doll: 0,
+  enemy_doll: 0
+};
+
+
+function getSprites() {
+  return {
+    self: document.getElementById("playerSprite"),
+    enemy: document.getElementById("enemySprite"),
+    self_doll: document.getElementById("dollSprite"),
+    enemy_doll: document.getElementById("dollSpriteEnemy"),
+  };
+}
+
+function bumpStack(targetKey) {
+  const idx = popupStacks[targetKey] ?? 0;
+  popupStacks[targetKey] = idx + 1;
+
+  // 上にずらす（同時発生で重ならない）
+  const offsetPx = -idx * 18;
+
+  setTimeout(() => {
+    popupStacks[targetKey] = Math.max(0, (popupStacks[targetKey] ?? 1) - 1);
+  }, 900);
+
+  return offsetPx;
+}
+
+function spawnPopup(sprite, className, text, offsetPx) {
+  if (!sprite) return;
+
+  const el = document.createElement("div");
+  el.className = className;
+  el.textContent = text;
+  el.style.top = `calc(40% + ${offsetPx}px)`;
+
+  sprite.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+// ============================
+// ★ 人形使い：人形スプライト更新（共通）
+// ============================
+function updateDollSprite(side, job, doll) {
+  const isSelf = side === "self";
+
+  const dollBox = document.getElementById(
+    isSelf ? "dollSprite" : "dollSpriteEnemy"
+  );
+  const dollBar = document.getElementById(
+    isSelf ? "dollHpFill" : "enemyDollHpFill"
+  );
+
+  if (!dollBox || !dollBar) return;
+
+  // 人形使い以外は常に非表示
+  if (job !== "人形使い") {
+    dollBox.style.display = "none";
+    return;
+  }
+
+  // 人形情報がまだ来ていない場合は何もしない
+  if (!doll) return;
+
+  // 表示
+  dollBox.style.display = "block";
+
+  const ratio = doll.durability / doll.max_durability;
+  const percent = Math.max(0, Math.min(100, ratio * 100));
+  dollBar.style.width = `${percent}%`;
+
+  // 破壊時の見た目
+  if (doll.is_broken) {
+    dollBox.style.filter = "grayscale(1) brightness(0.6)";
+  } else {
+    dollBox.style.filter = "";
+  }
+}
+
+// ============================
+// ★ 通常装備UI更新
+// ============================
+function updateNormalEquipUI(side, equipment) {
+  const area = document.querySelector(
+    side === "self"
+      ? ".side-self .equip-slot"
+      : ".side-enemy .equip-slot"
+  );
+  if (!area) return;
+
+  // 初期化
+  area.classList.remove("filled");
+  area.classList.add("empty");
+  area.innerHTML = "装備";
+
+  if (!equipment || equipment.length === 0) return;
+
+  // 1枠のみ使用
+  const eq = equipment[0];
+
+  // 文字列 or オブジェクト両対応
+  let name = "";
+  let effect = "";
+
+  if (typeof eq === "string") {
+    name = eq;
+    effect = "";
+  } else {
+    name = eq.name ?? "不明な装備";
+    effect = eq.effect_text ?? eq.effect ?? "";
+  }
+
+  area.classList.remove("empty");
+  area.classList.add("filled");
+
+  area.innerHTML = `
+    装備
+    <div class="equip-tooltip">
+      <b>${name}</b>
+      ${effect ? `<br>${effect}` : ""}
+    </div>
+  `;
+}
+
+// ============================
+// ★ 人形用：特殊装備HTML生成（status_detail と共通）
+// ============================
+function buildDollSpecialEquipHTML(doll) {
+  if (!doll || !doll.costumes) {
+    return "<div style='font-size:11px; opacity:0.6;'>衣装なし</div>";
+  }
+
+  const parts = {
+    head: "頭",
+    body: "胴",
+    leg:  "脚",
+    foot: "足"
+  };
+
+  let html = "";
+
+  for (const [part, label] of Object.entries(parts)) {
+    const c = doll.costumes[part];
+
+    if (c) {
+      const cleanName = c.name
+        ? c.name.replace(/^★\d+/, "")
+        : "衣装";
+
+      html += `
+        <div class="special-equip-slot filled active"
+             title="★${c.star ?? 1} ${cleanName}">
+          ${label}
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="special-equip-slot empty">
+          ${label}
+        </div>
+      `;
+    }
+  }
+
+  return html;
+}
+
+// ============================
+// ★ 人形衣装（詳細表示用HTML）
+// ============================
+function buildDollCostumeHTML(doll) {
+  if (!doll) return "";
+
+  const partLabel = {
+    head: "帽子",
+    body: "服",
+    leg:  "ズボン",
+    foot: "靴"
+  };
+
+  const costumes = doll.costumes || {};
+  const parts = ["head", "body", "leg", "foot"];
+
+  const rows = parts.map(p => {
+    const c = costumes[p];
+    if (!c) {
+      return `<div style="opacity:0.75;">${partLabel[p]}：なし</div>`;
+    }
+
+    const name = (typeof c === "string") ? c : (c.name || "不明な衣装");
+    const effect = (typeof c === "object") ? (c.effect_text || c.effect || "") : "";
+
+    return `
+      <div style="margin-top:4px;">
+        <b>${partLabel[p]}</b>：${name}
+        ${effect ? `<div style="opacity:0.9; margin-left:8px;">${effect}</div>` : ""}
+      </div>
+    `;
+  }).join("");
+
+  return `
+    <div style="margin-top:10px; padding-top:8px; border-top:1px solid #444;">
+      <div style="color:#f6c; margin-bottom:4px;"><b>🪆 人形衣装</b></div>
+      ${rows}
+    </div>
+  `;
+}
+
+
+// ============================
+// ★ 特殊装備UI更新
+// ============================
+function updateSpecialEquipUI(side, specialEquip) {
+
+  // ★ 前回描画を完全に破棄（重要）
+  document
+    .querySelectorAll(`.special-equip-area[data-side="${side}"]`)
+    .forEach(a => a.innerHTML = "");
+
+  // どこに描画するか決定
+  let area = null;
+
+  if (!specialEquip) return;
+
+  if (specialEquip.position === "under_doll") {
+    area = document.querySelector(
+      `.special-equip-area.doll[data-side="${side}"]`
+    );
+  } else {
+    area = document.querySelector(
+      `.special-equip-area[data-side="${side}"]:not(.doll)`
+    );
+  }
+
+  if (!area) return;
+
+  // 初期化
+  area.innerHTML = "";
+
+  if (!specialEquip.slots) return;
+
+  for (const slot of specialEquip.slots) {
+
+    const div = document.createElement("div");
+    div.classList.add("special-equip-slot");
+
+    // ロック枠
+    if (!slot.unlocked) {
+      div.classList.add("locked");
+      div.textContent = "×";
+      area.appendChild(div);
+      continue;
+    }
+
+    // 空枠
+    if (!slot.item) {
+      div.classList.add("empty");
+      div.textContent = slot.label;
+      area.appendChild(div);
+      continue;
+    }
+
+    // 装備あり
+    div.classList.add("filled");
+    div.classList.add("active"); // ★ ここで点灯
+
+    // ★ 通常装備と同じく、ホバーで詳細が出るよう tooltip を内包
+    const name = slot.item?.name ?? "不明な装備";
+    const effect = slot.item?.effect_text ?? slot.item?.effect ?? "";
+
+    div.innerHTML = `
+      ${slot.label}
+      <div class="equip-tooltip">
+        <b>${name}</b>
+        ${effect ? `<br>${effect}` : ""}
+      </div>
+    `;
+
+    area.appendChild(div);
+  }
+}
+
+
+// ============================
+// ★ バフUI（キャラ箱）
+//   - data.buffs_ui を受け取り、あなた/相手の箱に表示
+// ============================
+function buffIconForKind(kind) {
+  switch (kind) {
+    case "atk_up":   return "🗡️";
+    case "def_up":   return "🛡️";
+    case "atk_down": return "🗡️";
+    case "def_down": return "🛡️";
+    case "freeze":   return "❄️";
+    default:          return "✨";
+  }
+}
+
+function updateBuffStrip(side, buffs) {
+  const id = (side === "self") ? "buffStripSelf" : "buffStripEnemy";
+  const area = document.getElementById(id);
+  if (!area) return;
+
+  const list = Array.isArray(buffs) ? buffs : [];
+  if (list.length === 0) {
+    area.innerHTML = "";
+    area.style.display = "none";
+    return;
+  }
+
+  area.style.display = "flex";
+  area.innerHTML = "";
+
+  for (const b of list) {
+    const kind = b.kind ?? "other";
+    const div = document.createElement("div");
+    div.className = `buff-slot ${kind}`;
+    div.innerHTML = `
+      ${buffIconForKind(kind)}
+      <div class="buff-tooltip">
+        <b>${b.source ?? "バフ"}</b>
+        ${b.text ? `<br>${b.text}` : ""}
+      </div>
+    `;
+    area.appendChild(div);
+  }
+}
+
+
+// ============================
+// ★ 中央ポップアップ（3秒など短時間表示）
+// ============================
+let centerToastTimerId = null;
+
+function showCenterToast(msg, ms = 3000) {
+  const wrap = document.getElementById("centerToast");
+  const box  = document.getElementById("centerToastBox");
+  if (!wrap || !box) return;
+
+  // 連続表示は上書き
+  if (centerToastTimerId) {
+    clearTimeout(centerToastTimerId);
+    centerToastTimerId = null;
+  }
+
+  box.textContent = String(msg ?? "");
+  wrap.style.display = "flex";
+
+  // 1フレーム遅らせてトランジションを効かせる
+  requestAnimationFrame(() => {
+    box.style.opacity = "1";
+    box.style.transform = "translateY(0px)";
+  });
+
+  centerToastTimerId = setTimeout(() => {
+    box.style.opacity = "0";
+    box.style.transform = "translateY(-6px)";
+    setTimeout(() => {
+      wrap.style.display = "none";
+    }, 220);
+  }, ms);
+}
+
+// ============================
+// ★ 鈴SE（WebAudio簡易生成：著作権フリー）
+// ============================
+function playBellSfx() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+
+  const ctx = new AudioCtx();
+  ctx.resume?.();
+
+  const now = ctx.currentTime + 0.02;
+
+  // きらっとした倍音（短め）
+  const freqs = [1760, 2640, 3520]; // A6 + 倍音
+  const master = ctx.createGain();
+  master.gain.value = 0.16;
+  master.connect(ctx.destination);
+
+  freqs.forEach((f, i) => {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+
+    o.type = "sine";
+    o.frequency.setValueAtTime(f, now);
+
+    const t0 = now + i * 0.002;
+    const t1 = t0 + 0.55;
+
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(1.0, t0 + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t1);
+
+    o.connect(g);
+    g.connect(master);
+
+    o.start(t0);
+    o.stop(t1 + 0.02);
+  });
+
+  // 自動クローズ
+  setTimeout(() => {
+    try { ctx.close?.(); } catch {}
+  }, 800);
+}
+
+// ============================
+// ★ 対戦中BGM（Hiphop系：WebAudio自作 / ループ）
+//   - 著作権フリー（生成音）
+//   - 勝敗確定(battle_end)で停止
+// ============================
+let battleBgmCtx = null;
+let battleBgmTimerId = null;
+
+function stopBattleBgm() {
+  try {
+    if (battleBgmTimerId) {
+      clearInterval(battleBgmTimerId);
+      battleBgmTimerId = null;
+    }
+    if (battleBgmCtx) {
+      battleBgmCtx.close?.();
+      battleBgmCtx = null;
+    }
+  } catch {}
+}
+
+// 簡易ドラム音源
+function _kick(ctx, t) {
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = "sine";
+  o.frequency.setValueAtTime(120, t);
+  o.frequency.exponentialRampToValueAtTime(48, t + 0.12);
+
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(1.0, t + 0.005);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+
+  o.connect(g);
+  g.connect(ctx.destination);
+  o.start(t);
+  o.stop(t + 0.22);
+}
+
+function _noiseBuffer(ctx) {
+  const len = ctx.sampleRate * 1.0;
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1);
+  return buf;
+}
+
+let _cachedNoiseBuf = null;
+
+function _snare(ctx, t) {
+  if (!_cachedNoiseBuf) _cachedNoiseBuf = _noiseBuffer(ctx);
+
+  const src = ctx.createBufferSource();
+  src.buffer = _cachedNoiseBuf;
+
+  const hp = ctx.createBiquadFilter();
+  hp.type = "highpass";
+  hp.frequency.value = 900;
+
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.9, t + 0.005);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
+
+  src.connect(hp);
+  hp.connect(g);
+  g.connect(ctx.destination);
+
+  src.start(t);
+  src.stop(t + 0.16);
+}
+
+function _hat(ctx, t) {
+  if (!_cachedNoiseBuf) _cachedNoiseBuf = _noiseBuffer(ctx);
+
+  const src = ctx.createBufferSource();
+  src.buffer = _cachedNoiseBuf;
+
+  const bp = ctx.createBiquadFilter();
+  bp.type = "bandpass";
+  bp.frequency.value = 8000;
+  bp.Q.value = 0.8;
+
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.25, t + 0.002);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+
+  src.connect(bp);
+  bp.connect(g);
+  g.connect(ctx.destination);
+
+  src.start(t);
+  src.stop(t + 0.06);
+}
+
+// ベース（首が動く感じ：跳ねる16分）
+function _bass(ctx, t, freq) {
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  const lp = ctx.createBiquadFilter();
+
+  o.type = "square";
+  o.frequency.setValueAtTime(freq, t);
+
+  lp.type = "lowpass";
+  lp.frequency.value = 700;
+  lp.Q.value = 0.6;
+
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.25, t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+
+  o.connect(lp);
+  lp.connect(g);
+  g.connect(ctx.destination);
+
+  o.start(t);
+  o.stop(t + 0.2);
+}
+
+function playBattleBgm() {
+  // 二重起動防止
+  stopBattleBgm();
+
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+
+  battleBgmCtx = new AudioCtx();
+  battleBgmCtx.resume?.();
+  const ctx = battleBgmCtx;
+
+  // 92 BPM（ゆっくりすぎず、ノリ重視）
+  const bpm = 92;
+  const step = 60 / bpm / 4; // 16分
+  const barSteps = 16;
+  const startAt = ctx.currentTime + 0.06;
+
+  // 2小節ループ（32step）
+  const patternSteps = 32;
+
+  // ドラム：キック/スネア/ハット
+  const kickSteps = new Set([0, 7, 16, 23]);
+  const snareSteps = new Set([4, 12, 20, 28]);
+
+  // ベースライン（Cm系）
+  const bassFreq = (n) => 32.703 * Math.pow(2, n/12); // C1基準
+  const bassNotes = [
+    24, 24, 27, 24,  // C2, C2, Eb2, C2
+    31, 31, 27, 24,  // G2, G2, Eb2, C2
+    24, 24, 27, 24,
+    29, 29, 27, 24
+  ]; // 16step分（1小節）→2小節で繰り返し
+
+  let stepIndex = 0;
+  let nextTime = startAt;
+
+  const scheduleAhead = 0.12; // 先読み
+  const tick = () => {
+    if (!ctx) return;
+    const cur = ctx.currentTime;
+
+    while (nextTime < cur + scheduleAhead) {
+      const p = stepIndex % patternSteps;
+
+      // ドラム
+      if (kickSteps.has(p)) _kick(ctx, nextTime);
+      if (snareSteps.has(p)) _snare(ctx, nextTime);
+      _hat(ctx, nextTime); // 16分で刻む
+
+      // ベース：8分〜16分の跳ね（偶数step中心）
+      const bIdx = p % 16;
+      const note = bassNotes[bIdx];
+      if (p % 2 === 0) _bass(ctx, nextTime, bassFreq(note));
+
+      stepIndex++;
+      nextTime += step;
+    }
+  };
+
+  // スケジューラ開始
+  battleBgmTimerId = setInterval(tick, 25);
+}
+
+// ============================
+// ★ 勝利/敗北演出
+//   - 著作権回避：WebAudioで簡易BGM（自作の短いメロディ）
+// ============================
+let resultBgmCtx = null;
+let resultBgmNodes = [];
+
+function stopResultBgm() {
+  try {
+    for (const n of resultBgmNodes) {
+      try { n.stop?.(); } catch {}
+      try { n.disconnect?.(); } catch {}
+    }
+    resultBgmNodes = [];
+    if (resultBgmCtx) {
+      resultBgmCtx.close?.();
+      resultBgmCtx = null;
+    }
+  } catch {}
+}
+
+function playResultBgm(type) {
+  stopResultBgm();
+
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+
+  resultBgmCtx = new AudioCtx();
+  resultBgmCtx.resume?.();
+
+  const ctx = resultBgmCtx;
+  const now = ctx.currentTime + 0.02;
+
+  // victory: 明るい上昇 / defeat: 低めの下降
+  const seq = (type === "win")
+    ? [523.25, 659.25, 783.99, 1046.5, 783.99]   // C5 E5 G5 C6 G5
+    : [392.00, 329.63, 261.63, 220.00, 196.00];  // G4 E4 C4 A3 G3
+
+  const dur = 0.16;
+
+  const master = ctx.createGain();
+  master.gain.value = 0.12;
+  master.connect(ctx.destination);
+
+  for (let i = 0; i < seq.length; i++) {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+
+    o.type = "triangle";
+    o.frequency.setValueAtTime(seq[i], now + i * dur);
+
+    // エンベロープ（クリックノイズ抑制）
+    const t0 = now + i * dur;
+    const t1 = t0 + dur;
+    g.gain.setValueAtTime(0.0, t0);
+    g.gain.linearRampToValueAtTime(1.0, t0 + 0.03);
+    g.gain.linearRampToValueAtTime(0.0, t1);
+
+    o.connect(g);
+    g.connect(master);
+
+    o.start(t0);
+    o.stop(t1 + 0.02);
+
+    resultBgmNodes.push(o, g);
+  }
+}
+
+function showResultOverlay(result) {
+  const ov = document.getElementById("resultOverlay");
+  const title = document.getElementById("resultTitle");
+  const sub = document.getElementById("resultSub");
+
+  if (!ov || !title || !sub) return;
+
+  if (result === "win") {
+    title.textContent = "VICTORY";
+    sub.textContent = "勝利しました";
+    playResultBgm("win");
+  } else if (result === "lose") {
+    title.textContent = "DEFEAT";
+    sub.textContent = "敗北しました";
+    playResultBgm("lose");
+  } else {
+    title.textContent = "DRAW";
+    sub.textContent = "引き分け";
+  }
+
+  ov.style.display = "flex";
+}
+
+function backToMenuFromResult() {
+  stopResultBgm();
+  const ov = document.getElementById("resultOverlay");
+  if (ov) ov.style.display = "none";
+
+  const btn = document.getElementById("btnBackToMenu");
+  if (btn) btn.click();
+}
+
+// ============================================
+// ★ WebSocket 受信処理 共通化（CPU戦 / 対人 共通）
+// ============================================
+function attachWsHandlers() {
+
+  ws.onerror = (e) => {
+    appendLog("systemBox", "system-log", "❌ サーバー接続に失敗しました");
+    console.error("WebSocket error:", e);
+
+    // ★ 接続失敗時の保険処理
+    isConnecting = false;
+
+    const btn = document.getElementById("btnConnectPhase1");
+    if (btn) btn.disabled = false;
+
+    stopMatchTimer();
+    clearCpuFailTimer();
+
+    const status = document.getElementById("connectStatus");
+    if (status) status.textContent = "接続に失敗しました";
+  };
+
+
+  ws.onmessage = (msg) => {
+    console.log("[WS RECEIVE RAW]", msg.data);
+
+    const data = JSON.parse(msg.data);
+
+    // ★ マッチ成立 → フェーズ2へ
+    if (data.type === "match_start") {
+
+      // ★ 職業詳細ポップアップを強制的に閉じる
+      closeJobDetail();
+
+      // ★ マッチング成立演出（中央3秒 + 鈴SE）
+      showCenterToast("マッチングしました", 3000);
+      playBellSfx();
+
+      // ★ 対戦中BGM（Hiphop系：自作WebAudio）開始
+      playBattleBgm();
+
+
+
+      // ★ 接続完了なのでフラグ解除
+      isConnecting = false;
+
+      stopMatchTimer();
+      clearCpuFailTimer();
+
+      const btn = document.getElementById("btnConnectPhase1");
+      if (btn) btn.disabled = false;
+
+      const status = document.getElementById("connectStatus");
+      if (status) status.textContent = "";
+
+      setPhase(PHASE.BATTLE);
+
+      // ★ ラウンド/ターンカウンタ初期化
+      resetRoundTurnCounter();
+      return;
+    }
+
+    // ★ サーバからのポップアップ通知
+    if (data.type === "popup") {
+      showCenterToast(data.msg ?? "", Number(data.ms ?? 2500));
+      if (data.sfx === "bell") playBellSfx();
+      return;
+    }
+
+
+    // ===============================
+    // ↓↓↓ ここから下は「元の ws.onmessage の中身」を
+    //     そのまま全部コピペして置き換える ↓↓↓
+    // ===============================
+    // 人形使い：着せ替え部位選択（簡易UI）
+    if (data.type === "request_doll_part_select") {
+
+      const parts = [
+        { key: "head", label: "帽子" },
+        { key: "body", label: "服" },
+        { key: "leg",  label: "ズボン" },
+        { key: "foot", label: "靴" }
+      ];
+
+      const popup = document.getElementById("skillPopup");
+      const list  = document.getElementById("skillList");
+
+      let html = `<div style="font-weight:bold; margin-bottom:8px;">
+        強化する部位を選んでください
+      </div>`;
+
+      for (const p of parts) {
+        html += `
+          <button onclick="selectDollPart('${p.key}')" style="margin:4px;">
+            ${p.label}
+          </button><br>
+        `;
+      }
+
+      list.innerHTML = html;
+      popup.style.display = "flex";
+      return;
+    }
+
+
+    if (data.type === "status_simple") {
+
+      // ================================
+      // ★ スキル残り回数（self側のみ）
+      // ================================
+      if (data.side === "self" && data.skill_remaining) {
+        window.skillRemaining = data.skill_remaining;
+      }
+
+
+
+
+      const box =
+        data.side === "self"
+          ? document.getElementById("my-status-simple")
+          : document.getElementById("enemy-status-simple");
+
+      let html = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <strong>${data.side === "self" ? "あなた" : "相手"}</strong>
+            <span style="opacity:0.9;">${data.job ?? "?"}</span>
+          </div>
+          <button type="button" onclick="openStatusDetail('${data.side}')">詳細</button>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:6px;">
+          
+          <!-- 左：プレイヤー -->
+          <div style="flex:1;">
+            <div>HP: ${data.hp} / ${data.max_hp}</div>
+            <div>攻撃: ${data.attack}</div>
+            <div>防御: ${data.defense}</div>
+            <div>コイン: ${data.coins}</div>
+            <div>Lv: ${data.level}</div>
+            ${
+              data.mana !== null
+                ? `<div>魔力: ${data.mana} / ${data.mana_max}</div>`
+                : ""
+            }
+          </div>
+
+          <!-- 右：人形 -->
+          <div style="flex:1; border-left:1px solid #555; padding-left:6px;">
+            ${
+              data.doll
+                ? `
+                  <div style="color:#f6c;">🪆 人形</div>
+                  <div>耐久: ${data.doll.durability} / ${data.doll.max_durability}
+                    ${data.doll.is_broken ? "（破壊）" : ""}
+                  </div>
+                  <div>攻撃: ${data.doll.attack}</div>
+                  <div>防御: ${data.doll.defense}</div>
+                `
+                : `<div style="color:#777;"></div>`
+            }
+          </div>
+
+        </div>
+      `;
+
+      box.innerHTML = html;
+      // ★ 通常装備UI反映
+      updateNormalEquipUI(data.side, data.equipment);
+      // ★ 特殊装備UI
+      updateSpecialEquipUI(data.side, data.special_equip);
+
+      // ★ バフUI（キャラ箱）
+      updateBuffStrip(data.side, data.buffs_ui ?? []);
+
+      // ============================
+      // ★ HPバー更新
+      // ============================
+      const ratio = data.hp / data.max_hp;
+      const percent = Math.max(0, Math.min(100, ratio * 100));
+
+      if (data.side === "self") {
+        const bar = document.getElementById("playerHpFill");
+        if (bar) bar.style.width = `${percent}%`;
+      } else {
+        const bar = document.getElementById("enemyHpFill");
+        if (bar) bar.style.width = `${percent}%`;
+      }      
+      // ============================
+      // ★ 人形使い：人形スプライト更新（self / enemy）
+      // ============================
+      updateDollSprite(data.side, data.job, data.doll);
+
+      return;
+    }
+
+
+    if (data.type === "status_detail") {
+      console.log("status_detail data:", data);
+
+      document.getElementById("statusDetailTitle").textContent =
+        data.side === "self" ? "あなたの詳細ステータス" : "相手の詳細ステータス";
+
+      let html = `
+        <div><b>HP</b>: ${data.hp} / ${data.max_hp}</div>
+        <div><b>攻撃力</b>: ${data.attack}</div>
+        <div><b>防御力</b>: ${data.defense}</div>
+        <div><b>コイン</b>: ${data.coins}</div>
+        <div><b>Lv</b>: ${data.level}</div>
+        <div><b>EXP</b>: ${data.exp}</div>
+      `;
+
+      if (data.mana !== null) {
+        html += `<div><b>魔力</b>: ${data.mana} / ${data.mana_max}</div>`;
+      }
+
+      if (data.equipment?.length) {
+        html += `<hr><b>装備中</b><br>${data.equipment.join("<br>")}`;
+      }
+
+      if (data.buffs?.length) {
+        html += `<hr><b>バフ</b><br>${data.buffs.join("<br>")}`;
+      }
+
+      if (data.shikigami?.length) {
+        html += `<hr><b>式神</b><br>${data.shikigami.join("<br>")}`;
+      }
+      // ================================
+      // ★ 人形使い：装備中の衣装表示
+      // ================================
+      if (data.doll && data.doll.costumes) {
+
+        html += `<hr><b>🪆 人形</b><br>`;
+        html += `耐久：${data.doll.durability} / ${data.doll.max_durability}`;
+        if (data.doll.is_broken) {
+          html += `（破壊）`;
+        }
+        html += `<br>`;
+        html += `攻撃：${data.doll.attack}<br>`;
+        html += `防御：${data.doll.defense}<br><br>`;
+
+        html += `<b>人形の衣装</b><br>`;
+
+        html += buildDollCostumeHTML(data.doll);
+
+      }
+
+
+      document.getElementById("statusDetailBody").innerHTML = html;
+      document.getElementById("statusDetailPopup").style.display = "flex";
+      return;
+    }
+
+    /* --- HP --- */
+    if (data.type === "hp") {
+      const hpEl = document.getElementById("hp");
+      if (hpEl) {
+        hpEl.textContent =
+          `あなたのHP ${data.myHP} / 敵HP ${data.enemyHP}`;
+      }
+      return;
+}
+
+
+    
+    if (data.type === "job_info") {
+        window.myJob = data.job;
+        console.log("My Job = ", window.myJob);
+        return;
+    }
+
+    if (data.type === "mana_info") {
+      const nowEl = document.getElementById("mana_now");
+      const maxEl = document.getElementById("mana_max");
+      const blockEl = document.getElementById("mana_block");
+
+      if (nowEl && maxEl) {
+        nowEl.textContent = data.mana;
+        maxEl.textContent = data.mana_max;
+      }
+
+      if (blockEl) {
+        blockEl.style.display = "block";
+      }
+      return;
+    }
+
+    /* --- EXP --- */
+    if (data.type === "exp_info") {
+      const expEl = document.getElementById("exp");
+      if (expEl) {
+        expEl.textContent = data.exp;
+      }
+      return;
+    }
+
+
+    /* --- レベル情報 --- */
+    if (data.type === "level_info") {
+      myLevel = data.level;
+
+      const levelEl = document.getElementById("level");
+      if (levelEl) {
+        levelEl.textContent = "Lv " + data.level;
+      }
+
+      const lvupBtn = document.getElementById("lvupBtn");
+      if (lvupBtn) {
+        lvupBtn.disabled = !myTurn;
+      }
+
+      return;
+    }
+
+
+
+    if (data.type === "item_list") {
+      window.itemList = data.items;
+
+      // ★「開いているときだけ」再描画
+      if (isItemUIOpen && currentItemCategory !== null) {
+        openItemCategory(currentItemCategory);
+      }
+      return;
+    }
+
+
+    
+    if (data.type === "status_info") {
+
+      window.arrowSlots = data.arrow_slots ?? 1;
+      const isOnmyoji = (window.myJob === "陰陽師");
+
+      // ---------------------------
+      // 式神表示（陰陽師）
+      // ---------------------------
+      let shikiHTML = "";
+      if (isOnmyoji) {
+        shikiHTML = `
+          <div id="shikigami-list" style="margin-top:8px; font-size:12px; color:#6cf;">
+            ${
+              !data.shikigami || data.shikigami.length === 0
+                ? "（式神なし）"
+                : data.shikigami.map(s => `${s}`).join("<br>")
+            }
+          </div>
+        `;
+      }
+
+      // ---------------------------
+      // 人形表示（人形使い）
+      // ---------------------------
+      let dollHTML = "";
+      if (data.doll) {
+        const state = data.doll.is_broken ? "（破壊）" : "";
+        dollHTML = `
+          <hr>
+          <div style="margin-top:6px; color:#f6c;">
+            🪆 人形耐久：${data.doll.durability} / ${data.doll.max_durability} ${state}
+          </div>
+        `;
+      }
+
+      const panel = document.getElementById("status-panel");
+      if (!panel) return;
+
+      panel.innerHTML = `
+        攻撃力：${data.attack}<br>
+        防御力：${data.defense}<br>
+
+        <div id="buff-list" style="margin-top:8px; font-size:12px; color:#ccc;">
+          ${
+            data.buffs.length === 0
+              ? "（バフなし）"
+              : data.buffs.map(b => `${b}`).join("<br>")
+          }
+        </div>
+
+        ${shikiHTML}
+        ${dollHTML}
+      `;
+
+      return;
+    }
+
+
+
+
+
+    // ★追加：ショップ商品リスト受信
+    if (data.type === "shop_list") {
+        renderShop(data.items);
+        return;
+    }
+
+
+    /* --- コイン --- */
+    if (data.type === "coin_info") {
+      const coinEl = document.getElementById("coins");
+      if (coinEl) {
+        coinEl.textContent = data.coins;
+      }
+      return;
+    }
+
+    /* --- 自分のラウンド --- */
+    if(data.type==="your_turn"){
+      myTurn = true;
+      appendLog("systemBox","system-log", data.msg);
+
+      // ★ 自分のターン開始：ラウンド +1 / ターン +1
+      roundCount++;
+      turnCount++;
+      updateRoundTurnUI();
+
+      document.getElementById("atkBtn").disabled = false;
+      document.getElementById("skillBtn").disabled = false;
+      document.getElementById("lvupBtn").disabled = false; // 常に押せる
+      document.getElementById("itemBtn").disabled = false;
+      document.getElementById("shopBtn").disabled = false;
+
+      return;
+    }
+
+    /* --- 相手ラウンド --- */
+    if(data.type==="wait_turn"){
+      myTurn = false;
+      appendLog("systemBox","system-log", data.msg);
+
+      // ★ 相手のターン開始：ターン +1
+      turnCount++;
+      updateRoundTurnUI();
+
+// ★ 相手ラウンドになったらショップを強制的に閉じる
+      closeShopUI();
+
+      document.getElementById("atkBtn").disabled = true;
+      document.getElementById("skillBtn").disabled = true;
+      document.getElementById("lvupBtn").disabled = true;
+      document.getElementById("itemBtn").disabled = true;
+      document.getElementById("shopBtn").disabled = true;
+
+
+      return;
+    }
+
+
+
+    // ============================
+    // ★ 勝敗確定（演出用）
+    // ============================
+    if (data.type === "battle_end") {
+      battleEnded = true;
+
+      // ★ 対戦中BGM停止
+      stopBattleBgm();
+      const backBtn = document.getElementById("btnBackToMenu");
+      if (backBtn) backBtn.style.display = "inline-block";
+
+      // 既存UIを閉じる（安全策）
+      closeShopUI();
+      closeItemUI();
+
+      showResultOverlay(data.result);
+      return;
+    }
+
+    /* --- 戦闘ログ（表示専用） --- */
+    if (data.type === "battle_log") {
+      appendLog("battleBox", "battle-log", data.msg);
+
+      // ★ 勝敗確定ログを検知（server.js の実文言に完全一致）
+      if (
+        data.msg.includes("の勝利！！") ||
+        data.msg.includes("引き分け！")
+      ) {
+        battleEnded = true;
+        document.getElementById("btnBackToMenu").style.display = "inline-block";
+      }
+
+      return;
+    }
+    if (data.type === "battle_log") {
+      const div = document.createElement("div");
+      div.textContent = data.msg;
+      
+      // ⚔️や💥が含まれる、またはダメージという言葉があれば演出実行
+      if (data.msg.includes("⚔️") || data.msg.includes("💥") || data.msg.includes("ダメージ")) {
+        triggerHitEffect();
+        div.style.color = "#ff6666";
+        div.style.fontWeight = "bold";
+      }
+      
+      battleBox.appendChild(div);
+      battleBox.scrollTop = battleBox.scrollHeight;
+    }
+    // ============================
+    // ★ ダメージ演出（damage_event）
+    // ============================
+    if (data.type === "damage_event") {
+      console.log("★ damage_event 到達", data);
+      const sprites = getSprites();
+
+      const targetSprite = sprites[data.target];
+
+      // ★ ここを追加
+      if (!targetSprite) {
+        console.warn("damage_event: invalid target", data.target, sprites);
+        return;
+      }
+
+      const attackerSprite =
+        data.target === "self" || data.target === "self_doll"
+          ? sprites.enemy
+          : sprites.self;
+
+      if (attackerSprite) attackerSprite.classList.add("attack");
+      targetSprite.classList.add("hit");
+
+      setTimeout(() => {
+        if (attackerSprite) attackerSprite.classList.remove("attack");
+        targetSprite.classList.remove("hit");
+      }, 280);
+
+      const offsetPx = bumpStack(data.target);
+      const kind = data.kind ?? "normal";
+      const amount = Number(data.amount ?? 0);
+
+      spawnPopup(
+        targetSprite,
+        `damage-popup kind-${kind}`,
+        amount ? `-${amount}` : "-",
+        offsetPx
+      );
+      return;
+    }
+
+
+    // ============================
+    // ★ 回復演出（heal_event）
+    // ============================
+    if (data.type === "heal_event") {
+      const sprites = getSprites();
+      const targetSprite = sprites[data.target];
+
+      if (targetSprite) targetSprite.classList.add("heal");
+
+      setTimeout(() => {
+        if (targetSprite) targetSprite.classList.remove("heal");
+      }, 480);
+
+      const offsetPx = bumpStack(data.target);
+      const amount = Number(data.amount ?? 0);
+
+      spawnPopup(
+        targetSprite,
+        "heal-popup",
+        amount ? `+${amount}` : "+",
+        offsetPx
+      );
+      return;
+    }
+
+
+    if(data.type==="skill_log"){
+      appendLog("battleBox","skill-log",data.msg);
+      return;
+    }
+
+    /* --- システム --- */
+    if(data.type==="system_log"){
+      appendLog("systemBox","system-log",data.msg);
+      return;
+    }
+
+    /* --- エラー --- */
+    if(data.type==="error_log"){
+      appendLog("systemBox","error-log",data.msg);
+      return;
+    }
+
+    /* --- デバッグ --- */
+    if(data.type==="debug_log"){
+      appendLog("debugBox","debug-log",data.msg);
+      return;
+    }
+
+    /* --- level_up_request の返信 --- */
+    if(data.type==="level_up_check"){
+      if(data.canExp){
+        ws.send(JSON.stringify({type:"level_up_exp"}));
+        return;
+      }
+      if(data.canCoins){
+        if(confirm(`EXP不足！\nコイン${data.needCoins}で補填しますか？`)){
+          ws.send(JSON.stringify({type:"level_up_coins"}));
+        }
+        return;
+      }
+      alert("❌ EXPもコインも足りません！");
+    }
+
+    // ---------- アイテム使用結果 ----------
+    if (data.type === "use_item_result") {
+        if (data.success) {
+            // 正常使用 → アイテムUIを閉じて行動に戻る
+            closeItemUI();
+        } else {
+            // 失敗 → カテゴリ選択に戻す
+            document.getElementById("itemCategoryPopup").style.display = "flex";
+            if (data.message) {
+                alert(data.message);
+            }
+        }
+        return;
+    }
+
+  };
+}
+/* ==================== 接続（対人戦） ==================== */
+function join() {
+  if (!selectedJobId) {
+    alert("職業を選択してください");
+    return;
+  }
+
+  myJob = selectedJobId; // ★ これが必須
+
+  ws = new WebSocket(WS_URL);
+  attachWsHandlers();
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "join",
+      account_id: window.accountId,
+      name: window.accountName || "Player",
+      job: myJob
+    }));
+  };
+}
+
+
+
+
+
+function join() {
+  if (!selectedJobId) {
+    alert("職業を選択してください");
+    return;
+  }
+
+  myJob = selectedJobId; // ★ これが必須
+
+  ws = new WebSocket(WS_URL);
+  attachWsHandlers();
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "join",
+      account_id: window.accountId,
+      name: window.accountName || "Player",
+      job: myJob
+    }));
+  };
+}
+
+
+
+
+
+function joinRoom() {
+  if (!selectedJobId) {
+    alert("職業を選択してください");
+    return;
+  }
+
+  const roomCode = (document.getElementById("roomCodeInput")?.value ?? "").trim();
+  if (!/^\d{4}$/.test(roomCode)) {
+    alert("ルーム番号は4桁の数字で入力してください");
+    return;
+  }
+
+  myJob = selectedJobId;
+
+  ws = new WebSocket(WS_URL);
+  attachWsHandlers();
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "join_room",
+      room_code: roomCode,
+      account_id: window.accountId,
+      name: window.accountName || "Player",
+      job: myJob
+    }));
+  };
+}
+
+
+
+function joinCpu() {
+  if (ws) return;
+
+  if (!selectedJobId) {
+    alert("職業を選択してください");
+    return;
+  }
+
+  myJob = selectedJobId;
+
+  const cpuJobSelect = document.getElementById("cpuJob");
+  const cpuJobValue = cpuJobSelect ? cpuJobSelect.value : null;
+
+  ws = new WebSocket(WS_URL);
+  attachWsHandlers();
+
+  ws.onopen = () => {
+    const turnOrder =
+      document.getElementById("cpuTurnOrder")?.value ?? "random";
+
+    ws.send(JSON.stringify({
+      type: "join_cpu",
+      cpu_kind: window.cpuKind || "menu",
+      account_id: window.accountId,
+      name: window.accountName || "Player",
+      job: myJob,
+      cpu_job: cpuJobValue || null,
+      turn_order: turnOrder
+    }));
+  };
+}
+
+
+
+function rerollShop() {
+    ws.send(JSON.stringify({ type: "shop_reroll" }));
+}
+
+/* ================= 行動 ================= */
+function attack(){
+  if(!myTurn) return;
+  ws.send(JSON.stringify({type:"action", action:"攻撃"}));
+}
+
+/* ================= スキル系 ================= */
+function openSkillUI(){
+  const list = document.getElementById("skillList");
+  list.innerHTML = "";
+
+  const jobId = myJob;
+
+
+  if (!SKILLS[jobId]) {
+    console.error("スキル定義が見つかりません:", myJob, jobId);
+    return;
+  }
+
+
+  SKILLS[jobId].forEach((s, i) => {
+    const needLv = i + 1;
+
+    const row = document.createElement("div");
+    row.className = "skillRow";
+
+    const isDoll = (myJob === "人形使い" || myJob === 9);
+    const isDollSkill1 = isDoll && i === 0;
+    const isDollSkill2 = isDoll && i === 1;
+    const isDollSkill3 = isDoll && i === 2;
+
+    // ← ここが差し替え部分
+    const nameDiv = document.createElement("div");
+    nameDiv.className = "skillName";
+    nameDiv.textContent = `【${i+1}】${s.name}`;
+
+    const descDiv = document.createElement("div");
+    descDiv.className = "skillDesc";
+    descDiv.textContent = s.desc;
+
+    const btn = document.createElement("button");
+    const remain = Number(window.skillRemaining?.[i + 1] ?? 1);
+
+    // ★ 使用回数が0でも「押したらポップアップ」を出す（要件）
+    if (remain <= 0) {
+      btn.textContent = "使用";
+      btn.classList.add("used-up");
+      btn.addEventListener("click", () => {
+        showCenterToast("スキルの使用回数がなくなりました", 2500);
+      });
+    } else {
+      btn.textContent = "使用";
+    }
+
+    // ★ レベル未解放は優先的に押せない（表示文言はそのまま）
+    if (myLevel < needLv) btn.disabled = true;
+
+    // ★ 使用回数が残っている場合のみ、実際の発動処理を紐付ける
+    if (remain > 0) {
+      if (isDollSkill1) {
+        btn.addEventListener("click", useDollSkill1);
+      } else if (isDollSkill2) {
+        btn.addEventListener("click", useDollSkill2Prompt);
+      } else if (isDollSkill3) {
+        btn.addEventListener("click", useDollSkill3);
+      } else {
+        btn.addEventListener("click", () => useSkill(i + 1));
+      }
+    }
+
+    row.appendChild(nameDiv);
+    row.appendChild(descDiv);
+    row.appendChild(btn);
+
+    list.appendChild(row);
+  });
+
+  document.getElementById("skillPopup").style.display = "flex";
+}
+
+
+
+
+function closeSkillUI(){
+  document.getElementById("skillPopup").style.display="none";
+}
+
+function useSkill(num){
+  if(!myTurn) return;
+
+  // ★ 弓兵スキル2：arrowSlots を先に反映（表示用）
+  if (window.myJob === "弓兵" && num === 2) {
+    window.arrowSlots = 2;
+  }
+
+  ws.send(JSON.stringify({type:"action", action:"スキル"+num}));
+  closeSkillUI();
+}
+
+// ================================
+// 人形使い：スキル1専用入口
+// ================================
+function useDollSkill1(){
+  if(!myTurn) return;
+
+  ws.send(JSON.stringify({
+    type: "request_doll_skill1"
+  }));
+
+}
+
+// ================================
+// 人形使い：スキル2（生命縫合）HP→耐久
+// ================================
+function useDollSkill2Prompt(){
+  if(!myTurn) return;
+
+  const s = prompt("消費するHPを入力（10の倍数 / 10〜100）", "10");
+  if (s === null) return;
+
+  const hpCost = Number(s);
+
+  ws.send(JSON.stringify({
+    type: "use_doll_skill2",
+    hpCost
+  }));
+
+  console.log("[client] use_doll_skill2 sent:", hpCost);
+  closeSkillUI();
+}
+// ================================
+// 人形使い：スキル3（暴走）
+// ================================
+function useDollSkill3(){
+  if(!myTurn) return;
+
+  ws.send(JSON.stringify({
+    type: "request_doll_skill3"
+  }));
+
+  console.log("[client] request_doll_skill3 sent");
+  closeSkillUI();
+}
+
+/* ================= レベルアップ ================= */
+function tryLevelUp(){
+  ws.send(JSON.stringify({ type:"level_up_request" }));
+}
+
+function openItemUI(){
+  document.getElementById("itemCategoryPopup").style.display = "flex";
+}
+
+
+function useItem(id, action, slot = 1){
+  console.log("[CLIENT] useItem called", id, action, slot);
+
+  ws.send(JSON.stringify({
+    type: "use_item",
+    item_id: id,
+    action: action,
+    slot: slot
+  }));
+
+}
+
+
+function closeItemCategory(){
+  document.getElementById("itemCategoryPopup").style.display = "none";
+}
+
+
+
+function openItemCategory(category){
+  currentItemCategory = category;
+  isItemUIOpen = true; // ★ 開いた
+
+  const all = window.itemList || [];
+  const list = all.filter(it => it.category === category);
+
+  const titleMap = {
+    item: "アイテム一覧",
+    equip: "装備一覧",
+    special: "特殊装備一覧"
+  };
+  document.getElementById("itemPopupTitle").innerText = titleMap[category];
+
+  const box = document.getElementById("itemList");
+  box.innerHTML = "";
+
+  list.forEach(it=>{
+    const row = document.createElement("div");
+    row.className = "skillRow";
+
+    let btn = "";
+
+    // ★ 使用できるアイテム（回復・修理キットなど）
+    if (
+      category === "item" ||
+      (category === "special" && it.name === "修理キット")
+    ) {
+      btn = `<button onclick="useItem('${it.uid}','use')">使用</button>`;
+    }
+    // ★ 装備系
+    else {
+      btn = `<button onclick="onEquipButtonByUid('${it.uid}')">装備</button>`;
+    }
+
+
+    row.innerHTML = `
+      <div class="skillName">${it.name}</div>
+      <div style="font-size:12px; color:#ccc; white-space:pre-line;">
+        ${it.effect_text ?? ""}
+      </div>
+      <div style="margin-top:5px;">${btn}</div>
+    `;
+
+    box.appendChild(row);
+  });
+
+  document.getElementById("itemPopup").style.display = "flex";
+}
+
+function closeItemUI(){
+  document.getElementById("itemPopup").style.display = "none";
+  isItemUIOpen = false;        // ★ 閉じた
+  currentItemCategory = null; // ★ リセット
+}
+
+
+
+// ========================
+// ★ ショップ機能追加
+// ========================
+
+function openShop(){
+  if (!myTurn) return;
+  ws.send(JSON.stringify({ type: "open_shop" }));
+}
+
+function closeShopUI(){
+  document.getElementById("shopPopup").style.display = "none";
+}
+
+function renderShop(items){
+  const box = document.getElementById("shopList");
+  box.innerHTML = "";
+
+  items.forEach((it, idx) => {
+    if (!it) return;
+
+    const desc = it.effect_text ?? "";
+
+    box.innerHTML += `
+      <div class="skillRow">
+        <div>
+          <div>${it.name}</div>
+          <div>価格: ${it.price} / ${desc}</div>
+        </div>
+        <div><button onclick="buyItem(${idx})">購入</button></div>
+      </div>
+    `;
+  });
+
+  document.getElementById("shopPopup").style.display = "flex";
+}
+
+function openStatusDetail(target) {
+  ws.send(JSON.stringify({
+    type: "request_status_detail",
+    target  // "self" or "enemy"
+  }));
+}
+
+function closeStatusDetail() {
+  document.getElementById("statusDetailPopup").style.display = "none";
+}
+
+function openArrowSlotSelect(item) {
+  pendingArrowItem = item;
+
+  // slot2 が使えるかは「最後に受信した値」で判断
+  if (window.arrowSlots >= 2) {
+    const slot = confirm(
+      "どちらのスロットに装備しますか？\nOK: スロット2 / キャンセル: スロット1"
+    )
+      ? 2
+      : 1;
+
+    useItem(item.uid, "arrow", slot);
+  } else {
+    useItem(item.uid, "arrow", 1);
+  }
+
+  pendingArrowItem = null;
+}
+function onEquipButton(item) {
+ 
+
+  // ===== 矢判定（名前 or 装備種別で判断）=====
+  const isArrow =
+    item.equip_type?.includes("arrow") ||
+    item.name?.includes("矢");
+
+  if (isArrow) {
+
+    // slot2 が使えるなら選ばせる
+    if (window.arrowSlots >= 2) {
+      const slot = confirm(
+        "スロット2に装備しますか？\nOK: スロット2 / キャンセル: スロット1"
+      )
+        ? 2
+        : 1;
+
+      useItem(item.uid, "arrow", slot);
+    } else {
+      useItem(item.uid, "arrow", 1);
+    }
+    return; // ★ ここで必ず終了
+  }
+
+  // ★ 人形衣装は special 扱い
+  if (item.is_doll_costume) {
+    useItem(item.uid, "special");
+    return;
+  }
+
+  // 以下は今まで通り
+  if (
+    item.equip_type === "mage_equip" ||
+    item.equip_type === "alchemist_unique"
+  ) {
+    useItem(item.uid, "special");
+  } else {
+    useItem(item.uid, "equip");
+  }
+}
+
+
+
+function onEquipButtonByUid(uid) {
+  console.log("[DEBUG] onEquipButtonByUid uid =", uid);
+  console.log("[DEBUG] itemList =", window.itemList);
+
+  const item = (window.itemList || []).find(it => it.uid === uid);
+  if (!item) {
+    console.error("item not found:", uid);
+    return;
+  }
+  onEquipButton(item);
+}
+
+
+function selectDollPart(part){
+  console.log("[client] selectDollPart:", part);
+
+  ws.send(JSON.stringify({
+    type: "use_doll_skill1",
+    part
+  }));
+
+  closeSkillUI();   // ★ 既存の関数に合わせる
+}
+
+
+function buyItem(index){
+  if (!myTurn) return;
+  ws.send(JSON.stringify({ type:"buy_item", index }));
+  // ★ 購入してもショップは閉じない（連続購入できるようにする）
+}
+// ================================
+// ★ renderItemList（中身は空でOK）
+// ================================
+function renderItemList(items) {
+  // サーバーから受け取った item_list は
+  // window.itemList に保存されているので、
+  // 画面表示は openItemCategory() のときに行われる。
+  // ここでは何もしなくてよい。
+}
+
+function toggleEnemyDetail() {
+  const el = document.getElementById("enemy-detail");
+  el.style.display = (el.style.display === "none") ? "block" : "none";
+}
+
+
+// ============================
+// ★ ツールチップ：PC=hover / スマホ=tap で表示
+//   - 装備枠 / 特殊装備枠 / バフ枠
+//   - 画面の別の場所タップで閉じる
+// ============================
+function closeAllTooltips(exceptEl = null) {
+  document.querySelectorAll('.tooltip-open').forEach(el => {
+    if (exceptEl && (el === exceptEl || el.contains(exceptEl) || exceptEl.contains(el))) return;
+    el.classList.remove('tooltip-open');
+  });
+}
+
+function setupTapTooltips() {
+  document.addEventListener('pointerdown', (e) => {
+    const t = e.target;
+    const slot = t.closest('.equip-slot, .special-equip-slot, .buff-slot');
+
+    // どの枠でもない → 全部閉じる
+    if (!slot) {
+      closeAllTooltips();
+      return;
+    }
+
+    // ツールチップが無い枠は無視（空枠など）
+    const hasTooltip = slot.querySelector('.equip-tooltip, .buff-tooltip');
+    if (!hasTooltip) return;
+
+    // ツールチップ自体をタップした場合は閉じない
+    if (slot.classList.contains('tooltip-open') && t.closest('.equip-tooltip, .buff-tooltip')) {
+      e.stopPropagation();
+      return;
+    }
+
+    const willOpen = !slot.classList.contains('tooltip-open');
+    closeAllTooltips(slot);
+
+    if (willOpen) slot.classList.add('tooltip-open');
+    else slot.classList.remove('tooltip-open');
+
+    // 直後の click で閉じないように
+    e.stopPropagation();
+  }, true);
+
+  // スクロールやリサイズ時も閉じる（画面外に残るのを防ぐ）
+  window.addEventListener('scroll', () => closeAllTooltips(), true);
+  window.addEventListener('resize', () => closeAllTooltips(), true);
+}
+
+setupTapTooltips();
+
+setPhase(PHASE.MODE_SELECT);
+
+document.getElementById("btnRandom").onclick = () => {
+  setPhase(PHASE.RANDOM_READY);
+
+  document.getElementById("phase1Title").textContent = "ランダム対戦";
+
+  window.isCpuMode = false;
+  window.matchMode = "random";
+
+  const roomArea = document.getElementById("roomCodeArea");
+  if (roomArea) roomArea.style.display = "none";
+
+  // CPU職業選択を隠す
+  document.getElementById("cpuJobArea").style.display = "none";
+
+  const status = document.getElementById("connectStatus");
+  if (status) status.textContent = "";
+};
+
+
+document.getElementById("btnRoom").onclick = () => {
+  setPhase(PHASE.RANDOM_READY);
+
+  document.getElementById("phase1Title").textContent = "ルーム対戦";
+
+  window.isCpuMode = false;
+  window.matchMode = "room";
+
+  const roomArea = document.getElementById("roomCodeArea");
+  if (roomArea) roomArea.style.display = "block";
+
+  // CPU職業選択を隠す
+  document.getElementById("cpuJobArea").style.display = "none";
+
+  const status = document.getElementById("connectStatus");
+  if (status) status.textContent = "ルーム番号を入力し、職業を選んで接続してください";
+};
+
+
+
+document.getElementById("btnConnectPhase1").onclick = () => {
+  if (isConnecting) return; // ★ 二重押し防止
+
+  // ★ 職業未選択なら接続不可
+  if (!selectedJobId) {
+    alert("職業を選択してください");
+    return;
+  }
+
+  if (window.matchMode === "room") {
+    const roomCode = (document.getElementById("roomCodeInput")?.value ?? "").trim();
+    if (!/^\d{4}$/.test(roomCode)) {
+      alert("ルーム番号は4桁の数字で入力してください");
+      return;
+    }
+  }
+
+  isConnecting = true;
+  document.getElementById("btnConnectPhase1").disabled = true;
+
+  clearCpuFailTimer();
+
+  if (window.matchMode === "cpu") {
+    document.getElementById("connectStatus").textContent = "CPUと接続中...";
+    joinCpu();
+    return;
+  }
+
+  // random / room
+  startMatchTimer();
+
+  if (window.matchMode === "room") {
+    joinRoom();
+  } else {
+    // random
+    join();
+  }
+};
+
+
+document.getElementById("btnCancelRandom").onclick = () => {
+  cleanupSocket();
+
+  stopMatchTimer();
+  clearCpuFailTimer();
+
+  isConnecting = false;
+  document.getElementById("btnConnectPhase1").disabled = false;
+  document.getElementById("connectStatus").textContent = "";
+
+  setPhase(PHASE.MODE_SELECT);
+  refreshSummary();
+  fetchAndRenderRanking(currentRankingJob);
+};
+
+document.getElementById("btnCPU").onclick = () => {
+  setPhase(PHASE.RANDOM_READY);
+
+  document.getElementById("phase1Title").textContent = "CPU戦";
+
+  window.isCpuMode = true;
+  window.matchMode = "cpu";
+  window.cpuKind = "menu";
+
+  const roomArea = document.getElementById("roomCodeArea");
+  if (roomArea) roomArea.style.display = "none";
+
+  // CPU職業選択を表示
+  document.getElementById("cpuJobArea").style.display = "block";
+
+  document.getElementById("connectStatus").textContent =
+    "CPUと対戦します（職業を選んで接続してください）";
+};
+
+
+
+
+document.getElementById("btnBackToMenu").onclick = () => {
+  // 通信を完全に切る
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.close();
+  }
+
+  ws = null;
+
+  // ローカル状態をリセット
+  myTurn = false;
+  myLevel = 1;
+  battleEnded = false;
+  window.itemList = [];
+  window.arrowSlots = 1;
+
+  document.getElementById("cpuJobArea").style.display = "none";
+
+  // ボタンを再び隠す
+  document.getElementById("btnBackToMenu").style.display = "none";
+
+  // ログクリア（任意）
+  document.getElementById("battleBox").innerHTML = "";
+  document.getElementById("systemBox").innerHTML = "";
+  document.getElementById("debugBox").innerHTML = "";
+
+  // タイトルへ
+  
+
+setPhase(PHASE.MODE_SELECT);
+  refreshSummary();
+  fetchAndRenderRanking(currentRankingJob);
+  window.isCpuMode = false;
+
+};
+
+
+
+/* ==== INITIALIZE ACCOUNT + TITLE RANKING ==== */
+(async () => {
+  await ensureAccount();
+  await refreshSummary();
+  renderRankingButtons();
+  setAccountNameUI();
+
+  const btn = document.getElementById("btnChangeName");
+  if (btn) btn.onclick = changeNameFlow;
+
+  await fetchAndRenderRanking("戦士");
+})();
+
+</script>
+</div>
+</div>
+</div></body>
+</html>
