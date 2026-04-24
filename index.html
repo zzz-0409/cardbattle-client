@@ -1153,6 +1153,18 @@ body.debug #battleStage {
 
 .damage-popup{ color:#ffb3b3; }
 .heal-popup  { color:#b7ffb7; }
+.summon-popup{
+  position:absolute;
+  left:50%;
+  top:34%;
+  font-weight:900;
+  font-size:18px;
+  pointer-events:none;
+  text-shadow: 0 0 10px rgba(116,232,255,0.42), 0 0 18px rgba(255,220,138,0.20);
+  animation: floatUp 0.95s ease-out forwards;
+  white-space:nowrap;
+  color:#9fe8ff;
+}
 
 /* 種類別（dot / pursuit） */
 .damage-popup.kind-dot{ color:#c7b3ff; }
@@ -2902,6 +2914,25 @@ function spawnPopup(sprite, className, text, offsetPx) {
   setTimeout(() => el.remove(), 900);
 }
 
+function showShikigamiSummonEvent(data) {
+  const sprites = getSprites();
+  const targetSprite = sprites[data.target];
+  const names = Array.isArray(data.names) ? data.names : [];
+
+  if (targetSprite) {
+    names.forEach((name, index) => {
+      setTimeout(() => {
+        const offsetPx = bumpStack(data.target) - (index * 10);
+        spawnPopup(targetSprite, "summon-popup", `式神 ${name}`, offsetPx);
+      }, index * 180);
+    });
+  }
+
+  const actorName = data.actor_name ?? "陰陽師";
+  const joinedNames = names.join("・");
+  showCenterToast(`✨ ${actorName} が ${joinedNames} を召喚！`, names.length >= 2 ? 2600 : 2200);
+}
+
 // ============================
 // ★ 人形使い：人形スプライト更新（共通）
 // ============================
@@ -3980,6 +4011,11 @@ function attachWsHandlers() {
         amount ? `+${amount}` : "+",
         offsetPx
       );
+      return;
+    }
+
+    if (data.type === "shikigami_summon") {
+      showShikigamiSummonEvent(data);
       return;
     }
 
