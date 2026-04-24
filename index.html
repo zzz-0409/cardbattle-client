@@ -1406,7 +1406,7 @@ body.debug #battleStage {
   border-radius:12px;
   background:#2a2a2a;
   border:1px solid #444;
-  overflow:hidden;
+  overflow:visible;
 }
 
 .sprite.player{ --attackX: 22px; }
@@ -1421,6 +1421,8 @@ body.debug #battleStage {
   gap:6px;
   flex-wrap:wrap;
   max-width:144px;
+  overflow:visible;
+  z-index:40;
 }
 
 .sprite-label{
@@ -1440,6 +1442,9 @@ body.debug #battleStage {
   align-items:center;
   gap:4px;
   flex-wrap:wrap;
+  position:relative;
+  overflow:visible;
+  z-index:60;
 }
 
 .buff-strip-sprite{ /* sprite用：サイズを小さめに */
@@ -1456,6 +1461,7 @@ body.debug #battleStage {
   justify-content:center;
   font-size:14px;
   position:relative;
+  z-index:61;
 }
 
 .buff-slot.atk_up{ background:rgba(30,136,229,0.95); }
@@ -1463,6 +1469,9 @@ body.debug #battleStage {
 .buff-slot.atk_down{ background:rgba(120,120,120,0.9); }
 .buff-slot.def_down{ background:rgba(120,120,120,0.9); }
 .buff-slot.freeze{ background:rgba(90,180,255,0.85); }
+.buff-slot.onibi{ background:rgba(255,109,0,0.92); }
+.buff-slot.barrier{ background:rgba(0,188,212,0.9); }
+.buff-slot.karasu{ background:rgba(72,72,92,0.95); }
 .buff-slot.guts{ background:rgba(255,112,67,0.92); }
 .buff-slot.mad{ background:rgba(229,57,53,0.92); }
 .buff-slot.other{ background:rgba(60,120,200,0.65); }
@@ -1482,9 +1491,11 @@ body.debug #battleStage {
   font-size:11px;
   line-height:1.4;
   white-space:pre-line;
-  z-index:200;
+  z-index:99999;
   width:max-content;
   max-width:240px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.38);
+  pointer-events:none;
 }
 
 .buff-slot:hover .buff-tooltip{ display:block; }
@@ -1547,10 +1558,65 @@ body.debug #battleStage {
   color:#9fe8ff;
 }
 
+.shikigami-special-popup{
+  position:absolute;
+  left:50%;
+  top:34%;
+  font-weight:900;
+  font-size:17px;
+  pointer-events:none;
+  text-shadow: 0 0 10px rgba(255,179,71,0.5), 0 0 18px rgba(255,120,64,0.28);
+  animation: floatUp 1s ease-out forwards;
+  white-space:nowrap;
+  color:#ffd27a;
+}
+
+.buff-strip.kyubi-purge{
+  animation: kyubiBuffPurge 0.8s ease-out;
+}
+
+.equip-area.kyubi-burn .equip-slot,
+.special-equip-area.kyubi-burn{
+  animation: kyubiEquipBurn 1s ease-out;
+  box-shadow: 0 0 0 1px rgba(255,140,82,0.4), 0 0 18px rgba(255,120,64,0.45);
+}
+
+.equip-area.kyubi-burn .equip-slot::after,
+.special-equip-area.kyubi-burn::after{
+  content:"";
+  position:absolute;
+  inset:-6px;
+  pointer-events:none;
+  border-radius:14px;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(255,219,120,0.35), transparent 45%),
+    radial-gradient(circle at 30% 80%, rgba(255,118,64,0.45), transparent 40%),
+    radial-gradient(circle at 70% 75%, rgba(255,86,34,0.38), transparent 42%);
+  animation: kyubiFlare 0.95s ease-out forwards;
+}
+
 /* 種類別（dot / pursuit） */
 .damage-popup.kind-dot{ color:#c7b3ff; }
 .damage-popup.kind-pursuit{ color:#ffd28a; }
 .damage-popup.kind-guts{ color:#ff8a80; text-shadow: 0 0 12px rgba(255,138,128,0.55), 0 0 20px rgba(255,138,128,0.28); }
+
+@keyframes kyubiBuffPurge {
+  0% { transform: scale(1); filter: brightness(1); opacity: 1; }
+  35% { transform: scale(1.08); filter: brightness(1.9); opacity: 1; }
+  100% { transform: scale(1); filter: brightness(1); opacity: 1; }
+}
+
+@keyframes kyubiEquipBurn {
+  0% { transform: translateY(0) scale(1); filter: saturate(1); }
+  30% { transform: translateY(-2px) scale(1.03); filter: saturate(1.7) brightness(1.35); }
+  100% { transform: translateY(0) scale(1); filter: saturate(1); }
+}
+
+@keyframes kyubiFlare {
+  0% { opacity: 0; transform: scale(0.7); }
+  25% { opacity: 0.95; transform: scale(1.02); }
+  100% { opacity: 0; transform: scale(1.18); }
+}
 
 
 /* 左右それぞれの陣営 */
@@ -2020,6 +2086,7 @@ input:focus, select:focus{
 <div id="itemPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
 <div id="itemBox" style="background:#2b2b2b; padding:20px; border-radius:10px; width:520px; max-width:92vw; max-height:80vh; display:flex; flex-direction:column;">
 <h3 id="itemPopupTitle">アイテム一覧</h3>
+<div id="itemUsageInfo" style="margin:-4px 0 12px; font-size:13px; color:#ffd28a;"></div>
 <div class="inventory-list" id="itemList" style="overflow-y:auto; flex:1; margin-bottom:12px;"></div>
 <button onclick="closeItemUI()">閉じる</button>
 </div>
@@ -3308,6 +3375,30 @@ function spawnPopup(sprite, className, text, offsetPx) {
   setTimeout(() => el.remove(), 900);
 }
 
+function pulseClass(el, className, duration = 900) {
+  if (!el) return;
+  el.classList.remove(className);
+  void el.offsetWidth;
+  el.classList.add(className);
+  setTimeout(() => el.classList.remove(className), duration);
+}
+
+function getSideFromTarget(targetKey) {
+  return String(targetKey ?? "").startsWith("enemy") ? "enemy" : "self";
+}
+
+function getEquipAreaBySide(side) {
+  return side === "enemy"
+    ? document.querySelector(".equip-area.enemy")
+    : document.querySelector(".equip-area:not(.enemy)");
+}
+
+function getSpecialEquipAreaBySide(side) {
+  return side === "enemy"
+    ? document.querySelector('.special-equip-area.enemy[data-side="enemy"]:not(.doll)')
+    : document.querySelector('.special-equip-area[data-side="self"]:not(.doll)');
+}
+
 function showShikigamiSummonEvent(data) {
   const sprites = getSprites();
   const targetSprite = sprites[data.target];
@@ -3325,6 +3416,49 @@ function showShikigamiSummonEvent(data) {
   const actorName = data.actor_name ?? "陰陽師";
   const joinedNames = names.join("・");
   showCenterToast(`✨ ${actorName} が ${joinedNames} を召喚！`, names.length >= 2 ? 2600 : 2200);
+}
+
+function showShikigamiSpecialEvent(data) {
+  if (data?.kind !== "kyubi") return;
+
+  const sprites = getSprites();
+  const targetSprite = sprites[data.target];
+  const side = getSideFromTarget(data.target);
+  const buffStrip = document.getElementById(side === "enemy" ? "buffStripEnemy" : "buffStripSelf");
+  const equipArea = getEquipAreaBySide(side);
+  const specialEquipArea = getSpecialEquipAreaBySide(side);
+  const messages = [];
+
+  if (data.destroyed_equip_name) {
+    messages.push("装備破壊");
+    pulseClass(equipArea, "kyubi-burn", 1050);
+    pulseClass(specialEquipArea, "kyubi-burn", 1050);
+  }
+  if (Number(data.removed_buff_count ?? 0) > 0) {
+    messages.push("バフ解除");
+    pulseClass(buffStrip, "kyubi-purge", 820);
+  }
+
+  if (targetSprite) {
+    messages.forEach((msg, index) => {
+      setTimeout(() => {
+        const offsetPx = bumpStack(data.target) - (index * 12);
+        spawnPopup(targetSprite, "shikigami-special-popup", msg, offsetPx);
+      }, index * 160);
+    });
+  }
+
+  const actorName = data.actor_name ?? "陰陽師";
+  const parts = [];
+  if (data.destroyed_equip_name) {
+    parts.push(`装備「${data.destroyed_equip_name}」を破壊`);
+  }
+  if (Number(data.removed_buff_count ?? 0) > 0) {
+    parts.push(`バフ${Number(data.removed_buff_count)}個解除`);
+  }
+  if (parts.length > 0) {
+    showCenterToast(`🦊 ${actorName} の九尾が ${parts.join(" / ")}！`, 2600);
+  }
 }
 
 // ============================
@@ -3583,6 +3717,9 @@ function buffIconForKind(kind) {
     case "atk_down": return "🗡️";
     case "def_down": return "🛡️";
     case "freeze":   return "❄️";
+    case "onibi":    return "🔥";
+    case "barrier":  return "🐢";
+    case "karasu":   return "🐦";
     case "guts":     return "💢";
     case "mad":      return "😈";
     default:          return "✨";
@@ -3740,13 +3877,70 @@ function playBellSfx() {
   }, 800);
 }
 
+const sfxTracks = {
+  powerup: "BGM/SE/PowerUp23.wav",
+  boom: "BGM/SE/Boom14.wav",
+};
+
+function playNamedSfx(name) {
+  const src = sfxTracks[String(name ?? "").toLowerCase()];
+  if (!src) return;
+
+  if (String(name ?? "").toLowerCase() === "powerup") {
+    window.lastPowerupSfxAt = Date.now();
+  }
+
+  try {
+    const audio = new Audio(src);
+    audio.preload = "auto";
+    audio.volume = 0.82;
+    audio.play().catch((err) => {
+      console.warn("sfx play failed", name, err);
+    });
+  } catch (err) {
+    console.warn("sfx create failed", name, err);
+  }
+}
+
+function getAttackBuffScore(buffs) {
+  return (Array.isArray(buffs) ? buffs : []).reduce((sum, buff) => {
+    const kind = String(buff?.kind ?? "");
+    if (kind === "atk_up" || kind === "mad") {
+      return sum + Number(buff?.power ?? 0);
+    }
+    return sum;
+  }, 0);
+}
+
+function maybePlayPowerupFromBuffs(side, buffs) {
+  if (!side) return;
+
+  const next = getAttackBuffScore(buffs);
+  window.attackBuffScores ??= {};
+
+  if (!(side in window.attackBuffScores)) {
+    window.attackBuffScores[side] = next;
+    return;
+  }
+
+  const prev = Number(window.attackBuffScores[side] ?? 0);
+  window.attackBuffScores[side] = next;
+
+  if (next > prev) {
+    const last = Number(window.lastPowerupSfxAt ?? 0);
+    if (Date.now() - last > 250) {
+      playNamedSfx("powerup");
+    }
+  }
+}
+
 // ============================
 // ★ 対戦中BGM（追加ファイルからランダム再生 / ループ）
 //   - 勝敗確定(battle_end)で停止
 // ============================
 const battleBgmTracks = [
-  "BGM/Rite_of_the_Falling_Rain.mp3",
-  "BGM/Steel_Clad_Rivalry.mp3"
+  "BGM/バトルBGM/Rite_of_the_Falling_Rain.mp3",
+  "BGM/バトルBGM/Steel_Clad_Rivalry.mp3"
 ];
 let battleBgmAudio = null;
 
@@ -3947,6 +4141,11 @@ function attachWsHandlers() {
       return;
     }
 
+    if (data.type === "sfx") {
+      playNamedSfx(data.name);
+      return;
+    }
+
 
     // ===============================
     // ↓↓↓ ここから下は「元の ws.onmessage の中身」を
@@ -4060,6 +4259,7 @@ function attachWsHandlers() {
 
       // ★ バフUI（キャラ箱）
       updateBuffStrip(data.side, data.buffs_ui ?? []);
+      maybePlayPowerupFromBuffs(data.side, data.buffs_ui ?? []);
 
       // ============================
       // ★ HPバー更新
@@ -4209,6 +4409,7 @@ function attachWsHandlers() {
 
     if (data.type === "item_list") {
       window.itemList = data.items;
+      window.itemUsesRemaining = Math.max(0, Number(data.item_uses_remaining ?? 2));
 
       // ★「開いているときだけ」再描画
       if (isItemUIOpen && currentItemCategory !== null) {
@@ -4354,7 +4555,9 @@ function attachWsHandlers() {
       closeShopUI();
       closeItemUI();
 
-      showResultOverlay(data.result);
+      setTimeout(() => {
+        showResultOverlay(data.result);
+      }, 900);
       return;
     }
 
@@ -4459,6 +4662,10 @@ function attachWsHandlers() {
       return;
     }
 
+    if (data.type === "shikigami_special") {
+      showShikigamiSpecialEvent(data);
+      return;
+    }
 
     if(data.type==="skill_log"){
       appendLog("battleBox","skill-log",data.msg);
@@ -4858,6 +5065,11 @@ function openItemCategory(category){
     special: "特殊装備一覧"
   };
   document.getElementById("itemPopupTitle").innerText = titleMap[category];
+  const remaining = Math.max(0, Number(window.itemUsesRemaining ?? 2));
+  const usageInfo = document.getElementById("itemUsageInfo");
+  if (usageInfo) {
+    usageInfo.innerText = `このターンあと ${remaining} 個アイテムを使用できます`;
+  }
 
   const box = document.getElementById("itemList");
   box.innerHTML = list.map(it => renderInventoryCard(it, category)).join("");
@@ -4986,7 +5198,7 @@ function getShopVisualMeta(it){
   }
 
   if (it?.is_onmyoji_item) {
-    icon = "🧿";
+    icon = { type: "image", src: "Assets/特殊装備/sikigaminohuda.png", alt: String(it?.name ?? "式神のお札") };
     theme = "theme-rainbow";
     badges.push({ label: "陰陽師", kind: "job" });
     badges.push({ label: "召喚札", kind: "special" });
