@@ -136,6 +136,266 @@
       overflow-y:auto;
       flex:1;
       margin-bottom:12px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .confirm-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .shop-card{
+      position:relative;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+      align-items:center;
+      padding:14px 14px 14px 16px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.14);
+      background:
+        linear-gradient(135deg, rgba(28,31,38,0.96), rgba(18,20,26,0.96));
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .shop-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:0.72;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255,255,255,0.15), transparent 18%),
+        radial-gradient(circle at 82% 22%, rgba(255,255,255,0.08), transparent 14%),
+        linear-gradient(135deg, rgba(255,255,255,0.03), transparent 48%);
+    }
+
+    .shop-card::after{
+      content:"";
+      position:absolute;
+      inset:-20% -10%;
+      pointer-events:none;
+      opacity:0.24;
+      background: linear-gradient(110deg, transparent 18%, rgba(255,255,255,0.18) 50%, transparent 82%);
+      transform: translateX(-65%);
+      animation: shopShine 5.8s ease-in-out infinite;
+    }
+
+    .shop-card.theme-bronze{
+      border-color: rgba(196,132,73,0.44);
+      background:
+        radial-gradient(circle at 16% 18%, rgba(244,190,128,0.22), transparent 18%),
+        radial-gradient(circle at 82% 18%, rgba(180,106,55,0.24), transparent 26%),
+        radial-gradient(circle at 50% 120%, rgba(122,68,33,0.24), transparent 28%),
+        linear-gradient(135deg, rgba(74,44,24,0.98), rgba(38,24,16,0.98));
+      box-shadow:
+        0 14px 28px rgba(0,0,0,0.32),
+        0 0 22px rgba(210,137,75,0.16),
+        inset 0 1px 0 rgba(255,229,199,0.10);
+    }
+
+    .shop-card.theme-silver{
+      border-color: rgba(197,206,221,0.46);
+      background:
+        radial-gradient(circle at 14% 16%, rgba(246,248,255,0.22), transparent 16%),
+        radial-gradient(circle at 86% 20%, rgba(186,198,218,0.28), transparent 26%),
+        radial-gradient(circle at 50% 120%, rgba(131,146,171,0.22), transparent 32%),
+        linear-gradient(135deg, rgba(68,75,89,0.98), rgba(31,37,49,0.98));
+      box-shadow:
+        0 14px 28px rgba(0,0,0,0.32),
+        0 0 22px rgba(201,214,236,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .shop-card.theme-gold{
+      border-color: rgba(255,206,102,0.46);
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255,239,181,0.20), transparent 16%),
+        radial-gradient(circle at 80% 16%, rgba(255,194,89,0.34), transparent 24%),
+        radial-gradient(circle at 50% 120%, rgba(255,122,72,0.20), transparent 28%),
+        linear-gradient(135deg, rgba(64,36,16,0.98), rgba(29,20,14,0.98));
+      box-shadow:
+        0 14px 28px rgba(0,0,0,0.32),
+        0 0 22px rgba(255,191,72,0.18),
+        inset 0 1px 0 rgba(255,244,212,0.10);
+    }
+
+    .shop-card.theme-rainbow{
+      border-color: rgba(255,167,201,0.54);
+      background:
+        radial-gradient(circle at 10% 18%, rgba(255,126,95,0.26), transparent 18%),
+        radial-gradient(circle at 85% 14%, rgba(255,230,109,0.28), transparent 22%),
+        radial-gradient(circle at 20% 82%, rgba(87,227,137,0.24), transparent 24%),
+        radial-gradient(circle at 82% 78%, rgba(99,102,241,0.28), transparent 24%),
+        radial-gradient(circle at 54% 10%, rgba(236,72,153,0.20), transparent 20%),
+        linear-gradient(135deg, rgba(68,26,54,0.96), rgba(18,28,58,0.98));
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.34),
+        0 0 30px rgba(201,117,255,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .shop-card.theme-rainbow-blue{
+      border-color: rgba(125,180,255,0.58);
+      background:
+        radial-gradient(circle at 12% 16%, rgba(110,231,255,0.28), transparent 18%),
+        radial-gradient(circle at 86% 18%, rgba(129,140,248,0.32), transparent 24%),
+        radial-gradient(circle at 24% 82%, rgba(96,165,250,0.26), transparent 24%),
+        radial-gradient(circle at 82% 78%, rgba(59,130,246,0.30), transparent 24%),
+        radial-gradient(circle at 56% 12%, rgba(192,132,252,0.18), transparent 20%),
+        linear-gradient(135deg, rgba(20,40,82,0.97), rgba(17,22,58,0.98));
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.34),
+        0 0 30px rgba(96,165,250,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .shop-card.theme-bronze::before,
+    .shop-card.theme-silver::before,
+    .shop-card.theme-gold::before,
+    .shop-card.theme-rainbow::before,
+    .shop-card.theme-rainbow-blue::before{
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,248,221,0.26), transparent 10%),
+        radial-gradient(circle at 24% 68%, rgba(255,255,255,0.12), transparent 8%),
+        radial-gradient(circle at 75% 22%, rgba(255,239,180,0.22), transparent 10%),
+        radial-gradient(circle at 86% 60%, rgba(255,255,255,0.10), transparent 9%),
+        linear-gradient(135deg, rgba(255,255,255,0.06), transparent 45%);
+    }
+
+    .shop-card-main{
+      position:relative;
+      z-index:1;
+      min-width:0;
+    }
+
+    .shop-card-head{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .shop-icon{
+      width:52px;
+      height:52px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      font-size:28px;
+      background: rgba(255,255,255,0.09);
+      border:1px solid rgba(255,255,255,0.10);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      flex:0 0 auto;
+    }
+
+    .shop-icon img{
+      width:42px;
+      height:42px;
+      object-fit:contain;
+      display:block;
+    }
+
+    .shop-title-wrap{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .shop-item-name{
+      font-size:16px;
+      font-weight:800;
+      color:#fff7e8;
+      line-height:1.2;
+      word-break:break-word;
+    }
+
+    .shop-meta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+
+    .shop-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:3px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:0.03em;
+      color:#f7f7f7;
+      background: rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.10);
+    }
+
+    .shop-badge.kind-normal{ background:rgba(130,145,165,0.16); }
+    .shop-badge.kind-special{ background:rgba(255,183,77,0.18); }
+    .shop-badge.kind-job{ background:rgba(77,208,225,0.18); }
+    .shop-badge.kind-rank{ background:rgba(255,124,124,0.18); }
+
+    .shop-item-desc{
+      font-size:12px;
+      line-height:1.45;
+      color:#dfe6ef;
+      white-space:pre-line;
+      opacity:0.94;
+    }
+
+    .shop-buy-area{
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:10px;
+      min-width:92px;
+    }
+
+    .shop-price{
+      font-size:13px;
+      font-weight:800;
+      color:#ffe39c;
+      padding:5px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,0.20);
+      border:1px solid rgba(255,227,156,0.20);
+    }
+
+    .shop-buy-area button{
+      min-width:78px;
+      padding:8px 12px;
+      border-radius:10px;
+    }
+
+    .inventory-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .inventory-card .shop-buy-area{
+      min-width:88px;
+    }
+
+    .inventory-card .shop-buy-area button{
+      min-width:88px;
+    }
+
+    @keyframes shopShine {
+      0%, 100% { transform: translateX(-65%); opacity:0; }
+      18% { opacity:0.14; }
+      45% { transform: translateX(65%); opacity:0.24; }
+      60% { opacity:0; }
     }
 
 
@@ -507,6 +767,8 @@
   padding: 12px 14px;
   background: #444;
   cursor: pointer;
+  box-sizing: border-box;
+  min-width: 0;
 
   display: flex;
   flex-direction: column;
@@ -515,6 +777,10 @@
   min-height: 160px;
 }
 .job-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: start;
+  gap: 6px;
   font-size: 16px;
 }
 
@@ -568,7 +834,9 @@
   font-size: 11px;
   opacity: 0.75;
   margin: 0 6px;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 #phase1 {
@@ -580,11 +848,13 @@
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
   overflow: hidden;
+  box-sizing: border-box;
   background:
     linear-gradient(90deg, rgba(6, 8, 12, 0.58) 0%, rgba(8, 10, 16, 0.12) 39%, rgba(8, 10, 16, 0.18) 62%, rgba(6, 8, 12, 0.62) 100%),
     linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.30) 100%),
     url("Assets/ChatGPT Image 2026年4月23日 22_21_11.png") center center / cover no-repeat;
   color: #ecd9b1;
+  padding: 28px 36px 24px;
 }
 
 #phase2 {
@@ -595,10 +865,73 @@
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
   overflow: hidden;
+  box-sizing: border-box;
   background:
     linear-gradient(90deg, rgba(6, 8, 12, 0.30) 0%, rgba(8, 10, 16, 0.10) 38%, rgba(8, 10, 16, 0.12) 62%, rgba(6, 8, 12, 0.38) 100%),
     linear-gradient(180deg, rgba(255, 245, 220, 0.05) 0%, rgba(0, 0, 0, 0.16) 100%),
     url("Assets/ChatGPT Image 2026年4月23日 23_14_58.png") center center / cover no-repeat;
+}
+
+#phase1Title{
+  margin: 0 0 10px;
+}
+
+@media (max-width: 680px) {
+  .job-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .job-detail-btn {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+  }
+
+  .job-rank-progress {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0;
+    text-align: left;
+  }
+}
+
+#phase1ControlRow{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px 12px;
+  margin: 10px 0 8px;
+}
+
+#connectStatus{
+  margin: 0;
+  min-height: 24px;
+  display:flex;
+  align-items:center;
+  font-weight: 700;
+  color: #9fe8ff;
+  text-shadow: 0 0 10px rgba(34,211,238,0.20);
+}
+
+#cpuJobArea{
+  margin-top: 8px;
+  display: none;
+  width: fit-content;
+  max-width: min(92vw, 460px);
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(2,6,23,0.62);
+  border: 1px solid rgba(34,211,238,0.18);
+  box-shadow: 0 0 12px rgba(34,211,238,0.06);
+}
+
+#cpuJobArea label{
+  display:inline-block;
+  margin-right: 8px;
+}
+
+#cpuTurnOrderArea{
+  margin-top: 10px;
 }
 
 #jobDetailPopup {
@@ -832,6 +1165,22 @@ body.debug #battleStage {
   position: relative; /* ★ これを追加 */
 }
 
+.equip-slot-icon{
+  width: 30px;
+  height: 30px;
+  display:grid;
+  place-items:center;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.equip-slot-icon img{
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display:block;
+}
+
 
 /* 未装備状態 */
 .equip-slot.empty {
@@ -928,18 +1277,34 @@ body.debug #battleStage {
 }
 
 .special-equip-slot {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   border: 1px solid #555;
-  border-radius: 4px;
+  border-radius: 6px;
   background: #1a1a1a;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 10px;
+  font-size: 11px;
   color: #aaa;
+}
+
+.special-equip-slot-icon{
+  width: 30px;
+  height: 30px;
+  display:grid;
+  place-items:center;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.special-equip-slot-icon img{
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display:block;
 }
 
 /* 空枠 */
@@ -1472,11 +1837,11 @@ input:focus, select:focus{
 <input id="roomCodeInput" inputmode="numeric" maxlength="4" placeholder="ルーム番号(4桁)" style="width:160px; text-align:center; padding:6px;"/>
 </div>
 <input id="name_phase1" placeholder="名前" style="display:none;"/>
+<div id="phase1ControlRow">
 <button id="btnConnectPhase1">接続</button>
 <button id="btnCancelRandom">タイトルに戻る</button>
-<!-- ★ ここに追加 -->
-<div id="jobSelectArea"></div>
 <p id="connectStatus"></p>
+</div>
 <!-- ========================= -->
 <!-- CPU職業選択（CPU戦のみ表示） -->
 <!-- ========================= -->
@@ -1504,6 +1869,8 @@ input:focus, select:focus{
 </select>
 </div>
 </div>
+<!-- ★ ここに追加 -->
+<div id="jobSelectArea"></div>
 <!-- ================= 職業詳細ポップアップ（body直下） ================= -->
 <div id="jobDetailPopup" style="display:none; position:fixed; inset:0;
             background:rgba(0,0,0,0.7);
@@ -1635,9 +2002,9 @@ input:focus, select:focus{
 </div>
 <!-- ================= アイテムポップアップ ================= -->
 <div id="itemPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
-<div id="itemBox" style="background:#2b2b2b; padding:20px; border-radius:10px; width:380px; max-height:80vh; display:flex; flex-direction:column;">
+<div id="itemBox" style="background:#2b2b2b; padding:20px; border-radius:10px; width:520px; max-width:92vw; max-height:80vh; display:flex; flex-direction:column;">
 <h3 id="itemPopupTitle">アイテム一覧</h3>
-<div id="itemList" style="overflow-y:auto; flex:1; margin-bottom:12px;"></div>
+<div class="inventory-list" id="itemList" style="overflow-y:auto; flex:1; margin-bottom:12px;"></div>
 <button onclick="closeItemUI()">閉じる</button>
 </div>
 </div>
@@ -1666,7 +2033,7 @@ input:focus, select:focus{
 <!-- ================= 中央ポップアップ（汎用トースト） ================= -->
 <div id="centerToast" style="display:none; position:fixed; inset:0;
   justify-content:center; align-items:center; z-index:99998; pointer-events:none;">
-  <div id="centerToastBox" style="
+<div id="centerToastBox" style="
     max-width: 82vw;
     background: rgba(0,0,0,0.75);
     border: 1px solid #666;
@@ -1680,6 +2047,17 @@ input:focus, select:focus{
     transition: opacity 180ms ease, transform 180ms ease;">
     Toast
   </div>
+</div>
+
+<div class="popup" id="itemConfirmPopup" style="display:none;">
+<div class="popup-inner" style="width:360px; max-width:90vw;">
+<h3 id="confirmPopupTitle">確認</h3>
+<div id="itemConfirmMessage" style="font-size:13px; line-height:1.6; white-space:pre-line;"></div>
+<div class="confirm-actions">
+<button id="confirmPopupCancelBtn" onclick="closeItemConfirm(false)">キャンセル</button>
+<button id="confirmPopupOkBtn" onclick="closeItemConfirm(true)">使用する</button>
+</div>
+</div>
 </div>
 
 <!-- ================= 勝利/敗北演出オーバーレイ ================= -->
@@ -3007,9 +3385,10 @@ function updateNormalEquipUI(side, equipment) {
 
   area.classList.remove("empty");
   area.classList.add("filled");
+  const iconMarkup = getBattleEquipIconMarkup(eq, "equip-slot-icon");
 
   area.innerHTML = `
-    装備
+    ${iconMarkup}
     <div class="equip-tooltip">
       <b>${name}</b>
       ${effect ? `<br>${effect}` : ""}
@@ -3162,9 +3541,10 @@ function updateSpecialEquipUI(side, specialEquip) {
     // ★ 通常装備と同じく、ホバーで詳細が出るよう tooltip を内包
     const name = slot.item?.name ?? "不明な装備";
     const effect = slot.item?.effect_text ?? slot.item?.effect ?? "";
+    const iconMarkup = getBattleEquipIconMarkup(slot.item, "special-equip-slot-icon");
 
     div.innerHTML = `
-      ${slot.label}
+      ${iconMarkup}
       <div class="equip-tooltip">
         <b>${name}</b>
         ${effect ? `<br>${effect}` : ""}
@@ -3228,6 +3608,11 @@ function updateBuffStrip(side, buffs) {
 // ★ 中央ポップアップ（3秒など短時間表示）
 // ============================
 let centerToastTimerId = null;
+let pendingItemConfirm = null;
+const CLIENT_LEVEL_REQUIREMENTS = {
+  1: 30,
+  2: 40,
+};
 
 function showCenterToast(msg, ms = 3000) {
   const wrap = document.getElementById("centerToast");
@@ -3256,6 +3641,42 @@ function showCenterToast(msg, ms = 3000) {
       wrap.style.display = "none";
     }, 220);
   }, ms);
+}
+
+function openItemConfirm(message, onConfirm, options = {}){
+  pendingItemConfirm = onConfirm;
+  document.getElementById("confirmPopupTitle").textContent = options.title ?? "確認";
+  document.getElementById("itemConfirmMessage").textContent = message ?? "";
+  document.getElementById("confirmPopupOkBtn").textContent = options.okLabel ?? "OK";
+  document.getElementById("confirmPopupCancelBtn").textContent = options.cancelLabel ?? "キャンセル";
+  document.getElementById("itemConfirmPopup").style.display = "flex";
+}
+
+function closeItemConfirm(confirmed){
+  document.getElementById("itemConfirmPopup").style.display = "none";
+  const fn = pendingItemConfirm;
+  pendingItemConfirm = null;
+  if (confirmed && typeof fn === "function") {
+    fn();
+  }
+}
+
+function getClientNextLevelInfo(level, exp){
+  const required = CLIENT_LEVEL_REQUIREMENTS[level] ?? null;
+  if (required == null) {
+    return {
+      required: null,
+      remaining: 0,
+      label: "次Lv: MAX"
+    };
+  }
+
+  const remaining = Math.max(0, required - Number(exp ?? 0));
+  return {
+    required,
+    remaining,
+    label: `次LvまでEXP: ${remaining}`
+  };
 }
 
 // ============================
@@ -3562,6 +3983,7 @@ function attachWsHandlers() {
         data.side === "self"
           ? document.getElementById("my-status-simple")
           : document.getElementById("enemy-status-simple");
+      const nextLevelInfo = getClientNextLevelInfo(data.level, data.exp);
 
       let html = `
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -3581,6 +4003,8 @@ function attachWsHandlers() {
               <div>防御: ${data.defense}</div>
               <div>コイン: ${data.coins}</div>
               <div>Lv: ${data.level}</div>
+              <div>EXP: ${data.exp ?? 0}</div>
+              <div>${data.next_level_label ?? nextLevelInfo.label}</div>
               ${
                 data.mad_state
                   ? `<div style="color:${data.mad_state.is_mad ? "#ff6b6b" : "#ffb347"};">${data.mad_state.is_mad ? "狂化状態" : `狂化まで残り: ${data.mad_state.remaining}`}</div>`
@@ -4045,17 +4469,32 @@ function attachWsHandlers() {
 
     /* --- level_up_request の返信 --- */
     if(data.type==="level_up_check"){
+      if (data.isMax) {
+        showCenterToast("最大レベルです", 2200);
+        return;
+      }
       if(data.canExp){
-        ws.send(JSON.stringify({type:"level_up_exp"}));
+        openItemConfirm("EXPを消費してレベルアップしますか？", () => {
+          ws.send(JSON.stringify({type:"level_up_exp"}));
+        }, {
+          title: "レベルアップ確認",
+          okLabel: "レベルアップ",
+          cancelLabel: "キャンセル"
+        });
         return;
       }
       if(data.canCoins){
-        if(confirm(`EXP不足！\nコイン${data.needCoins}で補填しますか？`)){
+        openItemConfirm(`EXPが不足しています。\nコイン${data.needCoins}で補填してレベルアップしますか？`, () => {
           ws.send(JSON.stringify({type:"level_up_coins"}));
-        }
+        }, {
+          title: "レベルアップ確認",
+          okLabel: "コインで補填",
+          cancelLabel: "キャンセル"
+        });
         return;
       }
-      alert("❌ EXPもコインも足りません！");
+      showCenterToast("コインが足りません", 2500);
+      return;
     }
 
     // ---------- アイテム使用結果 ----------
@@ -4340,6 +4779,10 @@ function useDollSkill3(){
 
 /* ================= レベルアップ ================= */
 function tryLevelUp(){
+  if (getClientNextLevelInfo(myLevel, 0).required == null) {
+    showCenterToast("最大レベルです", 2200);
+    return;
+  }
   ws.send(JSON.stringify({ type:"level_up_request" }));
 }
 
@@ -4347,9 +4790,14 @@ function openItemUI(){
   document.getElementById("itemCategoryPopup").style.display = "flex";
 }
 
+function itemConsumesTurn(item, action){
+  if (action !== "use") return false;
+  return item?.consumes_turn === true;
+}
 
-function useItem(id, action, slot = 1){
-  console.log("[CLIENT] useItem called", id, action, slot);
+function submitItemAction(id, action, slot = 1){
+  closeItemUI();
+  closeItemCategory();
 
   ws.send(JSON.stringify({
     type: "use_item",
@@ -4357,7 +4805,20 @@ function useItem(id, action, slot = 1){
     action: action,
     slot: slot
   }));
+}
 
+function useItem(id, action, slot = 1){
+  console.log("[CLIENT] useItem called", id, action, slot);
+
+  const item = (window.itemList || []).find(it => it.uid === id);
+  if (itemConsumesTurn(item, action)) {
+    openItemConfirm("ターンを消費するアイテムです。使用しますか？", () => {
+      submitItemAction(id, action, slot);
+    });
+    return;
+  }
+
+  submitItemAction(id, action, slot);
 }
 
 
@@ -4370,6 +4831,7 @@ function closeItemCategory(){
 function openItemCategory(category){
   currentItemCategory = category;
   isItemUIOpen = true; // ★ 開いた
+  closeItemCategory();
 
   const all = window.itemList || [];
   const list = all.filter(it => it.category === category);
@@ -4382,37 +4844,7 @@ function openItemCategory(category){
   document.getElementById("itemPopupTitle").innerText = titleMap[category];
 
   const box = document.getElementById("itemList");
-  box.innerHTML = "";
-
-  list.forEach(it=>{
-    const row = document.createElement("div");
-    row.className = "skillRow";
-
-    let btn = "";
-
-    // ★ 使用できるアイテム（回復・修理キットなど）
-    if (
-      category === "item" ||
-      (category === "special" && it.name === "修理キット")
-    ) {
-      btn = `<button onclick="useItem('${it.uid}','use')">使用</button>`;
-    }
-    // ★ 装備系
-    else {
-      btn = `<button onclick="onEquipButtonByUid('${it.uid}')">装備</button>`;
-    }
-
-
-    row.innerHTML = `
-      <div class="skillName">${it.name}</div>
-      <div style="font-size:12px; color:#ccc; white-space:pre-line;">
-        ${it.effect_text ?? ""}
-      </div>
-      <div style="margin-top:5px;">${btn}</div>
-    `;
-
-    box.appendChild(row);
-  });
+  box.innerHTML = list.map(it => renderInventoryCard(it, category)).join("");
 
   document.getElementById("itemPopup").style.display = "flex";
 }
@@ -4421,6 +4853,7 @@ function closeItemUI(){
   document.getElementById("itemPopup").style.display = "none";
   isItemUIOpen = false;        // ★ 閉じた
   currentItemCategory = null; // ★ リセット
+  closeItemCategory();
 }
 
 
@@ -4438,6 +4871,179 @@ function closeShopUI(){
   document.getElementById("shopPopup").style.display = "none";
 }
 
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function getInventoryActionMeta(it, category){
+  if (
+    category === "item" ||
+    (category === "special" && it?.name === "修理キット")
+  ) {
+    return {
+      label: "使用",
+      onclick: `useItem('${escapeHtml(it?.uid)}','use')`
+    };
+  }
+
+  return {
+    label: "装備",
+    onclick: `onEquipButtonByUid('${escapeHtml(it?.uid)}')`
+  };
+}
+
+function renderInventoryCard(it, category){
+  const desc = escapeHtml(it?.effect_text ?? "");
+  const name = escapeHtml(it?.name ?? "不明なアイテム");
+  const { icon, badges, theme } = getShopVisualMeta(it);
+  const badgeHtml = badges
+    .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
+    .join("");
+  const action = getInventoryActionMeta(it, category);
+
+  return `
+    <div class="shop-card inventory-card ${theme}">
+      <div class="shop-card-main">
+        <div class="shop-card-head">
+          <div class="shop-icon">${getShopIconMarkup(icon)}</div>
+          <div class="shop-title-wrap">
+            <div class="shop-item-name">${name}</div>
+            <div class="shop-meta-row">${badgeHtml}</div>
+          </div>
+        </div>
+        <div class="shop-item-desc">${desc || "効果説明なし"}</div>
+      </div>
+      <div class="shop-buy-area">
+        <button onclick="${action.onclick}">${escapeHtml(action.label)}</button>
+      </div>
+    </div>
+  `;
+}
+
+function getShopIconMarkup(icon){
+  if (icon && typeof icon === "object" && icon.type === "image" && icon.src) {
+    return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt ?? "")}">`;
+  }
+  return escapeHtml(icon ?? "");
+}
+
+function getBattleEquipIconMarkup(item, className){
+  if (!item || typeof item === "string") {
+    return escapeHtml(String(item ?? ""));
+  }
+
+  const { icon } = getShopVisualMeta(item);
+  return `<div class="${escapeHtml(className)}">${getShopIconMarkup(icon)}</div>`;
+}
+
+function getShopItemStar(it){
+  if (Number.isFinite(Number(it?.star))) return Number(it.star);
+  const name = String(it?.name ?? "");
+  const match = name.match(/★\s*(\d+)/);
+  if (match) return Number(match[1]);
+  return 1;
+}
+
+function getShopVisualMeta(it){
+  const star = Math.max(1, Math.min(3, getShopItemStar(it)));
+  const badges = [];
+  let icon = "🧰";
+  let theme = "theme-bronze";
+  let showStarBadge = false;
+  const mageEquipIcons = {
+    "魔導士の杖": { type: "image", src: "Assets/特殊装備/madousinotue.png", alt: "魔導士の杖" },
+    "魔力の指輪": { type: "image", src: "Assets/特殊装備/madousinoyubiwa.png", alt: "魔力の指輪" },
+    "魔導士のローブ": { type: "image", src: "Assets/特殊装備/madousinoro-bu.png", alt: "魔導士のローブ" },
+    "古代魔導書": { type: "image", src: "Assets/特殊装備/kodainomadousho.png", alt: "古代魔導書" },
+  };
+
+  if (star === 2) {
+    theme = "theme-silver";
+  } else if (star >= 3) {
+    theme = "theme-gold";
+  }
+
+  if (it?.is_onmyoji_item) {
+    icon = "🧿";
+    theme = "theme-rainbow";
+    badges.push({ label: "陰陽師", kind: "job" });
+    badges.push({ label: "召喚札", kind: "special" });
+    badges.push({ label: it.shikigami_rank === "high" ? "上級式神" : "下級式神", kind: "rank" });
+  } else if (it?.is_mage_item) {
+    icon = "🧪";
+    showStarBadge = true;
+    if (String(it?.name ?? "").includes("魔力水(中)") || String(it?.name ?? "").includes("魔力水（中）")) {
+      theme = "theme-silver";
+    } else if (String(it?.name ?? "").includes("魔力水(大)") || String(it?.name ?? "").includes("魔力水（大）")) {
+      theme = "theme-gold";
+    } else {
+      theme = "theme-bronze";
+    }
+    badges.push({ label: "魔導士", kind: "job" });
+    badges.push({ label: "専用アイテム", kind: "special" });
+  } else if (it?.equip_type === "mage_equip") {
+    icon = mageEquipIcons[String(it?.name ?? "")] ?? "🔮";
+    theme = "theme-rainbow";
+    badges.push({ label: "魔導士", kind: "job" });
+    badges.push({ label: "専用装備", kind: "special" });
+  } else if (it?.is_doll_item) {
+    icon = "🪡";
+    theme = "theme-rainbow";
+    badges.push({ label: "人形使い", kind: "job" });
+    badges.push({ label: "特殊アイテム", kind: "special" });
+  } else if (it?.is_doll_costume) {
+    icon = "🎎";
+    showStarBadge = true;
+    badges.push({ label: "人形使い", kind: "job" });
+    badges.push({ label: "衣装", kind: "special" });
+  } else if (it?.is_arrow || it?.equip_type === "arrow") {
+    icon = "🏹";
+    theme = "theme-rainbow";
+    badges.push({ label: "弓兵", kind: "job" });
+    badges.push({ label: "特殊装備", kind: "special" });
+  } else if (it?.equip_type === "alchemist_unique") {
+    icon = "⚗️";
+    theme = "theme-rainbow";
+    badges.push({ label: "錬金術師", kind: "job" });
+    badges.push({ label: "特製装備", kind: "special" });
+  } else if (it?.is_equip) {
+    showStarBadge = true;
+    if (it?.effect_type === "coin_per_turn" || it?.equip_category === "coin") {
+      icon = "💰";
+    } else if (String(it?.effect_type ?? it?.equip_category ?? "").includes("攻撃")) {
+      icon = "⚔️";
+    } else if (String(it?.effect_type ?? it?.equip_category ?? "").includes("防御")) {
+      icon = "🛡️";
+    } else {
+      icon = "🧱";
+    }
+    badges.push({ label: "通常装備", kind: "normal" });
+  } else {
+    showStarBadge = true;
+    if (String(it?.effect_type ?? "").includes("HP")) {
+      icon = "❤️";
+    } else if (String(it?.effect_type ?? "").includes("攻撃")) {
+      icon = "🗡️";
+    } else if (String(it?.effect_type ?? "").includes("防御")) {
+      icon = "🛡️";
+    } else {
+      icon = "🧪";
+    }
+    badges.push({ label: "通常アイテム", kind: "normal" });
+  }
+
+  if (showStarBadge) {
+    badges.push({ label: `★${star}`, kind: "rank" });
+  }
+
+  return { icon, badges, theme };
+}
+
 function renderShop(items){
   const box = document.getElementById("shopList");
   box.innerHTML = "";
@@ -4445,15 +5051,29 @@ function renderShop(items){
   items.forEach((it, idx) => {
     if (!it) return;
 
-    const desc = it.effect_text ?? "";
+    const desc = escapeHtml(it.effect_text ?? "");
+    const name = escapeHtml(it.name ?? "不明なアイテム");
+    const { icon, badges, theme } = getShopVisualMeta(it);
+    const badgeHtml = badges
+      .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
+      .join("");
 
     box.innerHTML += `
-      <div class="skillRow">
-        <div>
-          <div>${it.name}</div>
-          <div>価格: ${it.price} / ${desc}</div>
+      <div class="shop-card ${theme}">
+        <div class="shop-card-main">
+          <div class="shop-card-head">
+            <div class="shop-icon">${getShopIconMarkup(icon)}</div>
+            <div class="shop-title-wrap">
+              <div class="shop-item-name">${name}</div>
+              <div class="shop-meta-row">${badgeHtml}</div>
+            </div>
+          </div>
+          <div class="shop-item-desc">${desc || "効果説明なし"}</div>
         </div>
-        <div><button onclick="buyItem(${idx})">購入</button></div>
+        <div class="shop-buy-area">
+          <div class="shop-price">${Number(it.price ?? 0)} コイン</div>
+          <button onclick="buyItem(${idx})">購入</button>
+        </div>
       </div>
     `;
   });
