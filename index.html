@@ -154,7 +154,7 @@
       display:grid;
       grid-template-columns: 1fr auto;
       gap:12px;
-      align-items:center;
+      align-items:start;
       padding:14px 14px 14px 16px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,0.14);
@@ -189,16 +189,16 @@
     }
 
     .shop-card.theme-bronze{
-      border-color: rgba(196,132,73,0.44);
+      border-color: rgba(210,124,62,0.62);
       background:
-        radial-gradient(circle at 16% 18%, rgba(244,190,128,0.22), transparent 18%),
-        radial-gradient(circle at 82% 18%, rgba(180,106,55,0.24), transparent 26%),
-        radial-gradient(circle at 50% 120%, rgba(122,68,33,0.24), transparent 28%),
-        linear-gradient(135deg, rgba(74,44,24,0.98), rgba(38,24,16,0.98));
+        radial-gradient(circle at 16% 18%, rgba(255,173,104,0.22), transparent 18%),
+        radial-gradient(circle at 82% 18%, rgba(168,83,36,0.30), transparent 26%),
+        radial-gradient(circle at 50% 120%, rgba(108,49,18,0.28), transparent 28%),
+        linear-gradient(135deg, rgba(96,48,22,0.98), rgba(46,23,12,0.99));
       box-shadow:
         0 14px 28px rgba(0,0,0,0.32),
-        0 0 22px rgba(210,137,75,0.16),
-        inset 0 1px 0 rgba(255,229,199,0.10);
+        0 0 22px rgba(194,104,41,0.18),
+        inset 0 1px 0 rgba(255,218,176,0.12);
     }
 
     .shop-card.theme-silver{
@@ -215,16 +215,16 @@
     }
 
     .shop-card.theme-gold{
-      border-color: rgba(255,206,102,0.46);
+      border-color: rgba(255,219,94,0.74);
       background:
-        radial-gradient(circle at 15% 18%, rgba(255,239,181,0.20), transparent 16%),
-        radial-gradient(circle at 80% 16%, rgba(255,194,89,0.34), transparent 24%),
-        radial-gradient(circle at 50% 120%, rgba(255,122,72,0.20), transparent 28%),
-        linear-gradient(135deg, rgba(64,36,16,0.98), rgba(29,20,14,0.98));
+        radial-gradient(circle at 15% 18%, rgba(255,250,196,0.28), transparent 16%),
+        radial-gradient(circle at 80% 16%, rgba(255,215,84,0.42), transparent 24%),
+        radial-gradient(circle at 50% 120%, rgba(255,176,44,0.26), transparent 28%),
+        linear-gradient(135deg, rgba(110,76,18,0.98), rgba(54,33,10,0.99));
       box-shadow:
         0 14px 28px rgba(0,0,0,0.32),
-        0 0 22px rgba(255,191,72,0.18),
-        inset 0 1px 0 rgba(255,244,212,0.10);
+        0 0 28px rgba(255,208,74,0.24),
+        inset 0 1px 0 rgba(255,248,214,0.16);
     }
 
     .shop-card.theme-rainbow{
@@ -324,6 +324,16 @@
       gap:6px;
     }
 
+    .shop-meta-row.nowrap{
+      flex-wrap:nowrap;
+      gap:4px;
+    }
+
+    .shop-meta-row.nowrap .shop-badge{
+      padding:3px 7px;
+      font-size:10px;
+    }
+
     .shop-badge{
       display:inline-flex;
       align-items:center;
@@ -345,10 +355,12 @@
 
     .shop-item-desc{
       font-size:12px;
-      line-height:1.45;
+      line-height:1.6;
       color:#dfe6ef;
       white-space:pre-line;
       opacity:0.94;
+      margin-top:2px;
+      overflow:visible;
     }
 
     .shop-buy-area{
@@ -357,8 +369,12 @@
       display:flex;
       flex-direction:column;
       align-items:flex-end;
+      justify-content:flex-start;
+      align-self:start;
       gap:10px;
       min-width:92px;
+      padding-top:0;
+      transform: translateY(-6px);
     }
 
     .shop-price{
@@ -4900,7 +4916,7 @@ function getInventoryActionMeta(it, category){
 function renderInventoryCard(it, category){
   const desc = escapeHtml(it?.effect_text ?? "");
   const name = escapeHtml(it?.name ?? "不明なアイテム");
-  const { icon, badges, theme } = getShopVisualMeta(it);
+  const { icon, badges, theme, metaClass } = getShopVisualMeta(it);
   const badgeHtml = badges
     .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
     .join("");
@@ -4913,10 +4929,10 @@ function renderInventoryCard(it, category){
           <div class="shop-icon">${getShopIconMarkup(icon)}</div>
           <div class="shop-title-wrap">
             <div class="shop-item-name">${name}</div>
-            <div class="shop-meta-row">${badgeHtml}</div>
+            <div class="shop-meta-row ${escapeHtml(metaClass ?? "")}">${badgeHtml}</div>
+            <div class="shop-item-desc">${desc || "効果説明なし"}</div>
           </div>
         </div>
-        <div class="shop-item-desc">${desc || "効果説明なし"}</div>
       </div>
       <div class="shop-buy-area">
         <button onclick="${action.onclick}">${escapeHtml(action.label)}</button>
@@ -4955,6 +4971,7 @@ function getShopVisualMeta(it){
   let icon = "🧰";
   let theme = "theme-bronze";
   let showStarBadge = false;
+  let metaClass = "";
   const mageEquipIcons = {
     "魔導士の杖": { type: "image", src: "Assets/特殊装備/madousinotue.png", alt: "魔導士の杖" },
     "魔力の指輪": { type: "image", src: "Assets/特殊装備/madousinoyubiwa.png", alt: "魔力の指輪" },
@@ -4977,6 +4994,7 @@ function getShopVisualMeta(it){
   } else if (it?.is_mage_item) {
     icon = "🧪";
     showStarBadge = true;
+    metaClass = "nowrap";
     if (String(it?.name ?? "").includes("魔力水(中)") || String(it?.name ?? "").includes("魔力水（中）")) {
       theme = "theme-silver";
     } else if (String(it?.name ?? "").includes("魔力水(大)") || String(it?.name ?? "").includes("魔力水（大）")) {
@@ -5041,7 +5059,7 @@ function getShopVisualMeta(it){
     badges.push({ label: `★${star}`, kind: "rank" });
   }
 
-  return { icon, badges, theme };
+  return { icon, badges, theme, metaClass };
 }
 
 function renderShop(items){
@@ -5053,7 +5071,7 @@ function renderShop(items){
 
     const desc = escapeHtml(it.effect_text ?? "");
     const name = escapeHtml(it.name ?? "不明なアイテム");
-    const { icon, badges, theme } = getShopVisualMeta(it);
+    const { icon, badges, theme, metaClass } = getShopVisualMeta(it);
     const badgeHtml = badges
       .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
       .join("");
@@ -5065,10 +5083,10 @@ function renderShop(items){
             <div class="shop-icon">${getShopIconMarkup(icon)}</div>
             <div class="shop-title-wrap">
               <div class="shop-item-name">${name}</div>
-              <div class="shop-meta-row">${badgeHtml}</div>
+              <div class="shop-meta-row ${escapeHtml(metaClass ?? "")}">${badgeHtml}</div>
+              <div class="shop-item-desc">${desc || "効果説明なし"}</div>
             </div>
           </div>
-          <div class="shop-item-desc">${desc || "効果説明なし"}</div>
         </div>
         <div class="shop-buy-area">
           <div class="shop-price">${Number(it.price ?? 0)} コイン</div>
