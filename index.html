@@ -96,6 +96,10 @@
       background:#2b2b2b; padding:20px; border-radius:10px;
       width:380px;
     }
+    #itemBox{
+      min-height:0;
+      overflow:hidden;
+    }
 
     .skillRow{ margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #555;}
     .skillName{ color:#81d4fa; font-size:16px; }
@@ -129,16 +133,30 @@
       border-radius:10px;
       width:380px;
       max-height:80vh;
+      overflow:hidden;
       display:flex;
       flex-direction:column;
+      min-height:0;
     }
     #shopList{
       overflow-y:auto;
       flex:1;
+      min-height:0;
+      height:min(56vh, 540px);
+      max-height:min(56vh, 540px);
       margin-bottom:12px;
+      padding-right:4px;
       display:flex;
       flex-direction:column;
       gap:12px;
+    }
+    .inventory-list{
+      overflow-y:auto;
+      flex:1;
+      min-height:0;
+      height:min(56vh, 540px);
+      max-height:min(56vh, 540px);
+      padding-right:4px;
     }
 
     .confirm-actions{
@@ -152,6 +170,7 @@
       position:relative;
       overflow:hidden;
       display:grid;
+      flex:0 0 auto;
       grid-template-columns: 1fr auto;
       gap:12px;
       align-items:start;
@@ -2084,9 +2103,10 @@ input:focus, select:focus{
 </div>
 <!-- ================= アイテムポップアップ ================= -->
 <div id="itemPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
-<div id="itemBox" style="background:#2b2b2b; padding:20px; border-radius:10px; width:520px; max-width:92vw; max-height:80vh; display:flex; flex-direction:column;">
+<div id="itemBox" style="background:#2b2b2b; padding:20px; border-radius:10px; width:520px; max-width:92vw; max-height:80vh; overflow:hidden; display:flex; flex-direction:column;">
 <h3 id="itemPopupTitle">アイテム一覧</h3>
 <div id="itemUsageInfo" style="margin:-4px 0 12px; font-size:13px; color:#ffd28a;"></div>
+<div id="itemPopupActions" style="display:none; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 12px;"></div>
 <div class="inventory-list" id="itemList" style="overflow-y:auto; flex:1; margin-bottom:12px;"></div>
 <button onclick="closeItemUI()">閉じる</button>
 </div>
@@ -2236,6 +2256,8 @@ function setPhase(p) {
 
 let currentItemCategory = null;
 let isItemUIOpen = false; // ★ 追加
+let equipmentCombineMode = false;
+let equipmentCombineSelection = [];
 let ws;
 let myTurn = false;
 let myJob = null;
@@ -2818,8 +2840,8 @@ const JOB_DESCRIPTIONS = {
   9: { // 人形使い
     name: "人形使い",
     skills: {
-      1: "人形の衣装を1つを選び、★を+1",
-      2: "自身のHPを10の倍数選んで消費(最大100)、消費したHPの半分人形の耐久力を回復する",
+      1: "修理キットを1つ入手する",
+      2: "装備している全ての部位の衣装の★を+1",
       3: "人形を暴走状態にし、破壊されるまで衣装効果が2倍になる"
     },
     playstyle: `
@@ -2828,6 +2850,7 @@ const JOB_DESCRIPTIONS = {
 
 【修理キット】
 人形が壊れているときは復活し人形の耐久力を15回復、壊れていないときは20回復。
+人形が壊れた次のラウンドは使用できない。
 人形が復活した次のターンは人形がダメージを受けない。
 
 【衣装】
@@ -3288,12 +3311,12 @@ const SKILLS = {
       {name:"貫通の矢",desc:"全矢が防御貫通化"} ],
   9:[
     {
-      name:"仕立て直し",
-      desc:"人形の衣装を1つを選び、★を+1する（最大★4）"
+      name:"修理キット調達",
+      desc:"修理キットを1つ入手する"
     },
     {
-      name:"生命縫合",
-      desc:"自身のHPを消費し、人形の耐久力を回復する（HP0不可）"
+      name:"総仕立て直し",
+      desc:"装備している全ての部位の衣装の★を+1する（最大★4）"
     },
     {
       name:"人形暴走",
@@ -3719,6 +3742,7 @@ function buffIconForKind(kind) {
     case "freeze":   return "❄️";
     case "onibi":    return "🔥";
     case "barrier":  return "🐢";
+    case "repair_guard": return "🧰";
     case "karasu":   return "🐦";
     case "guts":     return "💢";
     case "mad":      return "😈";
@@ -5018,14 +5042,14 @@ function useSkill(num){
 }
 
 // ================================
-// 人形使い：スキル1専用入口
+// 人形使い：スキル1
 // ================================
 function useDollSkill1(){
   if(!myTurn) return;
 
   confirmTurnConsume(() => {
     ws.send(JSON.stringify({
-      type: "request_doll_skill1"
+      type: "use_doll_skill1"
     }));
     closeSkillUI();
   });
@@ -5033,23 +5057,18 @@ function useDollSkill1(){
 }
 
 // ================================
-// 人形使い：スキル2（生命縫合）HP→耐久
+// 人形使い：スキル2
 // ================================
 function useDollSkill2Prompt(){
   if(!myTurn) return;
 
   confirmTurnConsume(() => {
-    const s = prompt("消費するHPを入力（10の倍数 / 10〜100）", "10");
-    if (s === null) return;
-
-    const hpCost = Number(s);
-
     ws.send(JSON.stringify({
       type: "use_doll_skill2",
-      hpCost
+      hpCost: 0
     }));
 
-    console.log("[client] use_doll_skill2 sent:", hpCost);
+    console.log("[client] use_doll_skill2 sent");
     closeSkillUI();
   });
 }
@@ -5118,6 +5137,115 @@ function closeItemCategory(){
   document.getElementById("itemCategoryPopup").style.display = "none";
 }
 
+function resetEquipCombineState(){
+  equipmentCombineMode = false;
+  equipmentCombineSelection = [];
+}
+
+function toggleEquipCombineMode(){
+  equipmentCombineMode = !equipmentCombineMode;
+  if (!equipmentCombineMode) {
+    equipmentCombineSelection = [];
+  }
+  if (currentItemCategory === "equip") {
+    openItemCategory("equip");
+  }
+}
+
+function toggleEquipCombineSelect(uid){
+  if (!equipmentCombineMode) return;
+
+  const id = String(uid ?? "");
+  if (!id) return;
+
+  if (equipmentCombineSelection.includes(id)) {
+    equipmentCombineSelection = equipmentCombineSelection.filter(x => x !== id);
+  } else {
+    if (equipmentCombineSelection.length >= 2) {
+      showCenterToast("合成に選べる装備は2つまでです", 2200);
+      return;
+    }
+    equipmentCombineSelection = [...equipmentCombineSelection, id];
+  }
+
+  if (currentItemCategory === "equip") {
+    openItemCategory("equip");
+  }
+}
+
+function submitEquipCombine(){
+  if (equipmentCombineSelection.length !== 2) {
+    showCenterToast("合成する装備を2つ選んでください", 2200);
+    return;
+  }
+
+  const [uid1, uid2] = equipmentCombineSelection;
+  const selected = (window.itemList || []).filter(it =>
+    equipmentCombineSelection.includes(String(it?.uid ?? ""))
+  );
+
+  if (
+    selected.length !== 2 ||
+    selected.some(it => !it?.is_equip || it?.equip_type !== "normal")
+  ) {
+    showCenterToast("違う装備は合成できない", 2500);
+    return;
+  }
+
+  const [eq1, eq2] = selected;
+  const star1 = Number(eq1?.star ?? 1);
+  const star2 = Number(eq2?.star ?? 1);
+  const category1 = String(eq1?.equip_category ?? eq1?.effect_type ?? "");
+  const category2 = String(eq2?.equip_category ?? eq2?.effect_type ?? "");
+
+  if (star1 !== star2 || category1 !== category2) {
+    showCenterToast("違う装備は合成できない", 2500);
+    return;
+  }
+
+  openItemConfirm("選択した2つの通常装備を合成しますか？", () => {
+    ws.send(JSON.stringify({
+      type: "combine_equips",
+      uid1,
+      uid2,
+    }));
+    equipmentCombineSelection = [];
+    equipmentCombineMode = false;
+    if (currentItemCategory === "equip") {
+      openItemCategory("equip");
+    }
+  }, {
+    title: "装備合成",
+    okLabel: "合成する",
+    cancelLabel: "キャンセル",
+  });
+}
+
+function renderEquipCombineActions(category){
+  const area = document.getElementById("itemPopupActions");
+  if (!area) return;
+
+  if (category !== "equip") {
+    area.style.display = "none";
+    area.innerHTML = "";
+    return;
+  }
+
+  const selectedCount = equipmentCombineSelection.length;
+  area.style.display = "flex";
+  area.innerHTML = `
+    <button onclick="toggleEquipCombineMode()">${equipmentCombineMode ? "合成をやめる" : "合成"}</button>
+    <div style="font-size:12px; color:#cfcfcf;">
+      ${equipmentCombineMode
+        ? `同じ星・同じ効果の通常装備を2つ選択してください（${selectedCount}/2）`
+        : "同じ星・同じ効果の通常装備2つを合成して、星を1つ上げられます"}
+    </div>
+    ${equipmentCombineMode
+      ? `<button onclick="submitEquipCombine()" ${selectedCount === 2 ? "" : "disabled"}>選択した2つを合成</button>`
+      : ""}
+  `;
+}
+
 
 
 function openItemCategory(category){
@@ -5125,8 +5253,26 @@ function openItemCategory(category){
   isItemUIOpen = true; // ★ 開いた
   closeItemCategory();
 
+  if (category !== "equip") {
+    resetEquipCombineState();
+  }
+
   const all = window.itemList || [];
-  const list = all.filter(it => it.category === category);
+  const list = all
+    .filter(it => it.category === category)
+    .sort((a, b) => {
+      const aEquipped =
+        (category === "equip" && a?.is_equipped_normal) ||
+        (category === "special" && a?.is_equipped_special)
+          ? 1
+          : 0;
+      const bEquipped =
+        (category === "equip" && b?.is_equipped_normal) ||
+        (category === "special" && b?.is_equipped_special)
+          ? 1
+          : 0;
+      return bEquipped - aEquipped;
+    });
 
   const titleMap = {
     item: "アイテム一覧",
@@ -5141,6 +5287,7 @@ function openItemCategory(category){
       ? `このターンあと ${remaining} 個アイテムを使用できます`
       : "";
   }
+  renderEquipCombineActions(category);
 
   const box = document.getElementById("itemList");
   box.innerHTML = list.map(it => renderInventoryCard(it, category)).join("");
@@ -5152,6 +5299,8 @@ function closeItemUI(){
   document.getElementById("itemPopup").style.display = "none";
   isItemUIOpen = false;        // ★ 閉じた
   currentItemCategory = null; // ★ リセット
+  resetEquipCombineState();
+  renderEquipCombineActions(null);
   closeItemCategory();
 }
 
@@ -5180,6 +5329,14 @@ function escapeHtml(value){
 }
 
 function getInventoryActionMeta(it, category){
+  if (it?.is_equipped_normal || it?.is_equipped_special) {
+    return {
+      label: "装備中",
+      onclick: "",
+      disabled: true,
+    };
+  }
+
   if (
     category === "item" ||
     (category === "special" && it?.name === "修理キット")
@@ -5204,9 +5361,17 @@ function renderInventoryCard(it, category){
     .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
     .join("");
   const action = getInventoryActionMeta(it, category);
+  const isEquipCombineCard = category === "equip" && equipmentCombineMode;
+  const isSelectedForCombine = isEquipCombineCard && equipmentCombineSelection.includes(String(it?.uid ?? ""));
+  const combineAction = isEquipCombineCard
+    ? {
+        label: isSelectedForCombine ? "選択解除" : "選択",
+        onclick: `toggleEquipCombineSelect('${escapeHtml(it?.uid)}')`
+      }
+    : null;
 
   return `
-    <div class="shop-card inventory-card ${theme}">
+    <div class="shop-card inventory-card ${theme}" style="${isSelectedForCombine ? "box-shadow:0 0 0 2px rgba(255,210,122,0.95), 0 10px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.05);" : ""}">
       <div class="shop-card-main">
         <div class="shop-card-head">
           <div class="shop-icon">${getShopIconMarkup(icon)}</div>
@@ -5218,7 +5383,10 @@ function renderInventoryCard(it, category){
         </div>
       </div>
       <div class="shop-buy-area">
-        <button onclick="${action.onclick}">${escapeHtml(action.label)}</button>
+        ${isEquipCombineCard
+          ? `<button onclick="${combineAction.onclick}">${escapeHtml(combineAction.label)}</button>`
+          : `<button ${action.disabled ? "disabled" : `onclick="${action.onclick}"`}>${escapeHtml(action.label)}</button>`
+        }
       </div>
     </div>
   `;
