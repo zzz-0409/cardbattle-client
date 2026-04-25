@@ -1893,8 +1893,8 @@ input:focus, select:focus{
 </div>
 <div id="phase0Hero">
 <div id="phase0LogoMark">✦</div>
-<h1 id="phase0Title">GILSYS</h1>
-<div id="phase0TitleSub">ギルシス</div>
+<h1 id="phase0Title">GuildSystem</h1>
+<div id="phase0TitleSub">ギルドシステム</div>
 </div>
 <!-- ================= Title Ranking (Job Ratings) ================= -->
 <div id="titleRankingPanel">
@@ -2132,8 +2132,8 @@ input:focus, select:focus{
   </div>
 </div>
 
-<div class="popup" id="itemConfirmPopup" style="display:none;">
-<div class="popup-inner" style="width:360px; max-width:90vw;">
+<div class="popup" id="itemConfirmPopup" style="display:none; z-index:10002;">
+<div class="popup-inner" style="width:360px; max-width:90vw; position:relative; z-index:10003;">
 <h3 id="confirmPopupTitle">確認</h3>
 <div id="itemConfirmMessage" style="font-size:13px; line-height:1.6; white-space:pre-line;"></div>
 <div class="confirm-actions">
@@ -3878,22 +3878,35 @@ function playBellSfx() {
 }
 
 const sfxTracks = {
+  attack: "BGM/SE/Kougeki.wav",
+  defup: "BGM/SE/BougyoUp.wav",
   powerup: "BGM/SE/PowerUp23.wav",
   boom: "BGM/SE/Boom14.wav",
 };
 
+const sfxVolumes = {
+  attack: 1.0,
+  defup: 0.82,
+  powerup: 0.82,
+  boom: 0.82,
+};
+
 function playNamedSfx(name) {
-  const src = sfxTracks[String(name ?? "").toLowerCase()];
+  const key = String(name ?? "").toLowerCase();
+  const src = sfxTracks[key];
   if (!src) return;
 
-  if (String(name ?? "").toLowerCase() === "powerup") {
+  if (key === "powerup") {
     window.lastPowerupSfxAt = Date.now();
+  }
+  if (key === "defup") {
+    window.lastDefupSfxAt = Date.now();
   }
 
   try {
     const audio = new Audio(src);
     audio.preload = "auto";
-    audio.volume = 0.82;
+    audio.volume = Number(sfxVolumes[key] ?? 0.82);
     audio.play().catch((err) => {
       console.warn("sfx play failed", name, err);
     });
@@ -3906,6 +3919,16 @@ function getAttackBuffScore(buffs) {
   return (Array.isArray(buffs) ? buffs : []).reduce((sum, buff) => {
     const kind = String(buff?.kind ?? "");
     if (kind === "atk_up" || kind === "mad") {
+      return sum + Number(buff?.power ?? 0);
+    }
+    return sum;
+  }, 0);
+}
+
+function getDefenseBuffScore(buffs) {
+  return (Array.isArray(buffs) ? buffs : []).reduce((sum, buff) => {
+    const kind = String(buff?.kind ?? "");
+    if (kind === "def_up" || kind === "barrier") {
       return sum + Number(buff?.power ?? 0);
     }
     return sum;
@@ -3930,6 +3953,28 @@ function maybePlayPowerupFromBuffs(side, buffs) {
     const last = Number(window.lastPowerupSfxAt ?? 0);
     if (Date.now() - last > 250) {
       playNamedSfx("powerup");
+    }
+  }
+}
+
+function maybePlayDefupFromBuffs(side, buffs) {
+  if (!side) return;
+
+  const next = getDefenseBuffScore(buffs);
+  window.defenseBuffScores ??= {};
+
+  if (!(side in window.defenseBuffScores)) {
+    window.defenseBuffScores[side] = next;
+    return;
+  }
+
+  const prev = Number(window.defenseBuffScores[side] ?? 0);
+  window.defenseBuffScores[side] = next;
+
+  if (next > prev) {
+    const last = Number(window.lastDefupSfxAt ?? 0);
+    if (Date.now() - last > 250) {
+      playNamedSfx("defup");
     }
   }
 }
@@ -4260,6 +4305,7 @@ function attachWsHandlers() {
       // ★ バフUI（キャラ箱）
       updateBuffStrip(data.side, data.buffs_ui ?? []);
       maybePlayPowerupFromBuffs(data.side, data.buffs_ui ?? []);
+      maybePlayDefupFromBuffs(data.side, data.buffs_ui ?? []);
 
       // ============================
       // ★ HPバー更新
@@ -4859,7 +4905,9 @@ function rerollShop() {
 /* ================= 行動 ================= */
 function attack(){
   if(!myTurn) return;
-  ws.send(JSON.stringify({type:"action", action:"攻撃"}));
+  confirmTurnConsume(() => {
+    ws.send(JSON.stringify({type:"action", action:"攻撃"}));
+  });
 }
 
 /* ================= スキル系 ================= */
@@ -4943,6 +4991,18 @@ function closeSkillUI(){
   document.getElementById("skillPopup").style.display="none";
 }
 
+function confirmTurnConsume(onConfirm){
+  openItemConfirm(
+    "ターンを消費する行動です。よろしいですか？",
+    onConfirm,
+    {
+      title: "行動確認",
+      okLabel: "実行する",
+      cancelLabel: "キャンセル",
+    }
+  );
+}
+
 function useSkill(num){
   if(!myTurn) return;
 
@@ -4951,8 +5011,10 @@ function useSkill(num){
     window.arrowSlots = 2;
   }
 
-  ws.send(JSON.stringify({type:"action", action:"スキル"+num}));
-  closeSkillUI();
+  confirmTurnConsume(() => {
+    ws.send(JSON.stringify({type:"action", action:"スキル"+num}));
+    closeSkillUI();
+  });
 }
 
 // ================================
@@ -4961,9 +5023,12 @@ function useSkill(num){
 function useDollSkill1(){
   if(!myTurn) return;
 
-  ws.send(JSON.stringify({
-    type: "request_doll_skill1"
-  }));
+  confirmTurnConsume(() => {
+    ws.send(JSON.stringify({
+      type: "request_doll_skill1"
+    }));
+    closeSkillUI();
+  });
 
 }
 
@@ -4973,18 +5038,20 @@ function useDollSkill1(){
 function useDollSkill2Prompt(){
   if(!myTurn) return;
 
-  const s = prompt("消費するHPを入力（10の倍数 / 10〜100）", "10");
-  if (s === null) return;
+  confirmTurnConsume(() => {
+    const s = prompt("消費するHPを入力（10の倍数 / 10〜100）", "10");
+    if (s === null) return;
 
-  const hpCost = Number(s);
+    const hpCost = Number(s);
 
-  ws.send(JSON.stringify({
-    type: "use_doll_skill2",
-    hpCost
-  }));
+    ws.send(JSON.stringify({
+      type: "use_doll_skill2",
+      hpCost
+    }));
 
-  console.log("[client] use_doll_skill2 sent:", hpCost);
-  closeSkillUI();
+    console.log("[client] use_doll_skill2 sent:", hpCost);
+    closeSkillUI();
+  });
 }
 // ================================
 // 人形使い：スキル3（暴走）
@@ -4992,12 +5059,14 @@ function useDollSkill2Prompt(){
 function useDollSkill3(){
   if(!myTurn) return;
 
-  ws.send(JSON.stringify({
-    type: "request_doll_skill3"
-  }));
+  confirmTurnConsume(() => {
+    ws.send(JSON.stringify({
+      type: "request_doll_skill3"
+    }));
 
-  console.log("[client] request_doll_skill3 sent");
-  closeSkillUI();
+    console.log("[client] request_doll_skill3 sent");
+    closeSkillUI();
+  });
 }
 
 /* ================= レベルアップ ================= */
@@ -5068,7 +5137,9 @@ function openItemCategory(category){
   const remaining = Math.max(0, Number(window.itemUsesRemaining ?? 2));
   const usageInfo = document.getElementById("itemUsageInfo");
   if (usageInfo) {
-    usageInfo.innerText = `このターンあと ${remaining} 個アイテムを使用できます`;
+    usageInfo.innerText = category === "item"
+      ? `このターンあと ${remaining} 個アイテムを使用できます`
+      : "";
   }
 
   const box = document.getElementById("itemList");
