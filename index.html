@@ -2091,7 +2091,7 @@ input:focus, select:focus{
 </div>
 </div>
 <!-- ▼ カテゴリ選択ポップアップ（新規追加） -->
-<div id="itemCategoryPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+<div id="itemCategoryPopup" onclick="if(event.target===this) closeItemCategory()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
             background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
 <div style="background:#2b2b2b; padding:20px; border-radius:10px; width:260px;">
 <h3>カテゴリ選択</h3>
@@ -2102,22 +2102,23 @@ input:focus, select:focus{
 </div>
 </div>
 <!-- ================= アイテムポップアップ ================= -->
-<div id="itemPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
+<div id="itemPopup" onclick="if(event.target===this) closeItemUI()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:9999;">
 <div id="itemBox" style="background:#2b2b2b; padding:20px; border-radius:10px; width:520px; max-width:92vw; max-height:80vh; overflow:hidden; display:flex; flex-direction:column;">
 <h3 id="itemPopupTitle">アイテム一覧</h3>
 <div id="itemUsageInfo" style="margin:-4px 0 12px; font-size:13px; color:#ffd28a;"></div>
 <div id="itemPopupActions" style="display:none; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 12px;"></div>
 <div class="inventory-list" id="itemList" style="overflow-y:auto; flex:1; margin-bottom:12px;"></div>
-<button onclick="closeItemUI()">閉じる</button>
+<button onclick="returnToItemCategory()">戻る</button>
 </div>
 </div>
 <!-- ★ 追加：ショップポップアップ -->
-<div class="popup" id="shopPopup" style="display:none;">
+<div class="popup" id="shopPopup" onclick="if(event.target===this) closeShopUI()" style="display:none;">
 <div class="popup-inner">
-<h3>ショップ</h3>
-<div id="shopList"></div>
-<!-- ★ ここに移動させる（popup と連動して消える） -->
+<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px;">
+<h3 style="margin:0;">ショップ</h3>
 <button onclick="rerollShop()">ショップ更新(5コイン)</button>
+</div>
+<div id="shopList"></div>
 <button onclick="closeShopUI()">閉じる</button>
 </div>
 </div>
@@ -2159,6 +2160,28 @@ input:focus, select:focus{
 <div class="confirm-actions">
 <button id="confirmPopupCancelBtn" onclick="closeItemConfirm(false)">キャンセル</button>
 <button id="confirmPopupOkBtn" onclick="closeItemConfirm(true)">使用する</button>
+</div>
+</div>
+</div>
+<div class="popup" id="arrowSlotPopup" style="display:none; z-index:10002;">
+<div class="popup-inner" style="width:360px; max-width:90vw; position:relative; z-index:10003;">
+<h3>矢スロット選択</h3>
+<div id="arrowSlotMessage" style="font-size:13px; line-height:1.6; white-space:pre-line; margin-bottom:12px;">どちらのスロットに装備しますか？</div>
+<div class="confirm-actions" style="justify-content:space-between;">
+<button onclick="chooseArrowSlot(1)">スロット1</button>
+<button id="arrowSlot2Btn" onclick="chooseArrowSlot(2)">スロット2</button>
+<button onclick="closeArrowSlotPopup()">キャンセル</button>
+</div>
+</div>
+</div>
+<div class="popup" id="alchemistFusionPopup" style="display:none; z-index:10002;">
+<div class="popup-inner" style="width:560px; max-width:94vw; position:relative; z-index:10003;">
+<h3>三重合成</h3>
+<div id="alchemistFusionMessage" style="font-size:13px; line-height:1.6; white-space:pre-line; margin-bottom:12px;">合成する装備を3つ選んでください。</div>
+<div class="inventory-list" id="alchemistFusionList" style="overflow-y:auto; flex:1; margin-bottom:12px;"></div>
+<div class="confirm-actions">
+<button onclick="closeAlchemistFusionPopup()">キャンセル</button>
+<button id="alchemistFusionSubmitBtn" onclick="submitAlchemistFusion()" disabled>選択した3つで合成</button>
 </div>
 </div>
 </div>
@@ -3786,6 +3809,9 @@ function updateBuffStrip(side, buffs) {
 // ============================
 let centerToastTimerId = null;
 let pendingItemConfirm = null;
+let pendingArrowEquipItem = null;
+let alchemistFusionCandidates = [];
+let alchemistFusionSelection = [];
 const CLIENT_LEVEL_REQUIREMENTS = {
   1: 30,
   2: 40,
@@ -4557,6 +4583,16 @@ function attachWsHandlers() {
         return;
     }
 
+    if (data.type === "purchased_item") {
+      promptEquipAfterPurchase(data.item ?? null);
+      return;
+    }
+
+    if (data.type === "alchemist_skill3_candidates") {
+      openAlchemistFusionPopup(data.items ?? []);
+      return;
+    }
+
 
     /* --- コイン --- */
     if (data.type === "coin_info") {
@@ -5036,6 +5072,10 @@ function useSkill(num){
   }
 
   confirmTurnConsume(() => {
+    if (window.myJob === "錬金術師" && num === 3) {
+      ws.send(JSON.stringify({ type:"request_alchemist_skill3_select" }));
+      return;
+    }
     ws.send(JSON.stringify({type:"action", action:"スキル"+num}));
     closeSkillUI();
   });
@@ -5135,6 +5175,15 @@ function useItem(id, action, slot = 1){
 
 function closeItemCategory(){
   document.getElementById("itemCategoryPopup").style.display = "none";
+}
+
+function returnToItemCategory(){
+  document.getElementById("itemPopup").style.display = "none";
+  isItemUIOpen = false;
+  currentItemCategory = null;
+  resetEquipCombineState();
+  renderEquipCombineActions(null);
+  document.getElementById("itemCategoryPopup").style.display = "flex";
 }
 
 function resetEquipCombineState(){
@@ -5317,6 +5366,31 @@ function openShop(){
 
 function closeShopUI(){
   document.getElementById("shopPopup").style.display = "none";
+}
+
+function shouldPromptEquipAfterPurchase(item) {
+  if (!item) return false;
+  if (item?.is_arrow || item?.equip_type === "arrow") return true;
+  if (item?.is_doll_costume) return true;
+  if (item?.equip_type === "mage_equip") return true;
+  if (item?.equip_type === "alchemist_unique") return true;
+  if (item?.is_equip) return true;
+  return false;
+}
+
+function promptEquipAfterPurchase(item) {
+  if (!shouldPromptEquipAfterPurchase(item)) return;
+  openItemConfirm(
+    `${item?.name ?? "この装備"} をそのまま装備しますか？`,
+    () => {
+      onEquipButton(item);
+    },
+    {
+      title: "購入後装備",
+      okLabel: "装備する",
+      cancelLabel: "あとで",
+    }
+  );
 }
 
 function escapeHtml(value){
@@ -5561,23 +5635,128 @@ function closeStatusDetail() {
   document.getElementById("statusDetailPopup").style.display = "none";
 }
 
+function openArrowSlotPopup(item) {
+  pendingArrowEquipItem = item;
+  const popup = document.getElementById("arrowSlotPopup");
+  const msg = document.getElementById("arrowSlotMessage");
+  const slot2Btn = document.getElementById("arrowSlot2Btn");
+  if (msg) {
+    msg.textContent = `${item?.name ?? "矢"} をどちらのスロットに装備しますか？`;
+  }
+  if (slot2Btn) {
+    slot2Btn.disabled = Number(window.arrowSlots ?? 1) < 2;
+  }
+  if (popup) popup.style.display = "flex";
+}
+
+function closeArrowSlotPopup() {
+  const popup = document.getElementById("arrowSlotPopup");
+  if (popup) popup.style.display = "none";
+  pendingArrowEquipItem = null;
+}
+
+function chooseArrowSlot(slot) {
+  const item = pendingArrowEquipItem;
+  if (!item?.uid) {
+    closeArrowSlotPopup();
+    return;
+  }
+  useItem(item.uid, "arrow", slot);
+  closeArrowSlotPopup();
+}
+
+function renderAlchemistFusionCard(it) {
+  const desc = escapeHtml(it?.effect_text ?? "");
+  const name = escapeHtml(it?.name ?? "不明な装備");
+  const { icon, badges, theme, metaClass } = getShopVisualMeta(it);
+  const badgeHtml = badges
+    .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
+    .join("");
+  const selected = alchemistFusionSelection.includes(String(it?.uid ?? ""));
+  return `
+    <div class="shop-card inventory-card ${theme}" style="${selected ? "box-shadow:0 0 0 2px rgba(255,210,122,0.95), 0 10px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.05);" : ""}">
+      <div class="shop-card-main">
+        <div class="shop-card-head">
+          <div class="shop-icon">${getShopIconMarkup(icon)}</div>
+          <div class="shop-title-wrap">
+            <div class="shop-item-name">${name}</div>
+            <div class="shop-meta-row ${escapeHtml(metaClass ?? "")}">${badgeHtml}</div>
+            <div class="shop-item-desc">${desc || "効果説明なし"}</div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-buy-area">
+        <button onclick="toggleAlchemistFusionSelect('${escapeHtml(it?.uid)}')">${selected ? "選択解除" : "選択"}</button>
+      </div>
+    </div>
+  `;
+}
+
+function rerenderAlchemistFusionPopup() {
+  const listEl = document.getElementById("alchemistFusionList");
+  const submitBtn = document.getElementById("alchemistFusionSubmitBtn");
+  const messageEl = document.getElementById("alchemistFusionMessage");
+  if (listEl) {
+    listEl.innerHTML = alchemistFusionCandidates.map(renderAlchemistFusionCard).join("");
+  }
+  if (submitBtn) {
+    submitBtn.disabled = alchemistFusionSelection.length !== 3;
+  }
+  if (messageEl) {
+    messageEl.textContent = `合成する装備を3つ選んでください。 (${alchemistFusionSelection.length}/3)`;
+  }
+}
+
+function openAlchemistFusionPopup(items) {
+  alchemistFusionCandidates = Array.isArray(items) ? items : [];
+  alchemistFusionSelection = [];
+  rerenderAlchemistFusionPopup();
+  closeSkillUI();
+  const popup = document.getElementById("alchemistFusionPopup");
+  if (popup) popup.style.display = "flex";
+}
+
+function closeAlchemistFusionPopup() {
+  const popup = document.getElementById("alchemistFusionPopup");
+  if (popup) popup.style.display = "none";
+  alchemistFusionCandidates = [];
+  alchemistFusionSelection = [];
+}
+
+function toggleAlchemistFusionSelect(uid) {
+  const id = String(uid ?? "");
+  if (!id) return;
+  if (alchemistFusionSelection.includes(id)) {
+    alchemistFusionSelection = alchemistFusionSelection.filter(x => x !== id);
+  } else {
+    if (alchemistFusionSelection.length >= 3) {
+      showCenterToast("合成に選べる装備は3つまでです", 2200);
+      return;
+    }
+    alchemistFusionSelection = [...alchemistFusionSelection, id];
+  }
+  rerenderAlchemistFusionPopup();
+}
+
+function submitAlchemistFusion() {
+  if (alchemistFusionSelection.length !== 3) {
+    showCenterToast("合成する装備を3つ選んでください", 2200);
+    return;
+  }
+  ws.send(JSON.stringify({
+    type: "use_alchemist_skill3",
+    uids: alchemistFusionSelection,
+  }));
+  closeAlchemistFusionPopup();
+  closeSkillUI();
+}
+
 function openArrowSlotSelect(item) {
-  pendingArrowItem = item;
-
-  // slot2 が使えるかは「最後に受信した値」で判断
-  if (window.arrowSlots >= 2) {
-    const slot = confirm(
-      "どちらのスロットに装備しますか？\nOK: スロット2 / キャンセル: スロット1"
-    )
-      ? 2
-      : 1;
-
-    useItem(item.uid, "arrow", slot);
+  if (Number(window.arrowSlots ?? 1) >= 2) {
+    openArrowSlotPopup(item);
   } else {
     useItem(item.uid, "arrow", 1);
   }
-
-  pendingArrowItem = null;
 }
 function onEquipButton(item) {
  
@@ -5588,19 +5767,7 @@ function onEquipButton(item) {
     item.name?.includes("矢");
 
   if (isArrow) {
-
-    // slot2 が使えるなら選ばせる
-    if (window.arrowSlots >= 2) {
-      const slot = confirm(
-        "スロット2に装備しますか？\nOK: スロット2 / キャンセル: スロット1"
-      )
-        ? 2
-        : 1;
-
-      useItem(item.uid, "arrow", slot);
-    } else {
-      useItem(item.uid, "arrow", 1);
-    }
+    openArrowSlotSelect(item);
     return; // ★ ここで必ず終了
   }
 
