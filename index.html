@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -3268,6 +3268,8 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
       <button disabled id="skillBtn" class="gilsys-hidden-action" onclick="openSkillUI()">スキル</button>
       <button disabled id="lvupBtn" class="gilsys-action-btn action-level" onclick="tryLevelUp()"><span>⮝</span>レベルアップ</button>
       <button disabled id="itemBtn" class="gilsys-action-btn action-item" onclick="openItemUI()"><span>⚗</span>持ち物</button>
+      
+      <button disabled id="dollBuffBtn" class="gilsys-action-btn action-doll-buff" onclick="openDollBuffSelectUI()" style="display:none"><span>◆</span>バフ選択</button>
       <button disabled id="shopBtn" class="gilsys-action-btn action-shop" onclick="openShop()"><span>▣</span>ショップ</button>
     </div>
 
@@ -4992,6 +4994,8 @@ function buffIconForKind(kind) {
     case "barrier":  return "🐢";
     case "repair_guard": return "🧰";
     case "karasu":   return "🐦";
+    case "archer_extra_attack": return "🏹";
+    case "doll_extra_attack": return "🪆";
     case "guts":     return "💢";
     case "mad":      return "😈";
     default:          return "✨";
@@ -5544,13 +5548,17 @@ function attachWsHandlers() {
     }
 
     if (data.type === "doll_charge_choices") {
+      if (typeof openGilsysDollBuffPanel === "function") {
+        openGilsysDollBuffPanel(data);
+        return;
+      }
       const popup = document.getElementById("skillPopup");
       const list  = document.getElementById("skillList");
       const charge = Number(data.charge ?? 0);
       const choices = Array.isArray(data.choices) ? data.choices : [];
 
       let html = `<div style="font-weight:bold; margin-bottom:8px;">チャージ効果を選んでください</div>`;
-      html += `<div style="margin-bottom:10px; color:#ffd28a;">現在チャージ: ${charge} / 必要20</div>`;
+      html += `<div style="margin-bottom:10px; color:#ffd28a;">現在チャージ: ${charge} / 必要15</div>`;
       for (const c of choices) {
         const progressNeed = Math.max(1, Number(c.progress_need ?? 2));
         const progressNow = Math.max(0, Number(c.progress_now ?? 0));
@@ -5955,11 +5963,12 @@ function attachWsHandlers() {
       turnCount++;
       updateRoundTurnUI();
 
-      ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn"].forEach(id => {
+      ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn","dollBuffBtn"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.disabled = false;
       });
       refreshAttackSkillPanelIfOpen(true);
+      if (typeof refreshGilsysDollChargeUI === "function") refreshGilsysDollChargeUI();
 
       return;
     }
@@ -5976,7 +5985,7 @@ function attachWsHandlers() {
 // ★ 相手ラウンドになったらショップを強制的に閉じる
       closeShopUI();
 
-      ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn"].forEach(id => {
+      ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn","dollBuffBtn"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.disabled = true;
       });
@@ -7938,5 +7947,414 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
 })();
 </script>
 
+<style id="gilsys-inventory-confirm-hide-and-damage-style">
+.gilsys-command-list-panel.is-inventory-mode + .gilsys-command-detail-panel .gilsys-confirm-btn {
+  display: none !important;
+}
+.gilsys-damage-preview {
+  color: #ffdf8a !important;
+  font-weight: 900 !important;
+  white-space: nowrap;
+}
+</style>
+<script id="gilsys-damage-preview-patch">
+(() => {
+  const safe = (value) => typeof escapeHtml === "function"
+    ? escapeHtml(String(value ?? ""))
+    : String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
+  const list = () => document.getElementById("gilsysCommandList");
+  const title = () => document.getElementById("gilsysCommandListTitle");
+  const listPanel = () => document.querySelector(".gilsys-command-list-panel");
+
+  const setMode = (mode) => {
+    const panel = listPanel();
+    if (!panel) return;
+    panel.classList.toggle("is-inventory-mode", mode === "inventory");
+    panel.classList.toggle("is-shop-mode", mode === "shop");
+  };
+
+  const labels = () => {
+    const btn = document.getElementById("atkBtn");
+    if (btn) btn.innerHTML = "<span>⚔</span>攻撃/スキル";
+  };
+
+  const stat = (side, key, fallback = 0) => Number((side === "enemy" ? window.gilsysLatestEnemyStatus : window.gilsysLatestSelfStatus)?.[key] ?? fallback);
+  const finalDamage = (raw, ignoreDefense = false) => Math.max(0, Math.floor(Number(raw ?? 0) - (ignoreDefense ? 0 : stat("enemy", "defense", 0))));
+  const jobId = () => {
+    const raw = window.myJob ?? (typeof myJob !== "undefined" ? myJob : null);
+    return (typeof JOB_ID_MAP !== "undefined" && JOB_ID_MAP?.[raw]) ?? raw;
+  };
+
+  function getDamagePreview(skillNo = 0) {
+    const id = String(jobId());
+    const selfStatus = window.gilsysLatestSelfStatus || {};
+    let atk = stat("self", "attack", 0);
+    if (id === "9" && selfStatus.doll && !selfStatus.doll.is_broken) {
+      atk = Number(selfStatus.doll.attack ?? atk);
+    }
+    const def = stat("enemy", "defense", 0);
+    const selfDef = stat("self", "defense", 0);
+    const mana = Number(window.gilsysLatestSelfStatus?.mana ?? 0);
+    const itemCount = (window.itemList || []).filter(it => it?.category === "item").length;
+    const mad = !!window.gilsysLatestSelfStatus?.mad_state?.is_mad;
+
+    if (!skillNo) return { damage: finalDamage(atk), note: `相手防御 ${def} 反映` };
+
+    let raw = null;
+    let ignore = false;
+    if (id === "1") {
+      ignore = true;
+      raw = skillNo === 1 ? 20 : skillNo === 2 ? 30 : skillNo === 3 ? 10 + atk : null;
+    } else if (id === "2") {
+      raw = skillNo === 1 ? 20 : skillNo === 2 ? 15 : skillNo === 3 ? 25 + selfDef : null;
+    } else if (id === "4") {
+      raw = skillNo === 1 ? 25 : skillNo === 2 ? 25 + itemCount * 2 : null;
+    } else if (id === "5") {
+      raw = skillNo === 2 ? 30 : skillNo === 3 ? Math.max(0, mana - 30) : null;
+    } else if (id === "10" && skillNo === 1 && mad) {
+      ignore = true;
+      raw = 30;
+    }
+
+    if (raw == null) return null;
+    return { damage: finalDamage(raw, ignore), note: ignore ? "防御無視" : `相手防御 ${def} 反映` };
+  }
+
+  function detailMeta(defaultMeta, preview) {
+    return preview ? `<span class="gilsys-damage-preview">予想ダメージ ${safe(preview.damage)}</span>` : safe(defaultMeta ?? "");
+  }
+
+  function setDetail(titleText, metaText, descText, iconText, handler, preview) {
+    if (typeof restoreGilsysCommandDetailPanel === "function") restoreGilsysCommandDetailPanel();
+    setGilsysText("gilsysDetailTitle", titleText || "コマンド");
+    const metaEl = document.getElementById("gilsysDetailMeta");
+    if (metaEl) metaEl.innerHTML = detailMeta(metaText, preview);
+    const extra = preview ? `\n\n予想ダメージ: ${preview.damage}（${preview.note}）` : "";
+    setGilsysText("gilsysDetailDescription", `${descText || "説明なし"}${extra}`);
+    setGilsysText("gilsysDetailIcon", iconText || "◆");
+    const btn = document.getElementById("gilsysConfirmBtn");
+    if (btn) btn.onclick = handler || null;
+  }
+
+  const skillHandler = (skillNo) => {
+    const currentJob = String(window.myJob ?? (typeof myJob !== "undefined" ? myJob : ""));
+    if (currentJob === "人形使い" || currentJob === "9") {
+      if (skillNo === 1 && typeof useDollSkill1 === "function") return useDollSkill1;
+      if (skillNo === 2 && typeof useDollSkill2Prompt === "function") return useDollSkill2Prompt;
+      if (skillNo === 3 && typeof useDollSkill3 === "function") return useDollSkill3;
+    }
+    return () => useSkill(skillNo);
+  };
+
+  window.openAttackSkillPanel = function(markManual = true) {
+    labels();
+    setMode("attack");
+    const l = list();
+    const t = title();
+    if (!l) return;
+    if (t) t.textContent = "攻撃/スキル";
+    l.dataset.manual = markManual ? "attackSkill" : "default";
+    l.innerHTML = "";
+
+    const selfStatus = window.gilsysLatestSelfStatus || {};
+    let atk = stat("self", "attack", 0);
+    if (String(jobId()) === "9" && selfStatus.doll && !selfStatus.doll.is_broken) {
+      atk = Number(selfStatus.doll.attack ?? atk);
+    }
+    const attackPreview = getDamagePreview(0);
+    const attackRow = document.createElement("button");
+    attackRow.className = "gilsys-list-row is-selected";
+    attackRow.innerHTML = `<span class="gilsys-row-icon">⚔</span><span>通常攻撃</span><b>予想 ${safe(attackPreview.damage)}</b>`;
+    attackRow.onclick = () => {
+      [...l.querySelectorAll(".gilsys-list-row")].forEach(el => el.classList.remove("is-selected"));
+      attackRow.classList.add("is-selected");
+      setDetail("通常攻撃", `攻撃力 ${atk}`, "敵単体に通常ダメージを与える。ターンを消費します。", "⚔", attack, attackPreview);
+    };
+    l.appendChild(attackRow);
+
+    const allSkills = (typeof SKILLS !== "undefined" ? SKILLS : window.SKILLS) || {};
+    const skills = allSkills?.[jobId()] || [];
+    if (!skills.length) {
+      const empty = document.createElement("div");
+      empty.className = "gilsys-empty-row";
+      empty.textContent = `現在の職業「${safe(window.myJob ?? (typeof myJob !== "undefined" ? myJob : "不明"))}」に対応するスキルが見つかりません`;
+      l.appendChild(empty);
+    }
+
+    skills.forEach((skill, index) => {
+      const no = index + 1;
+      const need = no;
+      const level = Number(typeof myLevel !== "undefined" ? myLevel : 1);
+      const remain = Number(window.skillRemaining?.[no] ?? 1);
+      const preview = getDamagePreview(no);
+      const icon = typeof gilsysSkillIcon === "function" ? gilsysSkillIcon(index, skill?.name) : "✦";
+      const meta = remain <= 0 ? "使用回数 0" : level < need ? `Lv${need}で解放` : preview ? `予想 ${preview.damage}` : `スキル${no}`;
+      const row = document.createElement("button");
+      row.className = "gilsys-list-row";
+      row.innerHTML = `<span class="gilsys-row-icon">${safe(icon)}</span><span>${safe(skill?.name ?? `スキル${no}`)}</span><b>${safe(meta)}</b>`;
+      row.onclick = () => {
+        [...l.querySelectorAll(".gilsys-list-row")].forEach(el => el.classList.remove("is-selected"));
+        row.classList.add("is-selected");
+        setDetail(skill?.name ?? `スキル${no}`, meta, skill?.desc ?? "職業スキルを発動します。", icon, () => {
+          if (remain <= 0) return showCenterToast("スキルの使用回数がなくなりました", 2500);
+          if (level < need) return showCenterToast(`Lv${need}で解放されます`, 2200);
+          skillHandler(no)();
+        }, preview);
+      };
+      l.appendChild(row);
+    });
+
+    attackRow.click();
+  };
+})();
+</script>
+
+<style id="gilsys-doll-charge-and-mobile-style">
+.gilsys-doll-charge-meter {
+  margin-top: 7px;
+  width: min(240px, 100%);
+}
+.gilsys-doll-charge-head {
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  color:#ffdf9b;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+.gilsys-doll-charge-bar {
+  height: 9px;
+  overflow:hidden;
+  border:1px solid rgba(255,220,132,.58);
+  border-radius:999px;
+  background:rgba(10,12,18,.72);
+  box-shadow: inset 0 1px 5px rgba(0,0,0,.55);
+}
+.gilsys-doll-charge-fill {
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#52d6ff,#ffe06d,#ff9f43);
+  box-shadow:0 0 12px rgba(255,211,103,.55);
+  transition:width .25s ease;
+}
+.gilsys-doll-charge-meter.is-ready .gilsys-doll-charge-fill {
+  background:linear-gradient(90deg,#80ffb2,#fff070,#ffb24f);
+  box-shadow:0 0 16px rgba(146,255,186,.72);
+}
+.gilsys-action-btn.action-doll-buff {
+  border-color:rgba(128,255,178,.72);
+  background:linear-gradient(180deg,rgba(41,84,65,.96),rgba(14,22,25,.98));
+}
+.gilsys-action-btn.action-doll-buff.is-ready:not(:disabled) {
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 18px rgba(128,255,178,.45);
+}
+.gilsys-charge-choice-card {
+  display:grid;
+  gap:7px;
+  width:100%;
+}
+.gilsys-charge-choice-desc {
+  color:rgba(245,232,200,.78);
+  font-size:12px;
+  line-height:1.45;
+}
+@media (max-width: 760px) {
+  html, body { width:100%; min-width:0; overflow:hidden; }
+  #phase2.gilsys-battle-ui {
+    --gilsys-edge: 6px;
+    --gilsys-center-inset: 6px;
+    --gilsys-command-bottom: max(6px, env(safe-area-inset-bottom));
+    --gilsys-command-height: min(212px, 34vh);
+    --gilsys-stage-gap: 6px;
+  }
+  #phase2.gilsys-battle-ui .gilsys-side-panel { display:none !important; }
+  #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage,
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    left:6px !important;
+    right:6px !important;
+  }
+  #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+    top:4px !important;
+    bottom:calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + 6px) !important;
+    min-height:0;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    grid-template-columns:72px minmax(0,1fr) minmax(0,1fr);
+    gap:6px;
+    padding:6px;
+    height:var(--gilsys-command-height);
+  }
+  #phase2.gilsys-battle-ui .gilsys-action-column { gap:5px; }
+  #phase2.gilsys-battle-ui .gilsys-action-btn {
+    min-height:34px;
+    padding:4px 3px;
+    font-size:10px;
+    line-height:1.1;
+  }
+  #phase2.gilsys-battle-ui .gilsys-action-btn span { font-size:15px; }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel { padding:7px; min-width:0; }
+  #phase2.gilsys-battle-ui .gilsys-panel-title { font-size:12px; margin-bottom:4px; }
+  #phase2.gilsys-battle-ui .gilsys-command-list { max-height:calc(var(--gilsys-command-height) - 42px); }
+  #phase2.gilsys-battle-ui .gilsys-list-row {
+    grid-template-columns:22px minmax(0,1fr) auto;
+    min-height:34px;
+    padding:5px 6px;
+    font-size:11px;
+  }
+  #phase2.gilsys-battle-ui .gilsys-list-row b { font-size:10px; }
+  #phase2.gilsys-battle-ui .gilsys-detail-icon { width:34px; height:34px; font-size:18px; }
+  #phase2.gilsys-battle-ui .gilsys-detail-head span { font-size:13px; }
+  #phase2.gilsys-battle-ui .gilsys-detail-text p { font-size:11px; line-height:1.45; }
+  #phase2.gilsys-battle-ui .gilsys-confirm-btn { min-width:54px; padding:0 8px; font-size:11px; }
+  #phase2.gilsys-battle-ui .gilsys-top-status { top:6px; width:min(44vw, 172px); }
+  #phase2.gilsys-battle-ui .gilsys-portrait { display:none; }
+  #phase2.gilsys-battle-ui .gilsys-status-name { font-size:12px; }
+  #phase2.gilsys-battle-ui .gilsys-status-rank { font-size:10px; }
+  #phase2.gilsys-battle-ui .gilsys-hp-text { font-size:12px; margin-top:2px; }
+  #phase2.gilsys-battle-ui .gilsys-param-row { gap:6px; font-size:10px; }
+  #phase2.gilsys-battle-ui .gilsys-status-buff-strip { transform:scale(.82); transform-origin:left top; }
+  #phase2.gilsys-battle-ui #battleStage .sprite { width:clamp(80px, 26vw, 128px); height:clamp(112px, 34vw, 168px); }
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll { width:clamp(58px, 18vw, 88px); height:clamp(74px, 23vw, 112px); }
+  #phase2.gilsys-battle-ui #battleStage .side-self { left:4%; }
+  #phase2.gilsys-battle-ui #battleStage .side-enemy { right:4%; }
+}
+</style>
+<script id="gilsys-doll-charge-command-patch">
+(() => {
+  const NEED_FALLBACK = 15;
+  const safe = (value) => typeof escapeHtml === "function"
+    ? escapeHtml(String(value ?? ""))
+    : String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
+  const isDollJob = () => String(window.myJob ?? (typeof myJob !== "undefined" ? myJob : "")) === "人形使い" || String(window.myJob ?? "") === "9";
+  const getSelfDoll = () => window.gilsysLatestSelfStatus?.doll ?? null;
+  const chargeNeed = (doll) => Math.max(1, Number(doll?.charge_need ?? NEED_FALLBACK));
+
+  function updateDollChargeMeter(doll) {
+    const anchor = document.getElementById("gilsysBuffStripSelf");
+    if (!anchor) return;
+    let meter = document.getElementById("gilsysDollChargeMeter");
+    if (!isDollJob() || !doll) {
+      if (meter) meter.remove();
+      return;
+    }
+    if (!meter) {
+      meter = document.createElement("div");
+      meter.id = "gilsysDollChargeMeter";
+      meter.className = "gilsys-doll-charge-meter";
+      anchor.insertAdjacentElement("afterend", meter);
+    }
+    const now = Math.max(0, Number(doll.charge ?? 0));
+    const need = chargeNeed(doll);
+    const rate = Math.max(0, Math.min(100, now / need * 100));
+    const ready = now >= need;
+    meter.classList.toggle("is-ready", ready);
+    meter.innerHTML = `
+      <div class="gilsys-doll-charge-head"><span>人形チャージ</span><span>${safe(now)} / ${safe(need)}</span></div>
+      <div class="gilsys-doll-charge-bar"><div class="gilsys-doll-charge-fill" style="width:${rate}%"></div></div>
+    `;
+  }
+
+  function updateDollBuffButton() {
+    const btn = document.getElementById("dollBuffBtn");
+    if (!btn) return;
+    const doll = getSelfDoll();
+    const show = isDollJob() && !!doll;
+    btn.style.display = show ? "" : "none";
+    if (!show) return;
+    const now = Math.max(0, Number(doll.charge ?? 0));
+    const need = chargeNeed(doll);
+    const ready = now >= need;
+    const turnActive = typeof myTurn !== "undefined" ? !!myTurn : !!window.myTurn;
+    btn.disabled = !turnActive || !ready;
+    btn.classList.toggle("is-ready", ready);
+    btn.title = ready ? "チャージ効果を選択" : `チャージ ${now} / ${need}`;
+    btn.innerHTML = `<span>◆</span>バフ選択`;
+  }
+
+  window.refreshGilsysDollChargeUI = function(status = window.gilsysLatestSelfStatus) {
+    updateDollChargeMeter(status?.doll ?? null);
+    updateDollBuffButton();
+  };
+
+  window.openDollBuffSelectUI = function() {
+    const doll = getSelfDoll();
+    if (!isDollJob() || !doll) return showCenterToast("人形使い専用です", 1800);
+    const now = Math.max(0, Number(doll.charge ?? 0));
+    const need = chargeNeed(doll);
+    if (now < need) return showCenterToast(`チャージが足りません（${now} / ${need}）`, 1800);
+    if (typeof setGilsysCommandDetail === "function") {
+      setGilsysCommandDetail("バフ選択", `チャージ ${now} / ${need}`, "選択肢を取得しています。", "◆", null);
+    }
+    ws.send(JSON.stringify({ type: "request_doll_charge" }));
+  };
+
+  window.openGilsysDollBuffPanel = function(data) {
+    const choices = Array.isArray(data?.choices) ? data.choices : [];
+    const charge = Number(data?.charge ?? getSelfDoll()?.charge ?? 0);
+    const need = chargeNeed(getSelfDoll());
+    const list = document.getElementById("gilsysCommandList");
+    const title = document.getElementById("gilsysCommandListTitle");
+    if (!list) return;
+    const panel = document.querySelector(".gilsys-command-list-panel");
+    if (panel) {
+      panel.classList.remove("is-inventory-mode", "is-shop-mode");
+    }
+    if (title) title.textContent = "人形バフ選択";
+    list.dataset.manual = "dollBuff";
+    list.innerHTML = choices.length ? "" : `<div class="gilsys-empty-row">選択できるバフがありません</div>`;
+    choices.forEach((choice, index) => {
+      const progressNeed = Math.max(1, Number(choice.progress_need ?? 2));
+      const progressNow = Math.max(0, Number(choice.progress_now ?? 0));
+      const progressRate = Math.max(0, Math.min(100, progressNow / progressNeed * 100));
+      const row = document.createElement("button");
+      row.className = `gilsys-list-row ${index === 0 ? "is-selected" : ""}`;
+      row.innerHTML = `
+        <span class="gilsys-row-icon">◆</span>
+        <span class="gilsys-charge-choice-card">
+          <b>${safe(choice.title ?? "チャージ効果")}</b>
+          <span class="gilsys-charge-choice-desc">${safe(choice.desc ?? "")}</span>
+          <span class="gilsys-doll-charge-bar"><span class="gilsys-doll-charge-fill" style="display:block;width:${progressRate}%"></span></span>
+        </span>
+        <b>${safe(choice.progress_text ?? "")}</b>`;
+      const choose = () => ws.send(JSON.stringify({ type: "select_doll_charge", key: choice.key }));
+      row.onclick = () => {
+        [...list.querySelectorAll(".gilsys-list-row")].forEach(el => el.classList.remove("is-selected"));
+        row.classList.add("is-selected");
+        if (typeof setGilsysCommandDetail === "function") {
+          setGilsysCommandDetail(choice.title ?? "バフ選択", `チャージ ${charge} / ${need}`, `${choice.desc ?? ""}\n${choice.progress_text ?? ""}`, "◆", choose);
+        }
+      };
+      list.appendChild(row);
+    });
+    const first = list.querySelector(".gilsys-list-row");
+    if (first) first.click();
+  };
+
+  const oldHud = window.updateGilsysBattleHud;
+  if (typeof oldHud === "function") {
+    window.updateGilsysBattleHud = function(data) {
+      oldHud(data);
+      if (data?.side === "self") window.refreshGilsysDollChargeUI(data);
+    };
+  }
+  document.addEventListener("DOMContentLoaded", () => window.refreshGilsysDollChargeUI());
+})();
+</script><style id="gilsys-popup-unflip-style">
+#battleStage .sprite.enemy.job-image .damage-popup,
+#battleStage .sprite.enemy.job-image .heal-popup,
+#battleStage .sprite.enemy.job-image .summon-popup,
+#battleStage .sprite.enemy.job-image .shikigami-special-popup {
+  transform: scaleX(-1);
+}
+</style>
 </body>
 </html>
+
+
+
+
+
+
+
