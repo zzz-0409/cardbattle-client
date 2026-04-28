@@ -104,6 +104,31 @@
     .skillRow{ margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #555;}
     .skillName{ color:#81d4fa; font-size:16px; }
     .skillDesc{ white-space:pre-line; font-size:13px; color:#ddd; }
+    .chargeProgressWrap{ margin-top:8px; }
+    .chargeProgressHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-size:12px;
+      color:#ffd28a;
+      margin-bottom:4px;
+    }
+    .chargeProgressBar{
+      width:100%;
+      height:8px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.14);
+      overflow:hidden;
+    }
+    .chargeProgressFill{
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg, #ffb347, #ffe082);
+    }
+    .chargeProgressFill.max{
+      background:linear-gradient(90deg, #ff6f61, #ffd54f);
+    }
 
     /* ★ スキル使用済み（回数0）のボタン */
     .skillRow button.used-up{
@@ -234,16 +259,16 @@
     }
 
     .shop-card.theme-gold{
-      border-color: rgba(255,219,94,0.74);
+      border-color: rgba(255,244,124,0.95);
       background:
-        radial-gradient(circle at 15% 18%, rgba(255,250,196,0.28), transparent 16%),
-        radial-gradient(circle at 80% 16%, rgba(255,215,84,0.42), transparent 24%),
-        radial-gradient(circle at 50% 120%, rgba(255,176,44,0.26), transparent 28%),
-        linear-gradient(135deg, rgba(110,76,18,0.98), rgba(54,33,10,0.99));
+        radial-gradient(circle at 15% 18%, rgba(255,255,218,0.58), transparent 18%),
+        radial-gradient(circle at 80% 16%, rgba(255,244,95,0.62), transparent 26%),
+        radial-gradient(circle at 50% 120%, rgba(255,196,38,0.44), transparent 30%),
+        linear-gradient(135deg, rgba(255,228,63,0.98), rgba(206,135,18,0.96), rgba(58,35,6,0.99));
       box-shadow:
         0 14px 28px rgba(0,0,0,0.32),
-        0 0 28px rgba(255,208,74,0.24),
-        inset 0 1px 0 rgba(255,248,214,0.16);
+        0 0 34px rgba(255,228,74,0.42),
+        inset 0 1px 0 rgba(255,255,220,0.34);
     }
 
     .shop-card.theme-rainbow{
@@ -472,7 +497,7 @@
   background:
     linear-gradient(90deg, rgba(6, 8, 12, 0.58) 0%, rgba(8, 10, 16, 0.12) 39%, rgba(8, 10, 16, 0.18) 62%, rgba(6, 8, 12, 0.62) 100%),
     linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.30) 100%),
-    url("Assets/ChatGPT Image 2026年4月23日 22_21_11.png") center center / cover no-repeat;
+    url("Assets/fe-zu0and1haikei.png") center center / cover no-repeat;
   color: #ecd9b1;
 }
 
@@ -887,7 +912,7 @@
   background:
     linear-gradient(90deg, rgba(6, 8, 12, 0.58) 0%, rgba(8, 10, 16, 0.12) 39%, rgba(8, 10, 16, 0.18) 62%, rgba(6, 8, 12, 0.62) 100%),
     linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.30) 100%),
-    url("Assets/ChatGPT Image 2026年4月23日 22_21_11.png") center center / cover no-repeat;
+    url("Assets/fe-zu0and1haikei.png") center center / cover no-repeat;
   color: #ecd9b1;
   padding: 28px 36px 24px;
 }
@@ -904,7 +929,7 @@
   background:
     linear-gradient(90deg, rgba(6, 8, 12, 0.30) 0%, rgba(8, 10, 16, 0.10) 38%, rgba(8, 10, 16, 0.12) 62%, rgba(6, 8, 12, 0.38) 100%),
     linear-gradient(180deg, rgba(255, 245, 220, 0.05) 0%, rgba(0, 0, 0, 0.16) 100%),
-    url("Assets/ChatGPT Image 2026年4月23日 23_14_58.png") center center / cover no-repeat;
+    url("Assets/Battlehaikei.png") center center / cover no-repeat;
 }
 
 #phase1Title{
@@ -1534,6 +1559,19 @@ body.debug #battleStage {
   100% { transform: translateX(0); filter:brightness(1); }
 }
 
+@keyframes enemyJobAttackMove{
+  0%   { transform: scaleX(-1) translateX(0); }
+  50%  { transform: scaleX(-1) translateX(var(--attackX)); }
+  100% { transform: scaleX(-1) translateX(0); }
+}
+
+@keyframes enemyJobHitShake{
+  0%   { transform: scaleX(-1) translateX(0); filter:brightness(1); }
+  30%  { transform: scaleX(-1) translateX(-4px); filter:brightness(1.25); }
+  60%  { transform: scaleX(-1) translateX(4px);  filter:brightness(1.25); }
+  100% { transform: scaleX(-1) translateX(0); filter:brightness(1); }
+}
+
 @keyframes healGlow{
   0%   { filter:brightness(1); }
   40%  { filter:brightness(1.35); }
@@ -1894,6 +1932,1077 @@ input:focus, select:focus{
   button { padding: 10px 14px; }
 }
 
+
+
+/* =========================================================
+   ★ ギルシス 対戦画面 完全再現UI 2026-04
+   画像モックアップの構成をCSS/HTMLで再現
+========================================================= */
+body:has(#phase2.gilsys-battle-ui[style*="display: block"]),
+body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
+  padding: 0;
+  margin: 0;
+  background: #05080d;
+}
+
+#phase2.gilsys-battle-ui {
+  --gilsys-edge: 18px;
+  --gilsys-side-width: clamp(220px, 16vw, 280px);
+  --gilsys-center-inset: calc(var(--gilsys-side-width) + 62px);
+  --gilsys-stage-top: 10px;
+  --gilsys-command-bottom: 72px;
+  --gilsys-command-height: 220px;
+  --gilsys-stage-gap: 20px;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  width: 100vw;
+  height: 100vh;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  color: #f4e6c7;
+  font-family: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255, 199, 111, 0.10), transparent 28%),
+    linear-gradient(90deg, rgba(3, 8, 13, 0.98) 0%, rgba(6, 10, 15, 0.20) 17%, rgba(6, 10, 15, 0.16) 83%, rgba(3, 8, 13, 0.98) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.52)),
+    url("Assets/Battlehaikei.png") center center / cover no-repeat;
+}
+
+#phase2.gilsys-battle-ui::before {
+  content: "";
+  position: absolute;
+  inset: 8px 16px 52px;
+  border: 1px solid rgba(184, 130, 62, 0.60);
+  box-shadow: inset 0 0 0 1px rgba(255, 225, 160, 0.05), 0 0 42px rgba(0,0,0,0.55);
+  pointer-events: none;
+  z-index: 1;
+}
+
+#phase2.gilsys-battle-ui::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), transparent 13%, transparent 88%, rgba(255,215,130,0.05));
+  pointer-events: none;
+  z-index: 2;
+}
+
+#phase2.gilsys-battle-ui > * { position: absolute; z-index: 3; box-sizing: border-box; }
+
+.gilsys-battle-header {
+  left: 18px;
+  right: 18px;
+  top: 14px;
+  height: 48px;
+  display: grid;
+  grid-template-columns: 360px 1fr 330px;
+  align-items: center;
+  border-bottom: 1px solid rgba(198, 142, 66, 0.72);
+}
+
+.gilsys-battle-title {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #f1e6d3;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.55), 0 0 16px rgba(255,210,120,0.10);
+}
+
+.gilsys-battle-tags { display: flex; gap: 12px; justify-content: center; }
+.gilsys-battle-tags span {
+  padding: 8px 18px;
+  border-radius: 5px;
+  border: 1px solid rgba(185, 128, 62, 0.80);
+  background: linear-gradient(180deg, rgba(33,26,20,0.96), rgba(12,13,18,0.96));
+  color: #ffd98d;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: inset 0 1px 0 rgba(255,235,180,0.12), 0 0 12px rgba(0,0,0,0.30);
+}
+.gilsys-battle-note { text-align: right; color: #efe5d3; font-size: 15px; }
+
+.gilsys-side-panel {
+  top: auto;
+  bottom: var(--gilsys-command-bottom);
+  width: var(--gilsys-side-width);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: visible;
+  max-height: calc(100vh - var(--gilsys-command-bottom) - 24px);
+  z-index: 30 !important;
+}
+.gilsys-side-left { left: var(--gilsys-edge); }
+.gilsys-side-right { right: var(--gilsys-edge); }
+
+.gilsys-info-block {
+  padding: 0 6px;
+  color: rgba(245, 234, 213, 0.96);
+  min-height: 0;
+  flex: 0 0 auto;
+}
+.gilsys-info-block h3 {
+  margin: 0 0 7px;
+  font-size: 17px;
+  line-height: 1.1;
+  color: #fff2d8;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+.gilsys-info-block h3 span {
+  display: inline-grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  margin-right: 4px;
+  border-radius: 50%;
+  color: #ffd37a;
+  border: 1px solid rgba(255,211,122,0.75);
+  font-size: 14px;
+}
+.gilsys-info-block p {
+  margin: 0 0 8px 24px;
+  color: rgba(239,226,202,0.86);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.gilsys-mini-status,
+.gilsys-side-detail-card,
+.gilsys-round-card {
+  border: 1px solid rgba(176, 124, 58, 0.72) !important;
+  border-radius: 6px !important;
+  background: linear-gradient(180deg, rgba(9,16,22,0.88), rgba(6,9,13,0.92)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,226,164,0.05), 0 12px 24px rgba(0,0,0,0.20);
+}
+.gilsys-mini-status {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+  max-height: min(320px, calc(100vh - var(--gilsys-command-bottom) - 56px));
+  overflow: auto;
+  padding: 10px !important;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #f3e0bd;
+  position: relative;
+  z-index: 31;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.gilsys-mini-status button {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  min-width: 42px;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid rgba(225, 179, 99, 0.72);
+  border-radius: 4px;
+  background: rgba(18, 22, 28, 0.82);
+  color: #ffe1a6;
+  font-size: 12px;
+  font-weight: 800;
+}
+.gilsys-simple-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.gilsys-simple-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.gilsys-simple-title strong,
+.gilsys-simple-title span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gilsys-simple-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(86px, 0.9fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.gilsys-simple-player,
+.gilsys-simple-doll {
+  min-width: 0;
+}
+.gilsys-simple-doll {
+  border-left: 1px solid rgba(255,255,255,0.16);
+  padding-left: 8px;
+}
+.gilsys-simple-empty {
+  display: none;
+}
+
+.gilsys-visible-log {
+  display: block !important;
+  margin: 0;
+  min-height: 0;
+}
+.gilsys-visible-log .log-box {
+  display: none;
+  height: 130px;
+  padding: 10px;
+  background: linear-gradient(180deg, rgba(8,13,18,0.90), rgba(5,8,12,0.96));
+  border: 1px solid rgba(176, 124, 58, 0.72);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: "Yu Gothic", sans-serif;
+  line-height: 1.55;
+  overflow-y: auto;
+}
+.gilsys-visible-log #battleBox { display: block; }
+.gilsys-visible-log .log-title { color: #ffe0a2; font-weight: 900; margin-bottom: 4px; }
+.gilsys-log-block {
+  flex: 1 1 auto;
+  min-height: 120px;
+  overflow: hidden;
+}
+.gilsys-log-block .gilsys-visible-log,
+.gilsys-log-block .log-box {
+  height: 100%;
+}
+
+.gilsys-round-card {
+  width: 142px;
+  margin-left: 24px;
+  padding: 12px 16px;
+  text-align: center;
+  font-weight: 900;
+  color: #f6e8ce;
+  text-transform: uppercase;
+}
+.gilsys-round-card #roundLabel { font-size: 15px; margin-bottom: 7px; }
+.gilsys-round-card #turnLabel { font-size: 24px; line-height: 1; }
+
+#battleStage.gilsys-battle-stage {
+  left: var(--gilsys-center-inset);
+  right: var(--gilsys-center-inset);
+  top: var(--gilsys-stage-top);
+  bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + var(--gilsys-stage-gap));
+  height: auto;
+  min-height: 0;
+  display: block;
+  overflow: hidden;
+  border-left: 1px solid rgba(181,129,62,0.55);
+  border-right: 1px solid rgba(181,129,62,0.55);
+  border-bottom: 1px solid rgba(181,129,62,0.80);
+  background:
+    radial-gradient(circle at 50% 100%, rgba(252,171,83,0.10), transparent 36%),
+    linear-gradient(90deg, rgba(0,0,0,0.22), transparent 22%, transparent 78%, rgba(0,0,0,0.26));
+}
+
+.gilsys-top-status {
+  position: absolute;
+  top: 8px;
+  width: 44%;
+  height: 132px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  z-index: 8;
+}
+.gilsys-top-status-self { left: 16px; }
+.gilsys-top-status-enemy { right: 16px; justify-content: flex-end; }
+.gilsys-status-main { flex: 1; min-width: 0; padding-top: 8px; }
+.gilsys-status-name-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.gilsys-status-name-row.enemy { justify-content: flex-end; text-align: right; }
+.gilsys-status-name {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff0dc;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.7);
+}
+.gilsys-status-rank { font-size: 13px; color: #ffe1a6; margin-top: 2px; }
+.gilsys-rank-medal { color: #65b9ff; font-size: 24px; filter: drop-shadow(0 0 8px rgba(92,171,255,0.55)); }
+.gilsys-portrait {
+  flex: 0 0 92px;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 2px solid rgba(210,158,83,0.95);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,233,191,0.26), transparent 28%),
+    linear-gradient(135deg, #171b21, #05080c);
+  box-shadow: 0 0 0 5px rgba(20,13,8,0.58), 0 0 24px rgba(234,172,81,0.18);
+  position: relative;
+}
+.gilsys-portrait::after {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+}
+.gilsys-portrait-self::before { content: "♟"; }
+.gilsys-portrait-enemy::before { content: "♞"; }
+.gilsys-portrait::before {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  color: rgba(239,217,181,0.82);
+  z-index: 1;
+}
+.gilsys-hp-text { margin-top: 6px; font-size: 19px; font-weight: 900; }
+.gilsys-bar {
+  height: 13px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(194, 143, 76, 0.75);
+  background: rgba(0,0,0,0.72);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.65);
+}
+.gilsys-bar > div {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #3eda45, #9cff63);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 0 14px rgba(88,255,85,0.30);
+}
+.gilsys-param-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 11px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(179,126,59,0.40);
+  font-size: 14px;
+  color: #f7e2c0;
+}
+.gilsys-param-row.enemy { justify-content: flex-end; gap: 28px; }
+.gilsys-param-row b { color: #fff5d9; font-size: 16px; margin-left: 4px; }
+.gilsys-status-buff-strip {
+  min-height: 28px;
+  margin-top: 8px;
+  justify-content: flex-start;
+}
+.gilsys-status-buff-strip.enemy {
+  justify-content: flex-end;
+}
+
+#battleStage .side {
+  position: absolute;
+  top: 142px;
+  bottom: 0;
+  width: 44%;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  z-index: 5;
+}
+#battleStage .side-self { left: 7%; justify-content: center; }
+#battleStage .side-enemy { right: 7%; justify-content: center; }
+#battleStage .main-unit { position: static; display:flex; flex-direction:column; align-items:center; gap:0; justify-content:flex-end; }
+
+#battleStage .sprite {
+  position: relative;
+  width: clamp(140px, 16vw, 260px);
+  height: min(300px, calc(100vh - 520px));
+  min-height: 170px;
+  margin: 0;
+  border-radius: 32px 32px 12px 12px;
+  border: none;
+  background: transparent !important;
+  box-shadow: none;
+  overflow: visible;
+}
+#battleStage .sprite.player::before,
+#battleStage .sprite.enemy::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 88%, rgba(0,0,0,0.55), transparent 48%),
+    linear-gradient(160deg, rgba(255,255,255,0.05), transparent 30%);
+  clip-path: polygon(44% 4%, 61% 8%, 72% 21%, 78% 42%, 92% 92%, 67% 98%, 51% 78%, 34% 100%, 10% 95%, 20% 42%, 27% 18%);
+  border-radius: 36% 36% 10% 10%;
+}
+#battleStage .sprite.player::before {
+  background:
+    radial-gradient(circle at 58% 23%, rgba(255,88,48,0.55), transparent 7%),
+    linear-gradient(135deg, #10141c 0%, #1d2430 34%, #07090d 66%, #2d241b 100%);
+  filter: drop-shadow(0 26px 18px rgba(0,0,0,0.55));
+}
+#battleStage .sprite.enemy::before {
+  background:
+    radial-gradient(circle at 43% 25%, rgba(230,230,235,0.75), transparent 12%),
+    linear-gradient(135deg, #d7d3ca 0%, #323842 28%, #15171d 70%, #b28a57 100%);
+  filter: drop-shadow(0 26px 18px rgba(0,0,0,0.55));
+}
+#battleStage .sprite.player::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 22%;
+  width: 9px;
+  height: 32%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffedb0, #f5572d, #5b130c);
+  transform: rotate(-14deg);
+  box-shadow: 0 0 16px rgba(255,76,34,0.80);
+}
+#battleStage .sprite.enemy::after {
+  content: "";
+  position: absolute;
+  left: -26%;
+  top: 58%;
+  width: 95%;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #f2f2f2, #b8c4d8);
+  transform: rotate(-32deg);
+  box-shadow: 0 0 12px rgba(255,255,255,0.45);
+}
+#battleStage .sprite.job-image::before,
+#battleStage .sprite.job-image::after {
+  content: none !important;
+}
+#battleStage .sprite.job-image {
+  filter: drop-shadow(0 26px 18px rgba(0,0,0,0.55));
+}
+#battleStage .sprite.job-warrior { background: url("Assets/kyara/sennsi.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-knight { background: url("Assets/kyara/kisi.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-priest { background: url("Assets/kyara/souryo.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-thief { background: url("Assets/kyara/touzoku.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-mage { background: url("Assets/kyara/madousi.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-onmyoji { background: url("Assets/kyara/onnmyouji.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-alchemist { background: url("Assets/kyara/rennkinnjyutusi.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-dollmaster { background: url("Assets/kyara/ninngyoutukai.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-madman { background: url("Assets/kyara/kyoujinn.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-archer { background: url("Assets/kyara/kyuuhei.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.enemy.job-image {
+  transform: scaleX(-1);
+}
+#battleStage .sprite.enemy.job-image.attack,
+#battleStage .sprite.enemy.job-image.hit,
+#battleStage .sprite.enemy.job-image.heal {
+  transform: scaleX(-1);
+}
+#battleStage .sprite.enemy.job-image.attack {
+  animation: enemyJobAttackMove 0.26s ease-in-out;
+}
+#battleStage .sprite.enemy.job-image.hit {
+  animation: enemyJobHitShake 0.26s ease-in-out;
+}
+#battleStage .sprite .hp-bar { display: none; }
+#battleStage .sprite-label-row,
+#battleStage .sprite-label { display:none; }
+#battleStage .equip-area,
+#battleStage .special-equip-area {
+  position: absolute;
+  z-index: 10;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  gap:6px;
+  width: 46px;
+  max-height: calc(100% - 156px);
+  overflow: visible;
+}
+#battleStage .equip-area {
+  bottom: 18px;
+}
+#battleStage .special-equip-area {
+  bottom: 72px;
+}
+#battleStage .equip-area:not(.enemy),
+#battleStage .special-equip-area[data-side="self"]:not(.doll) {
+  left: 12px;
+}
+#battleStage .equip-area.enemy,
+#battleStage .special-equip-area.enemy[data-side="enemy"]:not(.doll) {
+  right: 12px;
+}
+#battleStage .equip-slot {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  border: 1px solid rgba(210,158,83,0.62);
+  background: rgba(6,10,14,0.70);
+  color: #e6d2aa;
+  font-size: 11px;
+  display: grid;
+  place-items: center;
+}
+#battleStage .special-equip-slot {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+}
+#battleStage .equip-slot-icon,
+#battleStage .equip-slot-icon img,
+#battleStage .special-equip-slot-icon,
+#battleStage .special-equip-slot-icon img {
+  width: 26px;
+  height: 26px;
+}
+#battleStage .sprite.doll {
+  width: 129px;
+  height: 180px;
+  margin-bottom: 0;
+  opacity: 1;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none;
+}
+#battleStage #dollSprite,
+#battleStage #dollSpriteEnemy {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+#battleStage .sprite.doll::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: url("Assets/kyara/ninngou.png") center bottom / contain no-repeat;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 10px rgba(0,0,0,0.45));
+}
+#battleStage .sprite.doll::after {
+  content: none !important;
+}
+#battleStage #dollSpriteEnemy::before {
+  transform: scaleX(-1);
+}
+#battleStage .sprite.doll .hp-bar {
+  display: block;
+  top: -14px;
+  left: 7px;
+  right: 7px;
+  height: 8px;
+  z-index: 15;
+  background: rgba(8,8,12,0.88);
+  border-color: rgba(224,170,255,0.72);
+}
+#battleStage .sprite.doll .doll-bar {
+  top: -14px;
+}
+#battleStage .sprite.doll .special-equip-area.doll {
+  position: absolute;
+  left: -50px;
+  right: auto;
+  bottom: 0;
+  top: auto;
+  transform: none;
+  margin-top: 0;
+  width: 42px;
+  max-width: 42px;
+  max-height: none;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: nowrap;
+  z-index: 16;
+}
+#battleStage .side-enemy .sprite.doll .special-equip-area.doll {
+  left: auto;
+  right: -50px;
+}
+#battleStage .sprite.doll .special-equip-slot {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+}
+#battleStage .sprite.doll .special-equip-slot.boroboro {
+  border-color: rgba(160,160,160,0.72);
+  color: #9b9b9b;
+  filter: grayscale(1) brightness(0.62);
+  opacity: 0.72;
+}
+#battleStage .sprite.doll .special-equip-slot.boroboro::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  pointer-events: none;
+  background: linear-gradient(135deg, transparent 45%, rgba(230,230,230,0.55) 48%, transparent 52%);
+}
+#battleStage .sprite.doll .special-equip-slot-icon,
+#battleStage .sprite.doll .special-equip-slot-icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.gilsys-vs-center {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 14;
+  pointer-events: none;
+  min-width: 118px;
+  padding: 7px 14px 8px;
+  border: 1px solid rgba(198, 142, 66, 0.66);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(9,13,18,0.82), rgba(4,7,11,0.78));
+  box-shadow: inset 0 1px 0 rgba(255,226,164,0.08), 0 8px 18px rgba(0,0,0,0.22);
+}
+.gilsys-vs-emblem {
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 14px;
+  border-radius: 22px;
+  transform: rotate(45deg);
+  border: 1px solid rgba(198, 142, 66, 0.88);
+  background: linear-gradient(135deg, rgba(26,20,14,0.96), rgba(7,9,13,0.94));
+  box-shadow: 0 0 26px rgba(0,0,0,0.60), inset 0 0 18px rgba(240,176,77,0.10);
+  color: #ffd27a;
+  font: 900 38px Georgia, serif;
+  text-shadow: 0 0 16px rgba(255,201,106,0.25);
+}
+.gilsys-vs-emblem::first-letter { transform: rotate(-45deg); }
+.gilsys-vs-emblem { line-height: 1; }
+.gilsys-vs-emblem { writing-mode: horizontal-tb; }
+.gilsys-vs-round {
+  font-size: 13px;
+  color: #ffd580;
+  letter-spacing: 0.10em;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.gilsys-vs-turn {
+  margin-top: 3px;
+  font-size: 15px;
+  color: #f6e8ce;
+  letter-spacing: 0.10em;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.gilsys-vs-timer { display: none !important; }
+
+.gilsys-command-panel {
+  left: var(--gilsys-center-inset);
+  right: var(--gilsys-center-inset);
+  bottom: var(--gilsys-command-bottom);
+  height: var(--gilsys-command-height);
+  display: grid;
+  grid-template-columns: 150px minmax(160px, 0.9fr) minmax(210px, 1fr);
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(184,130,62,0.72);
+  border-top: none;
+  background: linear-gradient(180deg, rgba(5,12,18,0.91), rgba(3,7,11,0.96));
+  box-shadow: inset 0 1px 0 rgba(255,226,164,0.05), 0 -18px 28px rgba(0,0,0,0.22);
+  z-index: 12 !important;
+}
+.gilsys-action-column { display: flex; flex-direction: column; gap: 9px; }
+.gilsys-hidden-action { display: none !important; }
+.gilsys-action-btn {
+  position: relative;
+  height: 46px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px !important;
+  color: #fff0ce !important;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-align: left;
+  border-radius: 4px !important;
+  border: 1px solid rgba(245,200,116,0.82) !important;
+  background: linear-gradient(180deg, var(--btn-hi), var(--btn-lo)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -3px 0 rgba(0,0,0,0.38), 0 0 16px var(--btn-glow);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+}
+.gilsys-action-btn span { font-size: 21px; text-align: center; filter: drop-shadow(0 0 7px rgba(255,255,255,0.25)); }
+.gilsys-action-btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.14); }
+.gilsys-action-btn:active:not(:disabled) { transform: translateY(2px); }
+.gilsys-action-btn:disabled { opacity: 0.48; filter: grayscale(0.6); }
+.action-skill { --btn-hi:#8b241c; --btn-lo:#3a0909; --btn-glow:rgba(255,68,42,0.32); }
+.action-level { --btn-hi:#9a650d; --btn-lo:#493008; --btn-glow:rgba(255,190,76,0.28); }
+.action-item { --btn-hi:#315a24; --btn-lo:#0b2913; --btn-glow:rgba(74,255,124,0.20); }
+.action-shop { --btn-hi:#a56513; --btn-lo:#4a2607; --btn-glow:rgba(255,176,65,0.28); }
+
+.gilsys-command-list-panel,
+.gilsys-command-detail-panel {
+  min-width: 0;
+  border: 1px solid rgba(184,130,62,0.66);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(7,13,18,0.92), rgba(5,8,12,0.96));
+  box-shadow: inset 0 0 0 1px rgba(255,226,164,0.04);
+}
+.gilsys-command-list-panel { padding: 12px; overflow: hidden; }
+.gilsys-panel-title {
+  margin-bottom: 8px;
+  color: #ffd580;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+.gilsys-command-list { display: flex; flex-direction: column; gap: 0; max-height: 165px; overflow-y: auto; padding-right: 4px; }
+.gilsys-list-row {
+  min-height: 42px;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 0 8px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(184,130,62,0.30) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #f7e4c6 !important;
+  font-size: 15px;
+  text-align: left;
+}
+.gilsys-list-row:hover,
+.gilsys-list-row.is-selected {
+  background: linear-gradient(90deg, rgba(149,91,28,0.38), rgba(149,91,28,0.08)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,204,110,0.20);
+}
+.gilsys-list-row b { color: #ffde9b; font-size: 14px; font-weight: 800; }
+.gilsys-list-row span:not(.gilsys-row-icon) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gilsys-list-row b {
+  max-width: 86px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gilsys-row-icon { display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,0.08); }
+
+.gilsys-command-detail-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: 66px 1fr;
+  grid-template-rows: 1fr 42px;
+  gap: 8px 12px;
+  padding: 16px 14px 10px;
+}
+.gilsys-command-detail-panel.is-inventory-list {
+  display: block;
+  overflow: hidden;
+  padding: 12px;
+  height: 100%;
+}
+.gilsys-detail-inventory-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.gilsys-detail-inventory-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #ffd580;
+  font-weight: 900;
+}
+.gilsys-detail-inventory-head b {
+  color: #fff2dc;
+  font-size: 16px;
+}
+.gilsys-detail-inventory-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding-right: 4px;
+}
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card {
+  height: 132px;
+  min-height: 132px;
+  grid-template-columns: minmax(0, 1fr) 92px;
+  align-items: stretch;
+}
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-card-main,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-card-head,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-title-wrap {
+  min-height: 0;
+}
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-item-desc {
+  height: 48px;
+  max-height: 48px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area {
+  align-self: stretch;
+  justify-content: flex-end;
+  transform: none;
+}
+.gilsys-detail-inventory-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.gilsys-detail-inventory-tools button {
+  background: rgba(10,14,22,.86);
+  border: 1px solid rgba(231,178,86,.65);
+  border-radius: 8px;
+  color: #f7e8c6;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 7px 10px;
+}
+.gilsys-shop-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+  gap: 8px;
+  padding-right: 4px;
+}
+.gilsys-shop-icon-btn {
+  min-height: 48px;
+  border: 1px solid rgba(231,178,86,.62);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(24,28,34,.92), rgba(7,10,14,.96));
+  color: #f7e8c6;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  position: relative;
+  overflow: hidden;
+}
+.gilsys-shop-icon-btn.theme-bronze{ background:linear-gradient(135deg,rgba(81,55,29,.96),rgba(16,19,23,.98)); border-color:rgba(196,143,71,.78); }
+.gilsys-shop-icon-btn.theme-silver{ background:linear-gradient(135deg,rgba(76,88,101,.96),rgba(16,19,24,.98)); border-color:rgba(185,207,224,.82); }
+.gilsys-shop-icon-btn.theme-gold{ background:linear-gradient(135deg,rgba(255,232,71,.98),rgba(213,145,18,.96),rgba(48,31,6,.98)); border-color:rgba(255,238,112,.96); }
+.gilsys-shop-icon-btn.theme-rainbow{ background:linear-gradient(135deg,rgba(119,39,129,.94),rgba(22,80,118,.95),rgba(24,20,36,.98)); border-color:rgba(132,236,255,.88); }
+.gilsys-shop-icon-btn.theme-rainbow-blue{ background:linear-gradient(135deg,rgba(24,72,124,.96),rgba(21,117,119,.94),rgba(12,18,31,.98)); border-color:rgba(120,225,255,.9); }
+.gilsys-shop-icon-btn.theme-bronze .shop-icon{ background:rgba(255,205,128,.16); border-color:rgba(255,205,128,.38); box-shadow:0 0 14px rgba(196,143,71,.24); }
+.gilsys-shop-icon-btn.theme-silver .shop-icon{ background:rgba(210,231,245,.16); border-color:rgba(210,231,245,.42); box-shadow:0 0 14px rgba(185,207,224,.24); }
+.gilsys-shop-icon-btn.theme-gold .shop-icon{ background:rgba(255,246,146,.34); border-color:rgba(255,246,146,.72); box-shadow:0 0 20px rgba(255,236,92,.52); }
+.gilsys-shop-icon-btn.theme-rainbow .shop-icon{ background:rgba(132,236,255,.16); border-color:rgba(202,132,255,.48); box-shadow:0 0 18px rgba(132,236,255,.32); }
+.gilsys-shop-icon-btn.theme-rainbow-blue .shop-icon{ background:rgba(120,225,255,.18); border-color:rgba(120,225,255,.5); box-shadow:0 0 18px rgba(120,225,255,.32); }
+#phase2.gilsys-battle-ui .gilsys-shop-icon-btn.theme-bronze{ background:linear-gradient(135deg,rgba(81,55,29,.96),rgba(16,19,23,.98)) !important; }
+#phase2.gilsys-battle-ui .gilsys-shop-icon-btn.theme-silver{ background:linear-gradient(135deg,rgba(76,88,101,.96),rgba(16,19,24,.98)) !important; }
+#phase2.gilsys-battle-ui .gilsys-shop-icon-btn.theme-gold{ background:linear-gradient(135deg,rgba(255,232,71,.98),rgba(213,145,18,.96),rgba(48,31,6,.98)) !important; }
+#phase2.gilsys-battle-ui .gilsys-shop-icon-btn.theme-rainbow{ background:linear-gradient(135deg,rgba(119,39,129,.94),rgba(22,80,118,.95),rgba(24,20,36,.98)) !important; }
+#phase2.gilsys-battle-ui .gilsys-shop-icon-btn.theme-rainbow-blue{ background:linear-gradient(135deg,rgba(24,72,124,.96),rgba(21,117,119,.94),rgba(12,18,31,.98)) !important; }
+.gilsys-shop-icon-btn:hover,
+.gilsys-shop-icon-btn.is-selected {
+  box-shadow: inset 0 0 0 1px rgba(255,210,122,.4), 0 0 14px rgba(255,196,86,.2);
+  border-color: rgba(255,210,122,.9);
+}
+.gilsys-shop-icon-btn .shop-icon {
+  width: 34px;
+  height: 34px;
+  font-size: 23px;
+}
+.gilsys-shop-detail-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gilsys-shop-detail-card .shop-card {
+  margin: 0;
+}
+.gilsys-shop-detail-card .shop-buy-area {
+  margin-top: auto;
+}
+.gilsys-detail-icon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 30px;
+  background: radial-gradient(circle, rgba(255,113,47,0.92), rgba(83,12,6,0.92));
+  box-shadow: 0 0 18px rgba(255,91,35,0.30);
+}
+.gilsys-detail-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin: 0 0 10px; }
+.gilsys-detail-head span { font-size: 21px; font-weight: 900; color: #fff2dc; }
+.gilsys-detail-head b { color:#ffd580; font-size: 13px; }
+.gilsys-detail-text p { margin: 0; font-size: 15px; line-height: 1.65; color: #efe0c6; }
+.gilsys-detail-text {
+  min-height: 0;
+  overflow: hidden;
+}
+.gilsys-detail-text p {
+  max-height: 86px;
+  overflow-y: auto;
+}
+.gilsys-confirm-btn {
+  grid-column: 1 / -1;
+  justify-self: end;
+  width: min(240px, 100%);
+  height: 39px;
+  padding: 0 !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(238, 183, 91, 0.95) !important;
+  color: #ffd56f !important;
+  font-size: 19px;
+  font-weight: 900;
+  background: linear-gradient(180deg, #18257a, #0b104b) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 0 14px rgba(35,59,180,0.25);
+  clip-path: polygon(18px 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 18px 100%, 0 50%);
+}
+
+.gilsys-side-detail-card { min-height: 82px; padding: 12px; font-size: 12px; line-height: 1.55; }
+.gilsys-timer-ring {
+  width: 78px;
+  height: 78px;
+  margin: 8px 0 0 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 7px solid rgba(236, 218, 187, 0.86);
+  border-top-color: #c78239;
+  background: rgba(10,13,18,0.75);
+  box-shadow: 0 0 18px rgba(0,0,0,0.35), inset 0 0 16px rgba(0,0,0,0.55);
+}
+.gilsys-timer-ring span { font-size: 24px; font-weight: 900; color:#fff2df; }
+
+.gilsys-bottom-bar {
+  left: var(--gilsys-center-inset);
+  right: var(--gilsys-edge);
+  bottom: 14px;
+  height: 44px;
+  display: grid;
+  grid-template-columns: 130px 280px 1fr 130px 130px;
+  gap: 14px;
+  align-items: center;
+}
+.gilsys-mini-btn,
+.gilsys-coin-display {
+  height: 36px;
+  border-radius: 5px;
+  border: 1px solid rgba(184,130,62,0.68);
+  background: linear-gradient(180deg, rgba(22,20,18,0.94), rgba(9,11,15,0.96));
+  color: #e8d4b0;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.gilsys-coin-display {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  color: #ffd778;
+  font-size: 18px;
+  font-weight: 900;
+}
+.gilsys-bottom-bar .gilsys-mini-btn:nth-of-type(2) { grid-column: 4; }
+.gilsys-bottom-bar .gilsys-mini-btn:nth-of-type(3) { grid-column: 5; }
+
+/* 既存ポップアップも世界観に寄せる */
+#skillBox, #itemBox, #shopBox, #statusDetailBox, .popup-inner {
+  background: linear-gradient(180deg, rgba(11,16,22,0.98), rgba(5,8,12,0.98)) !important;
+  border: 1px solid rgba(184,130,62,0.72) !important;
+  color: #f3e0bd !important;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,226,164,0.05) !important;
+}
+
+@media (max-width: 1180px) {
+  #phase2.gilsys-battle-ui {
+    --gilsys-side-width: 210px;
+    --gilsys-center-inset: 260px;
+    min-width: 1060px;
+    overflow-x: auto;
+  }
+  .gilsys-battle-header { width: 1120px; right: auto; }
+  .gilsys-side-panel { width: var(--gilsys-side-width); min-width: var(--gilsys-side-width); }
+  #battleStage.gilsys-battle-stage, .gilsys-command-panel { left: var(--gilsys-center-inset); right: var(--gilsys-center-inset); }
+  .gilsys-command-panel {
+    grid-template-columns: 138px minmax(135px, 0.85fr) minmax(180px, 1fr);
+    gap: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .gilsys-action-btn { font-size: 15px; }
+  .gilsys-bottom-bar { left: var(--gilsys-center-inset); right: 18px; }
+}
+
+
+/* =========================================================
+   ★ 修正 2026-04-28
+   ヘッダー説明文を消し、その分バトル画面全体を上に詰める
+========================================================= */
+#phase2.gilsys-battle-ui .gilsys-battle-header {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-side-panel {
+  top: auto !important;
+  bottom: var(--gilsys-command-bottom) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-side-panel .gilsys-info-block:not(:first-child),
+#phase2.gilsys-battle-ui .gilsys-side-panel .gilsys-info-block:first-child h3 {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-info-block p,
+#phase2.gilsys-battle-ui .gilsys-command-caption,
+#phase2.gilsys-battle-ui .gilsys-list-caption,
+#phase2.gilsys-battle-ui .gilsys-right-detail,
+#phase2.gilsys-battle-ui .gilsys-side-right .gilsys-info-block:nth-of-type(3),
+#phase2.gilsys-battle-ui .gilsys-side-right .gilsys-info-block:nth-of-type(5) {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+  top: var(--gilsys-stage-top) !important;
+  bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + var(--gilsys-stage-gap)) !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list {
+  overflow-y: auto;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card {
+  margin-bottom: 10px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inline-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inline-toolbar button,
+#phase2.gilsys-battle-ui .gilsys-category-row {
+  border: 1px solid rgba(245,200,116,0.72) !important;
+  background: linear-gradient(180deg, rgba(65,44,20,0.94), rgba(17,16,20,0.96)) !important;
+  color: #ffe7b3 !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  font-weight: 900;
+}
+
+#phase2.gilsys-battle-ui .gilsys-empty-row {
+  padding: 18px;
+  border: 1px dashed rgba(245,200,116,0.45);
+  color: rgba(244,230,199,0.82);
+  border-radius: 8px;
+  text-align: center;
+}
+
 </style>
 </head>
 <body>
@@ -1992,95 +3101,202 @@ input:focus, select:focus{
   タイトルに戻る
 </button>
 <!-- ================= フェーズ2：バトル画面 ================= -->
-<div id="phase2" style="display:none;">
-<!-- ★ バトルステージ -->
-<div id="battleStage">
-<!-- ★ ラウンド / ターン表示（中央上） -->
-<div id="roundTurnInfo">
-<div id="roundLabel">ラウンド 0</div>
-<div id="turnLabel">ターン 0</div>
-</div>
-<!-- ===== 左陣営（自分） ===== -->
-<div class="side side-self">
-<!-- ★ キャラ＋装備をまとめる -->
-<div class="main-unit">
-<div class="sprite player" id="playerSprite">
-<div class="hp-bar">
-<div class="hp-fill" id="playerHpFill"></div>
-</div>
-<div class="sprite-label-row">
-<div class="sprite-label">あなた</div>
-<div class="buff-strip buff-strip-sprite" data-side="self" id="buffStripSelf"></div>
-</div>
-</div>
-<!-- ★ 通常装備表示（自分） -->
-<div class="equip-area">
-<div class="equip-slot empty" title="通常装備（未装備）">
-          装備
+<div id="phase2" class="gilsys-battle-ui" style="display:none;">
+  <header class="gilsys-battle-header" aria-hidden="true"></header>
+
+  <aside class="gilsys-side-panel gilsys-side-left">
+    <section class="gilsys-info-block">
+      <h3><span>①</span> プレイヤー情報</h3>
+      <p>プレイヤー名、ランク、HP、攻撃力、防御力を表示</p>
+      <div class="status-simple gilsys-mini-status" id="my-status-simple"></div>
+    </section>
+
+    <section class="gilsys-info-block gilsys-log-block">
+      <h3><span>②</span> バトルログ</h3>
+      <p>行動の履歴を表示</p>
+      <div class="log-container gilsys-visible-log">
+        <div class="log-box" id="battleBox"><div class="log-title">⚔ 戦闘ログ</div></div>
+        <div class="log-box" id="systemBox"><div class="log-title">▶ システムログ</div></div>
+        <div class="log-box" id="debugBox"><div class="log-title">🛠 デバッグログ</div></div>
+      </div>
+    </section>
+
+    <section class="gilsys-info-block">
+      <h3><span>③</span> ターン・ラウンド情報</h3>
+      <p>現在のラウンド数とターン表示</p>
+      <div class="gilsys-round-card">
+        <div id="roundLabel">ラウンド 0</div>
+        <div id="turnLabel">ターン 0</div>
+      </div>
+    </section>
+
+    <section class="gilsys-info-block gilsys-command-caption">
+      <h3><span>④</span> コマンド選択エリア</h3>
+      <p>バトル中に選択できる行動コマンドを表示</p>
+    </section>
+
+    <section class="gilsys-info-block gilsys-list-caption">
+      <h3><span>⑤</span> 一覧エリア</h3>
+      <p>選択した項目の一覧を表示</p>
+    </section>
+  </aside>
+
+  <main id="battleStage" class="gilsys-battle-stage">
+    <section class="gilsys-top-status gilsys-top-status-self">
+      <div class="gilsys-portrait gilsys-portrait-self"></div>
+      <div class="gilsys-status-main">
+        <div class="gilsys-status-name-row">
+          <div>
+            <div class="gilsys-status-name" id="gilsysSelfName">あなた</div>
+            <div class="gilsys-status-rank" id="gilsysSelfJob">職業</div>
+          </div>
+          <div class="gilsys-rank-medal">◆</div>
         </div>
-</div>
-<!-- ★ 特殊装備（自分） ← ここが正解 -->
-<div class="special-equip-area" data-side="self"></div>
-</div>
-<!-- ★ 人形は横（中央寄り） -->
-<div class="sprite doll" id="dollSprite" style="display:none;">
-<div class="hp-bar doll-bar">
-<div class="hp-fill doll" id="dollHpFill"></div>
-</div>
-<div class="sprite-label">人形</div>
-<!-- ★ 人形下・特殊装備用 -->
-<div class="special-equip-area doll" data-side="self"></div>
-</div>
-</div>
-<!-- ===== 右陣営（相手） ===== -->
-<div class="side side-enemy">
-<!-- ★ 人形（中央寄り） -->
-<div class="sprite doll enemy" id="dollSpriteEnemy" style="display:none;">
-<div class="hp-bar doll-bar">
-<div class="hp-fill doll enemy" id="enemyDollHpFill"></div>
-</div>
-<div class="sprite-label">人形</div>
-<div class="special-equip-area doll enemy" data-side="enemy"></div>
-</div>
-<!-- ★ キャラ＋装備 -->
-<div class="main-unit">
-<div class="sprite enemy" id="enemySprite">
-<div class="hp-bar">
-<div class="hp-fill enemy" id="enemyHpFill"></div>
-</div>
-<div class="sprite-label-row">
-<div class="sprite-label">相手</div>
-<div class="buff-strip buff-strip-sprite" data-side="enemy" id="buffStripEnemy"></div>
-</div>
-</div>
-<!-- ★ 通常装備表示（相手） -->
-<div class="equip-area enemy">
-<div class="equip-slot empty" title="通常装備（未装備）">
-          装備
+        <div class="gilsys-hp-text" id="gilsysSelfHpText">HP 0 / 0</div>
+        <div class="gilsys-bar gilsys-hp"><div id="gilsysSelfHpFill"></div></div>
+        <div class="gilsys-param-row">
+          <span>⚔ 攻撃力 <b id="gilsysSelfAtk">0</b></span>
+          <span>🛡 防御力 <b id="gilsysSelfDef">0</b></span>
         </div>
-</div>
-<div class="special-equip-area enemy" data-side="enemy"></div>
-</div>
-</div>
-</div> <!-- ★★★ ← battleStage をここで閉じる（重要） -->
-<!-- ===== 簡易ステータス（自分 / 相手） ===== -->
-<div class="status-area">
-<!-- ===== 簡易ステータス（自分 / 相手） ===== -->
-<div class="status-area">
-<div class="status-simple" id="my-status-simple"></div>
-<div id="action-area">
-<button disabled="" id="atkBtn" onclick="attack()">攻撃</button>
-<button disabled="" id="skillBtn" onclick="openSkillUI()">スキル</button>
-<button disabled="" id="lvupBtn" onclick="tryLevelUp()">LvUP</button>
-<button disabled="" id="itemBtn" onclick="openItemUI()">持ち物</button>
-<button disabled="" id="shopBtn" onclick="openShop()">ショップ</button>
-</div>
-<div class="status-simple" id="enemy-status-simple"></div>
-</div>
-<div class="log-container">
-<div class="log-box" id="battleBox"><div class="log-title">⚔ 戦闘ログ</div></div>
-<div class="log-box" id="systemBox"><div class="log-title">▶ システムログ</div></div>
-<div class="log-box" id="debugBox"><div class="log-title">🛠 デバッグログ</div></div>
+        <div class="buff-strip gilsys-status-buff-strip" data-side="self" id="gilsysBuffStripSelf"></div>
+      </div>
+    </section>
+
+    <section class="gilsys-top-status gilsys-top-status-enemy">
+      <div class="gilsys-status-main">
+        <div class="gilsys-status-name-row enemy">
+          <div>
+            <div class="gilsys-status-name" id="gilsysEnemyName">対戦相手</div>
+            <div class="gilsys-status-rank" id="gilsysEnemyJob">職業</div>
+          </div>
+        </div>
+        <div class="gilsys-hp-text" id="gilsysEnemyHpText">HP 0 / 0</div>
+        <div class="gilsys-bar gilsys-hp"><div id="gilsysEnemyHpFill"></div></div>
+        <div class="gilsys-param-row enemy">
+          <span>⚔ 攻撃力 <b id="gilsysEnemyAtk">0</b></span>
+          <span>🛡 防御力 <b id="gilsysEnemyDef">0</b></span>
+        </div>
+        <div class="buff-strip gilsys-status-buff-strip enemy" data-side="enemy" id="gilsysBuffStripEnemy"></div>
+      </div>
+      <div class="gilsys-portrait gilsys-portrait-enemy"></div>
+    </section>
+
+    <div class="gilsys-vs-center">
+      <div class="gilsys-vs-emblem"></div>
+      <div class="gilsys-vs-round">ROUND <span id="gilsysCenterRound">0</span></div>
+      <div class="gilsys-vs-turn">TURN <span id="gilsysCenterTurn">0</span></div>
+    </div>
+
+    <!-- ===== 左陣営（自分） ===== -->
+    <div class="side side-self">
+      <div class="main-unit">
+        <div class="sprite player" id="playerSprite">
+          <div class="hp-bar"><div class="hp-fill" id="playerHpFill"></div></div>
+          <div class="sprite-label-row">
+            <div class="sprite-label">あなた</div>
+            <div class="buff-strip buff-strip-sprite" data-side="self" id="buffStripSelf"></div>
+          </div>
+        </div>
+        <div class="equip-area">
+          <div class="equip-slot empty" title="通常装備（未装備）">装備</div>
+        </div>
+        <div class="special-equip-area" data-side="self"></div>
+      </div>
+      <div class="sprite doll" id="dollSprite" style="display:none;">
+        <div class="hp-bar doll-bar"><div class="hp-fill doll" id="dollHpFill"></div></div>
+        <div class="sprite-label">人形</div>
+        <div class="special-equip-area doll" data-side="self"></div>
+      </div>
+    </div>
+
+    <!-- ===== 右陣営（相手） ===== -->
+    <div class="side side-enemy">
+      <div class="sprite doll enemy" id="dollSpriteEnemy" style="display:none;">
+        <div class="hp-bar doll-bar"><div class="hp-fill doll enemy" id="enemyDollHpFill"></div></div>
+        <div class="sprite-label">人形</div>
+        <div class="special-equip-area doll enemy" data-side="enemy"></div>
+      </div>
+      <div class="main-unit">
+        <div class="sprite enemy" id="enemySprite">
+          <div class="hp-bar"><div class="hp-fill enemy" id="enemyHpFill"></div></div>
+          <div class="sprite-label-row">
+            <div class="sprite-label">相手</div>
+            <div class="buff-strip buff-strip-sprite" data-side="enemy" id="buffStripEnemy"></div>
+          </div>
+        </div>
+        <div class="equip-area enemy">
+          <div class="equip-slot empty" title="通常装備（未装備）">装備</div>
+        </div>
+        <div class="special-equip-area enemy" data-side="enemy"></div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="gilsys-side-panel gilsys-side-right">
+    <section class="gilsys-info-block">
+      <h3><span>⑥</span> 相手情報</h3>
+      <p>相手のプレイヤー情報、HP、攻撃力、防御力を表示</p>
+      <div class="status-simple gilsys-mini-status" id="enemy-status-simple"></div>
+    </section>
+
+    <section class="gilsys-info-block gilsys-timer-block">
+      <h3><span>⑦</span> タイマー</h3>
+      <p>1ターンの制限時間をカウントダウン</p>
+      <div class="gilsys-timer-ring"><span id="gilsysRightTimer">28</span></div>
+    </section>
+
+    <section class="gilsys-info-block">
+      <h3><span>⑧</span> キャラクター表示エリア</h3>
+      <p>自キャラと相手キャラを表示</p>
+    </section>
+
+    <section class="gilsys-info-block gilsys-right-detail">
+      <h3><span>⑨</span> コマンド詳細</h3>
+      <p>選択中コマンドの効果・説明を表示</p>
+      <div id="gilsysSideCommandDetail" class="gilsys-side-detail-card">コマンドを選択してください</div>
+    </section>
+
+    <section class="gilsys-info-block">
+      <h3><span>⑩</span> 補助情報エリア</h3>
+      <p>Wi-Fi状況やメニューなどの補助情報</p>
+    </section>
+  </aside>
+
+  <section class="gilsys-command-panel">
+    <div id="action-area" class="gilsys-action-column">
+      <button disabled id="atkBtn" class="gilsys-action-btn action-skill" onclick="openAttackSkillPanel()"><span>⚔</span>攻撃/スキル</button>
+      <button disabled id="skillBtn" class="gilsys-hidden-action" onclick="openSkillUI()">スキル</button>
+      <button disabled id="lvupBtn" class="gilsys-action-btn action-level" onclick="tryLevelUp()"><span>⮝</span>レベルアップ</button>
+      <button disabled id="itemBtn" class="gilsys-action-btn action-item" onclick="openItemUI()"><span>⚗</span>持ち物</button>
+      <button disabled id="shopBtn" class="gilsys-action-btn action-shop" onclick="openShop()"><span>▣</span>ショップ</button>
+    </div>
+
+    <div class="gilsys-command-list-panel">
+      <div class="gilsys-panel-title" id="gilsysCommandListTitle">攻撃/スキル</div>
+      <div id="gilsysCommandList" class="gilsys-command-list">
+        <button class="gilsys-list-row" onclick="attack()"><span class="gilsys-row-icon">⚔</span><span>通常攻撃</span><b>基本</b></button>
+      </div>
+    </div>
+
+    <div class="gilsys-command-detail-panel">
+      <div class="gilsys-detail-icon" id="gilsysDetailIcon">🔥</div>
+      <div class="gilsys-detail-text">
+        <div class="gilsys-detail-head">
+          <span id="gilsysDetailTitle">ファイアボルト</span>
+          <b id="gilsysDetailMeta">攻撃力 120</b>
+        </div>
+        <p id="gilsysDetailDescription">敵単体に火属性の魔法ダメージ。攻撃スキル、レベルアップ、持ち物、ショップを選択できます。</p>
+      </div>
+      <button class="gilsys-confirm-btn" id="gilsysConfirmBtn" onclick="attack()">決定</button>
+    </div>
+  </section>
+
+  <footer class="gilsys-bottom-bar">
+    <button type="button" class="gilsys-mini-btn">💬 チャット</button>
+    <div class="gilsys-coin-display" id="gilsysCoinHud">🪙 コイン <span id="coins">0</span> 枚</div>
+    <button type="button" class="gilsys-mini-btn">☰ メニュー</button>
+    <button type="button" class="gilsys-mini-btn">⚙ 設定</button>
+  </footer>
 </div>
 <!-- ================= スキルポップアップ ================= -->
 <div id="skillPopup">
@@ -2310,6 +3526,7 @@ function updateRoundTurnUI() {
   const turnEl  = document.getElementById("turnLabel");
   if (roundEl) roundEl.textContent = `ラウンド ${roundCount}`;
   if (turnEl)  turnEl.textContent  = `ターン ${turnCount}`;
+  updateGilsysCenterTurn?.();
 }
 
 
@@ -3357,7 +4574,7 @@ const SKILLS = {
     },
     {
       name:"破滅の微笑",
-      desc:"我慢を付与。狂化時は我慢に加え相手HPを自分HPと同じにする"
+      desc:"我慢を付与。狂化時は累積被ダメの1/10攻撃力アップ（永続）"
     },
   ],
 
@@ -3512,6 +4729,7 @@ function showShikigamiSpecialEvent(data) {
 // ============================
 function updateDollSprite(side, job, doll) {
   const isSelf = side === "self";
+  const isDollmaster = job === "人形使い" || job === "人形遣い" || String(job) === "9";
 
   const dollBox = document.getElementById(
     isSelf ? "dollSprite" : "dollSpriteEnemy"
@@ -3523,23 +4741,26 @@ function updateDollSprite(side, job, doll) {
   if (!dollBox || !dollBar) return;
 
   // 人形使い以外は常に非表示
-  if (job !== "人形使い") {
+  if (!isDollmaster) {
     dollBox.style.display = "none";
     return;
   }
 
-  // 人形情報がまだ来ていない場合は何もしない
-  if (!doll) return;
-
   // 表示
   dollBox.style.display = "block";
+  const costumeArea = dollBox.querySelector(".special-equip-area.doll");
+  if (costumeArea && doll?.costumes) {
+    costumeArea.innerHTML = buildDollSpecialEquipHTML(doll);
+  }
 
-  const ratio = doll.durability / doll.max_durability;
+  const durability = Number(doll?.durability ?? 0);
+  const maxDurability = Math.max(1, Number(doll?.max_durability ?? doll?.durability ?? 1));
+  const ratio = durability / maxDurability;
   const percent = Math.max(0, Math.min(100, ratio * 100));
   dollBar.style.width = `${percent}%`;
 
   // 破壊時の見た目
-  if (doll.is_broken) {
+  if (doll?.is_broken) {
     dollBox.style.filter = "grayscale(1) brightness(0.6)";
   } else {
     dollBox.style.filter = "";
@@ -3618,7 +4839,7 @@ function buildDollSpecialEquipHTML(doll) {
         : "衣装";
 
       html += `
-        <div class="special-equip-slot filled active"
+        <div class="special-equip-slot filled active ${c.condition === "boroboro" ? "boroboro" : ""}"
              title="★${c.star ?? 1} ${cleanName}">
           ${label}
         </div>
@@ -3733,10 +4954,14 @@ function updateSpecialEquipUI(side, specialEquip) {
     // 装備あり
     div.classList.add("filled");
     div.classList.add("active"); // ★ ここで点灯
+    if (slot.item?.condition === "boroboro") {
+      div.classList.add("boroboro");
+    }
 
     // ★ 通常装備と同じく、ホバーで詳細が出るよう tooltip を内包
     const name = slot.item?.name ?? "不明な装備";
-    const effect = slot.item?.effect_text ?? slot.item?.effect ?? "";
+    const conditionText = slot.item?.condition === "boroboro" ? "状態: ボロボロ" : "";
+    const effect = [conditionText, slot.item?.effect_text ?? slot.item?.effect ?? ""].filter(Boolean).join("<br>");
     const iconMarkup = getBattleEquipIconMarkup(slot.item, "special-equip-slot-icon");
 
     div.innerHTML = `
@@ -3774,19 +4999,17 @@ function buffIconForKind(kind) {
 }
 
 function updateBuffStrip(side, buffs) {
-  const id = (side === "self") ? "buffStripSelf" : "buffStripEnemy";
-  const area = document.getElementById(id);
-  if (!area) return;
+  const ids = (side === "self")
+    ? ["buffStripSelf", "gilsysBuffStripSelf"]
+    : ["buffStripEnemy", "gilsysBuffStripEnemy"];
+  const areas = ids.map(id => document.getElementById(id)).filter(Boolean);
+  if (!areas.length) return;
 
   const list = Array.isArray(buffs) ? buffs : [];
-  if (list.length === 0) {
+  for (const area of areas) {
     area.innerHTML = "";
-    area.style.display = "none";
-    return;
+    area.style.display = list.length ? "flex" : "none";
   }
-
-  area.style.display = "flex";
-  area.innerHTML = "";
 
   for (const b of list) {
     const kind = b.kind ?? "other";
@@ -3799,7 +5022,9 @@ function updateBuffStrip(side, buffs) {
         ${b.text ? `<br>${b.text}` : ""}
       </div>
     `;
-    area.appendChild(div);
+    for (const area of areas) {
+      area.appendChild(div.cloneNode(true));
+    }
   }
 }
 
@@ -4034,12 +5259,46 @@ function maybePlayDefupFromBuffs(side, buffs) {
 //   - 勝敗確定(battle_end)で停止
 // ============================
 const battleBgmTracks = [
-  "BGM/バトルBGM/Rite_of_the_Falling_Rain.mp3",
-  "BGM/バトルBGM/Steel_Clad_Rivalry.mp3"
+  "BGM/BattleBGM/Rite_of_the_Falling_Rain.mp3",
+  "BGM/BattleBGM/Steel_Clad_Rivalry.mp3"
 ];
 let battleBgmAudio = null;
+let battleBgmWanted = false;
+let battleBgmUnlocked = false;
+let battleBgmTrack = "";
+
+function getBattleBgmTrack() {
+  if (!battleBgmTrack) {
+    battleBgmTrack = battleBgmTracks[Math.floor(Math.random() * battleBgmTracks.length)] || "";
+  }
+  return battleBgmTrack;
+}
+
+function unlockBattleBgmAudio() {
+  if (battleBgmUnlocked || !battleBgmTracks.length) return;
+
+  try {
+    const probe = new Audio(getBattleBgmTrack());
+    probe.muted = true;
+    probe.volume = 0;
+    probe.preload = "auto";
+    const p = probe.play();
+    if (p?.then) {
+      p.then(() => {
+        probe.pause();
+        probe.currentTime = 0;
+        battleBgmUnlocked = true;
+        if (battleBgmWanted) playBattleBgm();
+      }).catch(() => {});
+    }
+  } catch {}
+}
+
+document.addEventListener("pointerdown", unlockBattleBgmAudio, { passive: true });
+document.addEventListener("keydown", unlockBattleBgmAudio);
 
 function stopBattleBgm() {
+  battleBgmWanted = false;
   try {
     if (battleBgmAudio) {
       battleBgmAudio.pause();
@@ -4052,10 +5311,17 @@ function stopBattleBgm() {
 }
 
 function playBattleBgm() {
-  stopBattleBgm();
+  battleBgmWanted = true;
+  if (battleBgmAudio && !battleBgmAudio.paused) return;
+  if (battleBgmAudio) {
+    try {
+      battleBgmAudio.pause();
+      battleBgmAudio.currentTime = 0;
+    } catch {}
+  }
   if (!battleBgmTracks.length) return;
 
-  const track = battleBgmTracks[Math.floor(Math.random() * battleBgmTracks.length)];
+  const track = getBattleBgmTrack();
   const audio = new Audio(track);
   audio.loop = true;
   audio.volume = 0.55;
@@ -4063,6 +5329,7 @@ function playBattleBgm() {
 
   battleBgmAudio = audio;
   audio.play().catch((err) => {
+    battleBgmUnlocked = false;
     console.warn("battle bgm play failed", err);
   });
 }
@@ -4276,6 +5543,66 @@ function attachWsHandlers() {
       return;
     }
 
+    if (data.type === "doll_charge_choices") {
+      const popup = document.getElementById("skillPopup");
+      const list  = document.getElementById("skillList");
+      const charge = Number(data.charge ?? 0);
+      const choices = Array.isArray(data.choices) ? data.choices : [];
+
+      let html = `<div style="font-weight:bold; margin-bottom:8px;">チャージ効果を選んでください</div>`;
+      html += `<div style="margin-bottom:10px; color:#ffd28a;">現在チャージ: ${charge} / 必要20</div>`;
+      for (const c of choices) {
+        const progressNeed = Math.max(1, Number(c.progress_need ?? 2));
+        const progressNow = Math.max(0, Number(c.progress_now ?? 0));
+        const progressRatio = Math.max(0, Math.min(100, (progressNow / progressNeed) * 100));
+        const progressText = escapeHtml(c.progress_text ?? `Lv${Number(c.level ?? 1) + 1}まで ${progressNow}/${progressNeed}`);
+        const fillClass = c.progress_is_max ? "chargeProgressFill max" : "chargeProgressFill";
+        html += `
+          <div class="skillRow">
+            <div class="skillName">${escapeHtml(c.title ?? "効果")}</div>
+            <div class="skillDesc">${escapeHtml(c.desc ?? "")}</div>
+            <div class="chargeProgressWrap">
+              <div class="chargeProgressHead">
+                <span>レベル進行</span>
+                <span>${progressText}</span>
+              </div>
+              <div class="chargeProgressBar">
+                <div class="${fillClass}" style="width:${progressRatio}%;"></div>
+              </div>
+            </div>
+            <button onclick="selectDollCharge('${escapeHtml(c.key ?? "")}')">選択</button>
+          </div>
+        `;
+      }
+      list.innerHTML = html;
+      popup.style.display = "flex";
+      return;
+    }
+
+    if (data.type === "doll_charge_costume_select") {
+      const popup = document.getElementById("skillPopup");
+      const list  = document.getElementById("skillList");
+      const parts = Array.isArray(data.parts) ? data.parts : [];
+
+      let html = `<div style="font-weight:bold; margin-bottom:8px;">対象の衣装を選んでください</div>`;
+      for (const p of parts) {
+        const stateText = p.condition === "boroboro"
+          ? "ぼろぼろなので修理"
+          : `★${Number(p.star ?? 1)} → ★${Number(p.star ?? 1) + 1}`;
+        html += `
+          <div class="skillRow">
+            <div class="skillName">${escapeHtml(p.label ?? "")}</div>
+            <div class="skillDesc">${escapeHtml(p.name ?? "")}\n${escapeHtml(stateText)}</div>
+            <button onclick="selectDollChargePart('${escapeHtml(p.key ?? "")}')">選択</button>
+          </div>
+        `;
+      }
+
+      list.innerHTML = html;
+      popup.style.display = "flex";
+      return;
+    }
+
 
     if (data.type === "status_simple") {
 
@@ -4284,6 +5611,9 @@ function attachWsHandlers() {
       // ================================
       if (data.side === "self" && data.skill_remaining) {
         window.skillRemaining = data.skill_remaining;
+      }
+      if (data.side === "self") {
+        myLevel = Number(data.level ?? myLevel ?? 1);
       }
 
 
@@ -4296,18 +5626,18 @@ function attachWsHandlers() {
       const nextLevelInfo = getClientNextLevelInfo(data.level, data.exp);
 
       let html = `
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="display:flex; align-items:center; gap:8px;">
+        <div class="gilsys-simple-head">
+          <div class="gilsys-simple-title">
             <strong>${data.side === "self" ? "あなた" : "相手"}</strong>
             <span style="opacity:0.9;">${data.job ?? "?"}</span>
           </div>
           <button type="button" onclick="openStatusDetail('${data.side}')">詳細</button>
         </div>
 
-        <div style="display:flex; gap:8px; margin-top:6px;">
+        <div class="gilsys-simple-body">
           
           <!-- 左：プレイヤー -->
-          <div style="flex:1;">
+          <div class="gilsys-simple-player">
             <div>HP: ${data.hp} / ${data.max_hp}</div>
             <div>攻撃: ${data.attack}</div>
               <div>防御: ${data.defense}</div>
@@ -4317,7 +5647,7 @@ function attachWsHandlers() {
               <div>${data.next_level_label ?? nextLevelInfo.label}</div>
               ${
                 data.mad_state
-                  ? `<div style="color:${data.mad_state.is_mad ? "#ff6b6b" : "#ffb347"};">${data.mad_state.is_mad ? "狂化状態" : `狂化まで残り: ${data.mad_state.remaining}`}</div>`
+                  ? `<div style="color:${data.mad_state.is_mad ? "#ff6b6b" : "#ffb347"};">${data.mad_state.is_mad ? "狂化状態" : `狂化まで残り: ${data.mad_state.remaining}`}</div><div>累積被ダメ: ${data.mad_state.total}</div>`
                   : ""
               }
               ${
@@ -4328,7 +5658,7 @@ function attachWsHandlers() {
           </div>
 
           <!-- 右：人形 -->
-          <div style="flex:1; border-left:1px solid #555; padding-left:6px;">
+          <div class="gilsys-simple-doll ${data.doll ? "" : "gilsys-simple-empty"}">
             ${
               data.doll
                 ? `
@@ -4336,6 +5666,7 @@ function attachWsHandlers() {
                   <div>耐久: ${data.doll.durability} / ${data.doll.max_durability}
                     ${data.doll.is_broken ? "（破壊）" : ""}
                   </div>
+                  <div>チャージ: ${data.doll.charge ?? 0}</div>
                   <div>攻撃: ${data.doll.attack}</div>
                   <div>防御: ${data.doll.defense}</div>
                 `
@@ -4347,6 +5678,7 @@ function attachWsHandlers() {
       `;
 
       box.innerHTML = html;
+      updateGilsysBattleHud(data);
       // ★ 通常装備UI反映
       updateNormalEquipUI(data.side, data.equipment);
       // ★ 特殊装備UI
@@ -4394,7 +5726,7 @@ function attachWsHandlers() {
           <div><b>EXP</b>: ${data.exp}</div>
           ${
             data.mad_state
-              ? `<div><b>狂化</b>: ${data.mad_state.is_mad ? "狂化状態" : `あと ${data.mad_state.remaining} ダメージ`}</div>`
+              ? `<div><b>狂化</b>: ${data.mad_state.is_mad ? "狂化状態" : `あと ${data.mad_state.remaining} ダメージ`}</div><div><b>累積被ダメ</b>: ${data.mad_state.total}</div>`
               : ""
           }
         `;
@@ -4425,6 +5757,7 @@ function attachWsHandlers() {
           html += `（破壊）`;
         }
         html += `<br>`;
+        html += `チャージ：${data.doll.charge ?? 0}<br>`;
         html += `攻撃：${data.doll.attack}<br>`;
         html += `防御：${data.doll.defense}<br><br>`;
 
@@ -4497,6 +5830,7 @@ function attachWsHandlers() {
       if (lvupBtn) {
         lvupBtn.disabled = !myTurn;
       }
+      refreshAttackSkillPanelIfOpen(false);
 
       return;
     }
@@ -4505,11 +5839,16 @@ function attachWsHandlers() {
 
     if (data.type === "item_list") {
       window.itemList = data.items;
+      window.pendingInventoryActionUids = new Set();
       window.itemUsesRemaining = Math.max(0, Number(data.item_uses_remaining ?? 2));
 
       // ★「開いているときだけ」再描画
       if (isItemUIOpen && currentItemCategory !== null) {
-        openItemCategory(currentItemCategory);
+        if (currentItemCategory === "__category__") {
+          renderGilsysItemCategoryPanel();
+        } else {
+          openItemCategory(currentItemCategory);
+        }
       }
       return;
     }
@@ -4547,6 +5886,9 @@ function attachWsHandlers() {
           <hr>
           <div style="margin-top:6px; color:#f6c;">
             🪆 人形耐久：${data.doll.durability} / ${data.doll.max_durability} ${state}
+          </div>
+          <div style="color:#ffd28a;">
+            ⚡ チャージ：${data.doll.charge ?? 0}
           </div>
         `;
       }
@@ -4613,11 +5955,11 @@ function attachWsHandlers() {
       turnCount++;
       updateRoundTurnUI();
 
-      document.getElementById("atkBtn").disabled = false;
-      document.getElementById("skillBtn").disabled = false;
-      document.getElementById("lvupBtn").disabled = false; // 常に押せる
-      document.getElementById("itemBtn").disabled = false;
-      document.getElementById("shopBtn").disabled = false;
+      ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = false;
+      });
+      refreshAttackSkillPanelIfOpen(true);
 
       return;
     }
@@ -4634,11 +5976,10 @@ function attachWsHandlers() {
 // ★ 相手ラウンドになったらショップを強制的に閉じる
       closeShopUI();
 
-      document.getElementById("atkBtn").disabled = true;
-      document.getElementById("skillBtn").disabled = true;
-      document.getElementById("lvupBtn").disabled = true;
-      document.getElementById("itemBtn").disabled = true;
-      document.getElementById("shopBtn").disabled = true;
+      ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = true;
+      });
 
 
       return;
@@ -4971,11 +6312,277 @@ function attack(){
 }
 
 /* ================= スキル系 ================= */
+
+
+/* =========================================================
+   ★ 画像モックアップ再現UI：下部コマンドとステータス同期
+========================================================= */
+function setGilsysText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function updateGilsysBattleHud(data) {
+  if (!data) return;
+  const isSelf = data.side === "self";
+  const prefix = isSelf ? "Self" : "Enemy";
+  const hp = Number(data.hp ?? 0);
+  const maxHp = Number(data.max_hp ?? 0);
+  const hpRate = maxHp > 0 ? Math.max(0, Math.min(100, hp / maxHp * 100)) : 0;
+
+  setGilsysText(`gilsys${prefix}Name`, isSelf ? (window.accountName || "あなた") : "対戦相手プレイヤー");
+  setGilsysText(`gilsys${prefix}Job`, data.job ?? "職業");
+  setGilsysText(`gilsys${prefix}HpText`, `HP ${hp} / ${maxHp}`);
+  setGilsysText(`gilsys${prefix}Atk`, data.attack ?? 0);
+  setGilsysText(`gilsys${prefix}Def`, data.defense ?? 0);
+
+  const fill = document.getElementById(`gilsys${prefix}HpFill`);
+  if (fill) fill.style.width = `${hpRate}%`;
+
+  const sprite = document.getElementById(isSelf ? "playerSprite" : "enemySprite");
+  if (sprite) {
+    const jobClassMap = {
+      "戦士": "job-warrior",
+      "騎士": "job-knight",
+      "僧侶": "job-priest",
+      "盗賊": "job-thief",
+      "魔導士": "job-mage",
+      "陰陽師": "job-onmyoji",
+      "錬金術師": "job-alchemist",
+      "人形使い": "job-dollmaster",
+      "人形遣い": "job-dollmaster",
+      "狂人": "job-madman",
+      "弓兵": "job-archer",
+    };
+    const jobClasses = ["job-image", ...Object.values(jobClassMap)];
+    sprite.classList.remove(...jobClasses);
+    const cls = jobClassMap[data.job];
+    if (cls) sprite.classList.add("job-image", cls);
+  }
+
+  if (isSelf) {
+    setGilsysText("coins", Number(data.coins ?? 0).toLocaleString());
+    window.gilsysLatestSelfStatus = data;
+    renderGilsysDefaultCommandList();
+    refreshAttackSkillPanelIfOpen(false);
+  } else {
+    window.gilsysLatestEnemyStatus = data;
+  }
+}
+
+function updateGilsysCenterTurn() {
+  setGilsysText("gilsysCenterRound", roundCount || 0);
+  setGilsysText("gilsysCenterTurn", turnCount || 0);
+}
+
+function restoreGilsysCommandDetailPanel() {
+  const panel = document.querySelector(".gilsys-command-detail-panel");
+  if (!panel) return;
+  panel.classList.remove("is-inventory-list");
+  if (document.getElementById("gilsysDetailTitle")) return;
+
+  panel.innerHTML = `
+    <div class="gilsys-detail-icon" id="gilsysDetailIcon">◆</div>
+    <div class="gilsys-detail-text">
+      <div class="gilsys-detail-head">
+        <span id="gilsysDetailTitle">コマンド</span>
+        <b id="gilsysDetailMeta"></b>
+      </div>
+      <p id="gilsysDetailDescription">説明なし</p>
+    </div>
+    <button class="gilsys-confirm-btn" id="gilsysConfirmBtn">決定</button>
+  `;
+}
+
+function renderGilsysDetailInventoryPanel(title, meta, toolsHtml, bodyHtml) {
+  const panel = document.querySelector(".gilsys-command-detail-panel");
+  if (!panel) return;
+  panel.classList.add("is-inventory-list");
+  panel.innerHTML = `
+    <div class="gilsys-detail-inventory-wrap">
+      <div class="gilsys-detail-inventory-head">
+        <b>${escapeHtml(title ?? "持ち物")}</b>
+        <span>${escapeHtml(meta ?? "")}</span>
+      </div>
+      ${toolsHtml ? `<div class="gilsys-detail-inventory-tools">${toolsHtml}</div>` : ""}
+      <div class="gilsys-detail-inventory-list">${bodyHtml}</div>
+    </div>
+  `;
+}
+
+function renderShopItemDetail(index) {
+  const items = window.gilsysLatestShopItems || [];
+  const it = items[index];
+  if (!it) {
+    renderGilsysDetailInventoryPanel("ショップ", "商品選択", "", `<div class="gilsys-inline-empty">左から商品を選択してください</div>`);
+    return;
+  }
+
+  window.gilsysSelectedShopIndex = index;
+  const { icon, badges, theme, metaClass } = getShopVisualMeta(it);
+  const badgeHtml = badges
+    .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
+    .join("");
+  const body = `
+    <div class="gilsys-shop-detail-card">
+      <div class="shop-card ${escapeHtml(theme)}">
+        <div class="shop-card-main">
+          <div class="shop-card-head">
+            <div class="shop-icon">${getShopIconMarkup(icon)}</div>
+            <div class="shop-title-wrap">
+              <div class="shop-item-name">${escapeHtml(it?.name ?? "不明なアイテム")}</div>
+              <div class="shop-meta-row ${escapeHtml(metaClass ?? "")}">${badgeHtml}</div>
+              <div class="shop-item-desc">${escapeHtml(it?.effect_text ?? "") || "効果説明なし"}</div>
+            </div>
+          </div>
+        </div>
+        <div class="shop-buy-area">
+          <div class="shop-price">${Number(it?.price ?? 0)} コイン</div>
+          <button onclick="buyItem(${index})">購入</button>
+        </div>
+      </div>
+    </div>
+  `;
+  renderGilsysDetailInventoryPanel("ショップ", "商品詳細", "", body);
+
+  const list = document.getElementById("gilsysCommandList");
+  if (list) {
+    [...list.querySelectorAll(".gilsys-shop-icon-btn")].forEach((btn, i) => {
+      btn.classList.toggle("is-selected", i === index);
+    });
+  }
+}
+
+function setGilsysCommandDetail(title, meta, desc, icon, confirmHandler) {
+  restoreGilsysCommandDetailPanel();
+  setGilsysText("gilsysDetailTitle", title || "コマンド");
+  setGilsysText("gilsysDetailMeta", meta || "");
+  setGilsysText("gilsysDetailDescription", desc || "説明なし");
+  setGilsysText("gilsysDetailIcon", icon || "◆");
+  const sideDetail = document.getElementById("gilsysSideCommandDetail");
+  if (sideDetail) {
+    sideDetail.innerHTML = `<b>${escapeHtml(title || "コマンド")}</b><br>${escapeHtml(meta || "")}<br>${escapeHtml(desc || "")}`;
+  }
+  const btn = document.getElementById("gilsysConfirmBtn");
+  if (btn) {
+    btn.onclick = confirmHandler || null;
+  }
+}
+
+function gilsysSkillIcon(index, name) {
+  const text = `${name || ""}`;
+  if (text.includes("ヒール") || text.includes("回復")) return "✚";
+  if (text.includes("アイス") || text.includes("氷")) return "❄";
+  if (text.includes("雷") || text.includes("ライト")) return "⚡";
+  if (text.includes("守") || text.includes("防")) return "🛡";
+  return index === 0 ? "🔥" : index === 1 ? "💠" : "✦";
+}
+
+
+function getGilsysJobIdForSkill(){
+  const job = window.myJob ?? myJob;
+  return JOB_ID_MAP?.[job] ?? job;
+}
+
+function getGilsysSkillUseHandler(skillNo){
+  const isDoll = (myJob === "人形使い" || myJob === 9);
+  if (isDoll && skillNo === 1) return useDollSkill1;
+  if (isDoll && skillNo === 2) return useDollSkill2Prompt;
+  if (isDoll && skillNo === 3) return useDollSkill3;
+  return () => useSkill(skillNo);
+}
+
+function renderGilsysDefaultCommandList() {
+  const list = document.getElementById("gilsysCommandList");
+  if (!list || document.activeElement?.closest?.("#gilsysCommandList")) return;
+  if (!list.dataset.manual || list.dataset.manual === "default") {
+    openAttackSkillPanel(false);
+  }
+}
+
+function refreshAttackSkillPanelIfOpen(force = false) {
+  const list = document.getElementById("gilsysCommandList");
+  if (!list || typeof window.openAttackSkillPanel !== "function") return;
+  const mode = list.dataset.manual;
+  if (force || mode === "attackSkill" || mode === "default") {
+    window.openAttackSkillPanel(force || mode === "attackSkill");
+  }
+}
+
+function openAttackSkillPanel(markManual = true) {
+  const list = document.getElementById("gilsysCommandList");
+  const title = document.getElementById("gilsysCommandListTitle");
+  if (!list) return;
+  if (title) title.textContent = "攻撃/スキル";
+  list.dataset.manual = markManual ? "attackSkill" : "default";
+  list.innerHTML = "";
+
+  const attackPower = window.gilsysLatestSelfStatus?.attack ?? "--";
+  const attackRow = document.createElement("button");
+  attackRow.className = "gilsys-list-row is-selected";
+  attackRow.innerHTML = `<span class="gilsys-row-icon">⚔</span><span>通常攻撃</span><b>攻撃力 ${escapeHtml(String(attackPower))}</b>`;
+  attackRow.onclick = () => {
+    [...list.querySelectorAll(".gilsys-list-row")].forEach(el => el.classList.remove("is-selected"));
+    attackRow.classList.add("is-selected");
+    setGilsysCommandDetail("通常攻撃", `攻撃力 ${attackPower}`, "敵単体に通常ダメージを与える。ターンを消費します。", "⚔", attack);
+  };
+  list.appendChild(attackRow);
+
+  const jobId = getGilsysJobIdForSkill();
+  const skills = SKILLS?.[jobId] || [];
+  if (!skills.length) {
+    const empty = document.createElement("div");
+    empty.className = "gilsys-empty-row";
+    empty.textContent = `現在の職業「${myJob ?? "不明"}」に対応するスキルが見つかりません`;
+    list.appendChild(empty);
+  }
+
+  skills.forEach((skill, i) => {
+    const skillNo = i + 1;
+    const needLv = skillNo;
+    const currentLv = Number(myLevel ?? 1);
+    const remain = Number(window.skillRemaining?.[skillNo] ?? 1);
+    const row = document.createElement("button");
+    row.className = "gilsys-list-row";
+    const icon = gilsysSkillIcon(i, skill.name);
+    const meta = remain <= 0
+      ? "使用回数 0"
+      : currentLv < needLv
+        ? `Lv${needLv}で解放`
+        : `スキル${skillNo}`;
+    row.innerHTML = `<span class="gilsys-row-icon">${icon}</span><span>${escapeHtml(skill.name ?? `スキル${skillNo}`)}</span><b>${escapeHtml(meta)}</b>`;
+    row.onclick = () => {
+      [...list.querySelectorAll(".gilsys-list-row")].forEach(el => el.classList.remove("is-selected"));
+      row.classList.add("is-selected");
+      setGilsysCommandDetail(
+        skill.name ?? `スキル${skillNo}`,
+        meta,
+        skill.desc ?? "職業スキルを発動します。",
+        icon,
+        () => {
+          if (remain <= 0) {
+            showCenterToast("スキルの使用回数がなくなりました", 2500);
+            return;
+          }
+          if (currentLv < needLv) {
+            showCenterToast(`Lv${needLv}で解放されます`, 2200);
+            return;
+          }
+          getGilsysSkillUseHandler(skillNo)();
+        }
+      );
+    };
+    list.appendChild(row);
+  });
+
+  setGilsysCommandDetail("通常攻撃", `攻撃力 ${attackPower}`, "敵単体に通常ダメージを与える。ターンを消費します。", "⚔", attack);
+}
+
 function openSkillUI(){
   const list = document.getElementById("skillList");
   list.innerHTML = "";
 
-  const jobId = myJob;
+  const jobId = getGilsysJobIdForSkill();
 
 
   if (!SKILLS[jobId]) {
@@ -5138,7 +6745,34 @@ function tryLevelUp(){
 }
 
 function openItemUI(){
-  document.getElementById("itemCategoryPopup").style.display = "flex";
+  renderGilsysItemCategoryPanel();
+}
+
+function renderGilsysItemCategoryRows(selectedCategory = ""){
+  const categories = [
+    { key: "item", icon: "🧪", name: "アイテム", meta: "使用" },
+    { key: "equip", icon: "⚔", name: "装備", meta: "通常装備" },
+    { key: "special", icon: "✦", name: "特殊装備", meta: "職業専用" },
+  ];
+  return categories.map(cat => `
+    <button class="gilsys-list-row ${selectedCategory === cat.key ? "is-selected" : ""}" onclick="openItemCategory('${cat.key}')">
+      <span class="gilsys-row-icon">${cat.icon}</span>
+      <span>${cat.name}</span>
+      <b>${cat.meta}</b>
+    </button>
+  `).join("");
+}
+
+function renderGilsysItemCategoryPanel(selectedCategory = ""){
+  const list = document.getElementById("gilsysCommandList");
+  const title = document.getElementById("gilsysCommandListTitle");
+  if (!list) return;
+  if (title) title.textContent = "持ち物カテゴリ";
+  list.dataset.manual = "items";
+  list.innerHTML = renderGilsysItemCategoryRows(selectedCategory);
+  if (!selectedCategory) {
+    setGilsysCommandDetail("持ち物", "カテゴリ選択", "左のカテゴリを選ぶと、右側に中身の一覧を表示します。", "🎒", null);
+  }
 }
 
 function itemConsumesTurn(item, action){
@@ -5147,7 +6781,6 @@ function itemConsumesTurn(item, action){
 }
 
 function submitItemAction(id, action, slot = 1){
-  closeItemUI();
   closeItemCategory();
 
   ws.send(JSON.stringify({
@@ -5165,25 +6798,46 @@ function useItem(id, action, slot = 1){
   if (itemConsumesTurn(item, action)) {
     openItemConfirm("ターンを消費するアイテムです。使用しますか？", () => {
       submitItemAction(id, action, slot);
+      refreshInventoryAfterLocalAction(id, action);
     });
     return;
   }
 
   submitItemAction(id, action, slot);
+  refreshInventoryAfterLocalAction(id, action);
+}
+
+function refreshInventoryAfterLocalAction(id, action) {
+  if (!isItemUIOpen || !currentItemCategory || currentItemCategory === "__category__") return;
+  const uid = String(id ?? "");
+  if (!uid) return;
+  window.pendingInventoryActionUids ??= new Set();
+  window.pendingInventoryActionUids.add(uid);
+
+  if (action === "use") {
+    window.itemList = (window.itemList || []).filter(it => String(it?.uid ?? "") !== uid);
+    window.itemUsesRemaining = Math.max(0, Number(window.itemUsesRemaining ?? 2) - 1);
+  }
+
+  if (typeof openItemCategory === "function") {
+    openItemCategory(currentItemCategory);
+  }
 }
 
 
 function closeItemCategory(){
-  document.getElementById("itemCategoryPopup").style.display = "none";
+  const popup = document.getElementById("itemCategoryPopup");
+  if (popup) popup.style.display = "none";
 }
 
 function returnToItemCategory(){
-  document.getElementById("itemPopup").style.display = "none";
+  const popup = document.getElementById("itemPopup");
+  if (popup) popup.style.display = "none";
   isItemUIOpen = false;
   currentItemCategory = null;
   resetEquipCombineState();
   renderEquipCombineActions(null);
-  document.getElementById("itemCategoryPopup").style.display = "flex";
+  renderGilsysItemCategoryPanel();
 }
 
 function resetEquipCombineState(){
@@ -5297,17 +6951,23 @@ function renderEquipCombineActions(category){
 
 
 
+
 function openItemCategory(category){
   currentItemCategory = category;
-  isItemUIOpen = true; // ★ 開いた
-  closeItemCategory();
+  isItemUIOpen = true;
+
+  const categoryTitleMap = {
+    item: "アイテム",
+    equip: "装備",
+    special: "特殊装備"
+  };
 
   if (category !== "equip") {
     resetEquipCombineState();
   }
 
   const all = window.itemList || [];
-  const list = all
+  const filtered = all
     .filter(it => it.category === category)
     .sort((a, b) => {
       const aEquipped =
@@ -5323,31 +6983,31 @@ function openItemCategory(category){
       return bEquipped - aEquipped;
     });
 
-  const titleMap = {
-    item: "アイテム一覧",
-    equip: "装備一覧",
-    special: "特殊装備一覧"
-  };
-  document.getElementById("itemPopupTitle").innerText = titleMap[category];
+  renderGilsysItemCategoryPanel(category);
+  const list = document.getElementById("gilsysCommandList");
+  if (list) list.dataset.manual = `items-${category}`;
+
   const remaining = Math.max(0, Number(window.itemUsesRemaining ?? 2));
-  const usageInfo = document.getElementById("itemUsageInfo");
-  if (usageInfo) {
-    usageInfo.innerText = category === "item"
-      ? `このターンあと ${remaining} 個アイテムを使用できます`
-      : "";
-  }
-  renderEquipCombineActions(category);
+  const tools = `
+    <button onclick="renderGilsysItemCategoryPanel()">カテゴリへ戻る</button>
+    ${category === "equip" ? `<button onclick="toggleEquipCombineMode()">${equipmentCombineMode ? "合成選択をやめる" : "装備を合成"}</button>` : ""}
+    ${category === "equip" && equipmentCombineMode ? `<button onclick="submitEquipCombine()">選択した2つを合成</button>` : ""}
+  `;
 
-  const box = document.getElementById("itemList");
-  box.innerHTML = list.map(it => renderInventoryCard(it, category)).join("");
+  const body = filtered.length
+    ? filtered.map(it => renderInventoryCard(it, category)).join("")
+    : `<div class="gilsys-empty-row">${categoryTitleMap[category] ?? "持ち物"}はありません</div>`;
 
-  document.getElementById("itemPopup").style.display = "flex";
+  const meta = category === "item"
+    ? `このターンあと ${remaining} 個使用できます`
+    : "カード内のボタンから操作できます";
+  renderGilsysDetailInventoryPanel(categoryTitleMap[category] ?? "持ち物", meta, tools, body);
 }
-
 function closeItemUI(){
-  document.getElementById("itemPopup").style.display = "none";
-  isItemUIOpen = false;        // ★ 閉じた
-  currentItemCategory = null; // ★ リセット
+  const popup = document.getElementById("itemPopup");
+  if (popup) popup.style.display = "none";
+  isItemUIOpen = false;
+  currentItemCategory = null;
   resetEquipCombineState();
   renderEquipCombineActions(null);
   closeItemCategory();
@@ -5361,11 +7021,20 @@ function closeItemUI(){
 
 function openShop(){
   if (!myTurn) return;
+  const list = document.getElementById("gilsysCommandList");
+  const title = document.getElementById("gilsysCommandListTitle");
+  if (title) title.textContent = "ショップ";
+  if (list) {
+    list.dataset.manual = "shop";
+    list.innerHTML = `<div class="gilsys-empty-row">ショップ商品を読み込み中...</div>`;
+  }
+  setGilsysCommandDetail("ショップ", "商品一覧", "購入したい商品をこのコマンド欄から選んでください。", "🏪", null);
   ws.send(JSON.stringify({ type: "open_shop" }));
 }
 
 function closeShopUI(){
-  document.getElementById("shopPopup").style.display = "none";
+  const popup = document.getElementById("shopPopup");
+  if (popup) popup.style.display = "none";
 }
 
 function shouldPromptEquipAfterPurchase(item) {
@@ -5430,6 +7099,7 @@ function getInventoryActionMeta(it, category){
 function renderInventoryCard(it, category){
   const desc = escapeHtml(it?.effect_text ?? "");
   const name = escapeHtml(it?.name ?? "不明なアイテム");
+  const isPending = window.pendingInventoryActionUids?.has?.(String(it?.uid ?? "")) ?? false;
   const { icon, badges, theme, metaClass } = getShopVisualMeta(it);
   const badgeHtml = badges
     .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
@@ -5459,7 +7129,7 @@ function renderInventoryCard(it, category){
       <div class="shop-buy-area">
         ${isEquipCombineCard
           ? `<button onclick="${combineAction.onclick}">${escapeHtml(combineAction.label)}</button>`
-          : `<button ${action.disabled ? "disabled" : `onclick="${action.onclick}"`}>${escapeHtml(action.label)}</button>`
+          : `<button ${action.disabled || isPending ? "disabled" : `onclick="${action.onclick}"`}>${escapeHtml(isPending ? "反映中" : action.label)}</button>`
         }
       </div>
     </div>
@@ -5498,10 +7168,10 @@ function getShopVisualMeta(it){
   let showStarBadge = false;
   let metaClass = "";
   const mageEquipIcons = {
-    "魔導士の杖": { type: "image", src: "Assets/特殊装備/madousinotue.png", alt: "魔導士の杖" },
-    "魔力の指輪": { type: "image", src: "Assets/特殊装備/madousinoyubiwa.png", alt: "魔力の指輪" },
-    "魔導士のローブ": { type: "image", src: "Assets/特殊装備/madousinoro-bu.png", alt: "魔導士のローブ" },
-    "古代魔導書": { type: "image", src: "Assets/特殊装備/kodainomadousho.png", alt: "古代魔導書" },
+    "魔導士の杖": { type: "image", src: "Assets/tokushusoubi/madousinotue.png", alt: "魔導士の杖" },
+    "魔力の指輪": { type: "image", src: "Assets/tokushusoubi/madousinoyubiwa.png", alt: "魔力の指輪" },
+    "魔導士のローブ": { type: "image", src: "Assets/tokushusoubi/madousinoro-bu.png", alt: "魔導士のローブ" },
+    "古代魔導書": { type: "image", src: "Assets/tokushusoubi/kodainomadousho.png", alt: "古代魔導書" },
   };
 
   if (star === 2) {
@@ -5511,7 +7181,7 @@ function getShopVisualMeta(it){
   }
 
   if (it?.is_onmyoji_item) {
-    icon = { type: "image", src: "Assets/特殊装備/sikigaminohuda.png", alt: String(it?.name ?? "式神のお札") };
+    icon = { type: "image", src: "Assets/tokushusoubi/sikigaminohuda.png", alt: String(it?.name ?? "式神のお札") };
     theme = "theme-rainbow";
     badges.push({ label: "陰陽師", kind: "job" });
     badges.push({ label: "召喚札", kind: "special" });
@@ -5587,43 +7257,46 @@ function getShopVisualMeta(it){
   return { icon, badges, theme, metaClass };
 }
 
+
 function renderShop(items){
-  const box = document.getElementById("shopList");
-  box.innerHTML = "";
+  window.gilsysLatestShopItems = items || [];
+  window.gilsysSelectedShopIndex = 0;
 
-  items.forEach((it, idx) => {
-    if (!it) return;
+  const list = document.getElementById("gilsysCommandList");
+  const title = document.getElementById("gilsysCommandListTitle");
+  if (!list) return;
 
-    const desc = escapeHtml(it.effect_text ?? "");
-    const name = escapeHtml(it.name ?? "不明なアイテム");
-    const { icon, badges, theme, metaClass } = getShopVisualMeta(it);
-    const badgeHtml = badges
-      .map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`)
-      .join("");
+  if (title) title.textContent = "ショップ";
+  list.dataset.manual = "shop";
 
-    box.innerHTML += `
-      <div class="shop-card ${theme}">
-        <div class="shop-card-main">
-          <div class="shop-card-head">
-            <div class="shop-icon">${getShopIconMarkup(icon)}</div>
-            <div class="shop-title-wrap">
-              <div class="shop-item-name">${name}</div>
-              <div class="shop-meta-row ${escapeHtml(metaClass ?? "")}">${badgeHtml}</div>
-              <div class="shop-item-desc">${desc || "効果説明なし"}</div>
-            </div>
-          </div>
-        </div>
-        <div class="shop-buy-area">
-          <div class="shop-price">${Number(it.price ?? 0)} コイン</div>
-          <button onclick="buyItem(${idx})">購入</button>
-        </div>
-      </div>
-    `;
-  });
+  const toolbar = `
+    <div class="gilsys-inline-toolbar">
+      <button onclick="rerollShop()">ショップ更新(5コイン)</button>
+    </div>
+  `;
 
-  document.getElementById("shopPopup").style.display = "flex";
+  const icons = (items || []).length
+    ? (items || []).map((it, idx) => {
+        if (!it) return "";
+        const { icon, theme } = getShopVisualMeta(it);
+        return `
+          <button class="gilsys-shop-icon-btn ${escapeHtml(theme)} ${idx === 0 ? "is-selected" : ""}" title="${escapeHtml(it?.name ?? "商品")}" onclick="renderShopItemDetail(${idx})">
+            <span class="shop-icon">${getShopIconMarkup(icon)}</span>
+          </button>
+        `;
+      }).join("")
+    : `<div class="gilsys-empty-row">ショップ商品がありません</div>`;
+
+  list.innerHTML = toolbar + `<div class="gilsys-shop-icon-grid">${icons}</div>`;
+  if ((items || []).length) {
+    renderShopItemDetail(0);
+  } else {
+    renderGilsysDetailInventoryPanel("ショップ", "商品なし", "", `<div class="gilsys-inline-empty">ショップ商品がありません</div>`);
+  }
+
+  const popup = document.getElementById("shopPopup");
+  if (popup) popup.style.display = "none";
 }
-
 function openStatusDetail(target) {
   ws.send(JSON.stringify({
     type: "request_status_detail",
@@ -5812,6 +7485,22 @@ function selectDollPart(part){
   }));
 
   closeSkillUI();   // ★ 既存の関数に合わせる
+}
+
+function selectDollCharge(key){
+  ws.send(JSON.stringify({
+    type: "select_doll_charge",
+    key
+  }));
+  closeSkillUI();
+}
+
+function selectDollChargePart(part){
+  ws.send(JSON.stringify({
+    type: "select_doll_charge_part",
+    part
+  }));
+  closeSkillUI();
 }
 
 
@@ -6057,5 +7746,197 @@ setPhase(PHASE.MODE_SELECT);
 </script>
 </div>
 </div>
-</div></body>
+</div>
+<style id="gilsys-command-panel-no-popup-patch-style">
+.gilsys-vs-emblem{display:none!important}.gilsys-command-list-panel.is-inventory-mode,.gilsys-command-list-panel.is-shop-mode{overflow:hidden}.gilsys-command-list-panel.is-inventory-mode .gilsys-command-list,.gilsys-command-list-panel.is-shop-mode .gilsys-command-list{align-content:start;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));overflow-y:auto;padding-right:6px}.gilsys-category-grid{display:grid;gap:10px;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}.gilsys-category-card{align-items:center;background:linear-gradient(180deg,rgba(55,47,35,.96),rgba(16,18,24,.98));border:1px solid rgba(231,178,86,.72);border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,245,200,.18),0 0 14px rgba(232,166,67,.18);color:#f7e8c6;cursor:pointer;display:grid;grid-template-columns:46px 1fr;min-height:76px;padding:12px;text-align:left}.gilsys-category-card:hover{transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,245,200,.28),0 0 20px rgba(255,205,95,.35)}.gilsys-category-icon{align-items:center;background:rgba(0,0,0,.28);border:1px solid rgba(255,220,132,.55);border-radius:12px;display:flex;font-size:24px;height:42px;justify-content:center;width:42px}.gilsys-category-name{display:block;font-size:17px;font-weight:800;letter-spacing:.06em}.gilsys-category-desc{color:rgba(245,232,200,.72);display:block;font-size:12px;margin-top:4px}.gilsys-inline-empty{border:1px dashed rgba(255,218,132,.45);border-radius:14px;color:rgba(245,232,200,.72);grid-column:1/-1;padding:18px;text-align:center}.gilsys-command-list .shop-card.inventory-card,.gilsys-command-list .shop-card{margin:0;min-width:0}.gilsys-command-list .shop-card .shop-buy-area button,.gilsys-command-list .inventory-card button{min-height:34px}.gilsys-command-list .shop-card .shop-item-desc{max-height:3.2em;overflow:hidden}.gilsys-panel-subtools{display:flex;flex-wrap:wrap;gap:8px;grid-column:1/-1;margin-bottom:2px}.gilsys-panel-subtools button{background:rgba(10,14,22,.86);border:1px solid rgba(231,178,86,.65);border-radius:10px;color:#f7e8c6;cursor:pointer;font-weight:700;padding:7px 12px}@media(max-width:1100px){.gilsys-category-grid{grid-template-columns:1fr}.gilsys-command-list-panel.is-inventory-mode .gilsys-command-list,.gilsys-command-list-panel.is-shop-mode .gilsys-command-list{grid-template-columns:1fr}}
+
+/* =========================================================
+   ★ 修正 2026-04-28
+   ヘッダー説明文を消し、その分バトル画面全体を上に詰める
+========================================================= */
+#phase2.gilsys-battle-ui .gilsys-battle-header {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-side-panel {
+  top: auto !important;
+  bottom: var(--gilsys-command-bottom) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-side-panel .gilsys-info-block:not(:first-child),
+#phase2.gilsys-battle-ui .gilsys-side-panel .gilsys-info-block:first-child h3 {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-info-block p,
+#phase2.gilsys-battle-ui .gilsys-command-caption,
+#phase2.gilsys-battle-ui .gilsys-list-caption,
+#phase2.gilsys-battle-ui .gilsys-right-detail,
+#phase2.gilsys-battle-ui .gilsys-side-right .gilsys-info-block:nth-of-type(3),
+#phase2.gilsys-battle-ui .gilsys-side-right .gilsys-info-block:nth-of-type(5) {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+  top: var(--gilsys-stage-top) !important;
+  bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + var(--gilsys-stage-gap)) !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list {
+  overflow-y: auto;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card {
+  margin-bottom: 10px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inline-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inline-toolbar button,
+#phase2.gilsys-battle-ui .gilsys-category-row {
+  border: 1px solid rgba(245,200,116,0.72) !important;
+  background: linear-gradient(180deg, rgba(65,44,20,0.94), rgba(17,16,20,0.96)) !important;
+  color: #ffe7b3 !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  font-weight: 900;
+}
+
+#phase2.gilsys-battle-ui .gilsys-empty-row {
+  padding: 18px;
+  border: 1px dashed rgba(245,200,116,0.45);
+  color: rgba(244,230,199,0.82);
+  border-radius: 8px;
+  text-align: center;
+}
+
+</style>
+
+
+<script id="gilsys-command-panel-no-popup-patch">
+(()=>{
+const safe=(v)=>typeof escapeHtml==="function"?escapeHtml(String(v??"")):String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
+const panel=()=>document.querySelector(".gilsys-command-list-panel"),list=()=>document.getElementById("gilsysCommandList"),title=()=>document.getElementById("gilsysCommandListTitle");
+const mode=(m)=>{const p=panel();if(!p)return;p.classList.toggle("is-inventory-mode",m==="inventory");p.classList.toggle("is-shop-mode",m==="shop");};
+const labels=()=>{const b=document.getElementById("atkBtn");if(b)b.innerHTML="<span>⚔</span>攻撃/スキル";};
+const skillJobId=()=>{const raw=window.myJob??(typeof myJob!=="undefined"?myJob:null);return (typeof JOB_ID_MAP!=="undefined"&&JOB_ID_MAP?.[raw])??raw;};
+const skillHandler=(n)=>{const j=String(window.myJob??myJob??"");if(j==="人形使い"||j==="9"){if(n===1&&typeof useDollSkill1==="function")return useDollSkill1;if(n===2&&typeof useDollSkill2Prompt==="function")return useDollSkill2Prompt;if(n===3&&typeof useDollSkill3==="function")return useDollSkill3;}return()=>useSkill(n);};
+window.openAttackSkillPanel=function(markManual=true){labels();mode("attack");const l=list(),t=title();if(!l)return;if(t)t.textContent="攻撃/スキル";l.dataset.manual=markManual?"attackSkill":"default";l.innerHTML="";const atk=window.gilsysLatestSelfStatus?.attack??"--";const ar=document.createElement("button");ar.className="gilsys-list-row is-selected";ar.innerHTML=`<span class="gilsys-row-icon">⚔</span><span>通常攻撃</span><b>攻撃力 ${safe(atk)}</b>`;ar.onclick=()=>{[...l.querySelectorAll(".gilsys-list-row")].forEach(e=>e.classList.remove("is-selected"));ar.classList.add("is-selected");setGilsysCommandDetail("通常攻撃",`攻撃力 ${atk}`,"敵単体に通常ダメージを与える。ターンを消費します。","⚔",attack);};l.appendChild(ar);const job=skillJobId();const allSkills=(typeof SKILLS!=="undefined"?SKILLS:window.SKILLS)||{};const skills=allSkills?.[job]||[];if(!skills.length){const empty=document.createElement("div");empty.className="gilsys-empty-row";empty.textContent=`現在の職業「${safe(window.myJob??(typeof myJob!=="undefined"?myJob:"不明"))}」に対応するスキルが見つかりません`;l.appendChild(empty);}skills.forEach((s,i)=>{const no=i+1,need=no,level=Number(typeof myLevel!=="undefined"?myLevel:1),remain=Number(window.skillRemaining?.[no]??1),ic=typeof gilsysSkillIcon==="function"?gilsysSkillIcon(i,s?.name):"✦",meta=remain<=0?"使用回数 0":level<need?`Lv${need}で解放`:`スキル${no}`;const r=document.createElement("button");r.className="gilsys-list-row";r.innerHTML=`<span class="gilsys-row-icon">${safe(ic)}</span><span>${safe(s?.name??`スキル${no}`)}</span><b>${safe(meta)}</b>`;r.onclick=()=>{[...l.querySelectorAll(".gilsys-list-row")].forEach(e=>e.classList.remove("is-selected"));r.classList.add("is-selected");setGilsysCommandDetail(s?.name??`スキル${no}`,meta,s?.desc??"職業スキルを発動します。",ic,()=>{if(remain<=0){showCenterToast("スキルの使用回数がなくなりました",2500);return;}if(level<need){showCenterToast(`Lv${need}で解放されます`,2200);return;}skillHandler(no)();});};l.appendChild(r);});ar.click();};
+window.openItemUI=function(){labels();mode("inventory");isItemUIOpen=true;currentItemCategory="__category__";if(typeof closeItemCategory==="function")closeItemCategory();const t=title(),l=list();if(t)t.textContent="持ち物カテゴリ";if(!l)return;l.dataset.manual="inventoryCategory";l.innerHTML=`<div class="gilsys-category-grid"><button class="gilsys-category-card" onclick="openItemCategory('item')"><span class="gilsys-category-icon">🧪</span><span><span class="gilsys-category-name">アイテム</span><span class="gilsys-category-desc">回復・強化などの消費アイテム</span></span></button><button class="gilsys-category-card" onclick="openItemCategory('equip')"><span class="gilsys-category-icon">⚔</span><span><span class="gilsys-category-name">装備</span><span class="gilsys-category-desc">通常装備・合成・付け替え</span></span></button><button class="gilsys-category-card" onclick="openItemCategory('special')"><span class="gilsys-category-icon">🔮</span><span><span class="gilsys-category-name">特殊装備</span><span class="gilsys-category-desc">職業専用装備・矢・人形衣装</span></span></button></div>`;setGilsysCommandDetail("持ち物","カテゴリ選択","ポップアップではなく、このコマンド選択画面内で持ち物カテゴリを選択します。","🎒",null);};
+window.returnToItemCategory=function(){if(typeof resetEquipCombineState==="function")resetEquipCombineState();openItemUI();};
+window.openItemCategory=function(cat){labels();mode("inventory");currentItemCategory=cat;isItemUIOpen=true;if(cat!=="equip"&&typeof resetEquipCombineState==="function")resetEquipCombineState();const all=window.itemList||[];const items=all.filter(it=>it?.category===cat).sort((a,b)=>{const ae=((cat==="equip"&&a?.is_equipped_normal)||(cat==="special"&&a?.is_equipped_special))?1:0,be=((cat==="equip"&&b?.is_equipped_normal)||(cat==="special"&&b?.is_equipped_special))?1:0;return be-ae;});const tm={item:"持ち物：アイテム",equip:"持ち物：装備",special:"持ち物：特殊装備"},dm={item:`このターンあと ${Math.max(0,Number(window.itemUsesRemaining??2))} 個アイテムを使用できます`,equip:"通常装備の装備・付け替え・合成を行えます。",special:"職業専用装備・矢・人形衣装などを装備できます。"};const t=title(),l=list();if(t)t.textContent=tm[cat]??"持ち物";if(!l)return;l.dataset.manual=`inventory:${cat}`;let tools=`<div class="gilsys-panel-subtools"><button onclick="returnToItemCategory()">← カテゴリへ戻る</button>`;if(cat==="equip"){const cnt=typeof equipmentCombineSelection!=="undefined"?equipmentCombineSelection.length:0;tools+=`<button onclick="toggleEquipCombineMode(); openItemCategory('equip');">${typeof equipmentCombineMode!=="undefined"&&equipmentCombineMode?"合成をやめる":"合成"}</button>`;if(typeof equipmentCombineMode!=="undefined"&&equipmentCombineMode)tools+=`<button onclick="submitEquipCombine()" ${cnt===2?"":"disabled"}>選択した2つを合成</button>`;}tools+=`</div>`;const body=items.length?items.map(it=>typeof renderInventoryCard==="function"?renderInventoryCard(it,cat):`<div class="gilsys-inline-empty">${safe(it?.name??"アイテム")}</div>`).join(""):`<div class="gilsys-inline-empty">このカテゴリの持ち物はありません。</div>`;l.innerHTML=tools+body;setGilsysCommandDetail(tm[cat]??"持ち物","コマンド画面内表示",dm[cat]??"持ち物を選択してください。",cat==="item"?"🧪":cat==="equip"?"⚔":"🔮",null);};
+window.closeItemUI=function(){isItemUIOpen=false;currentItemCategory=null;if(typeof resetEquipCombineState==="function")resetEquipCombineState();if(typeof closeItemCategory==="function")closeItemCategory();const p=document.getElementById("itemPopup");if(p)p.style.display="none";};
+window.openShop=function(){if(!myTurn)return;labels();mode("shop");const t=title(),l=list();if(t)t.textContent="ショップ";if(l){l.dataset.manual="shop";l.innerHTML=`<div class="gilsys-inline-empty">ショップ商品を読み込み中...</div>`;}renderGilsysDetailInventoryPanel("ショップ","読み込み中","",`<div class="gilsys-inline-empty">ショップ商品を読み込み中...</div>`);ws.send(JSON.stringify({type:"open_shop"}));};
+window.renderShop=function(items){window.gilsysLatestShopItems=Array.isArray(items)?items:[];window.gilsysSelectedShopIndex=0;mode("shop");const t=title(),l=list();if(t)t.textContent="ショップ";if(!l)return;l.dataset.manual="shop";const tools=`<div class="gilsys-inline-toolbar"><button onclick="rerollShop()">ショップ更新(5コイン)</button></div>`;if(!window.gilsysLatestShopItems.length){l.innerHTML=tools+`<div class="gilsys-inline-empty">現在購入できる商品はありません。</div>`;renderGilsysDetailInventoryPanel("ショップ","商品なし","",`<div class="gilsys-inline-empty">現在購入できる商品はありません。</div>`);return;}const icons=window.gilsysLatestShopItems.map((it,idx)=>{let ic="🛒",theme="";if(typeof getShopVisualMeta==="function"){const m=getShopVisualMeta(it);ic=m.icon;theme=m.theme||"";}const ih=typeof getShopIconMarkup==="function"?getShopIconMarkup(ic):safe(ic);return `<button class="gilsys-shop-icon-btn ${safe(theme)} ${idx===0?"is-selected":""}" title="${safe(it?.name??"商品")}" onclick="renderShopItemDetail(${idx})"><span class="shop-icon">${ih}</span></button>`;}).join("");l.innerHTML=tools+`<div class="gilsys-shop-icon-grid">${icons}</div>`;renderShopItemDetail(0);const sp=document.getElementById("shopPopup");if(sp)sp.style.display="none";};
+window.closeShopUI=function(){const sp=document.getElementById("shopPopup");if(sp)sp.style.display="none";};
+const oldHud=window.updateGilsysBattleHud;if(typeof oldHud==="function")window.updateGilsysBattleHud=function(data){oldHud(data);labels();};
+document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.querySelector(".gilsys-vs-emblem");if(e)e.textContent="";});
+})();
+</script>
+<style id="gilsys-inventory-right-panel-style">
+#phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-command-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  overflow-y: auto !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card.inventory-card {
+  margin: 0 !important;
+  min-width: 0 !important;
+  height: 132px !important;
+  min-height: 132px !important;
+  grid-template-columns: minmax(0, 1fr) 92px !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+  height: 48px !important;
+  max-height: 48px !important;
+  overflow-y: auto !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-command-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  overflow-y: auto !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-inline-toolbar {
+  margin-bottom: 0;
+}
+</style>
+<script id="gilsys-inventory-right-panel-patch">
+(() => {
+  const setInventoryMode = () => {
+    const panel = document.querySelector(".gilsys-command-list-panel");
+    if (!panel) return;
+    panel.classList.add("is-inventory-mode");
+    panel.classList.remove("is-shop-mode");
+  };
+
+  window.openItemUI = function() {
+    setInventoryMode();
+    isItemUIOpen = true;
+    currentItemCategory = "__category__";
+    if (typeof closeItemCategory === "function") closeItemCategory();
+    renderGilsysItemCategoryPanel();
+  };
+
+  window.returnToItemCategory = function() {
+    if (typeof resetEquipCombineState === "function") resetEquipCombineState();
+    openItemUI();
+  };
+
+  window.openItemCategory = function(category) {
+    setInventoryMode();
+    currentItemCategory = category;
+    isItemUIOpen = true;
+    if (category !== "equip" && typeof resetEquipCombineState === "function") {
+      resetEquipCombineState();
+    }
+
+    const titleMap = {
+      item: "アイテム",
+      equip: "装備",
+      special: "特殊装備",
+    };
+    const all = window.itemList || [];
+    const items = all
+      .filter(it => it?.category === category)
+      .sort((a, b) => {
+        const ae = ((category === "equip" && a?.is_equipped_normal) || (category === "special" && a?.is_equipped_special)) ? 1 : 0;
+        const be = ((category === "equip" && b?.is_equipped_normal) || (category === "special" && b?.is_equipped_special)) ? 1 : 0;
+        return be - ae;
+      });
+
+    renderGilsysItemCategoryPanel(category);
+    const list = document.getElementById("gilsysCommandList");
+    if (list) list.dataset.manual = `items-${category}`;
+
+    const selectedCount = Array.isArray(window.equipmentCombineSelection)
+      ? window.equipmentCombineSelection.length
+      : (typeof equipmentCombineSelection !== "undefined" ? equipmentCombineSelection.length : 0);
+    const remaining = Math.max(0, Number(window.itemUsesRemaining ?? 2));
+    const tools = `
+      <button onclick="renderGilsysItemCategoryPanel()">カテゴリへ戻る</button>
+      ${category === "equip" ? `<button onclick="toggleEquipCombineMode()">${typeof equipmentCombineMode !== "undefined" && equipmentCombineMode ? "合成選択をやめる" : "装備を合成"}</button>` : ""}
+      ${category === "equip" && typeof equipmentCombineMode !== "undefined" && equipmentCombineMode ? `<button onclick="submitEquipCombine()" ${selectedCount === 2 ? "" : "disabled"}>選択した2つを合成</button>` : ""}
+    `;
+    const body = items.length
+      ? items.map(it => typeof renderInventoryCard === "function" ? renderInventoryCard(it, category) : `<div class="gilsys-inline-empty">${escapeHtml(it?.name ?? "アイテム")}</div>`).join("")
+      : `<div class="gilsys-inline-empty">${escapeHtml(titleMap[category] ?? "持ち物")}はありません</div>`;
+    const meta = category === "item"
+      ? `このターンあと ${remaining} 個使用できます`
+      : "カード内のボタンから操作できます";
+
+    renderGilsysDetailInventoryPanel(titleMap[category] ?? "持ち物", meta, tools, body);
+  };
+})();
+</script>
+
+</body>
 </html>
