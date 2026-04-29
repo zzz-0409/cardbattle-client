@@ -7013,7 +7013,6 @@ function openItemCategory(category){
 
   const remaining = Math.max(0, Number(window.itemUsesRemaining ?? 2));
   const tools = `
-    <button onclick="renderGilsysItemCategoryPanel()">カテゴリへ戻る</button>
     ${category === "equip" ? `<button onclick="toggleEquipCombineMode()">${equipmentCombineMode ? "合成選択をやめる" : "装備を合成"}</button>` : ""}
     ${category === "equip" && equipmentCombineMode ? `<button onclick="submitEquipCombine()">選択した2つを合成</button>` : ""}
   `;
@@ -7855,7 +7854,7 @@ const skillHandler=(n)=>{const j=String(window.myJob??myJob??"");if(j==="人形�
 window.openAttackSkillPanel=function(markManual=true){labels();mode("attack");const l=list(),t=title();if(!l)return;if(t)t.textContent="攻撃/スキル";l.dataset.manual=markManual?"attackSkill":"default";l.innerHTML="";const atk=window.gilsysLatestSelfStatus?.attack??"--";const ar=document.createElement("button");ar.className="gilsys-list-row is-selected";ar.innerHTML=`<span class="gilsys-row-icon">⚔</span><span>通常攻撃</span><b>攻撃力 ${safe(atk)}</b>`;ar.onclick=()=>{[...l.querySelectorAll(".gilsys-list-row")].forEach(e=>e.classList.remove("is-selected"));ar.classList.add("is-selected");setGilsysCommandDetail("通常攻撃",`攻撃力 ${atk}`,"敵単体に通常ダメージを与える。ターンを消費します。","⚔",attack);};l.appendChild(ar);const job=skillJobId();const allSkills=(typeof SKILLS!=="undefined"?SKILLS:window.SKILLS)||{};const skills=allSkills?.[job]||[];if(!skills.length){const empty=document.createElement("div");empty.className="gilsys-empty-row";empty.textContent=`現在の職業「${safe(window.myJob??(typeof myJob!=="undefined"?myJob:"不明"))}」に対応するスキルが見つかりません`;l.appendChild(empty);}skills.forEach((s,i)=>{const no=i+1,need=no,level=Number(typeof myLevel!=="undefined"?myLevel:1),remain=Number(window.skillRemaining?.[no]??1),ic=typeof gilsysSkillIcon==="function"?gilsysSkillIcon(i,s?.name):"✦",meta=remain<=0?"使用回数 0":level<need?`Lv${need}で解放`:`スキル${no}`;const r=document.createElement("button");r.className="gilsys-list-row";r.innerHTML=`<span class="gilsys-row-icon">${safe(ic)}</span><span>${safe(s?.name??`スキル${no}`)}</span><b>${safe(meta)}</b>`;r.onclick=()=>{[...l.querySelectorAll(".gilsys-list-row")].forEach(e=>e.classList.remove("is-selected"));r.classList.add("is-selected");setGilsysCommandDetail(s?.name??`スキル${no}`,meta,s?.desc??"職業スキルを発動します。",ic,()=>{if(remain<=0){showCenterToast("スキルの使用回数がなくなりました",2500);return;}if(level<need){showCenterToast(`Lv${need}で解放されます`,2200);return;}skillHandler(no)();});};l.appendChild(r);});ar.click();};
 window.openItemUI=function(){labels();mode("inventory");isItemUIOpen=true;currentItemCategory="__category__";if(typeof closeItemCategory==="function")closeItemCategory();const t=title(),l=list();if(t)t.textContent="持ち物カテゴリ";if(!l)return;l.dataset.manual="inventoryCategory";l.innerHTML=`<div class="gilsys-category-grid"><button class="gilsys-category-card" onclick="openItemCategory('item')"><span class="gilsys-category-icon">🧪</span><span><span class="gilsys-category-name">アイテム</span><span class="gilsys-category-desc">回復・強化などの消費アイテム</span></span></button><button class="gilsys-category-card" onclick="openItemCategory('equip')"><span class="gilsys-category-icon">⚔</span><span><span class="gilsys-category-name">装備</span><span class="gilsys-category-desc">通常装備・合成・付け替え</span></span></button><button class="gilsys-category-card" onclick="openItemCategory('special')"><span class="gilsys-category-icon">🔮</span><span><span class="gilsys-category-name">特殊装備</span><span class="gilsys-category-desc">職業専用装備・矢・人形衣装</span></span></button></div>`;setGilsysCommandDetail("持ち物","カテゴリ選択","ポップアップではなく、このコマンド選択画面内で持ち物カテゴリを選択します。","🎒",null);};
 window.returnToItemCategory=function(){if(typeof resetEquipCombineState==="function")resetEquipCombineState();openItemUI();};
-window.openItemCategory=function(cat){labels();mode("inventory");currentItemCategory=cat;isItemUIOpen=true;if(cat!=="equip"&&typeof resetEquipCombineState==="function")resetEquipCombineState();const all=window.itemList||[];const items=all.filter(it=>it?.category===cat).sort((a,b)=>{const ae=((cat==="equip"&&a?.is_equipped_normal)||(cat==="special"&&a?.is_equipped_special))?1:0,be=((cat==="equip"&&b?.is_equipped_normal)||(cat==="special"&&b?.is_equipped_special))?1:0;return be-ae;});const tm={item:"持ち物：アイテム",equip:"持ち物：装備",special:"持ち物：特殊装備"},dm={item:`このターンあと ${Math.max(0,Number(window.itemUsesRemaining??2))} 個アイテムを使用できます`,equip:"通常装備の装備・付け替え・合成を行えます。",special:"職業専用装備・矢・人形衣装などを装備できます。"};const t=title(),l=list();if(t)t.textContent=tm[cat]??"持ち物";if(!l)return;l.dataset.manual=`inventory:${cat}`;let tools=`<div class="gilsys-panel-subtools"><button onclick="returnToItemCategory()">← カテゴリへ戻る</button>`;if(cat==="equip"){const cnt=typeof equipmentCombineSelection!=="undefined"?equipmentCombineSelection.length:0;tools+=`<button onclick="toggleEquipCombineMode(); openItemCategory('equip');">${typeof equipmentCombineMode!=="undefined"&&equipmentCombineMode?"合成をやめる":"合成"}</button>`;if(typeof equipmentCombineMode!=="undefined"&&equipmentCombineMode)tools+=`<button onclick="submitEquipCombine()" ${cnt===2?"":"disabled"}>選択した2つを合成</button>`;}tools+=`</div>`;const body=items.length?items.map(it=>typeof renderInventoryCard==="function"?renderInventoryCard(it,cat):`<div class="gilsys-inline-empty">${safe(it?.name??"アイテム")}</div>`).join(""):`<div class="gilsys-inline-empty">このカテゴリの持ち物はありません。</div>`;l.innerHTML=tools+body;setGilsysCommandDetail(tm[cat]??"持ち物","コマンド画面内表示",dm[cat]??"持ち物を選択してください。",cat==="item"?"🧪":cat==="equip"?"⚔":"🔮",null);};
+window.openItemCategory=function(cat){labels();mode("inventory");currentItemCategory=cat;isItemUIOpen=true;if(cat!=="equip"&&typeof resetEquipCombineState==="function")resetEquipCombineState();const all=window.itemList||[];const items=all.filter(it=>it?.category===cat).sort((a,b)=>{const ae=((cat==="equip"&&a?.is_equipped_normal)||(cat==="special"&&a?.is_equipped_special))?1:0,be=((cat==="equip"&&b?.is_equipped_normal)||(cat==="special"&&b?.is_equipped_special))?1:0;return be-ae;});const tm={item:"持ち物：アイテム",equip:"持ち物：装備",special:"持ち物：特殊装備"},dm={item:`このターンあと ${Math.max(0,Number(window.itemUsesRemaining??2))} 個アイテムを使用できます`,equip:"通常装備の装備・付け替え・合成を行えます。",special:"職業専用装備・矢・人形衣装などを装備できます。"};const t=title(),l=list();if(t)t.textContent=tm[cat]??"持ち物";if(!l)return;l.dataset.manual=`inventory:${cat}`;let tools=`<div class="gilsys-panel-subtools">`;if(cat==="equip"){const cnt=typeof equipmentCombineSelection!=="undefined"?equipmentCombineSelection.length:0;tools+=`<button onclick="toggleEquipCombineMode(); openItemCategory('equip');">${typeof equipmentCombineMode!=="undefined"&&equipmentCombineMode?"合成をやめる":"合成"}</button>`;if(typeof equipmentCombineMode!=="undefined"&&equipmentCombineMode)tools+=`<button onclick="submitEquipCombine()" ${cnt===2?"":"disabled"}>選択した2つを合成</button>`;}tools+=`</div>`;const body=items.length?items.map(it=>typeof renderInventoryCard==="function"?renderInventoryCard(it,cat):`<div class="gilsys-inline-empty">${safe(it?.name??"アイテム")}</div>`).join(""):`<div class="gilsys-inline-empty">このカテゴリの持ち物はありません。</div>`;l.innerHTML=tools+body;setGilsysCommandDetail(tm[cat]??"持ち物","コマンド画面内表示",dm[cat]??"持ち物を選択してください。",cat==="item"?"🧪":cat==="equip"?"⚔":"🔮",null);};
 window.closeItemUI=function(){isItemUIOpen=false;currentItemCategory=null;if(typeof resetEquipCombineState==="function")resetEquipCombineState();if(typeof closeItemCategory==="function")closeItemCategory();const p=document.getElementById("itemPopup");if(p)p.style.display="none";};
 window.openShop=function(){if(!myTurn)return;labels();mode("shop");const t=title(),l=list();if(t)t.textContent="ショップ";if(l){l.dataset.manual="shop";l.innerHTML=`<div class="gilsys-inline-empty">ショップ商品を読み込み中...</div>`;}renderGilsysDetailInventoryPanel("ショップ","読み込み中","",`<div class="gilsys-inline-empty">ショップ商品を読み込み中...</div>`);ws.send(JSON.stringify({type:"open_shop"}));};
 window.renderShop=function(items){window.gilsysLatestShopItems=Array.isArray(items)?items:[];window.gilsysSelectedShopIndex=0;mode("shop");const t=title(),l=list();if(t)t.textContent="ショップ";if(!l)return;l.dataset.manual="shop";const tools=`<div class="gilsys-inline-toolbar"><button onclick="rerollShop()">ショップ更新(5コイン)</button></div>`;if(!window.gilsysLatestShopItems.length){l.innerHTML=tools+`<div class="gilsys-inline-empty">現在購入できる商品はありません。</div>`;renderGilsysDetailInventoryPanel("ショップ","商品なし","",`<div class="gilsys-inline-empty">現在購入できる商品はありません。</div>`);return;}const icons=window.gilsysLatestShopItems.map((it,idx)=>{let ic="🛒",theme="";if(typeof getShopVisualMeta==="function"){const m=getShopVisualMeta(it);ic=m.icon;theme=m.theme||"";}const ih=typeof getShopIconMarkup==="function"?getShopIconMarkup(ic):safe(ic);return `<button class="gilsys-shop-icon-btn ${safe(theme)} ${idx===0?"is-selected":""}" title="${safe(it?.name??"商品")}" onclick="renderShopItemDetail(${idx})"><span class="shop-icon">${ih}</span></button>`;}).join("");l.innerHTML=tools+`<div class="gilsys-shop-icon-grid">${icons}</div>`;renderShopItemDetail(0);const sp=document.getElementById("shopPopup");if(sp)sp.style.display="none";};
@@ -7946,7 +7945,6 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
       : (typeof equipmentCombineSelection !== "undefined" ? equipmentCombineSelection.length : 0);
     const remaining = Math.max(0, Number(window.itemUsesRemaining ?? 2));
     const tools = `
-      <button onclick="renderGilsysItemCategoryPanel()">カテゴリへ戻る</button>
       ${category === "equip" ? `<button onclick="toggleEquipCombineMode()">${typeof equipmentCombineMode !== "undefined" && equipmentCombineMode ? "合成選択をやめる" : "装備を合成"}</button>` : ""}
       ${category === "equip" && typeof equipmentCombineMode !== "undefined" && equipmentCombineMode ? `<button onclick="submitEquipCombine()" ${selectedCount === 2 ? "" : "disabled"}>選択した2つを合成</button>` : ""}
     `;
@@ -9405,15 +9403,141 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }
 }
 </style>
+<style id="gilsys-inventory-shop-compact-text-style">
+#phase2.gilsys-battle-ui .gilsys-panel-subtools:empty,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-tools:empty,
+#phase2.gilsys-battle-ui button[onclick="returnToItemCategory()"],
+#phase2.gilsys-battle-ui button[onclick="renderGilsysItemCategoryPanel()"] {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .shop-title-wrap {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-category-desc {
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  line-break: strict !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  height: auto !important;
+  max-height: 2.6em !important;
+  overflow: hidden !important;
+  line-height: 1.3 !important;
+  padding-right: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-head {
+  min-height: 0 !important;
+  gap: 4px !important;
+  line-height: 1.15 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-head b {
+  font-size: 13px !important;
+  line-height: 1.15 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-head span {
+  font-size: 10px !important;
+  line-height: 1.15 !important;
+  opacity: 0.82 !important;
+  text-align: right !important;
+}
+
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-wrap {
+    gap: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-head {
+    flex: 0 0 18px !important;
+    max-height: 18px !important;
+    overflow: hidden !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 6px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card-head {
+    gap: 6px !important;
+    margin-bottom: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-buy-area {
+    min-width: 58px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-buy-area button {
+    min-width: 58px !important;
+    padding: 3px 5px !important;
+    font-size: 10px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-category-card {
+    grid-template-columns: 32px minmax(0, 1fr) !important;
+    min-height: 48px !important;
+    padding: 6px 8px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-category-icon {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 16px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-category-name {
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-category-desc {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    margin-top: 1px !important;
+  }
+}
+</style>
 <style id="gilsys-mobile-hide-top-status-style">
 @media (orientation: landscape) and (max-width: 1200px),
        (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui {
+    --gilsys-command-bottom: max(10px, calc(env(safe-area-inset-bottom) + 8px)) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    bottom: var(--gilsys-command-bottom) !important;
+  }
+
   #phase2.gilsys-battle-ui .gilsys-top-status-self,
   #phase2.gilsys-battle-ui .gilsys-top-status-enemy {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status {
+    top: 3px !important;
+    width: min(34vw, 142px) !important;
+    min-height: 0 !important;
+    padding: 4px 5px !important;
+    gap: 4px !important;
   }
 }
 </style>
@@ -9430,9 +9554,4 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 </script>
 </body>
 </html>
-
-
-
-
-
 
