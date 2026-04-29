@@ -9159,6 +9159,75 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }
 }
 </style>
+<style id="gilsys-mobile-action-buttons-left-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    position: absolute !important;
+    grid-template-columns: calc((100% - 62px) / 3) calc((100% - 62px) / 3) !important;
+    justify-content: end !important;
+    padding-left: 58px !important;
+  }
+  #phase2.gilsys-battle-ui #action-area.gilsys-action-column {
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    bottom: 2px !important;
+    width: 52px !important;
+    z-index: 3 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel {
+    grid-column: 1 !important;
+    min-width: 0 !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    grid-column: 2 !important;
+    min-width: 0 !important;
+  }
+}
+</style>
+<style id="gilsys-right-inventory-always-scroll-style">
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .gilsys-detail-inventory-wrap {
+  height: 100% !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .gilsys-detail-inventory-head,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .gilsys-detail-inventory-tools {
+  flex: 0 0 auto !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .gilsys-detail-inventory-list {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y !important;
+  padding-right: 5px !important;
+}
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .gilsys-detail-inventory-wrap {
+    gap: 3px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .gilsys-detail-inventory-list {
+    height: calc(var(--gilsys-command-height) - 26px) !important;
+    max-height: calc(var(--gilsys-command-height) - 26px) !important;
+    gap: 4px !important;
+  }
+}
+</style>
 <script id="gilsys-pwa-register">
 (() => {
   if (location.protocol === "http:" || location.protocol === "https:") {
