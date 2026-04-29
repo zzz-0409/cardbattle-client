@@ -9355,6 +9355,56 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }
 }
 </style>
+<style id="gilsys-mobile-command-unclip-lower-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui {
+    --gilsys-command-bottom: max(24px, calc(env(safe-area-inset-bottom) + 22px)) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-panel,
+  #phase2.gilsys-battle-ui #action-area.gilsys-action-column,
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    box-sizing: border-box !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    bottom: var(--gilsys-command-bottom) !important;
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #action-area.gilsys-action-column {
+    top: 2px !important;
+    bottom: 2px !important;
+    height: auto !important;
+    padding: 3px 4px !important;
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn {
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    padding-bottom: 6px !important;
+    box-sizing: border-box !important;
+  }
+}
+</style>
 <style id="gilsys-mobile-hide-top-status-style">
 @media (orientation: landscape) and (max-width: 1200px),
        (orientation: landscape) and (max-height: 700px) {
@@ -9380,7 +9430,6 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 </script>
 </body>
 </html>
-
 
 
 
