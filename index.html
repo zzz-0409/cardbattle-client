@@ -3165,6 +3165,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
           <span>⚔ 攻撃力 <b id="gilsysSelfAtk">0</b></span>
           <span>🛡 防御力 <b id="gilsysSelfDef">0</b></span>
         </div>
+        <div class="gilsys-exp-row" id="gilsysSelfExpText">レベル1 0/40</div>
         <div class="gilsys-coin-row">🪙 コイン <b id="gilsysSelfCoins">0</b></div>
         <div class="buff-strip gilsys-status-buff-strip" data-side="self" id="gilsysBuffStripSelf"></div>
       </div>
@@ -3184,6 +3185,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
           <span>⚔ 攻撃力 <b id="gilsysEnemyAtk">0</b></span>
           <span>🛡 防御力 <b id="gilsysEnemyDef">0</b></span>
         </div>
+        <div class="gilsys-exp-row enemy" id="gilsysEnemyExpText">レベル1 0/40</div>
         <div class="gilsys-coin-row enemy">🪙 コイン <b id="gilsysEnemyCoins">0</b></div>
         <div class="buff-strip gilsys-status-buff-strip enemy" data-side="enemy" id="gilsysBuffStripEnemy"></div>
       </div>
@@ -6362,12 +6364,17 @@ function updateGilsysBattleHud(data) {
   const hp = Number(data.hp ?? 0);
   const maxHp = Number(data.max_hp ?? 0);
   const hpRate = maxHp > 0 ? Math.max(0, Math.min(100, hp / maxHp * 100)) : 0;
+  const level = Math.max(1, Number(data.level ?? 1));
+  const exp = Math.max(0, Number(data.exp ?? 0));
+  const nextExp = data.next_level_exp == null ? null : Number(data.next_level_exp);
+  const expText = nextExp == null ? "最大Lv" : `レベル${level} ${exp}/${nextExp}`;
 
-  setGilsysText(`gilsys${prefix}Name`, isSelf ? (window.accountName || "あなた") : "対戦相手プレイヤー");
+  setGilsysText(`gilsys${prefix}Name`, isSelf ? (data.name || window.accountName || "あなた") : (data.name || "CPU"));
   setGilsysText(`gilsys${prefix}Job`, data.job ?? "職業");
   setGilsysText(`gilsys${prefix}HpText`, `HP ${hp} / ${maxHp}`);
   setGilsysText(`gilsys${prefix}Atk`, data.attack ?? 0);
   setGilsysText(`gilsys${prefix}Def`, data.defense ?? 0);
+  setGilsysText(`gilsys${prefix}ExpText`, expText);
   setGilsysText(`gilsys${prefix}Coins`, Number(data.coins ?? 0).toLocaleString());
 
   const fill = document.getElementById(`gilsys${prefix}HpFill`);
@@ -10608,6 +10615,63 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
   #phase2.gilsys-battle-ui .gilsys-param-row b {
     font-size: 8px !important;
     line-height: 1 !important;
+  }
+}
+</style>
+<style id="gilsys-status-exp-hp-name-cleanup-final-style">
+#phase2.gilsys-battle-ui #coins,
+#phase2.gilsys-battle-ui #coin,
+#phase2.gilsys-battle-ui #chat,
+#phase2.gilsys-battle-ui #chatBtn,
+#phase2.gilsys-battle-ui #chatButton,
+#phase2.gilsys-battle-ui .chat-button,
+#phase2.gilsys-battle-ui .gilsys-chat-button,
+#phase2.gilsys-battle-ui .old-chat-button,
+#phase2.gilsys-battle-ui .old-coin-display {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-exp-row {
+  margin-top: 5px !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+  color: #f7e2c0 !important;
+  white-space: nowrap !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-coin-row {
+  margin-top: 3px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-hp-text {
+  width: 50% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-hp-text {
+  margin-left: auto !important;
+  text-align: right !important;
+}
+
+@media (max-width: 760px) {
+  #phase2.gilsys-battle-ui .gilsys-exp-row {
+    font-size: 9px !important;
+    margin-top: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-coin-row {
+    font-size: 9px !important;
+    margin-top: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-hp-text {
+    font-size: 10px !important;
+    line-height: 1.05 !important;
+    margin-top: 2px !important;
   }
 }
 </style>
