@@ -9759,7 +9759,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   #phase2.gilsys-battle-ui #battleStage .main-unit {
     position: relative !important;
     overflow: visible !important;
-    padding-bottom: 34px !important;
+    padding-bottom: 6px !important;
   }
 
   #phase2.gilsys-battle-ui #battleStage .equip-area,
@@ -9790,7 +9790,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 
   #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .equip-area,
   #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .special-equip-area[data-side="self"]:not(.doll) {
-    left: -30px !important;
+    left: -50px !important;
     right: auto !important;
     transform: none !important;
   }
@@ -9798,7 +9798,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .equip-area,
   #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .special-equip-area[data-side="enemy"]:not(.doll) {
     left: auto !important;
-    right: -30px !important;
+    right: -50px !important;
     transform: none !important;
   }
 
@@ -10155,6 +10155,120 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 
   window.addEventListener("scroll", () => touchLike() && closeAll(), true);
   window.addEventListener("resize", () => touchLike() && closeAll(), true);
+})();
+</script>
+<style id="gilsys-mobile-floating-tooltip-style">
+@media (hover: none), (pointer: coarse) {
+  #gilsysFloatingTooltip {
+    position: fixed !important;
+    left: 50% !important;
+    top: max(8px, env(safe-area-inset-top)) !important;
+    transform: translate3d(-50%, 0, 0) !important;
+    z-index: 2147483647 !important;
+    display: none;
+    width: max-content;
+    max-width: min(320px, calc(100vw - 16px));
+    max-height: min(52vh, 200px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255,226,164,0.78);
+    border-radius: 7px;
+    background: rgba(4,7,12,0.98);
+    color: #f7ead0;
+    font-size: 11px;
+    line-height: 1.4;
+    white-space: pre-line;
+    text-align: left;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+    pointer-events: auto;
+    isolation: isolate;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #gilsysFloatingTooltip::-webkit-scrollbar {
+    display: none;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+    display: none !important;
+  }
+}
+</style>
+<script id="gilsys-mobile-floating-tooltip-patch">
+(() => {
+  const touchLike = () =>
+    window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches ||
+    Number(navigator.maxTouchPoints || 0) > 0;
+
+  const slotSelector = "#phase2.gilsys-battle-ui .equip-slot, #phase2.gilsys-battle-ui .special-equip-slot, #phase2.gilsys-battle-ui .buff-slot";
+  const tooltipSelector = ".equip-tooltip, .buff-tooltip";
+
+  const floating = () => {
+    let el = document.getElementById("gilsysFloatingTooltip");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "gilsysFloatingTooltip";
+      document.body.appendChild(el);
+    }
+    return el;
+  };
+
+  const hide = () => {
+    const el = document.getElementById("gilsysFloatingTooltip");
+    if (el) {
+      el.style.display = "none";
+      el.innerHTML = "";
+    }
+  };
+
+  const normalizeTooltipHtml = (slot) => {
+    const tip = slot?.querySelector?.(tooltipSelector);
+    if (tip) return tip.innerHTML;
+    const title = slot?.getAttribute?.("title") || slot?.dataset?.tapTitle || "";
+    return String(title)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  };
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!touchLike()) return;
+    const slot = event.target.closest?.(slotSelector);
+    if (!slot) {
+      hide();
+      return;
+    }
+    const html = normalizeTooltipHtml(slot);
+    if (!html) return;
+    const willOpen = !slot.classList.contains("tooltip-open");
+    requestAnimationFrame(() => {
+      if (!willOpen) {
+        hide();
+        return;
+      }
+      const el = floating();
+      el.innerHTML = html;
+      el.style.display = "block";
+    });
+  }, true);
+
+  document.addEventListener("click", (event) => {
+    if (!touchLike()) return;
+    const floatTip = event.target.closest?.("#gilsysFloatingTooltip");
+    const slot = event.target.closest?.(slotSelector);
+    if (!floatTip && !slot) hide();
+  }, true);
+
+  window.addEventListener("scroll", () => touchLike() && hide(), true);
+  window.addEventListener("resize", () => touchLike() && hide(), true);
 })();
 </script>
 <script id="gilsys-pwa-register">
