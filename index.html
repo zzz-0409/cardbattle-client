@@ -9417,9 +9417,45 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 }
 
 #phase2.gilsys-battle-ui .shop-item-desc,
+#phase2.gilsys-battle-ui .shop-item-name,
+#phase2.gilsys-battle-ui .shop-meta-row,
+#phase2.gilsys-battle-ui .shop-badge,
 #phase2.gilsys-battle-ui .gilsys-category-desc {
   writing-mode: horizontal-tb !important;
   text-orientation: mixed !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-name,
+#phase2.gilsys-battle-ui .shop-meta-row,
+#phase2.gilsys-battle-ui .shop-badge {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  line-break: strict !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-name {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#phase2.gilsys-battle-ui .shop-meta-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+#phase2.gilsys-battle-ui .shop-badge {
+  flex: 0 0 auto !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-category-desc {
   white-space: normal !important;
   word-break: keep-all !important;
   overflow-wrap: normal !important;
@@ -9428,14 +9464,21 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 
 #phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc,
 #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
-  display: -webkit-box !important;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 2 !important;
-  height: auto !important;
+  display: block !important;
+  height: 2.6em !important;
   max-height: 2.6em !important;
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   line-height: 1.3 !important;
   padding-right: 0 !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc::-webkit-scrollbar,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc::-webkit-scrollbar {
+  display: none !important;
 }
 
 #phase2.gilsys-battle-ui .gilsys-detail-inventory-head {
@@ -9554,4 +9597,3 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 </script>
 </body>
 </html>
-
