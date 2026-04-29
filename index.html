@@ -4848,11 +4848,16 @@ function buildDollSpecialEquipHTML(doll) {
       const cleanName = c.name
         ? c.name.replace(/^★\d+/, "")
         : "衣装";
+      const effect = c.effect_text || c.effect || "";
 
       html += `
         <div class="special-equip-slot filled active ${c.condition === "boroboro" ? "boroboro" : ""}"
              title="★${c.star ?? 1} ${cleanName}">
           ${label}
+          <div class="equip-tooltip">
+            <b>★${c.star ?? 1} ${cleanName}</b>
+            ${effect ? `<br>${effect}` : ""}
+          </div>
         </div>
       `;
     } else {
@@ -5563,6 +5568,8 @@ function attachWsHandlers() {
       }
       const popup = document.getElementById("skillPopup");
       const list  = document.getElementById("skillList");
+      list.classList.remove("gilsys-doll-part-list");
+      popup.classList.remove("gilsys-doll-part-popup");
       const charge = Number(data.charge ?? 0);
       const choices = Array.isArray(data.choices) ? data.choices : [];
 
@@ -5588,21 +5595,24 @@ function attachWsHandlers() {
       const list  = document.getElementById("skillList");
       const parts = Array.isArray(data.parts) ? data.parts : [];
 
-      let html = `<div style="font-weight:bold; margin-bottom:8px;">対象の衣装を選んでください</div>`;
+      let html = `<div class="gilsys-doll-part-select"><div class="gilsys-doll-part-title">対象の衣装を選んでください</div>`;
       for (const p of parts) {
         const stateText = p.condition === "boroboro"
           ? "ぼろぼろなので修理"
           : `★${Number(p.star ?? 1)} → ★${Number(p.star ?? 1) + 1}`;
         html += `
-          <div class="skillRow">
+          <div class="skillRow gilsys-doll-part-row">
             <div class="skillName">${escapeHtml(p.label ?? "")}</div>
             <div class="skillDesc">${escapeHtml(p.name ?? "")}\n${escapeHtml(stateText)}</div>
             <button onclick="selectDollChargePart('${escapeHtml(p.key ?? "")}')">選択</button>
           </div>
         `;
       }
+      html += `</div>`;
 
       list.innerHTML = html;
+      list.classList.add("gilsys-doll-part-list");
+      popup.classList.add("gilsys-doll-part-popup");
       popup.style.display = "flex";
       return;
     }
@@ -6679,7 +6689,10 @@ function openSkillUI(){
 
 
 function closeSkillUI(){
-  document.getElementById("skillPopup").style.display="none";
+  document.getElementById("skillList")?.classList.remove("gilsys-doll-part-list");
+  const popup = document.getElementById("skillPopup");
+  popup?.classList.remove("gilsys-doll-part-popup");
+  if (popup) popup.style.display="none";
 }
 
 function confirmTurnConsume(onConfirm){
@@ -8311,7 +8324,8 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
   const chargeNeed = (doll) => Math.max(1, Number(doll?.charge_need ?? NEED_FALLBACK));
 
   function updateDollChargeMeter(doll) {
-    const anchor = document.getElementById("gilsysBuffStripSelf");
+    const anchor = document.querySelector("#gilsysSelfHpFill")?.closest(".gilsys-bar")
+      ?? document.getElementById("gilsysBuffStripSelf");
     if (!anchor) return;
     let meter = document.getElementById("gilsysDollChargeMeter");
     if (!isDollJob() || !doll) {
@@ -8322,8 +8336,8 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
       meter = document.createElement("div");
       meter.id = "gilsysDollChargeMeter";
       meter.className = "gilsys-doll-charge-meter";
-      anchor.insertAdjacentElement("afterend", meter);
     }
+    if (meter.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", meter);
     const now = Math.max(0, Number(doll.charge ?? 0));
     const need = chargeNeed(doll);
     const rate = Math.max(0, Math.min(100, now / need * 100));
@@ -9686,6 +9700,388 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
   #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip {
     pointer-events: auto !important;
+  }
+}
+</style>
+<style id="gilsys-mobile-stage-doll-equip-final-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-round-card {
+    min-width: 64px !important;
+    padding: 4px 7px !important;
+    line-height: 1.05 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-round-card #roundLabel {
+    font-size: 9px !important;
+    margin-bottom: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-round-card #turnLabel {
+    font-size: 13px !important;
+    line-height: 1 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-vs-center {
+    top: 4px !important;
+    min-width: 72px !important;
+    padding: 3px 7px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-vs-round,
+  #phase2.gilsys-battle-ui .gilsys-vs-turn {
+    font-size: 9px !important;
+    line-height: 1.15 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-meter {
+    width: 100% !important;
+    margin-top: 2px !important;
+    min-width: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-head {
+    font-size: 8px !important;
+    line-height: 1 !important;
+    margin-bottom: 1px !important;
+    gap: 4px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-bar {
+    height: 6px !important;
+    border-radius: 999px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side {
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .main-unit {
+    position: relative !important;
+    overflow: visible !important;
+    padding-bottom: 34px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-area[data-side]:not(.doll) {
+    position: absolute !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: 116px !important;
+    max-height: none !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 3px !important;
+    overflow: visible !important;
+    z-index: 30 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-area {
+    bottom: 20px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .special-equip-area[data-side]:not(.doll) {
+    bottom: -5px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .special-equip-area[data-side="self"]:not(.doll) {
+    left: -30px !important;
+    right: auto !important;
+    transform: none !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .special-equip-area[data-side="enemy"]:not(.doll) {
+    left: auto !important;
+    right: -30px !important;
+    transform: none !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .equip-area {
+    bottom: 26px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .special-equip-area[data-side]:not(.doll),
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .special-equip-area[data-side]:not(.doll) {
+    bottom: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-slot,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot {
+    width: 22px !important;
+    min-width: 22px !important;
+    height: 22px !important;
+    min-height: 22px !important;
+    border-radius: 4px !important;
+    font-size: 7px !important;
+    padding: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-slot-icon,
+  #phase2.gilsys-battle-ui #battleStage .equip-slot-icon img,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot-icon,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot-icon img {
+    width: 15px !important;
+    height: 15px !important;
+    font-size: 12px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll {
+    width: clamp(54px, 13vw, 76px) !important;
+    height: clamp(70px, 18vw, 96px) !important;
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .hp-bar,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .doll-bar {
+    display: block !important;
+    top: -9px !important;
+    left: 3px !important;
+    right: 3px !important;
+    height: 5px !important;
+    z-index: 45 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-area.doll {
+    left: -28px !important;
+    right: auto !important;
+    bottom: 0 !important;
+    width: 24px !important;
+    max-width: 24px !important;
+    gap: 2px !important;
+    z-index: 46 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.doll .special-equip-area.doll {
+    left: auto !important;
+    right: -28px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-slot {
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    font-size: 7px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-slot-icon,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-slot-icon img {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .buff-slot {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+    position: fixed !important;
+    left: 50% !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: min(280px, calc(100vw - 20px)) !important;
+    white-space: pre-line !important;
+    pointer-events: auto !important;
+    z-index: 2147483500 !important;
+  }
+}
+</style>
+<style id="gilsys-mobile-doll-part-popup-fit-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #skillPopup.gilsys-doll-part-popup,
+  #skillPopup:has(#skillList.gilsys-doll-part-list) {
+    align-items: stretch !important;
+    justify-content: flex-end !important;
+    padding: max(4px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left)) !important;
+    box-sizing: border-box !important;
+    background: rgba(0,0,0,0.48) !important;
+  }
+
+  #skillPopup.gilsys-doll-part-popup #skillBox,
+  #skillPopup:has(#skillList.gilsys-doll-part-list) #skillBox {
+    width: min(42vw, 240px) !important;
+    max-width: calc(100vw - 12px) !important;
+    max-height: calc(100dvh - max(10px, env(safe-area-inset-top)) - max(10px, env(safe-area-inset-bottom))) !important;
+    min-height: 0 !important;
+    padding: 7px !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    background: rgba(8,11,16,0.94) !important;
+  }
+
+  #skillPopup.gilsys-doll-part-popup #skillBox h3,
+  #skillPopup.gilsys-doll-part-popup #skillBox > button,
+  #skillPopup:has(#skillList.gilsys-doll-part-list) #skillBox h3,
+  #skillPopup:has(#skillList.gilsys-doll-part-list) #skillBox > button {
+    display: none !important;
+  }
+
+  #skillList.gilsys-doll-part-list {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #skillList.gilsys-doll-part-list::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  #skillList.gilsys-doll-part-list .gilsys-doll-part-select {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    min-height: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #skillList.gilsys-doll-part-list .gilsys-doll-part-title {
+    flex: 0 0 auto !important;
+    color: #f6e5c6 !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+  }
+
+  #skillList.gilsys-doll-part-list .gilsys-doll-part-row {
+    display: grid !important;
+    grid-template-columns: minmax(30px, auto) minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 5px !important;
+    margin: 0 !important;
+    padding: 4px 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  #skillList.gilsys-doll-part-list .skillName,
+  #skillList.gilsys-doll-part-list .skillDesc {
+    min-width: 0 !important;
+    color: #e8edf5 !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    white-space: pre-line !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #skillList.gilsys-doll-part-list .skillName {
+    color: #9fd9ff !important;
+    font-weight: 800 !important;
+  }
+
+  #skillList.gilsys-doll-part-list .gilsys-doll-part-row button {
+    min-width: 34px !important;
+    min-height: 20px !important;
+    padding: 2px 5px !important;
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+    border-color: rgba(120,180,230,0.44) !important;
+    box-shadow: none !important;
+  }
+}
+</style>
+<style id="gilsys-tooltip-front-fixed-final-style">
+#phase2.gilsys-battle-ui .equip-slot .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot .buff-tooltip {
+  z-index: 2147483600 !important;
+}
+
+#phase2.gilsys-battle-ui .equip-slot:hover .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot:hover .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot:hover .buff-tooltip,
+#phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+  z-index: 2147483600 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #phase2.gilsys-battle-ui .equip-slot,
+  #phase2.gilsys-battle-ui .special-equip-slot,
+  #phase2.gilsys-battle-ui .buff-slot {
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot:hover .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot:hover .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot:hover .buff-tooltip {
+    position: fixed !important;
+    left: 50% !important;
+    top: max(14px, env(safe-area-inset-top)) !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: min(340px, calc(100vw - 24px)) !important;
+    white-space: pre-line !important;
+    pointer-events: auto !important;
+    display: block !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+    position: fixed !important;
+    left: 50% !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate3d(-50%, 0, 0) !important;
+    width: max-content !important;
+    max-width: min(300px, calc(100vw - 20px)) !important;
+    max-height: min(46vh, 180px) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    white-space: pre-line !important;
+    text-align: left !important;
+    pointer-events: auto !important;
+    display: block !important;
+    z-index: 2147483600 !important;
+    isolation: isolate;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip::-webkit-scrollbar,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip::-webkit-scrollbar,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip::-webkit-scrollbar {
+    display: none !important;
   }
 }
 </style>
