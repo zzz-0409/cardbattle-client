@@ -7562,6 +7562,11 @@ function closeAllTooltips(exceptEl = null) {
 
 function setupTapTooltips() {
   document.addEventListener('pointerdown', (e) => {
+    if (window.__gilsysTouchTooltipPatchActive && (
+      window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches ||
+      Number(navigator.maxTouchPoints || 0) > 0
+    )) return;
+
     const t = e.target;
     const slot = t.closest('.equip-slot, .special-equip-slot, .buff-slot');
 
@@ -9584,6 +9589,103 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }
 }
 </style>
+<style id="gilsys-touch-tooltip-style">
+@media (hover: none), (pointer: coarse) {
+  #phase2.gilsys-battle-ui .equip-slot,
+  #phase2.gilsys-battle-ui .special-equip-slot,
+  #phase2.gilsys-battle-ui .buff-slot {
+    cursor: pointer !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+    display: block !important;
+    z-index: 999999 !important;
+    max-width: min(260px, calc(100vw - 24px)) !important;
+  }
+
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip,
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip {
+    pointer-events: auto !important;
+  }
+}
+</style>
+<script id="gilsys-touch-tooltip-patch">
+(() => {
+  window.__gilsysTouchTooltipPatchActive = true;
+
+  const touchLike = () =>
+    window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches ||
+    Number(navigator.maxTouchPoints || 0) > 0;
+
+  const slotSelector = "#phase2.gilsys-battle-ui .equip-slot, #phase2.gilsys-battle-ui .special-equip-slot, #phase2.gilsys-battle-ui .buff-slot";
+  const tooltipSelector = ".equip-tooltip, .buff-tooltip";
+
+  const closeAll = (except = null) => {
+    document.querySelectorAll("#phase2.gilsys-battle-ui .tooltip-open").forEach(el => {
+      if (except && (el === except || el.contains(except) || except.contains(el))) return;
+      el.classList.remove("tooltip-open");
+    });
+  };
+
+  const escapeText = (value) => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+  const ensureTooltip = (slot) => {
+    if (!slot || slot.querySelector(tooltipSelector)) return !!slot?.querySelector(tooltipSelector);
+    const title = slot.getAttribute("title");
+    if (!title) return false;
+    slot.dataset.tapTitle = title;
+    slot.removeAttribute("title");
+    const tip = document.createElement("div");
+    tip.className = slot.classList.contains("buff-slot") ? "buff-tooltip" : "equip-tooltip";
+    tip.innerHTML = escapeText(title);
+    slot.appendChild(tip);
+    return true;
+  };
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!touchLike()) return;
+    const target = event.target;
+    const slot = target.closest?.(slotSelector);
+    if (!slot) {
+      closeAll();
+      return;
+    }
+    if (!ensureTooltip(slot)) return;
+    if (target.closest?.(tooltipSelector) && slot.classList.contains("tooltip-open")) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    const willOpen = !slot.classList.contains("tooltip-open");
+    closeAll(slot);
+    slot.classList.toggle("tooltip-open", willOpen);
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
+
+  document.addEventListener("click", (event) => {
+    if (!touchLike()) return;
+    const slot = event.target.closest?.(slotSelector);
+    if (slot?.classList.contains("tooltip-open")) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, true);
+
+  window.addEventListener("scroll", () => touchLike() && closeAll(), true);
+  window.addEventListener("resize", () => touchLike() && closeAll(), true);
+})();
+</script>
 <script id="gilsys-pwa-register">
 (() => {
   if (location.protocol === "http:" || location.protocol === "https:") {
