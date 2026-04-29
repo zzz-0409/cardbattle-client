@@ -8600,6 +8600,150 @@ body {
   }
 }
 </style>
+<style id="gilsys-mobile-fit-fix-style">
+/* Mobile fit fix: keep phase 0/1 scrollable, and compress phase 2 in landscape phones. */
+@media (max-width: 900px), (max-height: 520px) {
+  html,
+  body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  #game-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+  #phase0,
+  #phase1 {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    min-height: 100svh !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  #phase0HomeLayout {
+    min-height: 100svh !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+  }
+}
+body:has(#phase2.gilsys-battle-ui[style*="display: block"]),
+body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
+  overflow: hidden !important;
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  html,
+  body {
+    height: 100svh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+  #phase2.gilsys-battle-ui {
+    --gilsys-edge: 4px;
+    --gilsys-center-inset: 4px;
+    --gilsys-command-bottom: max(3px, env(safe-area-inset-bottom));
+    --gilsys-command-height: clamp(158px, 42dvh, 188px);
+    --gilsys-stage-gap: 4px;
+    width: 100vw !important;
+    height: 100svh !important;
+    height: 100dvh !important;
+    padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left) !important;
+    overflow: hidden !important;
+  }
+  #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage,
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    left: max(4px, env(safe-area-inset-left)) !important;
+    right: max(4px, env(safe-area-inset-right)) !important;
+    max-width: calc(100vw - max(4px, env(safe-area-inset-left)) - max(4px, env(safe-area-inset-right))) !important;
+    box-sizing: border-box !important;
+  }
+  #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+    top: 3px !important;
+    bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + 4px) !important;
+    min-height: 0 !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    bottom: var(--gilsys-command-bottom) !important;
+    height: var(--gilsys-command-height) !important;
+    grid-template-columns: 84px minmax(0, .95fr) minmax(0, 1.05fr) !important;
+    gap: 4px !important;
+    padding: 4px !important;
+    overflow: hidden !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-action-column {
+    gap: 4px !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-action-btn {
+    min-height: 28px !important;
+    height: auto !important;
+    padding: 2px 3px !important;
+    grid-template-columns: 18px minmax(0,1fr) !important;
+    gap: 2px !important;
+    font-size: 9px !important;
+    line-height: 1.05 !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-action-btn span {
+    font-size: 12px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    min-width: 0 !important;
+    padding: 5px !important;
+    overflow: hidden !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-panel-title {
+    font-size: 11px !important;
+    margin-bottom: 3px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list {
+    max-height: calc(var(--gilsys-command-height) - 28px) !important;
+    overflow-y: auto !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-list-row {
+    grid-template-columns: 18px minmax(0,1fr) auto !important;
+    min-height: 29px !important;
+    padding: 3px 4px !important;
+    gap: 4px !important;
+    font-size: 10px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-row-icon {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 10px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-list-row b {
+    max-width: 42px !important;
+    font-size: 9px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-detail-icon {
+    display: none !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(0,1fr) 28px !important;
+    gap: 4px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-detail-head span {
+    font-size: 11px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-detail-head b,
+  #phase2.gilsys-battle-ui .gilsys-detail-text p {
+    font-size: 9px !important;
+    line-height: 1.25 !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-confirm-btn {
+    min-width: 48px !important;
+    min-height: 26px !important;
+    padding: 0 6px !important;
+    font-size: 10px !important;
+  }
+}
+</style>
 <script id="gilsys-pwa-register">
 (() => {
   if (location.protocol === "http:" || location.protocol === "https:") {
