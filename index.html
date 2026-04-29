@@ -9087,7 +9087,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
        (orientation: landscape) and (max-height: 700px) {
   #phase2.gilsys-battle-ui .gilsys-command-panel {
     grid-template-columns: 52px calc((100% - 58px) / 3) calc((100% - 58px) / 3) !important;
-    justify-content: start !important;
+    justify-content: end !important;
     column-gap: 3px !important;
   }
   #phase2.gilsys-battle-ui .gilsys-command-list-panel,
@@ -9099,6 +9099,63 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
     margin-top: 1px !important;
     font-size: 8px !important;
     line-height: 1.05 !important;
+  }
+}
+</style>
+<style id="gilsys-mobile-inventory-scroll-and-right-align-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    justify-content: end !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-command-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    height: calc(var(--gilsys-command-height) - 18px) !important;
+    max-height: calc(var(--gilsys-command-height) - 18px) !important;
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-panel-subtools {
+    flex: 0 0 auto !important;
+    gap: 3px !important;
+    margin-bottom: 1px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-panel-subtools button {
+    padding: 2px 4px !important;
+    min-height: 18px !important;
+    font-size: 8px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .shop-card.inventory-card,
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .shop-card {
+    flex: 0 0 auto !important;
+    min-height: 54px !important;
+    height: auto !important;
+    margin: 0 !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-wrap,
+  #phase2.gilsys-battle-ui .gilsys-detail-list {
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y !important;
   }
 }
 </style>
