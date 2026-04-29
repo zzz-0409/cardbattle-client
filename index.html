@@ -1029,7 +1029,7 @@
   color: #ff6b6b;
   pointer-events: none;
   opacity: 0;
-  animation: damageFloat 0.7s ease-out forwards;
+  animation: damageFloat 1.15s ease-out forwards;
 }
 
 /* ★ 追加：ダメージ種別ごとの色 */
@@ -3125,8 +3125,8 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
       <h3><span>③</span> ターン・ラウンド情報</h3>
       <p>現在のラウンド数とターン表示</p>
       <div class="gilsys-round-card">
-        <div id="roundLabel">ラウンド 0</div>
-        <div id="turnLabel">ターン 0</div>
+        <div id="roundLabel">ラウンド（R） 0</div>
+        <div id="turnLabel">ターン（T） 0</div>
       </div>
     </section>
 
@@ -3183,8 +3183,8 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 
     <div class="gilsys-vs-center">
       <div class="gilsys-vs-emblem"></div>
-      <div class="gilsys-vs-round">ROUND <span id="gilsysCenterRound">0</span></div>
-      <div class="gilsys-vs-turn">TURN <span id="gilsysCenterTurn">0</span></div>
+      <div class="gilsys-vs-round">ラウンド（R） <span id="gilsysCenterRound">0</span></div>
+      <div class="gilsys-vs-turn">ターン（T） <span id="gilsysCenterTurn">0</span></div>
     </div>
 
     <!-- ===== 左陣営（自分） ===== -->
@@ -3284,12 +3284,12 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
       <div class="gilsys-detail-icon" id="gilsysDetailIcon">🔥</div>
       <div class="gilsys-detail-text">
         <div class="gilsys-detail-head">
-          <span id="gilsysDetailTitle">ファイアボルト</span>
-          <b id="gilsysDetailMeta">攻撃力 120</b>
+          <span id="gilsysDetailTitle">コマンド</span>
+          <b id="gilsysDetailMeta"></b>
         </div>
-        <p id="gilsysDetailDescription">敵単体に火属性の魔法ダメージ。攻撃スキル、レベルアップ、持ち物、ショップを選択できます。</p>
+        <p id="gilsysDetailDescription">コマンドを選択してください。</p>
       </div>
-      <button class="gilsys-confirm-btn" id="gilsysConfirmBtn" onclick="attack()">決定</button>
+      <button class="gilsys-confirm-btn" id="gilsysConfirmBtn">決定</button>
     </div>
   </section>
 
@@ -3526,8 +3526,8 @@ function resetRoundTurnCounter() {
 function updateRoundTurnUI() {
   const roundEl = document.getElementById("roundLabel");
   const turnEl  = document.getElementById("turnLabel");
-  if (roundEl) roundEl.textContent = `ラウンド ${roundCount}`;
-  if (turnEl)  turnEl.textContent  = `ターン ${turnCount}`;
+  if (roundEl) roundEl.textContent = `ラウンド（R） ${roundCount}`;
+  if (turnEl)  turnEl.textContent  = `ターン（T） ${turnCount}`;
   updateGilsysCenterTurn?.();
 }
 
@@ -4060,7 +4060,7 @@ const JOB_DESCRIPTIONS = {
     skills: {
       1: "3ラウンドの間追撃回数が+1。",
       2: "矢の装備枠+1＆3R追撃回数+1",
-      3: "すべての矢が防御貫通効果を得る。"
+      3: "2Rの間、すべての矢が防御貫通効果を得る。"
     },
     playstyle: `
 ショップに矢が出現する。
@@ -4075,7 +4075,7 @@ const JOB_DESCRIPTIONS = {
       "毒の矢：15ダメ+毒付与(3ダメージ×2ラウンド)",
       "氷結の矢： 15ダメージの追撃+氷結付与(相手の攻撃力-2、累積効果)",
       "反撃の矢：10+前のラウンドの被ダメの半分ダメージ増加の追撃",
-      "会心の矢：20ダメージ+装備している全ての矢に1ラウンドの間会心率50% 会心ダメ+50%付与"
+      "会心の矢：基礎20ダメージ+装備している全ての矢に1ラウンドの間会心率50% 会心ダメ+50%付与"
     ]
   },
 
@@ -4550,7 +4550,7 @@ const SKILLS = {
       {name:"三重合成",desc:"装備3つ合成→特殊武器生成"} ],
   8:[ {name:"集中射撃",desc:"3R追撃+1"},
       {name:"狙い撃ち＋矢拡張",desc:"矢の装備枠+1＆3R追撃+1"},
-      {name:"貫通の矢",desc:"全矢が防御貫通化"} ],
+      {name:"貫通の矢",desc:"2Rの間、全矢が防御貫通化"} ],
   9:[
     {
       name:"修理キット調達",
@@ -4623,7 +4623,7 @@ function bumpStack(targetKey) {
 
   setTimeout(() => {
     popupStacks[targetKey] = Math.max(0, (popupStacks[targetKey] ?? 1) - 1);
-  }, 900);
+  }, 1300);
 
   return offsetPx;
 }
@@ -4637,7 +4637,7 @@ function spawnPopup(sprite, className, text, offsetPx) {
   el.style.top = `calc(40% + ${offsetPx}px)`;
 
   sprite.appendChild(el);
-  setTimeout(() => el.remove(), 900);
+  setTimeout(() => el.remove(), 1300);
 }
 
 function pulseClass(el, className, duration = 900) {
@@ -5558,26 +5558,13 @@ function attachWsHandlers() {
       const choices = Array.isArray(data.choices) ? data.choices : [];
 
       let html = `<div style="font-weight:bold; margin-bottom:8px;">チャージ効果を選んでください</div>`;
-      html += `<div style="margin-bottom:10px; color:#ffd28a;">現在チャージ: ${charge} / 必要15</div>`;
+      html += `<div style="margin-bottom:10px; color:#ffd28a;">現在チャージ: ${charge} / 必要10</div>`;
       for (const c of choices) {
-        const progressNeed = Math.max(1, Number(c.progress_need ?? 2));
-        const progressNow = Math.max(0, Number(c.progress_now ?? 0));
-        const progressRatio = Math.max(0, Math.min(100, (progressNow / progressNeed) * 100));
-        const progressText = escapeHtml(c.progress_text ?? `Lv${Number(c.level ?? 1) + 1}まで ${progressNow}/${progressNeed}`);
-        const fillClass = c.progress_is_max ? "chargeProgressFill max" : "chargeProgressFill";
         html += `
           <div class="skillRow">
             <div class="skillName">${escapeHtml(c.title ?? "効果")}</div>
             <div class="skillDesc">${escapeHtml(c.desc ?? "")}</div>
-            <div class="chargeProgressWrap">
-              <div class="chargeProgressHead">
-                <span>レベル進行</span>
-                <span>${progressText}</span>
-              </div>
-              <div class="chargeProgressBar">
-                <div class="${fillClass}" style="width:${progressRatio}%;"></div>
-              </div>
-            </div>
+
             <button onclick="selectDollCharge('${escapeHtml(c.key ?? "")}')">選択</button>
           </div>
         `;
@@ -5982,14 +5969,26 @@ function attachWsHandlers() {
       turnCount++;
       updateRoundTurnUI();
 
-// ★ 相手ラウンドになったらショップを強制的に閉じる
+// ★ 相手ラウンドになったらショップ/持ち物を強制的に閉じる
       closeShopUI();
+      closeItemUI();
+      if (typeof openAttackSkillPanel === "function") openAttackSkillPanel(false);
 
       ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn","dollBuffBtn"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.disabled = true;
       });
-
+      const commandList = document.getElementById("gilsysCommandList");
+      if (commandList) {
+        commandList.querySelectorAll("button").forEach(btn => {
+          btn.disabled = true;
+          btn.onclick = null;
+        });
+      }
+      if (typeof refreshGilsysDollChargeUI === "function") refreshGilsysDollChargeUI();
+      if (typeof setGilsysCommandDetail === "function") {
+        setGilsysCommandDetail("攻撃/スキル", "相手ターン", "自分のターンまで待機中です。", "⚔", null);
+      }
 
       return;
     }
@@ -6013,7 +6012,7 @@ function attachWsHandlers() {
 
       setTimeout(() => {
         showResultOverlay(data.result);
-      }, 900);
+      }, 1300);
       return;
     }
 
@@ -6046,6 +6045,12 @@ function attachWsHandlers() {
       battleBox.appendChild(div);
       battleBox.scrollTop = battleBox.scrollHeight;
     }
+    if (data.type === "doll_charge_resolved") {
+      if (typeof openAttackSkillPanel === "function") openAttackSkillPanel(false);
+      if (typeof refreshGilsysDollChargeUI === "function") refreshGilsysDollChargeUI();
+      return;
+    }
+
     // ============================
     // ★ ダメージ演出（damage_event）
     // ============================
@@ -7985,6 +7990,51 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     return (typeof JOB_ID_MAP !== "undefined" && JOB_ID_MAP?.[raw]) ?? raw;
   };
 
+  function getEquippedArrowItems(status = window.gilsysLatestSelfStatus || {}) {
+    const slots = Array.isArray(status?.special_equip?.slots) ? status.special_equip.slots : [];
+    const fromSlots = slots
+      .map(slot => slot?.item)
+      .filter(it => it && (it.is_arrow || it.equip_type === "arrow" || String(it.name ?? "").includes("矢")));
+    if (fromSlots.length) return fromSlots;
+    return (window.itemList || []).filter(it =>
+      it &&
+      it.is_equipped_special &&
+      (it.is_arrow || it.equip_type === "arrow" || String(it.name ?? "").includes("矢"))
+    );
+  }
+
+  function getArcherArrowPreview(atk, skillNo = 0) {
+    const selfStatus = window.gilsysLatestSelfStatus || {};
+    const arrows = getEquippedArrowItems(selfStatus);
+    if (!arrows.length) return { damage: 0, hits: 0, note: "矢なし" };
+
+    const currentExtra = Number(selfStatus.archer_buff?.rounds ?? 0) > 0
+      ? Math.max(1, Number(selfStatus.archer_buff?.extra ?? 1))
+      : 0;
+    const extra = (skillNo === 1 || skillNo === 2) ? Math.max(currentExtra, 1) : currentExtra;
+    const repeat = 1 + extra;
+    const forcePierce = skillNo === 3 || Number(selfStatus.archer_pierce_rounds ?? 0) > 0;
+    const counterBonus = Math.floor(Number(selfStatus.damage_taken_last_turn ?? selfStatus.damage_taken_last_round ?? 0) / 2);
+
+    let total = 0;
+    let hits = 0;
+    for (let r = 0; r < repeat; r++) {
+      for (const arrow of arrows) {
+        const effect = arrow?.effect ?? "";
+        const raw = effect === "normal"
+          ? Number(atk ?? 0)
+          : Number(arrow?.power ?? 0) + (effect === "counter" ? counterBonus : 0);
+        const pierce = !!arrow?.pierce || forcePierce;
+        total += finalDamage(raw, pierce);
+        hits += 1;
+      }
+    }
+
+    const pierceNote = forcePierce ? "防御貫通" : `相手防御 ${stat("enemy", "defense", 0)} を矢ごとに反映`;
+    const counterNote = arrows.some(a => a?.effect === "counter") ? ` / 反撃+${counterBonus}` : "";
+    return { damage: total, hits, note: `矢追撃${hits}Hit ${pierceNote}${counterNote}` };
+  }
+
   function getDamagePreview(skillNo = 0) {
     const id = String(jobId());
     const selfStatus = window.gilsysLatestSelfStatus || {};
@@ -7997,6 +8047,14 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     const mana = Number(window.gilsysLatestSelfStatus?.mana ?? 0);
     const itemCount = (window.itemList || []).filter(it => it?.category === "item").length;
     const mad = !!window.gilsysLatestSelfStatus?.mad_state?.is_mad;
+
+    if (id === "8") {
+      const arrows = getArcherArrowPreview(atk, skillNo);
+      if (!skillNo) {
+        const baseNote = skillNo ? "スキル後の矢攻撃" : "矢攻撃のみ";
+        return { damage: arrows.damage, note: `${baseNote}：${arrows.note}` };
+      }
+    }
 
     if (!skillNo) return { damage: finalDamage(atk), note: `相手防御 ${def} 反映` };
 
@@ -8011,6 +8069,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
       raw = skillNo === 1 ? 25 : skillNo === 2 ? 25 + itemCount * 2 : null;
     } else if (id === "5") {
       raw = skillNo === 2 ? 30 : skillNo === 3 ? Math.max(0, mana - 30) : null;
+      ignore = skillNo === 3;
     } else if (id === "10" && skillNo === 1 && mad) {
       ignore = true;
       raw = 30;
@@ -8019,7 +8078,6 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     if (raw == null) return null;
     return { damage: finalDamage(raw, ignore), note: ignore ? "防御無視" : `相手防御 ${def} 反映` };
   }
-
   function detailMeta(defaultMeta, preview) {
     return preview ? `<span class="gilsys-damage-preview">予想ダメージ ${safe(preview.damage)}</span>` : safe(defaultMeta ?? "");
   }
@@ -8154,6 +8212,14 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
   gap:7px;
   width:100%;
 }
+.gilsys-list-row .gilsys-charge-choice-card,
+.gilsys-list-row .gilsys-charge-choice-card b {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  max-width: none !important;
+  line-height: 1.25;
+}
 .gilsys-charge-choice-desc {
   color:rgba(245,232,200,.78);
   font-size:12px;
@@ -8223,7 +8289,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
 </style>
 <script id="gilsys-doll-charge-command-patch">
 (() => {
-  const NEED_FALLBACK = 15;
+  const NEED_FALLBACK = 10;
   const safe = (value) => typeof escapeHtml === "function"
     ? escapeHtml(String(value ?? ""))
     : String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
@@ -8248,7 +8314,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     const now = Math.max(0, Number(doll.charge ?? 0));
     const need = chargeNeed(doll);
     const rate = Math.max(0, Math.min(100, now / need * 100));
-    const ready = now >= need;
+    const ready = now >= need || !!doll.pending_charge_ready;
     meter.classList.toggle("is-ready", ready);
     meter.innerHTML = `
       <div class="gilsys-doll-charge-head"><span>人形チャージ</span><span>${safe(now)} / ${safe(need)}</span></div>
@@ -8265,7 +8331,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     if (!show) return;
     const now = Math.max(0, Number(doll.charge ?? 0));
     const need = chargeNeed(doll);
-    const ready = now >= need;
+    const ready = now >= need || !!doll.pending_charge_ready;
     const turnActive = typeof myTurn !== "undefined" ? !!myTurn : !!window.myTurn;
     btn.disabled = !turnActive || !ready;
     btn.classList.toggle("is-ready", ready);
@@ -8276,6 +8342,13 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
   window.refreshGilsysDollChargeUI = function(status = window.gilsysLatestSelfStatus) {
     updateDollChargeMeter(status?.doll ?? null);
     updateDollBuffButton();
+    const doll = status?.doll ?? getSelfDoll();
+    const now = Math.max(0, Number(doll?.charge ?? 0));
+    const need = chargeNeed(doll);
+    const list = document.getElementById("gilsysCommandList");
+    if (list?.dataset?.manual === "dollBuff" && now < need && !doll?.pending_charge_ready) {
+      if (typeof openAttackSkillPanel === "function") openAttackSkillPanel(false);
+    }
   };
 
   window.openDollBuffSelectUI = function() {
@@ -8283,7 +8356,8 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     if (!isDollJob() || !doll) return showCenterToast("人形使い専用です", 1800);
     const now = Math.max(0, Number(doll.charge ?? 0));
     const need = chargeNeed(doll);
-    if (now < need) return showCenterToast(`チャージが足りません（${now} / ${need}）`, 1800);
+    const ready = now >= need || !!doll.pending_charge_ready;
+    if (!ready) return showCenterToast(`チャージが足りません（${now} / ${need}）`, 1800);
     if (typeof setGilsysCommandDetail === "function") {
       setGilsysCommandDetail("バフ選択", `チャージ ${now} / ${need}`, "選択肢を取得しています。", "◆", null);
     }
@@ -8292,8 +8366,10 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
 
   window.openGilsysDollBuffPanel = function(data) {
     const choices = Array.isArray(data?.choices) ? data.choices : [];
-    const charge = Number(data?.charge ?? getSelfDoll()?.charge ?? 0);
-    const need = chargeNeed(getSelfDoll());
+    const dollState = getSelfDoll();
+    if (dollState) dollState.pending_charge_ready = true;
+    const charge = Number(data?.charge ?? dollState?.charge ?? 0);
+    const need = chargeNeed(dollState ?? getSelfDoll());
     const list = document.getElementById("gilsysCommandList");
     const title = document.getElementById("gilsysCommandListTitle");
     if (!list) return;
@@ -8305,25 +8381,28 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     list.dataset.manual = "dollBuff";
     list.innerHTML = choices.length ? "" : `<div class="gilsys-empty-row">選択できるバフがありません</div>`;
     choices.forEach((choice, index) => {
-      const progressNeed = Math.max(1, Number(choice.progress_need ?? 2));
-      const progressNow = Math.max(0, Number(choice.progress_now ?? 0));
-      const progressRate = Math.max(0, Math.min(100, progressNow / progressNeed * 100));
       const row = document.createElement("button");
       row.className = `gilsys-list-row ${index === 0 ? "is-selected" : ""}`;
       row.innerHTML = `
         <span class="gilsys-row-icon">◆</span>
         <span class="gilsys-charge-choice-card">
           <b>${safe(choice.title ?? "チャージ効果")}</b>
-          <span class="gilsys-charge-choice-desc">${safe(choice.desc ?? "")}</span>
-          <span class="gilsys-doll-charge-bar"><span class="gilsys-doll-charge-fill" style="display:block;width:${progressRate}%"></span></span>
-        </span>
-        <b>${safe(choice.progress_text ?? "")}</b>`;
-      const choose = () => ws.send(JSON.stringify({ type: "select_doll_charge", key: choice.key }));
+        </span>`;
+      const choose = () => {
+        ws.send(JSON.stringify({ type: "select_doll_charge", key: choice.key }));
+        const doll = getSelfDoll();
+        if (doll) {
+          doll.charge = Math.max(0, Number(doll.charge ?? 0) - chargeNeed(doll));
+          doll.pending_charge_ready = false;
+        }
+        window.refreshGilsysDollChargeUI();
+        if (typeof openAttackSkillPanel === "function") openAttackSkillPanel(false);
+      };
       row.onclick = () => {
         [...list.querySelectorAll(".gilsys-list-row")].forEach(el => el.classList.remove("is-selected"));
         row.classList.add("is-selected");
         if (typeof setGilsysCommandDetail === "function") {
-          setGilsysCommandDetail(choice.title ?? "バフ選択", `チャージ ${charge} / ${need}`, `${choice.desc ?? ""}\n${choice.progress_text ?? ""}`, "◆", choose);
+          setGilsysCommandDetail(choice.title ?? "バフ選択", `チャージ ${charge} / ${need}`, `${choice.desc ?? ""}`, "◆", choose);
         }
       };
       list.appendChild(row);
