@@ -8226,6 +8226,39 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
   background:linear-gradient(90deg,#80ffb2,#fff070,#ffb24f);
   box-shadow:0 0 16px rgba(146,255,186,.72);
 }
+.gilsys-doll-durability-meter {
+  margin-top: 7px;
+  width: min(240px, 100%);
+}
+.gilsys-doll-durability-head {
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  color:#f4c9ff;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+.gilsys-doll-durability-bar {
+  height:9px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(16,10,24,.88);
+  border:1px solid rgba(224,170,255,.55);
+  box-shadow: inset 0 1px 5px rgba(0,0,0,.55);
+}
+.gilsys-doll-durability-fill {
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#a86dff,#f1c7ff);
+  box-shadow:0 0 12px rgba(211,151,255,.48);
+  transition:width .25s ease;
+}
+.gilsys-doll-durability-meter.is-broken .gilsys-doll-durability-fill {
+  background:linear-gradient(90deg,#6d6875,#b8aebf);
+  box-shadow:none;
+}
 .gilsys-action-btn.action-doll-buff {
   border-color:rgba(128,255,178,.72);
   background:linear-gradient(180deg,rgba(41,84,65,.96),rgba(14,22,25,.98));
@@ -8323,20 +8356,49 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
   const getSelfDoll = () => window.gilsysLatestSelfStatus?.doll ?? null;
   const chargeNeed = (doll) => Math.max(1, Number(doll?.charge_need ?? NEED_FALLBACK));
 
-  function updateDollChargeMeter(doll) {
-    const anchor = document.querySelector("#gilsysSelfHpFill")?.closest(".gilsys-bar")
-      ?? document.getElementById("gilsysBuffStripSelf");
-    if (!anchor) return;
-    let meter = document.getElementById("gilsysDollChargeMeter");
-    if (!isDollJob() || !doll) {
+  function updateDollDurabilityMeter(doll, side = "self") {
+    const isEnemy = side === "enemy";
+    const anchor = document.querySelector(isEnemy ? "#gilsysEnemyHpFill" : "#gilsysSelfHpFill")?.closest(".gilsys-bar")
+      ?? document.getElementById(isEnemy ? "gilsysBuffStripEnemy" : "gilsysBuffStripSelf");
+    const meterId = isEnemy ? "gilsysEnemyDollDurabilityMeter" : "gilsysDollDurabilityMeter";
+    let meter = document.getElementById(meterId);
+    if (!anchor || (!isEnemy && !isDollJob()) || !doll) {
       if (meter) meter.remove();
       return;
     }
     if (!meter) {
       meter = document.createElement("div");
-      meter.id = "gilsysDollChargeMeter";
-      meter.className = "gilsys-doll-charge-meter";
+      meter.id = meterId;
     }
+    meter.className = `gilsys-doll-durability-meter ${isEnemy ? "is-enemy" : "is-self"} ${doll?.is_broken ? "is-broken" : ""}`;
+    if (meter.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", meter);
+    const durability = Math.max(0, Number(doll?.durability ?? 0));
+    const maxDurability = Math.max(1, Number(doll?.max_durability ?? doll?.durability ?? 1));
+    const rate = Math.max(0, Math.min(100, durability / maxDurability * 100));
+    meter.innerHTML = `
+      <div class="gilsys-doll-durability-head"><span>人形耐久</span><span>${safe(durability)} / ${safe(maxDurability)}${doll?.is_broken ? " 破壊" : ""}</span></div>
+      <div class="gilsys-doll-durability-bar"><div class="gilsys-doll-durability-fill" style="width:${rate}%"></div></div>
+    `;
+  }
+
+  function updateDollChargeMeter(doll, side = "self") {
+    const isEnemy = side === "enemy";
+    const durabilityMeter = document.getElementById(isEnemy ? "gilsysEnemyDollDurabilityMeter" : "gilsysDollDurabilityMeter");
+    const anchor = durabilityMeter
+      ?? document.querySelector(isEnemy ? "#gilsysEnemyHpFill" : "#gilsysSelfHpFill")?.closest(".gilsys-bar")
+      ?? document.getElementById(isEnemy ? "gilsysBuffStripEnemy" : "gilsysBuffStripSelf");
+    if (!anchor) return;
+    const meterId = isEnemy ? "gilsysEnemyDollChargeMeter" : "gilsysDollChargeMeter";
+    let meter = document.getElementById(meterId);
+    if ((!isEnemy && !isDollJob()) || !doll) {
+      if (meter) meter.remove();
+      return;
+    }
+    if (!meter) {
+      meter = document.createElement("div");
+      meter.id = meterId;
+    }
+    meter.className = `gilsys-doll-charge-meter ${isEnemy ? "is-enemy" : "is-self"}`;
     if (meter.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", meter);
     const now = Math.max(0, Number(doll.charge ?? 0));
     const need = chargeNeed(doll);
@@ -8344,7 +8406,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     const ready = now >= need || !!doll.pending_charge_ready;
     meter.classList.toggle("is-ready", ready);
     meter.innerHTML = `
-      <div class="gilsys-doll-charge-head"><span>人形チャージ</span><span>${safe(now)} / ${safe(need)}</span></div>
+      <div class="gilsys-doll-charge-head"><span>チャージ</span><span>${safe(now)} / ${safe(need)}</span></div>
       <div class="gilsys-doll-charge-bar"><div class="gilsys-doll-charge-fill" style="width:${rate}%"></div></div>
     `;
   }
@@ -8367,7 +8429,10 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
   }
 
   window.refreshGilsysDollChargeUI = function(status = window.gilsysLatestSelfStatus) {
-    updateDollChargeMeter(status?.doll ?? null);
+    updateDollDurabilityMeter(status?.doll ?? null, "self");
+    updateDollDurabilityMeter(window.gilsysLatestEnemyStatus?.doll ?? null, "enemy");
+    updateDollChargeMeter(status?.doll ?? null, "self");
+    updateDollChargeMeter(window.gilsysLatestEnemyStatus?.doll ?? null, "enemy");
     updateDollBuffButton();
     const doll = status?.doll ?? getSelfDoll();
     const now = Math.max(0, Number(doll?.charge ?? 0));
@@ -8443,16 +8508,22 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     window.updateGilsysBattleHud = function(data) {
       oldHud(data);
       if (data?.side === "self") window.refreshGilsysDollChargeUI(data);
+      else window.refreshGilsysDollChargeUI(window.gilsysLatestSelfStatus);
     };
   }
   document.addEventListener("DOMContentLoaded", () => window.refreshGilsysDollChargeUI());
 })();
 </script><style id="gilsys-popup-unflip-style">
+@keyframes gilsysPopupFloatUpUnflip {
+  0% { opacity: 1; transform: translate(-50%, -50%) translateY(0) scaleX(-1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-34px) scaleX(-1); }
+}
+
 #battleStage .sprite.enemy.job-image .damage-popup,
 #battleStage .sprite.enemy.job-image .heal-popup,
 #battleStage .sprite.enemy.job-image .summon-popup,
 #battleStage .sprite.enemy.job-image .shikigami-special-popup {
-  transform: scaleX(-1);
+  animation-name: gilsysPopupFloatUpUnflip !important;
 }
 </style>
 <style id="gilsys-battle-log-top-left-style">
@@ -9735,7 +9806,12 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }
 
   #phase2.gilsys-battle-ui .gilsys-doll-charge-meter {
-    width: 100% !important;
+    width: 50% !important;
+    margin-top: 2px !important;
+    min-width: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-durability-meter {
     margin-top: 2px !important;
     min-width: 0 !important;
   }
@@ -9747,7 +9823,19 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
     gap: 4px !important;
   }
 
+  #phase2.gilsys-battle-ui .gilsys-doll-durability-head {
+    font-size: 8px !important;
+    line-height: 1 !important;
+    margin-bottom: 1px !important;
+    gap: 4px !important;
+  }
+
   #phase2.gilsys-battle-ui .gilsys-doll-charge-bar {
+    height: 6px !important;
+    border-radius: 999px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-durability-bar {
     height: 6px !important;
     border-radius: 999px !important;
   }
@@ -10268,9 +10356,261 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }, true);
 
   window.addEventListener("scroll", () => touchLike() && hide(), true);
-  window.addEventListener("resize", () => touchLike() && hide(), true);
+window.addEventListener("resize", () => touchLike() && hide(), true);
 })();
 </script>
+<style id="gilsys-universal-floating-tooltip-final-style">
+#gilsysFloatingTooltip {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  transform: translate3d(-9999px, -9999px, 0) !important;
+  z-index: 2147483647 !important;
+  display: none;
+  width: max-content;
+  max-width: min(340px, calc(100vw - 16px));
+  max-height: min(46vh, 240px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255,226,164,0.86);
+  border-radius: 7px;
+  background: rgba(4,7,12,0.99);
+  color: #f7ead0;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-line;
+  text-align: left;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.62), 0 0 0 1px rgba(255,255,255,0.06) inset;
+  pointer-events: auto;
+  isolation: isolate;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#gilsysFloatingTooltip::-webkit-scrollbar {
+  display: none;
+}
+
+#phase2.gilsys-battle-ui .equip-slot:hover .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot:hover .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot:hover .buff-tooltip,
+#phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+  display: none !important;
+}
+
+@media (hover: none), (pointer: coarse) {
+  #gilsysFloatingTooltip {
+    max-width: min(320px, calc(100vw - 14px));
+    max-height: min(48vh, 210px);
+    font-size: 11px;
+  }
+}
+</style>
+<script id="gilsys-universal-floating-tooltip-final-patch">
+(() => {
+  window.__gilsysFloatingTooltipFinalActive = true;
+
+  const slotSelector = "#phase2.gilsys-battle-ui .equip-slot, #phase2.gilsys-battle-ui .special-equip-slot, #phase2.gilsys-battle-ui .buff-slot";
+  const tooltipSelector = ".equip-tooltip, .buff-tooltip";
+  let activeSlot = null;
+
+  const touchLike = () =>
+    window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches ||
+    Number(navigator.maxTouchPoints || 0) > 0;
+
+  const floating = () => {
+    let el = document.getElementById("gilsysFloatingTooltip");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "gilsysFloatingTooltip";
+      document.body.appendChild(el);
+    }
+    return el;
+  };
+
+  const escapeText = (value) => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+  const tooltipHtml = (slot) => {
+    const tip = slot?.querySelector?.(tooltipSelector);
+    if (tip?.innerHTML?.trim()) return tip.innerHTML;
+    const title = slot?.getAttribute?.("title") || slot?.dataset?.tapTitle || "";
+    return escapeText(title);
+  };
+
+  const place = (slot, el) => {
+    const rect = slot.getBoundingClientRect();
+    el.style.display = "block";
+    el.style.setProperty("transform", "translate3d(-9999px, -9999px, 0)", "important");
+    const tipRect = el.getBoundingClientRect();
+    const gap = 8;
+    const pad = 7;
+    const maxLeft = Math.max(pad, window.innerWidth - tipRect.width - pad);
+    const left = Math.min(maxLeft, Math.max(pad, rect.left + rect.width / 2 - tipRect.width / 2));
+    let top = rect.top - tipRect.height - gap;
+    if (top < pad) top = Math.min(window.innerHeight - tipRect.height - pad, rect.bottom + gap);
+    top = Math.max(pad, top);
+    el.style.setProperty("left", `${Math.round(left)}px`, "important");
+    el.style.setProperty("top", `${Math.round(top)}px`, "important");
+    el.style.setProperty("transform", "translate3d(0, 0, 0)", "important");
+  };
+
+  const show = (slot) => {
+    const html = tooltipHtml(slot);
+    if (!html) return;
+    activeSlot = slot;
+    const el = floating();
+    el.innerHTML = html;
+    requestAnimationFrame(() => {
+      if (activeSlot === slot) place(slot, el);
+    });
+  };
+
+  const hide = () => {
+    activeSlot = null;
+    const el = document.getElementById("gilsysFloatingTooltip");
+    if (!el) return;
+    el.style.display = "none";
+    el.style.setProperty("transform", "translate3d(-9999px, -9999px, 0)", "important");
+    el.innerHTML = "";
+  };
+
+  document.addEventListener("pointerover", (event) => {
+    if (touchLike()) return;
+    const slot = event.target.closest?.(slotSelector);
+    if (slot && slot.contains(event.relatedTarget)) return;
+    if (slot) show(slot);
+  }, true);
+
+  document.addEventListener("pointerout", (event) => {
+    if (touchLike()) return;
+    const slot = event.target.closest?.(slotSelector);
+    if (slot && slot.contains(event.relatedTarget)) return;
+    if (slot && slot === activeSlot) hide();
+  }, true);
+
+  document.addEventListener("focusin", (event) => {
+    if (touchLike()) return;
+    const slot = event.target.closest?.(slotSelector);
+    if (slot) show(slot);
+  }, true);
+
+  document.addEventListener("focusout", (event) => {
+    if (touchLike()) return;
+    const slot = event.target.closest?.(slotSelector);
+    if (slot && slot === activeSlot) hide();
+  }, true);
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!touchLike()) return;
+    const slot = event.target.closest?.(slotSelector);
+    const floatTip = event.target.closest?.("#gilsysFloatingTooltip");
+    if (!slot) {
+      if (!floatTip) hide();
+      return;
+    }
+    const shouldOpen = slot.classList.contains("tooltip-open") || activeSlot !== slot;
+    requestAnimationFrame(() => {
+      if (shouldOpen) show(slot);
+      else hide();
+    });
+  }, true);
+
+  window.addEventListener("scroll", () => activeSlot ? place(activeSlot, floating()) : undefined, true);
+  window.addEventListener("resize", () => activeSlot ? place(activeSlot, floating()) : undefined, true);
+})();
+</script>
+<style id="gilsys-mobile-doll-status-visible-final-style">
+#phase2.gilsys-battle-ui .gilsys-bottom-bar,
+#phase2.gilsys-battle-ui #gilsysCoinHud,
+#phase2.gilsys-battle-ui .gilsys-bottom-bar .gilsys-mini-btn {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-bar.gilsys-hp {
+  width: 50% !important;
+  min-width: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-bar.gilsys-hp {
+  margin-left: auto !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-doll-charge-meter {
+  width: min(120px, 50%) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-charge-meter {
+  margin-left: auto !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage .sprite.doll .hp-bar.doll-bar {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-doll-durability-meter {
+  width: min(120px, 50%) !important;
+  min-width: 0 !important;
+  max-width: 50% !important;
+  margin-top: 3px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-durability-meter {
+  margin-left: auto !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-doll-durability-head,
+#phase2.gilsys-battle-ui .gilsys-doll-charge-head {
+  font-size: 10px !important;
+  line-height: 1 !important;
+  margin-bottom: 2px !important;
+}
+
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .hp-bar.doll-bar {
+    display: none !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-charge-meter {
+    margin-left: auto !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-meter {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-durability-meter {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-param-row b {
+    font-size: 8px !important;
+    line-height: 1 !important;
+  }
+}
+</style>
 <script id="gilsys-pwa-register">
 (() => {
   if (location.protocol === "http:" || location.protocol === "https:") {
