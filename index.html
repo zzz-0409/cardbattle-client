@@ -9347,6 +9347,26 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }
 }
 </style>
+<style id="gilsys-mobile-stage-bottom-decouple-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+    bottom: calc(max(2px, env(safe-area-inset-bottom)) + var(--gilsys-command-height)) !important;
+  }
+}
+</style>
+<style id="gilsys-mobile-hide-top-status-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-top-status-self,
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+</style>
 <script id="gilsys-pwa-register">
 (() => {
   if (location.protocol === "http:" || location.protocol === "https:") {
