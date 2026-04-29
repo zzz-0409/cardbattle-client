@@ -9302,6 +9302,23 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }
 }
 </style>
+<style id="gilsys-mobile-command-up-wide-right-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui {
+    --gilsys-command-bottom: max(12px, calc(env(safe-area-inset-bottom) + 10px));
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    grid-template-columns: calc((100% - 112px) / 2) calc((100% - 112px) / 2) !important;
+    justify-content: end !important;
+    padding-left: 106px !important;
+  }
+  #phase2.gilsys-battle-ui #action-area.gilsys-action-column {
+    left: 2px !important;
+    width: 102px !important;
+  }
+}
+</style>
 <script id="gilsys-pwa-register">
 (() => {
   if (location.protocol === "http:" || location.protocol === "https:") {
