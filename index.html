@@ -4099,12 +4099,10 @@ const JOB_DESCRIPTIONS = {
     },
     playstyle: `
 ショップには修理キットと衣装しか並ばなくなる。
-人形が壊れていないときダメージは人形が代わりに受け、壊れているときは人形使い本体が2倍のダメージを受ける。
+人形使い本体は常に無敵。人形が壊れた時のみ本体が固定50ダメージを受け、人形は即座に耐久50で復活する。
 
 【修理キット】
-人形が壊れているときは復活し人形の耐久力を15回復、壊れていないときは20回復。
-人形が壊れた次のラウンドは使用できない。
-人形が復活した次のターンは人形がダメージを受けない。
+人形の耐久力を20回復。
 
 【衣装】
 4部位に1つずつ装備可能。
@@ -4112,8 +4110,8 @@ const JOB_DESCRIPTIONS = {
 人形が壊れた時装備中のぼろぼろ状態の衣装は消失する。
 
 【暴走状態】
-この状態で人形が壊れると自身に防御貫通40ダメージ、相手に防御貫通20ダメージを与える。
-3Rの間破壊されなかった場合自爆し、自身に防御貫通20ダメージ、相手に防御貫通20ダメージを与える。
+この状態で人形が壊れると相手に防御貫通20ダメージを与える。自身への暴走反動ダメージは発生しない。
+3Rの間破壊されなかった場合自爆し、相手に防御貫通20ダメージを与える。自爆時も人形破壊扱いとなり、本体は固定50ダメージ、人形は耐久50で復活する。
 この状態では耐久力は回復しない。
 `,
     doll: `
@@ -5012,6 +5010,7 @@ function buffIconForKind(kind) {
     case "karasu":   return "🐦";
     case "archer_extra_attack": return "🏹";
     case "doll_extra_attack": return "🪆";
+    case "sudden_death": return "☠️";
     case "guts":     return "💢";
     case "mad":      return "😈";
     default:          return "✨";
@@ -5484,6 +5483,10 @@ function attachWsHandlers() {
 
     // ★ マッチ成立 → フェーズ2へ
     if (data.type === "match_start") {
+      window.gilsysSelfMatchName = data.self_name || window.accountName || "あなた";
+      window.gilsysOpponentName = data.enemy_name || (window.matchMode === "cpu" ? "CPU" : "対戦相手");
+      setGilsysText("gilsysSelfName", window.gilsysSelfMatchName);
+      setGilsysText("gilsysEnemyName", window.gilsysOpponentName);
 
       // ★ 職業詳細ポップアップを強制的に閉じる
       closeJobDetail();
@@ -6369,7 +6372,10 @@ function updateGilsysBattleHud(data) {
   const nextExp = data.next_level_exp == null ? null : Number(data.next_level_exp);
   const expText = nextExp == null ? "最大Lv" : `レベル${level}　EXP${exp}/${nextExp}`;
 
-  setGilsysText(`gilsys${prefix}Name`, isSelf ? (data.name || window.accountName || "あなた") : (data.name || "CPU"));
+  const displayName = isSelf
+    ? (data.name || window.gilsysSelfMatchName || window.accountName || "あなた")
+    : (data.name || window.gilsysOpponentName || (window.matchMode === "cpu" ? "CPU" : "対戦相手"));
+  setGilsysText(`gilsys${prefix}Name`, displayName);
   setGilsysText(`gilsys${prefix}Job`, data.job ?? "職業");
   setGilsysText(`gilsys${prefix}HpText`, `HP ${hp} / ${maxHp}`);
   setGilsysText(`gilsys${prefix}Atk`, data.attack ?? 0);
@@ -10676,6 +10682,24 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
     font-size: 10px !important;
     line-height: 1.05 !important;
     margin-top: 2px !important;
+  }
+}
+</style>
+<style id="gilsys-mobile-hide-enemy-simple-status-style">
+@media (max-width: 1100px), (max-height: 700px), (hover: none) and (pointer: coarse) {
+  #phase2.gilsys-battle-ui #enemy-status-simple,
+  #phase2.gilsys-battle-ui .gilsys-info-block:has(#enemy-status-simple) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
   }
 }
 </style>
