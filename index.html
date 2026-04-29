@@ -3165,6 +3165,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
           <span>⚔ 攻撃力 <b id="gilsysSelfAtk">0</b></span>
           <span>🛡 防御力 <b id="gilsysSelfDef">0</b></span>
         </div>
+        <div class="gilsys-coin-row">🪙 コイン <b id="gilsysSelfCoins">0</b></div>
         <div class="buff-strip gilsys-status-buff-strip" data-side="self" id="gilsysBuffStripSelf"></div>
       </div>
     </section>
@@ -3183,6 +3184,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
           <span>⚔ 攻撃力 <b id="gilsysEnemyAtk">0</b></span>
           <span>🛡 防御力 <b id="gilsysEnemyDef">0</b></span>
         </div>
+        <div class="gilsys-coin-row enemy">🪙 コイン <b id="gilsysEnemyCoins">0</b></div>
         <div class="buff-strip gilsys-status-buff-strip enemy" data-side="enemy" id="gilsysBuffStripEnemy"></div>
       </div>
       <div class="gilsys-portrait gilsys-portrait-enemy"></div>
@@ -6356,6 +6358,7 @@ function updateGilsysBattleHud(data) {
   setGilsysText(`gilsys${prefix}HpText`, `HP ${hp} / ${maxHp}`);
   setGilsysText(`gilsys${prefix}Atk`, data.attack ?? 0);
   setGilsysText(`gilsys${prefix}Def`, data.defense ?? 0);
+  setGilsysText(`gilsys${prefix}Coins`, Number(data.coins ?? 0).toLocaleString());
 
   const fill = document.getElementById(`gilsys${prefix}HpFill`);
   if (fill) fill.style.width = `${hpRate}%`;
@@ -9062,6 +9065,40 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
     min-width: 36px !important;
     font-size: 8px !important;
     padding: 0 3px !important;
+  }
+}
+</style>
+<style id="gilsys-mobile-command-narrower-and-stage-coins-style">
+.gilsys-coin-row {
+  margin-top: 4px;
+  color: #ffd98a;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.gilsys-coin-row.enemy {
+  text-align: right;
+}
+.gilsys-coin-row b {
+  color: #fff4c8;
+  margin-left: 4px;
+}
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    grid-template-columns: 52px calc((100% - 58px) / 3) calc((100% - 58px) / 3) !important;
+    justify-content: start !important;
+    column-gap: 3px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-coin-row {
+    margin-top: 1px !important;
+    font-size: 8px !important;
+    line-height: 1.05 !important;
   }
 }
 </style>
