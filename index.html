@@ -9228,6 +9228,80 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   }
 }
 </style>
+<style id="gilsys-mobile-bottom-hide-and-tall-command-style">
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-bottom-bar,
+  #phase2.gilsys-battle-ui #gilsysCoinHud,
+  #phase2.gilsys-battle-ui .gilsys-bottom-bar .gilsys-mini-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    pointer-events: none !important;
+  }
+  #phase2.gilsys-battle-ui {
+    --gilsys-command-bottom: max(2px, env(safe-area-inset-bottom));
+    --gilsys-command-height: clamp(168px, 44dvh, 224px);
+    --gilsys-stage-gap: 2px;
+  }
+  #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+    bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + var(--gilsys-stage-gap)) !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    bottom: var(--gilsys-command-bottom) !important;
+    height: var(--gilsys-command-height) !important;
+    min-height: var(--gilsys-command-height) !important;
+    grid-template-columns: calc((100% - 116px) / 3) calc((100% - 116px) / 3) !important;
+    justify-content: end !important;
+    padding-left: 110px !important;
+    align-items: stretch !important;
+  }
+  #phase2.gilsys-battle-ui #action-area.gilsys-action-column {
+    left: 2px !important;
+    top: 2px !important;
+    bottom: 2px !important;
+    width: 104px !important;
+    height: calc(100% - 4px) !important;
+    gap: 4px !important;
+    align-self: stretch !important;
+  }
+  #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn {
+    flex: 1 1 0 !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    grid-template-columns: 20px minmax(0,1fr) !important;
+    gap: 4px !important;
+    padding: 2px 5px !important;
+    font-size: 11px !important;
+    line-height: 1.08 !important;
+  }
+  #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn span {
+    font-size: 15px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    height: 100% !important;
+    min-height: 0 !important;
+    align-self: stretch !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-list {
+    height: calc(var(--gilsys-command-height) - 24px) !important;
+    max-height: calc(var(--gilsys-command-height) - 24px) !important;
+    overflow-y: auto !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .gilsys-detail-inventory-list {
+    height: calc(var(--gilsys-command-height) - 30px) !important;
+    max-height: calc(var(--gilsys-command-height) - 30px) !important;
+  }
+}
+</style>
 <script id="gilsys-pwa-register">
 (() => {
   if (location.protocol === "http:" || location.protocol === "https:") {
