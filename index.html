@@ -3165,7 +3165,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
           <span>⚔ 攻撃力 <b id="gilsysSelfAtk">0</b></span>
           <span>🛡 防御力 <b id="gilsysSelfDef">0</b></span>
         </div>
-        <div class="gilsys-exp-row" id="gilsysSelfExpText">レベル1 0/40</div>
+        <div class="gilsys-exp-row" id="gilsysSelfExpText">レベル1　EXP0/30</div>
         <div class="gilsys-coin-row">🪙 コイン <b id="gilsysSelfCoins">0</b></div>
         <div class="buff-strip gilsys-status-buff-strip" data-side="self" id="gilsysBuffStripSelf"></div>
       </div>
@@ -3185,7 +3185,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
           <span>⚔ 攻撃力 <b id="gilsysEnemyAtk">0</b></span>
           <span>🛡 防御力 <b id="gilsysEnemyDef">0</b></span>
         </div>
-        <div class="gilsys-exp-row enemy" id="gilsysEnemyExpText">レベル1 0/40</div>
+        <div class="gilsys-exp-row enemy" id="gilsysEnemyExpText">レベル1　EXP0/30</div>
         <div class="gilsys-coin-row enemy">🪙 コイン <b id="gilsysEnemyCoins">0</b></div>
         <div class="buff-strip gilsys-status-buff-strip enemy" data-side="enemy" id="gilsysBuffStripEnemy"></div>
       </div>
@@ -6367,7 +6367,7 @@ function updateGilsysBattleHud(data) {
   const level = Math.max(1, Number(data.level ?? 1));
   const exp = Math.max(0, Number(data.exp ?? 0));
   const nextExp = data.next_level_exp == null ? null : Number(data.next_level_exp);
-  const expText = nextExp == null ? "最大Lv" : `レベル${level} ${exp}/${nextExp}`;
+  const expText = nextExp == null ? "最大Lv" : `レベル${level}　EXP${exp}/${nextExp}`;
 
   setGilsysText(`gilsys${prefix}Name`, isSelf ? (data.name || window.accountName || "あなた") : (data.name || "CPU"));
   setGilsysText(`gilsys${prefix}Job`, data.job ?? "職業");
@@ -10640,6 +10640,10 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
   line-height: 1.15 !important;
   color: #f7e2c0 !important;
   white-space: nowrap !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-exp-row.enemy {
+  text-align: right !important;
 }
 
 #phase2.gilsys-battle-ui .gilsys-coin-row {
