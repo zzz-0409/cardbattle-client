@@ -5579,7 +5579,7 @@ function attachWsHandlers() {
       const choices = Array.isArray(data.choices) ? data.choices : [];
 
       let html = `<div style="font-weight:bold; margin-bottom:8px;">チャージ効果を選んでください</div>`;
-      html += `<div style="margin-bottom:10px; color:#ffd28a;">現在チャージ: ${charge} / 必要10</div>`;
+      html += `<div style="margin-bottom:10px; color:#ffd28a;">現在チャージ: ${charge} / 必要15</div>`;
       for (const c of choices) {
         html += `
           <div class="skillRow">
@@ -8361,7 +8361,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
 </style>
 <script id="gilsys-doll-charge-command-patch">
 (() => {
-  const NEED_FALLBACK = 10;
+  const NEED_FALLBACK = 15;
   const safe = (value) => typeof escapeHtml === "function"
     ? escapeHtml(String(value ?? ""))
     : String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
