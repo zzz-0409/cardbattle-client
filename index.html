@@ -4567,7 +4567,7 @@ const SKILLS = {
     },
     {
       name:"総仕立て直し",
-      desc:"装備している全ての部位の衣装の★を+1する（最大★4）"
+      desc:"装備している全ての部位の衣装の★を+1する"
     },
     {
       name:"人形暴走",
@@ -8023,7 +8023,14 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
   };
 
   const stat = (side, key, fallback = 0) => Number((side === "enemy" ? window.gilsysLatestEnemyStatus : window.gilsysLatestSelfStatus)?.[key] ?? fallback);
-  const finalDamage = (raw, ignoreDefense = false) => Math.max(0, Math.floor(Number(raw ?? 0) - (ignoreDefense ? 0 : stat("enemy", "defense", 0))));
+  const enemyPreviewDefense = () => {
+    const enemy = window.gilsysLatestEnemyStatus || {};
+    if (enemy.doll && !enemy.doll.is_broken) {
+      return Number(enemy.doll.defense ?? enemy.defense ?? 0);
+    }
+    return stat("enemy", "defense", 0);
+  };
+  const finalDamage = (raw, ignoreDefense = false) => Math.max(0, Math.floor(Number(raw ?? 0) - (ignoreDefense ? 0 : enemyPreviewDefense())));
   const jobId = () => {
     const raw = window.myJob ?? (typeof myJob !== "undefined" ? myJob : null);
     return (typeof JOB_ID_MAP !== "undefined" && JOB_ID_MAP?.[raw]) ?? raw;
@@ -8069,7 +8076,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
       }
     }
 
-    const pierceNote = forcePierce ? "防御貫通" : `相手防御 ${stat("enemy", "defense", 0)} を矢ごとに反映`;
+    const pierceNote = forcePierce ? "防御貫通" : `相手防御 ${enemyPreviewDefense()} を矢ごとに反映`;
     const counterNote = arrows.some(a => a?.effect === "counter") ? ` / 反撃+${counterBonus}` : "";
     return { damage: total, hits, note: `矢追撃${hits}Hit ${pierceNote}${counterNote}` };
   }
@@ -8081,7 +8088,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     if (id === "9" && selfStatus.doll && !selfStatus.doll.is_broken) {
       atk = Number(selfStatus.doll.attack ?? atk);
     }
-    const def = stat("enemy", "defense", 0);
+    const def = enemyPreviewDefense();
     const selfDef = stat("self", "defense", 0);
     const mana = Number(window.gilsysLatestSelfStatus?.mana ?? 0);
     const itemCount = (window.itemList || []).filter(it => it?.category === "item").length;
@@ -9732,6 +9739,29 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
     line-height: 1.2 !important;
     margin-top: 1px !important;
   }
+}
+</style>
+<style id="gilsys-shop-inventory-compact-empty-space-style">
+#phase2.gilsys-battle-ui .shop-meta-row:empty,
+#phase2.gilsys-battle-ui .shop-buy-area:empty {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+  flex: 0 1 auto !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .shop-title-wrap {
+  gap: 3px !important;
+}
+
+#phase2.gilsys-battle-ui .shop-card-main,
+#phase2.gilsys-battle-ui .shop-card-head,
+#phase2.gilsys-battle-ui .shop-title-wrap {
+  min-height: 0 !important;
 }
 </style>
 <style id="gilsys-mobile-hide-top-status-style">
