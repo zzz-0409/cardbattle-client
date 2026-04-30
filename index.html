@@ -1522,6 +1522,12 @@ body.debug #battleStage {
 .buff-slot.freeze{ background:rgba(90,180,255,0.85); }
 .buff-slot.onibi{ background:rgba(255,109,0,0.92); }
 .buff-slot.barrier{ background:rgba(0,188,212,0.9); }
+.buff-slot.regen{ background:rgba(72,190,132,0.92); }
+.buff-slot.passive_atk{ background:rgba(42,112,204,0.95); }
+.buff-slot.passive_def{ background:rgba(54,156,194,0.95); }
+.buff-slot.passive_regen{ background:rgba(55,168,112,0.95); }
+.buff-slot.passive_coin{ background:rgba(210,170,58,0.95); }
+.buff-slot.passive_discount{ background:rgba(178,129,65,0.95); }
 .buff-slot.karasu{ background:rgba(72,72,92,0.95); }
 .buff-slot.guts{ background:rgba(255,112,67,0.92); }
 .buff-slot.mad{ background:rgba(229,57,53,0.92); }
@@ -2266,6 +2272,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 }
 .gilsys-hp-text { margin-top: 6px; font-size: 19px; font-weight: 900; }
 .gilsys-bar {
+  position: relative;
   height: 13px;
   border-radius: 999px;
   overflow: hidden;
@@ -2274,10 +2281,22 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   box-shadow: inset 0 2px 6px rgba(0,0,0,0.65);
 }
 .gilsys-bar > div {
+  position: relative;
+  z-index: 1;
   height: 100%;
   width: 100%;
   background: linear-gradient(90deg, #3eda45, #9cff63);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 0 14px rgba(88,255,85,0.30);
+}
+.gilsys-bar > .gilsys-hp-overfill {
+  position: absolute;
+  z-index: 2;
+  inset: 0 auto 0 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #ff9b2f, #ffd166);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.34), 0 0 14px rgba(255,154,47,0.34);
+  pointer-events: none;
 }
 .gilsys-param-row {
   display: flex;
@@ -3977,12 +3996,13 @@ const JOB_DESCRIPTIONS = {
   3: { // 僧侶
     name: "僧侶",
     skills: {
-      1: "自身のHP27回復",
-      2: "自身のHPを32回復＆デバフ解除",
-      3: "自身のHPを37回復＆デバフ解除"
+      1: "継続回復バフ：2回復×10R",
+      2: "デバフ解除＋継続回復バフ：3回復×10R",
+      3: "自身のHPの1/10＋祝福の数だけ防御無視ダメージ"
     },
     playstyle: `
-自身の回復効果が+3
+毎ターン現在HPの1/20（最低1）回復。
+スキル1/2で祝福を獲得し、祝福の数だけスキル3のダメージが増える。
 
 `
   },
@@ -4542,9 +4562,9 @@ const SKILLS = {
   2:[ {name:"シールドブレイク",desc:"20＋防御力+2（4R）"},
       {name:"アイアンチャージ",desc:"15＋防御力+4（3R）"},
       {name:"ジャスティスブレード",desc:"25＋自身の防御力分ダメージ増加"} ],
-  3:[ {name:"ヒール",desc:"HP27回復"},
-      {name:"ディスペルヒール",desc:"HP32＋デバフ解除"},
-      {name:"グレーターヒール",desc:"HP37＋デバフ解除"} ],
+  3:[ {name:"リジェネ",desc:"継続回復バフ：2回復×10R"},
+      {name:"ディスペルリジェネ",desc:"デバフ解除＋継続回復バフ：3回復×10R"},
+      {name:"ホーリースマイト",desc:"自身のHPの1/10＋祝福の数だけ防御無視ダメージ"} ],
   4:[ {name:"スラッシュ＆スティール",desc:"25＋盗む"},
       {name:"ダガーレイド",desc:"25+(アイテム数×2)+盗む"},
       {name:"シャドウバースト",desc:"所持アイテムをコピーして全発動"} ],
@@ -5006,6 +5026,12 @@ function buffIconForKind(kind) {
     case "freeze":   return "❄️";
     case "onibi":    return "🔥";
     case "barrier":  return "🐢";
+    case "regen":    return "✚";
+    case "passive_atk": return "🗡️";
+    case "passive_def": return "🛡️";
+    case "passive_regen": return "✚";
+    case "passive_coin": return "🪙";
+    case "passive_discount": return "⚗️";
     case "repair_guard": return "🧰";
     case "karasu":   return "🐦";
     case "archer_extra_attack": return "🏹";
@@ -5823,6 +5849,12 @@ function attachWsHandlers() {
       if (blockEl) {
         blockEl.style.display = "block";
       }
+      window.gilsysLatestSelfStatus ??= {};
+      window.gilsysLatestSelfStatus.mana = data.mana;
+      window.gilsysLatestSelfStatus.mana_max = data.mana_max;
+      if (typeof window.refreshGilsysDollChargeUI === "function") {
+        window.refreshGilsysDollChargeUI(window.gilsysLatestSelfStatus);
+      }
       return;
     }
 
@@ -6166,6 +6198,12 @@ function attachWsHandlers() {
     /* --- エラー --- */
     if(data.type==="error_log"){
       appendLog("systemBox","error-log",data.msg);
+      if (window.pendingInventoryActionUids?.size) {
+        window.pendingInventoryActionUids = new Set();
+        if (isItemUIOpen && currentItemCategory && currentItemCategory !== "__category__" && typeof openItemCategory === "function") {
+          openItemCategory(currentItemCategory);
+        }
+      }
       return;
     }
 
@@ -6366,7 +6404,10 @@ function updateGilsysBattleHud(data) {
   const prefix = isSelf ? "Self" : "Enemy";
   const hp = Number(data.hp ?? 0);
   const maxHp = Number(data.max_hp ?? 0);
-  const hpRate = maxHp > 0 ? Math.max(0, Math.min(100, hp / maxHp * 100)) : 0;
+  const baseHpMax = Math.max(1, Number(data.max_hp ?? 200));
+  const displayHpMax = Math.max(baseHpMax, Number(data.overheal_max_hp ?? maxHp));
+  const hpRate = Math.max(0, Math.min(100, Math.min(hp, baseHpMax) / baseHpMax * 100));
+  const overHpRate = Math.max(0, Math.min(100, (hp - baseHpMax) / baseHpMax * 100));
   const level = Math.max(1, Number(data.level ?? 1));
   const exp = Math.max(0, Number(data.exp ?? 0));
   const nextExp = data.next_level_exp == null ? null : Number(data.next_level_exp);
@@ -6377,14 +6418,43 @@ function updateGilsysBattleHud(data) {
     : (data.name || window.gilsysOpponentName || (window.matchMode === "cpu" ? "CPU" : "対戦相手"));
   setGilsysText(`gilsys${prefix}Name`, displayName);
   setGilsysText(`gilsys${prefix}Job`, data.job ?? "職業");
-  setGilsysText(`gilsys${prefix}HpText`, `HP ${hp} / ${maxHp}`);
+  setGilsysText(`gilsys${prefix}HpText`, `HP ${hp} / ${displayHpMax}`);
   setGilsysText(`gilsys${prefix}Atk`, data.attack ?? 0);
   setGilsysText(`gilsys${prefix}Def`, data.defense ?? 0);
   setGilsysText(`gilsys${prefix}ExpText`, expText);
   setGilsysText(`gilsys${prefix}Coins`, Number(data.coins ?? 0).toLocaleString());
+  const coinRow = document.getElementById(`gilsys${prefix}Coins`)?.closest?.(".gilsys-coin-row");
+  if (coinRow) {
+    let blessingEl = coinRow.querySelector(".gilsys-blessing-count");
+    const blessing = Math.max(0, Number(data.blessing_count ?? 0));
+    const showBlessing = data.job === "僧侶" || blessing > 0;
+    if (showBlessing) {
+      if (!blessingEl) {
+        blessingEl = document.createElement("span");
+        blessingEl.className = "gilsys-blessing-count";
+        coinRow.appendChild(blessingEl);
+      }
+      blessingEl.textContent = `祝福 ${blessing}`;
+    } else if (blessingEl) {
+      blessingEl.remove();
+    }
+  }
 
   const fill = document.getElementById(`gilsys${prefix}HpFill`);
-  if (fill) fill.style.width = `${hpRate}%`;
+  if (fill) {
+    fill.style.width = `${hpRate}%`;
+    const bar = fill.closest?.(".gilsys-hp");
+    if (bar) {
+      let overFill = bar.querySelector(".gilsys-hp-overfill");
+      if (!overFill) {
+        overFill = document.createElement("div");
+        overFill.className = "gilsys-hp-overfill";
+        bar.appendChild(overFill);
+      }
+      overFill.style.width = `${overHpRate}%`;
+      overFill.style.display = overHpRate > 0 ? "block" : "none";
+    }
+  }
 
   const sprite = document.getElementById(isSelf ? "playerSprite" : "enemySprite");
   if (sprite) {
@@ -6864,11 +6934,6 @@ function refreshInventoryAfterLocalAction(id, action) {
   window.pendingInventoryActionUids ??= new Set();
   window.pendingInventoryActionUids.add(uid);
 
-  if (action === "use") {
-    window.itemList = (window.itemList || []).filter(it => String(it?.uid ?? "") !== uid);
-    window.itemUsesRemaining = Math.max(0, Number(window.itemUsesRemaining ?? 2) - 1);
-  }
-
   if (typeof openItemCategory === "function") {
     openItemCategory(currentItemCategory);
   }
@@ -7121,11 +7186,17 @@ function escapeHtml(value){
 }
 
 function getInventoryActionMeta(it, category){
-  if (it?.is_equipped_normal || it?.is_equipped_special) {
+  if (it?.is_equipped_normal) {
     return {
-      label: "装備中",
-      onclick: "",
-      disabled: true,
+      label: "装備を外す",
+      onclick: `useItem('${escapeHtml(it?.uid)}','unequip')`
+    };
+  }
+
+  if (it?.is_equipped_special) {
+    return {
+      label: "装備を外す",
+      onclick: `useItem('${escapeHtml(it?.uid)}','unequip_special')`
     };
   }
 
@@ -8111,6 +8182,9 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
       raw = skillNo === 1 ? 20 : skillNo === 2 ? 30 : skillNo === 3 ? 10 + atk : null;
     } else if (id === "2") {
       raw = skillNo === 1 ? 20 : skillNo === 2 ? 15 : skillNo === 3 ? 25 + selfDef : null;
+    } else if (id === "3") {
+      ignore = skillNo === 3;
+      raw = skillNo === 3 ? Math.floor(Number(selfStatus.hp ?? 0) / 10) + Number(selfStatus.blessing_count ?? 0) : null;
     } else if (id === "4") {
       raw = skillNo === 1 ? 25 : skillNo === 2 ? 25 + itemCount * 2 : null;
     } else if (id === "5") {
@@ -8246,6 +8320,35 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
   background:linear-gradient(90deg,#80ffb2,#fff070,#ffb24f);
   box-shadow:0 0 16px rgba(146,255,186,.72);
 }
+.gilsys-mage-mana-meter {
+  margin-top: 7px;
+  width: min(240px, 100%);
+}
+.gilsys-mage-mana-head {
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  color:#9fe8ff;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+.gilsys-mage-mana-bar {
+  height:9px;
+  overflow:hidden;
+  border:1px solid rgba(116,218,255,.62);
+  border-radius:999px;
+  background:rgba(8,13,24,.76);
+  box-shadow: inset 0 1px 5px rgba(0,0,0,.55);
+}
+.gilsys-mage-mana-fill {
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#4cc9ff,#7b8cff,#d7b1ff);
+  box-shadow:0 0 12px rgba(94,205,255,.55);
+  transition:width .25s ease;
+}
 .gilsys-doll-durability-meter {
   margin-top: 7px;
   width: min(240px, 100%);
@@ -8373,6 +8476,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     ? escapeHtml(String(value ?? ""))
     : String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
   const isDollJob = () => String(window.myJob ?? (typeof myJob !== "undefined" ? myJob : "")) === "人形使い" || String(window.myJob ?? "") === "9";
+  const isMageStatus = (status) => status && status.mana != null && status.mana_max != null && Number.isFinite(Number(status.mana)) && Number.isFinite(Number(status.mana_max));
   const getSelfDoll = () => window.gilsysLatestSelfStatus?.doll ?? null;
   const chargeNeed = (doll) => Math.max(1, Number(doll?.charge_need ?? NEED_FALLBACK));
 
@@ -8431,6 +8535,31 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     `;
   }
 
+  function updateMageManaMeter(status, side = "self") {
+    const isEnemy = side === "enemy";
+    const anchor = document.querySelector(isEnemy ? "#gilsysEnemyHpFill" : "#gilsysSelfHpFill")?.closest(".gilsys-bar")
+      ?? document.getElementById(isEnemy ? "gilsysBuffStripEnemy" : "gilsysBuffStripSelf");
+    const meterId = isEnemy ? "gilsysEnemyMageManaMeter" : "gilsysMageManaMeter";
+    let meter = document.getElementById(meterId);
+    if (!anchor || !isMageStatus(status)) {
+      if (meter) meter.remove();
+      return;
+    }
+    if (!meter) {
+      meter = document.createElement("div");
+      meter.id = meterId;
+    }
+    meter.className = `gilsys-mage-mana-meter ${isEnemy ? "is-enemy" : "is-self"}`;
+    if (meter.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", meter);
+    const mana = Math.max(0, Number(status.mana ?? 0));
+    const manaMax = Math.max(1, Number(status.mana_max ?? 1));
+    const rate = Math.max(0, Math.min(100, mana / manaMax * 100));
+    meter.innerHTML = `
+      <div class="gilsys-mage-mana-head"><span>魔力</span><span>${safe(mana)} / ${safe(manaMax)}</span></div>
+      <div class="gilsys-mage-mana-bar"><div class="gilsys-mage-mana-fill" style="width:${rate}%"></div></div>
+    `;
+  }
+
   function updateDollBuffButton() {
     const btn = document.getElementById("dollBuffBtn");
     if (!btn) return;
@@ -8453,6 +8582,8 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
     updateDollDurabilityMeter(window.gilsysLatestEnemyStatus?.doll ?? null, "enemy");
     updateDollChargeMeter(status?.doll ?? null, "self");
     updateDollChargeMeter(window.gilsysLatestEnemyStatus?.doll ?? null, "enemy");
+    updateMageManaMeter(status, "self");
+    updateMageManaMeter(window.gilsysLatestEnemyStatus, "enemy");
     updateDollBuffButton();
     const doll = status?.doll ?? getSelfDoll();
     const now = Math.max(0, Number(doll?.charge ?? 0));
@@ -9764,6 +9895,66 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   min-height: 0 !important;
 }
 </style>
+<style id="gilsys-shop-inventory-action-gap-tight-style">
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-buy-area,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area,
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-buy-area,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card .shop-buy-area {
+  align-self: start !important;
+  justify-content: flex-start !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  gap: 4px !important;
+  transform: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card {
+  height: auto !important;
+  min-height: 0 !important;
+  align-items: start !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 6px !important;
+}
+
+#phase2.gilsys-battle-ui .shop-card-head {
+  margin-bottom: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-desc {
+  margin-bottom: 0 !important;
+}
+
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card.inventory-card {
+    grid-template-rows: auto auto !important;
+    gap: 3px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-buy-area,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-buy-area {
+    justify-content: flex-end !important;
+    gap: 4px !important;
+  }
+}
+</style>
+<style id="gilsys-priest-blessing-count-style">
+#phase2.gilsys-battle-ui .gilsys-blessing-count {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border: 1px solid rgba(150, 220, 255, .55);
+  border-radius: 999px;
+  color: #dff7ff;
+  background: rgba(70, 155, 210, .16);
+  font-weight: 800;
+  white-space: nowrap;
+}
+</style>
 <style id="gilsys-mobile-hide-top-status-style">
 @media (orientation: landscape) and (max-width: 1200px),
        (orientation: landscape) and (max-height: 700px) {
@@ -9848,7 +10039,8 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
     line-height: 1.15 !important;
   }
 
-  #phase2.gilsys-battle-ui .gilsys-doll-charge-meter {
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-meter,
+  #phase2.gilsys-battle-ui .gilsys-mage-mana-meter {
     width: 50% !important;
     margin-top: 2px !important;
     min-width: 0 !important;
@@ -9859,7 +10051,8 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
     min-width: 0 !important;
   }
 
-  #phase2.gilsys-battle-ui .gilsys-doll-charge-head {
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-head,
+  #phase2.gilsys-battle-ui .gilsys-mage-mana-head {
     font-size: 8px !important;
     line-height: 1 !important;
     margin-bottom: 1px !important;
@@ -9873,7 +10066,8 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
     gap: 4px !important;
   }
 
-  #phase2.gilsys-battle-ui .gilsys-doll-charge-bar {
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-bar,
+  #phase2.gilsys-battle-ui .gilsys-mage-mana-bar {
     height: 6px !important;
     border-radius: 999px !important;
   }
@@ -10596,11 +10790,13 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
   margin-left: auto !important;
 }
 
-#phase2.gilsys-battle-ui .gilsys-doll-charge-meter {
+#phase2.gilsys-battle-ui .gilsys-doll-charge-meter,
+#phase2.gilsys-battle-ui .gilsys-mage-mana-meter {
   width: min(120px, 50%) !important;
 }
 
-#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-charge-meter {
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-charge-meter,
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-mage-mana-meter {
   margin-left: auto !important;
 }
 
@@ -10620,7 +10816,8 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
 }
 
 #phase2.gilsys-battle-ui .gilsys-doll-durability-head,
-#phase2.gilsys-battle-ui .gilsys-doll-charge-head {
+#phase2.gilsys-battle-ui .gilsys-doll-charge-head,
+#phase2.gilsys-battle-ui .gilsys-mage-mana-head {
   font-size: 10px !important;
   line-height: 1 !important;
   margin-bottom: 2px !important;
@@ -10632,11 +10829,13 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
     display: none !important;
   }
 
-  #phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-charge-meter {
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-charge-meter,
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-mage-mana-meter {
     margin-left: auto !important;
   }
 
-  #phase2.gilsys-battle-ui .gilsys-doll-charge-meter {
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-meter,
+  #phase2.gilsys-battle-ui .gilsys-mage-mana-meter {
     width: 72px !important;
     min-width: 72px !important;
     max-width: 72px !important;
