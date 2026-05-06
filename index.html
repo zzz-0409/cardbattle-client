@@ -1615,6 +1615,33 @@ body.debug #battleStage {
 
 .damage-popup{ color:#ffb3b3; }
 .heal-popup  { color:#b7ffb7; }
+.skill-effect-image{
+  position:absolute;
+  left:50%;
+  top:35%;
+  width:130%;
+  max-width:240px;
+  height:auto;
+  transform:translate(-50%,-50%) scale(0.86);
+  pointer-events:none;
+  user-select:none;
+  z-index:80;
+  background:transparent;
+  filter:drop-shadow(0 0 14px rgba(255,235,150,0.35));
+  animation:skillEffectBurst 1.75s ease-out forwards;
+}
+.sprite.doll .skill-effect-image{
+  top:30%;
+  width:150%;
+  max-width:190px;
+  z-index:90;
+}
+@keyframes skillEffectBurst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0.68) rotate(-3deg);}
+  12%{opacity:1;}
+  58%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(1deg);}
+  100%{opacity:0;transform:translate(-50%,-55%) scale(1.18) rotate(0deg);}
+}
 .summon-popup{
   position:absolute;
   left:50%;
@@ -3028,6 +3055,693 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   text-align: center;
 }
 
+
+
+/* =========================================================
+   ★ Phase1 職業選択画面 完全差し替えUI（index.htmlのみ）
+   画像が必要なキャラ立ち絵部分は .job-card-portrait / .job-hero-portrait に
+   後から background-image を入れる前提のプレースホルダー。
+========================================================= */
+#phase1.gilsys-job-select-ui {
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  min-height: 660px;
+  margin-top: -20px;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  overflow: hidden;
+  box-sizing: border-box;
+  color: #ead8b5;
+  padding: 16px 18px 18px;
+  background:
+    radial-gradient(circle at 28% 36%, rgba(210, 166, 84, 0.18), transparent 24%),
+    linear-gradient(90deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.34) 28%, rgba(0,0,0,0.22) 58%, rgba(0,0,0,0.78) 100%),
+    linear-gradient(180deg, rgba(255,228,167,0.04), rgba(0,0,0,0.34)),
+    url("Assets/fe-zu0and1haikei.png") center center / cover no-repeat;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", "Yu Gothic", serif;
+}
+
+#phase1.gilsys-job-select-ui::before,
+#phase1.gilsys-job-select-ui::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#phase1.gilsys-job-select-ui::before {
+  inset: 12px;
+  border: 1px solid rgba(206, 163, 91, 0.62);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,235,180,0.08),
+    inset 0 0 56px rgba(0,0,0,0.82);
+}
+
+#phase1.gilsys-job-select-ui::after {
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.72), transparent 18%, transparent 82%, rgba(0,0,0,0.72)),
+    radial-gradient(circle at center, transparent 48%, rgba(0,0,0,0.66) 100%);
+}
+
+.gilsys-job-corner {
+  position: absolute;
+  z-index: 2;
+  width: 54px;
+  height: 54px;
+  pointer-events: none;
+  border-color: rgba(210, 166, 91, 0.88);
+  filter: drop-shadow(0 0 7px rgba(235,180,90,0.38));
+}
+.gilsys-job-corner.lt { top: 15px; left: 15px; border-top: 2px solid; border-left: 2px solid; }
+.gilsys-job-corner.rt { top: 15px; right: 15px; border-top: 2px solid; border-right: 2px solid; }
+.gilsys-job-corner.lb { bottom: 15px; left: 15px; border-bottom: 2px solid; border-left: 2px solid; }
+.gilsys-job-corner.rb { bottom: 15px; right: 15px; border-bottom: 2px solid; border-right: 2px solid; }
+
+.gilsys-job-layout {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr);
+  grid-template-rows: 126px minmax(0, 1fr) 62px;
+  gap: 14px 20px;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.gilsys-job-title-area {
+  grid-column: 1 / -1;
+  text-align: center;
+  align-self: start;
+  padding-top: 18px;
+}
+
+#phase1.gilsys-job-select-ui #phase1Title {
+  display: none;
+}
+
+.gilsys-job-title {
+  margin: 0;
+  font-size: clamp(34px, 4vw, 58px);
+  line-height: 1;
+  letter-spacing: 0.22em;
+  color: #e6d0a5;
+  text-shadow:
+    0 0 12px rgba(239,196,113,0.24),
+    0 3px 0 rgba(0,0,0,0.72);
+}
+
+.gilsys-job-title-line {
+  width: min(520px, 58vw);
+  height: 1px;
+  margin: 11px auto 14px;
+  background: linear-gradient(90deg, transparent, rgba(205,154,80,0.34), #d9b16a, rgba(205,154,80,0.34), transparent);
+  position: relative;
+}
+.gilsys-job-title-line::before,
+.gilsys-job-title-line::after {
+  content: "◇";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b99056;
+  font-size: 13px;
+}
+.gilsys-job-title-line::before { left: 34%; }
+.gilsys-job-title-line::after { right: 34%; }
+
+.gilsys-job-subtitle {
+  margin: 0;
+  color: rgba(238,221,190,0.9);
+  font-size: clamp(15px, 1.4vw, 22px);
+  letter-spacing: 0.08em;
+}
+
+.gilsys-job-left {
+  grid-column: 1;
+  grid-row: 2 / 4;
+  position: relative;
+  min-height: 0;
+  padding: 52px 18px 20px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(3,4,5,0.78), rgba(8,8,7,0.34) 62%, transparent),
+    radial-gradient(circle at 62% 38%, rgba(218,170,88,0.18), transparent 30%);
+}
+
+.gilsys-job-class-mark {
+  font-size: 72px;
+  color: #dfcea9;
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(234,187,96,0.32);
+  margin-bottom: 18px;
+}
+
+.gilsys-job-class-name {
+  font-size: 42px;
+  color: #ecd8ae;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+}
+
+.gilsys-job-class-en {
+  margin: 4px 0 20px;
+  font-size: 19px;
+  color: #d7bd88;
+  letter-spacing: 0.08em;
+}
+
+.gilsys-job-hero-portrait {
+  position: absolute;
+  right: -38px;
+  bottom: 110px;
+  width: 290px;
+  height: 500px;
+  opacity: 0.92;
+  pointer-events: none;
+  background: transparent;
+  filter: drop-shadow(0 24px 26px rgba(0,0,0,0.92));
+}
+.gilsys-job-hero-portrait.has-job-portrait {
+  bottom: var(--jobPortraitBottom, 150px);
+  background: var(--jobPortrait) center bottom / contain no-repeat;
+}
+.gilsys-job-hero-portrait::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 190px;
+  height: 390px;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(135deg, rgba(244,222,168,0.18), transparent 30%),
+    linear-gradient(180deg, var(--jobArmor, #383630), #0b0c0d 72%);
+  clip-path: polygon(50% 0, 68% 10%, 77% 24%, 92% 42%, 78% 100%, 22% 100%, 8% 42%, 23% 24%, 32% 10%);
+  border: 1px solid rgba(221,185,108,0.18);
+}
+.gilsys-job-hero-portrait.has-job-portrait::before,
+.gilsys-job-hero-portrait.has-job-portrait::after {
+  display: none;
+}
+.gilsys-job-hero-portrait::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 28px;
+  width: 86px;
+  height: 98px;
+  transform: translateX(-50%);
+  border-radius: 42% 42% 46% 46%;
+  background: linear-gradient(#d4ad86, #8d634a);
+  box-shadow: 0 -22px 0 2px var(--jobHair, #14110f);
+}
+
+.gilsys-job-left-desc {
+  position: absolute;
+  left: 18px;
+  right: 24px;
+  bottom: 150px;
+  font-size: 17px;
+  line-height: 1.8;
+  color: rgba(244,230,199,0.92);
+  text-shadow: 0 2px 4px #000;
+}
+
+.gilsys-job-star-list {
+  position: absolute;
+  left: 18px;
+  right: 20px;
+  bottom: 22px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(205,163,91,0.26);
+  display: grid;
+  gap: 7px;
+  font-size: 18px;
+}
+.gilsys-job-star-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+}
+.gilsys-job-stars {
+  color: #e1ad56;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px rgba(224,171,84,0.32);
+}
+.gilsys-job-stars .dim { color: rgba(206,190,160,0.36); }
+
+.gilsys-job-main {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: 376px 18px minmax(0, 1fr);
+  gap: 10px;
+  align-self: stretch;
+}
+
+.gilsys-job-card-frame {
+  min-width: 0;
+  border: 1px solid rgba(180,135,69,0.62);
+  background: rgba(4,5,6,0.34);
+  box-shadow: inset 0 0 0 1px rgba(255,230,171,0.05), inset 0 0 36px rgba(0,0,0,0.62);
+  padding: 28px 20px 16px;
+  overflow: hidden;
+}
+
+#jobSelectArea {
+  display: flex !important;
+  grid-template-columns: none !important;
+  gap: 8px;
+  height: 100%;
+  margin: 0;
+  padding: 2px 6px 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(214,166,83,0.72) rgba(70,55,38,0.52);
+}
+#jobSelectArea::-webkit-scrollbar { height: 10px; }
+#jobSelectArea::-webkit-scrollbar-track { background: rgba(70,55,38,0.52); border-radius: 999px; }
+#jobSelectArea::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #836136, #d7a457, #836136); border-radius: 999px; }
+
+.job-card {
+  position: relative;
+  flex: 0 0 112px;
+  min-width: 112px;
+  height: 318px;
+  min-height: 318px;
+  padding: 12px 8px 10px;
+  scroll-snap-align: start;
+  border-radius: 0;
+  border: 1px solid rgba(138,111,76,0.76);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.055), transparent 18%),
+    linear-gradient(180deg, rgba(23,25,24,0.93), rgba(5,6,7,0.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,232,180,0.04),
+    0 8px 18px rgba(0,0,0,0.55);
+  display: grid;
+  grid-template-rows: 38px 28px 154px 34px 1fr;
+  justify-content: stretch;
+  color: #e9d7b6;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+.job-card::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(219,180,105,0.18);
+  pointer-events: none;
+}
+.job-card:hover,
+.job-card.selected {
+  transform: translateY(-4px);
+  border-color: #f0c36a;
+  box-shadow:
+    0 0 0 1px rgba(252,213,136,0.32),
+    0 0 22px rgba(226,166,72,0.48),
+    inset 0 0 20px rgba(244,190,91,0.18);
+  filter: brightness(1.08);
+}
+.job-card.selected::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(255,220,142,0.94);
+  box-shadow: inset 0 0 18px rgba(255,206,101,0.40), 0 0 18px rgba(255,190,84,0.50);
+  pointer-events: none;
+}
+
+.job-card-icon {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  font-size: 34px;
+  line-height: 1;
+  color: #d8c5a3;
+  text-shadow: 0 0 10px rgba(242,205,126,0.26);
+}
+.job-card-name-top {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.job-card-portrait {
+  position: relative;
+  z-index: 1;
+  margin: 4px 0;
+  background: transparent;
+  overflow: hidden;
+}
+.job-card.has-job-portrait .job-card-portrait {
+  background: var(--jobPortrait) center bottom / contain no-repeat;
+}
+.job-card-portrait::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 78px;
+  height: 128px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--jobArmor, #383630), #070809);
+  clip-path: polygon(50% 0, 72% 16%, 92% 100%, 8% 100%, 28% 16%);
+}
+.job-card.has-job-portrait .job-card-portrait::before,
+.job-card.has-job-portrait .job-card-portrait::after {
+  display: none;
+}
+.job-card-portrait::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  width: 38px;
+  height: 46px;
+  transform: translateX(-50%);
+  border-radius: 44%;
+  background: #c99b73;
+  box-shadow: 0 -12px 0 var(--jobHair, #17110d);
+}
+.job-card-name-bottom {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  text-align: center;
+  font-size: 23px;
+  font-weight: 900;
+  color: #efddb8;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+.job-card-record {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.35;
+  color: rgba(231,213,177,0.78);
+}
+.job-detail-btn { display: none !important; }
+.job-header, .job-stats, .job-bars { display: contents; }
+
+.gilsys-job-scrollbar-dummy {
+  height: 18px;
+  position: relative;
+  border: 1px solid rgba(151,111,60,0.56);
+  background: linear-gradient(90deg, rgba(108,82,46,0.5), rgba(204,166,99,0.44), rgba(108,82,46,0.5));
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.66);
+}
+.gilsys-job-scrollbar-dummy::before,
+.gilsys-job-scrollbar-dummy::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #c9a164;
+  font-size: 22px;
+  line-height: 1;
+}
+.gilsys-job-scrollbar-dummy::before { content: "◀"; left: -2px; }
+.gilsys-job-scrollbar-dummy::after { content: "▶"; right: -2px; }
+
+.gilsys-job-detail-panel {
+  display: grid;
+  grid-template-columns: 1.15fr 0.82fr 0.82fr;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.gilsys-job-detail-block {
+  position: relative;
+  z-index: 10;
+  padding: 18px 24px;
+  border-right: 0;
+  min-width: 0;
+}
+.gilsys-job-detail-block:last-child { border-right: 0; }
+.gilsys-job-detail-heading {
+  color: #d6ab67;
+  font-size: 22px;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0.08em;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(195,151,81,0.26);
+}
+.gilsys-job-detail-text {
+  font-size: 17px;
+  line-height: 1.9;
+  color: rgba(237,222,192,0.92);
+}
+.gilsys-job-status-list {
+  display: grid;
+  gap: 8px;
+  font-size: 17px;
+}
+.gilsys-job-status-row {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.gilsys-job-status-row strong {
+  min-width: 0;
+  text-align: right;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.gilsys-job-status-row.is-passive {
+  grid-template-columns: 30px minmax(86px, auto) minmax(0, 1fr);
+}
+.gilsys-job-status-icon { color: #c4aa7c; text-align: center; }
+.gilsys-job-decision-panel {
+  position: relative;
+  z-index: 20;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: 46px auto 22px;
+  align-content: start;
+  align-items: start;
+  gap: 12px;
+  padding-top: 6px;
+  pointer-events: auto;
+}
+.gilsys-job-decision-panel #connectStatus {
+  min-height: 22px;
+  margin: 0;
+  text-align: center;
+}
+.gilsys-job-weapon-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+  margin-top: 28px;
+}
+.gilsys-job-weapon-item {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  color: #d9c5a1;
+}
+.gilsys-job-weapon-icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+  color: #cfc1a2;
+  filter: drop-shadow(0 0 8px rgba(223,178,90,0.18));
+}
+.gilsys-job-weapon-name { font-size: 15px; }
+.gilsys-job-passive-list {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 12px;
+  min-height: 100%;
+  padding-top: 10px;
+}
+.gilsys-job-passive-item {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  color: #e8d2a8;
+  cursor: help;
+}
+.gilsys-job-passive-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(220,176,92,0.78);
+  background: radial-gradient(circle at 50% 35%, rgba(82,62,34,0.96), rgba(12,14,18,0.96));
+  box-shadow: inset 0 0 14px rgba(255,232,176,0.13), 0 0 18px rgba(216,166,72,0.20);
+  color: #f5dfab;
+  font-size: 30px;
+  font-weight: 900;
+}
+.gilsys-job-passive-name {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+.gilsys-job-passive-tooltip {
+  display: none;
+  position: absolute;
+  z-index: 80;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  width: min(280px, 70vw);
+  transform: translateX(-50%);
+  border: 1px solid rgba(226,184,103,0.88);
+  background: rgba(8,10,14,0.98);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.55), 0 0 18px rgba(226,174,80,0.20);
+  color: #f4e3c2;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.65;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.gilsys-job-passive-item:hover .gilsys-job-passive-tooltip,
+.gilsys-job-passive-item.tooltip-open .gilsys-job-passive-tooltip {
+  display: block;
+}
+.gilsys-job-passive-empty {
+  color: rgba(226,206,170,0.68);
+  font-size: 15px;
+  text-align: center;
+}
+
+.gilsys-job-footer {
+  grid-column: 2;
+  grid-row: 3;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  gap: 9px;
+}
+
+#phase1ControlRow {
+  display: contents !important;
+}
+#phase1ControlRow p,
+#connectStatus {
+  grid-column: 1 / -1;
+  color: #e8d1a6;
+  text-shadow: 0 2px 4px #000;
+}
+#btnConnectPhase1 {
+  position: relative;
+  z-index: 30;
+  pointer-events: auto;
+  min-width: min(470px, 100%);
+  max-width: 86vw;
+  padding: 15px 34px !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(222,176,91,0.9) !important;
+  background:
+    linear-gradient(180deg, rgba(30,74,101,0.98), rgba(6,31,50,0.98)) !important;
+  color: #f2dfba !important;
+  font-size: 25px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.12em;
+  box-shadow:
+    0 0 0 4px rgba(11,36,54,0.9),
+    0 0 18px rgba(94,165,219,0.26),
+    inset 0 0 16px rgba(255,255,255,0.10) !important;
+}
+#btnConnectPhase1::after { content: "　›"; }
+#btnConnectPhase1:disabled {
+  opacity: 0.58;
+  filter: grayscale(0.38);
+}
+#btnCancelRandom {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 6;
+  border: 1px solid rgba(206,163,91,0.56) !important;
+  background: rgba(7,8,10,0.64) !important;
+  color: rgba(238,218,180,0.88) !important;
+  border-radius: 0 !important;
+  padding: 9px 14px !important;
+}
+.gilsys-job-note {
+  color: rgba(220,198,158,0.78);
+  font-size: 14px;
+  text-shadow: 0 2px 4px #000;
+}
+#accountNamePhase1 {
+  position: absolute;
+  top: 24px;
+  right: 34px;
+  z-index: 6;
+  color: rgba(238,218,180,0.82);
+}
+#roomCodeArea,
+#cpuJobArea {
+  position: relative;
+  z-index: 5;
+  background: rgba(5,7,9,0.62);
+  border: 1px solid rgba(181,136,70,0.42);
+  padding: 10px 12px;
+  margin: 0 !important;
+}
+#roomCodeArea {
+  width: 100%;
+  box-sizing: border-box;
+}
+#roomCodeArea input {
+  width: 100%;
+  box-sizing: border-box;
+}
+#cpuJobArea {
+  grid-column: 1;
+  align-self: end;
+}
+#roomCodeArea input,
+#cpuJobArea select {
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(211,166,85,0.56);
+  color: #f1dfbc;
+}
+
+@media (max-width: 1100px), (max-height: 720px) {
+  #phase1.gilsys-job-select-ui {
+    min-width: 1180px;
+    overflow-x: auto;
+  }
+  .gilsys-job-layout {
+    width: 1160px;
+    max-width: none;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: 118px minmax(0, 1fr) 78px;
+  }
+  .gilsys-job-main { grid-template-rows: 330px 16px minmax(0, 1fr); }
+  .job-card { flex-basis: 102px; min-width: 102px; height: 278px; min-height: 278px; grid-template-rows: 32px 25px 128px 30px 1fr; }
+  .gilsys-job-hero-portrait { width: 250px; height: 430px; bottom: 96px; }
+  .gilsys-job-left-desc { bottom: 134px; font-size: 15px; }
+  .gilsys-job-star-list { font-size: 16px; }
+}
+
 </style>
 </head>
 <body>
@@ -3065,63 +3779,105 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 </div>
 </div>
 </div>
-<!-- ================= フェーズ1：ランダム対戦準備 ================= -->
-<div id="phase1" style="display:none;">
-<h2 id="phase1Title">ランダム対戦</h2>
-<div id="accountNamePhase1" style="margin:6px 0; opacity:0.9;"></div>
-<div id="roomCodeArea" style="margin:6px 0; display:none;">
-<input id="roomCodeInput" inputmode="numeric" maxlength="4" placeholder="ルーム番号(4桁)" style="width:160px; text-align:center; padding:6px;"/>
-</div>
-<input id="name_phase1" placeholder="名前" style="display:none;"/>
-<div id="phase1ControlRow">
-<button id="btnConnectPhase1">接続</button>
-<button id="btnCancelRandom">タイトルに戻る</button>
-<p id="connectStatus"></p>
-</div>
-<!-- ========================= -->
-<!-- CPU職業選択（CPU戦のみ表示） -->
-<!-- ========================= -->
-<div id="cpuJobArea" style="margin-top:8px; display:none;">
-<label for="cpuJob">CPUの職業：</label>
-<select id="cpuJob">
-<option value="">ランダム</option>
-<option value="戦士">戦士</option>
-<option value="騎士">騎士</option>
-<option value="僧侶">僧侶</option>
-<option value="盗賊">盗賊</option>
-<option value="魔導士">魔導士</option>
-<option value="弓兵">弓兵</option>
-<option value="陰陽師">陰陽師</option>
-<option value="錬金術師">錬金術師</option>
-<option value="人形使い">人形使い</option>
-<option value="狂人">狂人</option>
-</select>
-<div id="cpuTurnOrderArea" style="margin-top:8px;">
-<label>先攻・後攻：</label>
-<select id="cpuTurnOrder">
-<option value="random">ランダム</option>
-<option value="first">自分が先攻</option>
-<option value="second">CPUが先攻</option>
-</select>
-</div>
-</div>
-<!-- ★ ここに追加 -->
-<div id="jobSelectArea"></div>
-<!-- ================= 職業詳細ポップアップ（body直下） ================= -->
-<div id="jobDetailPopup" style="display:none; position:fixed; inset:0;
-            background:rgba(0,0,0,0.7);
-            justify-content:center; align-items:center;
-            z-index:9999;">
-<div style="background:#2b2b2b; padding:20px; border-radius:10px;
-              width:420px; max-height:80%; overflow-y:auto;">
-<h3 id="jobDetailTitle">職業詳細</h3>
-<div id="jobDetailBody" style="font-size:13px; line-height:1.6; white-space:pre-line;">
-</div>
-<div style="text-align:right; margin-top:10px;">
-<button onclick="closeJobDetail()">閉じる</button>
-</div>
-</div>
-</div>
+<!-- ================= フェーズ1：職業選択 ================= -->
+<div id="phase1" class="gilsys-job-select-ui" style="display:none;">
+  <div class="gilsys-job-corner lt"></div>
+  <div class="gilsys-job-corner rt"></div>
+  <div class="gilsys-job-corner lb"></div>
+  <div class="gilsys-job-corner rb"></div>
+
+  <div id="accountNamePhase1"></div>
+  <h2 id="phase1Title">ランダム対戦</h2>
+
+  <div class="gilsys-job-layout">
+    <header class="gilsys-job-title-area">
+      <h1 class="gilsys-job-title">職業選択</h1>
+      <div class="gilsys-job-title-line"></div>
+      <p class="gilsys-job-subtitle">あなたの運命を切り開く職業を選択してください</p>
+    </header>
+
+    <aside class="gilsys-job-left">
+      <div class="gilsys-job-class-mark" id="jobSelectedIcon">†</div>
+      <div class="gilsys-job-class-name" id="jobSelectedName">戦士</div>
+      <div class="gilsys-job-class-en" id="jobSelectedEn">WARRIOR</div>
+      <div class="gilsys-job-hero-portrait" id="jobSelectedPortrait" aria-hidden="true"></div>
+      <div class="gilsys-job-star-list" id="jobSelectedStars"></div>
+    </aside>
+
+    <section class="gilsys-job-main">
+      <div class="gilsys-job-card-frame">
+        <div id="jobSelectArea"></div>
+      </div>
+      <div class="gilsys-job-scrollbar-dummy" aria-hidden="true"></div>
+
+      <div class="gilsys-job-detail-panel">
+        <section class="gilsys-job-detail-block">
+          <div class="gilsys-job-detail-heading">基礎ステータス</div>
+          <div class="gilsys-job-status-list" id="jobSelectedStatus"></div>
+        </section>
+        <section class="gilsys-job-detail-block">
+          <div class="gilsys-job-detail-heading">パッシブ</div>
+          <div class="gilsys-job-passive-list" id="jobSelectedPassive"></div>
+        </section>
+        <section class="gilsys-job-detail-block">
+          <div class="gilsys-job-decision-panel">
+            <div id="roomCodeArea" style="visibility:hidden;">
+              <input id="roomCodeInput" inputmode="numeric" maxlength="4" placeholder="ルーム番号(4桁)" />
+            </div>
+            <button id="btnConnectPhase1">接続開始</button>
+            <p id="connectStatus"></p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <footer class="gilsys-job-footer">
+      <div id="phase1ControlRow">
+        <button id="btnCancelRandom">タイトルに戻る</button>
+      </div>
+    </footer>
+    <input id="name_phase1" placeholder="名前" style="display:none;" />
+
+    <div id="cpuJobArea" style="display:none;">
+      <label for="cpuJob">CPUの職業：</label>
+      <select id="cpuJob">
+        <option value="">ランダム</option>
+        <option value="戦士">戦士</option>
+        <option value="騎士">騎士</option>
+        <option value="僧侶">僧侶</option>
+        <option value="盗賊">盗賊</option>
+        <option value="魔導士">魔導士</option>
+        <option value="弓兵">弓兵</option>
+        <option value="陰陽師">陰陽師</option>
+        <option value="錬金術師">錬金術師</option>
+        <option value="人形使い">人形使い</option>
+        <option value="狂人">狂人</option>
+      </select>
+      <div id="cpuTurnOrderArea" style="margin-top:8px;">
+        <label>先攻・後攻：</label>
+        <select id="cpuTurnOrder">
+          <option value="random">ランダム</option>
+          <option value="first">自分が先攻</option>
+          <option value="second">CPUが先攻</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 職業詳細ポップアップ（既存処理維持用） ================= -->
+  <div id="jobDetailPopup" style="display:none; position:fixed; inset:0;
+              background:rgba(0,0,0,0.7);
+              justify-content:center; align-items:center;
+              z-index:9999;">
+    <div style="background:#2b2b2b; padding:20px; border-radius:10px;
+                width:420px; max-height:80%; overflow-y:auto;">
+      <h3 id="jobDetailTitle">職業詳細</h3>
+      <div id="jobDetailBody" style="font-size:13px; line-height:1.6; white-space:pre-line;"></div>
+      <div style="text-align:right; margin-top:10px;">
+        <button onclick="closeJobDetail()">閉じる</button>
+      </div>
+    </div>
+  </div>
 </div>
 <button id="btnBackToMenu" style="display:none; margin-bottom:10px;">
   タイトルに戻る
@@ -3496,9 +4252,11 @@ function setPhase(p) {
     p === PHASE.BATTLE ? "block" : "none";
 
   if (p === PHASE.RANDOM_READY) {
-    // ★ 職業未選択時は接続ボタンを押せないようにする
+    if (!selectedJobId) selectedJobId = JOB_LIST[0]?.id ?? null;
+
+    // ★ 初期職業を選択済みにして、接続中以外は押せるようにする
     const btn = document.getElementById("btnConnectPhase1");
-    if (btn) btn.disabled = !selectedJobId;
+    if (btn) btn.disabled = !!isConnecting;
 
     // refresh job record from server, then re-render cards
     refreshSummary().then(() => renderJobCards());
@@ -4012,7 +4770,7 @@ const JOB_DESCRIPTIONS = {
     skills: {
       1: "25ダメージ+相手の持ち物を1つ盗む",
       2: "25+自身の所持しているアイテム数×2ダメージ+相手の持ち物を1つ盗む",
-      3: "所持アイテムをコピーして全使用"
+      3: "所持アイテムをコピーして全使用後、通常攻撃"
     },
     playstyle: `
 初期コイン+5
@@ -4114,7 +4872,7 @@ const JOB_DESCRIPTIONS = {
     name: "人形使い",
     skills: {
       1: "修理キットを1つ入手する",
-      2: "装備している全ての部位の衣装の★を+1",
+      2: "装備している全ての部位の衣装の★を+1（最大★8）",
       3: "人形を暴走状態にし、破壊されるまで衣装効果が2倍になる"
     },
     playstyle: `
@@ -4259,7 +5017,7 @@ function closeJobDetail() {
   document.getElementById("jobDetailPopup").style.display = "none";
 }
 
-let selectedJobId = null;
+let selectedJobId = 1;
 let isConnecting = false; // ★ これを追加
 
 // ================================
@@ -4390,7 +5148,10 @@ function triggerAutoCpuMatch() {
   window.cpuKind = "auto";
 
   const roomArea = document.getElementById("roomCodeArea");
-  if (roomArea) roomArea.style.display = "none";
+  if (roomArea) {
+    roomArea.style.display = "block";
+    roomArea.style.visibility = "hidden";
+  }
 
   const cpuArea = document.getElementById("cpuJobArea");
   if (cpuArea) cpuArea.style.display = "none";
@@ -4466,58 +5227,253 @@ function renderJobBars(stats) {
 }
 
 // ================= 職業カード描画 =================
+const JOB_SELECT_META = {
+  "戦士": {
+    en: "WARRIOR", icon: "†", glow: "rgba(218,166,78,0.34)", armor: "#4b463b", hair: "#14100d",
+    portrait: "Assets/shokugyousenntaku/sennsi1_transparent.png",
+    lead: "高い体力と防御力を持つ近接戦闘のエキスパート。最前線で仲間を守る盾となる。",
+    detail: "高い体力と防御力を持つ近接戦闘の専門家。敵の攻撃を引き受け、仲間を守る盾としてパーティの要となる存在。",
+    weapons: ["剣", "斧", "盾"], stars: { attack: 4, defense: 5, magic: 2, support: 2, speed: 2, difficulty: 2 }
+  },
+  "騎士": {
+    en: "KNIGHT", icon: "♜", glow: "rgba(174,184,194,0.30)", armor: "#55585a", hair: "#282522",
+    portrait: "Assets/shokugyousenntaku/kisi1_transparent.png",
+    lead: "堅牢な防御と安定した攻撃を兼ね備えた守りの職業。長期戦で強さを発揮する。",
+    detail: "防御力を軸に戦う安定型の職業。耐久を高めながら確実にダメージを与え、粘り強く勝利を狙う。",
+    weapons: ["剣", "槍", "盾"], stars: { attack: 3, defense: 5, magic: 1, support: 3, speed: 2, difficulty: 2 }
+  },
+  "僧侶": {
+    en: "PRIEST", icon: "✣", glow: "rgba(236,214,143,0.34)", armor: "#d5c8a8", hair: "#d9c08a",
+    portrait: "Assets/shokugyousenntaku/souryo1_transparent.png",
+    lead: "聖なる力で自身を癒し、粘り強く戦う支援型の職業。回復と加護で勝機を作る。",
+    detail: "回復と支援に優れた職業。耐久戦に強く、HP管理とタイミング判断で相手の攻めを受け流す。",
+    weapons: ["杖", "聖印", "護符"], stars: { attack: 2, defense: 3, magic: 4, support: 5, speed: 2, difficulty: 3 }
+  },
+  "盗賊": {
+    en: "THIEF", icon: "⚔", glow: "rgba(75,90,104,0.34)", armor: "#1f2429", hair: "#0c0c0d",
+    portrait: "Assets/shokugyousenntaku/touzoku1_transparent.png",
+    lead: "素早い動きと高い器用さで敵の隙を突く職業。運と爆発力で戦局をかき乱す。",
+    detail: "機動力と奇襲性に優れる職業。安定感は低いが、噛み合った時の爆発力で一気に勝負を決める。",
+    weapons: ["短剣", "毒", "罠"], stars: { attack: 3, defense: 2, magic: 1, support: 3, speed: 5, difficulty: 4 }
+  },
+  "魔導士": {
+    en: "MAGE", icon: "✦", glow: "rgba(80,112,255,0.38)", armor: "#172a6a", hair: "#2b2548",
+    portrait: "Assets/shokugyousenntaku/madousi1_transparent.png",
+    portraitBottom: "180px",
+    lead: "強大な魔力を操り、敵を焼き尽くす遠距離のエキスパート。多彩な魔法で戦局を支配する。",
+    detail: "魔力を管理しながら高火力を狙う職業。防御面は低いが、魔法が決まれば一気に主導権を奪える。",
+    weapons: ["杖", "魔導書", "指輪"], stars: { attack: 3, defense: 1, magic: 5, support: 3, speed: 2, difficulty: 4 }
+  },
+  "陰陽師": {
+    en: "ONMYOJI", icon: "☯", glow: "rgba(145,105,214,0.36)", armor: "#2b2540", hair: "#1b1719",
+    portrait: "Assets/shokugyousenntaku/onmyouji1_transparent.png",
+    lead: "式神と呪術を使い、相手の流れを乱す技巧派。複雑な判断で勝利を導く。",
+    detail: "運用難度の高い特殊職。式神や呪術を駆使し、相手の計算を崩しながら戦う。",
+    weapons: ["札", "式神", "鬼火"], stars: { attack: 3, defense: 2, magic: 4, support: 4, speed: 3, difficulty: 5 }
+  },
+  "錬金術師": {
+    en: "ALCHEMIST", icon: "♙", glow: "rgba(214,132,72,0.34)", armor: "#6b372d", hair: "#3d2b23",
+    portrait: "Assets/shokugyousenntaku/rennkinnjyutusi_generated_transparent.png",
+    lead: "素材と装備を作り替え、状況に応じて戦い方を変える職業。準備と判断が勝敗を分ける。",
+    detail: "合成と装備操作に特徴を持つ職業。扱いは難しいが、盤面に合わせて強力な選択肢を作れる。",
+    weapons: ["薬瓶", "爆弾", "短剣"], stars: { attack: 3, defense: 2, magic: 3, support: 4, speed: 2, difficulty: 5 }
+  },
+  "弓兵": {
+    en: "ARCHER", icon: "⌁", glow: "rgba(116,158,79,0.34)", armor: "#344b28", hair: "#c09b5b",
+    portrait: "Assets/shokugyousenntaku/kyuuhei_generated_transparent.png",
+    lead: "矢を使い分けて正確に敵を射抜く遠距離職。状況に応じた攻撃選択が強み。",
+    detail: "矢スロットを活かして戦う遠距離職。攻撃の選択肢が多く、相手に合わせた立ち回りが重要になる。",
+    weapons: ["弓", "矢", "短剣"], stars: { attack: 4, defense: 2, magic: 1, support: 2, speed: 4, difficulty: 3 }
+  },
+  "人形使い": {
+    en: "PUPPETEER", icon: "♟", glow: "rgba(156,112,190,0.34)", armor: "#3e3046", hair: "#202029",
+    portrait: "Assets/shokugyousenntaku/ninngyoutukai1_transparent.png",
+    lead: "人形を操り、本体とは別の耐久を使って戦う特殊職。人形管理が勝利の鍵となる。",
+    detail: "人形の耐久とパーツ管理を軸に戦う特殊職。うまく守れば強力だが、崩されると脆い。",
+    weapons: ["人形", "糸", "パーツ"], stars: { attack: 2, defense: 3, magic: 3, support: 4, speed: 2, difficulty: 5 }
+  },
+  "狂人": {
+    en: "MADMAN", icon: "☸", glow: "rgba(198,198,204,0.34)", armor: "#27272c", hair: "#d5d0c7",
+    portrait: "Assets/shokugyousenntaku/kyoujinn1_transparent.png",
+    lead: "常識外れの力で戦況を壊す高リスク職。制御できれば圧倒的な爆発力を発揮する。",
+    detail: "爆発力に特化した危険な職業。安定感は低いが、ハマった時の破壊力で相手を押し切る。",
+    weapons: ["大剣", "呪具", "鎖"], stars: { attack: 5, defense: 2, magic: 2, support: 1, speed: 3, difficulty: 4 }
+  }
+};
+
+const JOB_SELECT_WEAPON_ICONS = {
+  "剣": "⚔", "斧": "⚒", "盾": "⬟", "槍": "↟", "杖": "⚚", "聖印": "✣", "護符": "◇",
+  "短剣": "†", "毒": "☠", "罠": "△", "魔導書": "▣", "指輪": "○", "札": "▱", "式神": "♢",
+  "鬼火": "✦", "薬瓶": "♙", "爆弾": "●", "弓": "⌁", "矢": "➴", "人形": "♟", "糸": "⌇",
+  "パーツ": "⬡", "大剣": "⚔", "呪具": "☸", "鎖": "⛓"
+};
+
+function getJobSelectMeta(job) {
+  return JOB_SELECT_META[job.name] ?? JOB_SELECT_META["戦士"];
+}
+
+function renderJobStarsValue(value) {
+  const filled = "★".repeat(value);
+  const empty = "★".repeat(Math.max(0, 5 - value));
+  return `<span>${filled}</span><span class="dim">${empty}</span>`;
+}
+
+function getJobPassiveText(jobName) {
+  return {
+    "戦士": "基礎攻撃力+3（解除不可）",
+    "騎士": "基礎防御力+3（解除不可）",
+    "僧侶": "HP上限を超えて回復可能（最大400）。毎ターン現在HPの1/40回復（下限1）、回復時に祝福+1",
+    "盗賊": "初期コイン+5。毎ターンコイン+3（解除不可）",
+    "魔導士": "魔力をバーと数値で表示。魔力アイテムと魔導士装備がショップに出現",
+    "陰陽師": "式神と鬼火を扱う。陰陽師専用装備がショップに出現",
+    "錬金術師": "ショップ装備20%割引。装備合成と錬金術師専用装備を使用可能",
+    "弓兵": "矢の効果を使い分けて攻撃。矢装備による追撃を使用可能",
+    "人形使い": "本体は常に無敵。毒・鬼火などのダメージは人形が受け、人形破壊時は本体に50ダメージ",
+    "狂人": "累積被ダメージ120以上で狂化。狂化中は能力が大きく変化"
+  }[jobName] ?? "なし";
+}
+
+function getJobPassiveIcon(jobName) {
+  return {
+    "戦士": "⚔",
+    "騎士": "⬟",
+    "僧侶": "✚",
+    "盗賊": "●",
+    "魔導士": "✦",
+    "陰陽師": "◇",
+    "錬金術師": "♙",
+    "弓兵": "➴",
+    "人形使い": "♟",
+    "狂人": "☸"
+  }[jobName] ?? "◇";
+}
+
+function renderJobSelectedDetail(job) {
+  const meta = getJobSelectMeta(job);
+
+  const phase1 = document.getElementById("phase1");
+  if (phase1) {
+    phase1.style.setProperty("--jobGlow", meta.glow);
+    phase1.style.setProperty("--jobArmor", meta.armor);
+    phase1.style.setProperty("--jobHair", meta.hair);
+    phase1.style.setProperty("--jobPortraitBottom", meta.portraitBottom ?? "150px");
+  }
+
+  const selectedIcon = document.getElementById("jobSelectedIcon");
+  const selectedName = document.getElementById("jobSelectedName");
+  const selectedEn = document.getElementById("jobSelectedEn");
+  const selectedPortrait = document.getElementById("jobSelectedPortrait");
+  const selectedStars = document.getElementById("jobSelectedStars");
+  const selectedStatus = document.getElementById("jobSelectedStatus");
+  const selectedPassive = document.getElementById("jobSelectedPassive");
+
+  if (selectedIcon) selectedIcon.textContent = meta.icon;
+  if (selectedName) selectedName.textContent = job.name;
+  if (selectedEn) selectedEn.textContent = meta.en;
+  if (selectedPortrait) {
+    if (meta.portrait) {
+      selectedPortrait.classList.add("has-job-portrait");
+      selectedPortrait.style.setProperty("--jobPortrait", `url("${meta.portrait}")`);
+    } else {
+      selectedPortrait.classList.remove("has-job-portrait");
+      selectedPortrait.style.removeProperty("--jobPortrait");
+    }
+  }
+
+  if (selectedStars) {
+    const starRows = job.stats
+      ? [
+          ["運要素", job.stats.luck],
+          ["爆発力", job.stats.burst],
+          ["難易度", job.stats.difficulty],
+          ["安定感", job.stats.stability]
+        ]
+      : [
+          ["攻撃力", meta.stars.attack],
+          ["防御力", meta.stars.defense],
+          ["魔法力", meta.stars.magic],
+          ["支援力", meta.stars.support],
+          ["機動力", meta.stars.speed],
+          ["難易度", meta.stars.difficulty]
+        ];
+    selectedStars.innerHTML = starRows.map(([label, value]) => `
+      <div class="gilsys-job-star-row">
+        <span>${label}</span>
+        <span class="gilsys-job-stars">${renderJobStarsValue(value)}</span>
+      </div>
+    `).join("");
+  }
+
+  if (selectedStatus) {
+    const statusRows = [
+      ["♥", "HP", 200],
+      ["⚔", "攻撃力", job.atk],
+      ["⬟", "防御力", job.def],
+      ["●", "初期コイン", job.coin]
+    ];
+    selectedStatus.innerHTML = statusRows.map(([icon, label, value]) => `
+      <div class="gilsys-job-status-row">
+        <span class="gilsys-job-status-icon">${escapeHtml(icon)}</span>
+        <span>${escapeHtml(label)}</span>
+        <strong>${escapeHtml(value)}</strong>
+      </div>
+    `).join("");
+  }
+
+  if (selectedPassive) {
+    const passiveText = getJobPassiveText(job.name);
+    selectedPassive.innerHTML = passiveText === "なし"
+      ? `<div class="gilsys-job-passive-empty">なし</div>`
+      : `
+      <div class="gilsys-job-passive-item" tabindex="0" role="button" aria-label="${escapeHtml(job.name)}のパッシブ効果">
+        <div class="gilsys-job-passive-icon">${escapeHtml(getJobPassiveIcon(job.name))}</div>
+        <div class="gilsys-job-passive-name">パッシブ効果</div>
+        <div class="gilsys-job-passive-tooltip">${escapeHtml(passiveText)}</div>
+      </div>
+    `;
+  }
+}
+
 function renderJobCards() {
   const area = document.getElementById("jobSelectArea");
+  if (!area) return;
+  if (!selectedJobId) selectedJobId = JOB_LIST[0]?.id ?? null;
   area.innerHTML = "";
 
   JOB_LIST.forEach(job => {
-
+    const meta = getJobSelectMeta(job);
     const rec = window.jobRecord?.[job.name] ?? null;
     const wins = rec?.wins ?? 0;
     const rating = rec?.rating ?? 1000;
     const rank = getRankByWins(wins);
     const nextNeed = getNextRankNeed(wins);
 
-
     const card = document.createElement("div");
     card.className = "job-card";
+    if (selectedJobId === job.id) card.classList.add("selected");
+    card.style.setProperty("--jobGlow", meta.glow);
+    card.style.setProperty("--jobArmor", meta.armor);
+    card.style.setProperty("--jobHair", meta.hair);
+    if (meta.portrait) {
+      card.classList.add("has-job-portrait");
+      card.style.setProperty("--jobPortrait", `url("${meta.portrait}")`);
+    }
     card.onclick = () => selectJob(job.id);
 
+    const progressText = nextNeed === null ? `${wins}勝 MAX` : `${wins}/${nextNeed}勝`;
     card.innerHTML = `
-      <div class="job-header">
-        <span>${job.name}（R${rank}）</span>
-
-        <span class="job-rank-progress">
-          ${
-            nextNeed === null
-              ? `${wins} 勝（MAX）`
-              : `${wins} / ${nextNeed} 勝`
-          }
-          <br>
-          レート ${rating}
-        </span>
-
-        <button class="job-detail-btn"
-          onclick="event.stopPropagation(); openJobDetail(${job.id})">
-          詳細
-        </button>
-      </div>
-
-
-      <div class="job-bars">
-        ${renderJobBars(job.stats)}
-      </div>
-
-      <div class="job-stats">
-        <div>基礎攻撃力：${job.atk}</div>
-        <div>基礎防御力：${job.def}</div>
-        <div>初期コイン：${job.coin}</div>
-      </div>
+      <div class="job-card-icon">${meta.icon}</div>
+      <div class="job-card-name-top">${job.name}</div>
+      <div class="job-card-portrait" aria-hidden="true"></div>
+      <div class="job-card-name-bottom">${job.name}</div>
+      <div class="job-card-record">R${rank}　${progressText}<br>レート ${rating}</div>
     `;
-
 
     area.appendChild(card);
   });
+
+  const current = JOB_LIST.find(j => j.id === selectedJobId) ?? JOB_LIST[0];
+  if (current) renderJobSelectedDetail(current);
 }
 
 // ================= 職業選択 =================
@@ -4529,14 +5485,28 @@ function selectJob(jobId) {
 
   const index = JOB_LIST.findIndex(j => j.id === jobId);
   if (index >= 0) {
-    document.querySelectorAll(".job-card")[index]
-      .classList.add("selected");
+    const cards = document.querySelectorAll(".job-card");
+    cards[index]?.classList.add("selected");
+    renderJobSelectedDetail(JOB_LIST[index]);
+    cards[index]?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
   }
 
   // ★ 職業を選んだら接続ボタンを有効化（接続中は除く）
   const btn = document.getElementById("btnConnectPhase1");
   if (btn && !isConnecting) btn.disabled = false;
 }
+
+document.addEventListener("click", (e) => {
+  const passiveItem = e.target.closest?.(".gilsys-job-passive-item");
+  document.querySelectorAll(".gilsys-job-passive-item.tooltip-open").forEach(item => {
+    if (item !== passiveItem) item.classList.remove("tooltip-open");
+  });
+  if (!passiveItem) return;
+  if (window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches) {
+    e.preventDefault();
+    passiveItem.classList.toggle("tooltip-open");
+  }
+});
 
 
 
@@ -4567,7 +5537,7 @@ const SKILLS = {
       {name:"ホーリースマイト",desc:"自身のHPの1/10＋祝福の数だけ防御無視ダメージ"} ],
   4:[ {name:"スラッシュ＆スティール",desc:"25＋盗む"},
       {name:"ダガーレイド",desc:"25+(アイテム数×2)+盗む"},
-      {name:"シャドウバースト",desc:"所持アイテムをコピーして全発動"} ],
+      {name:"シャドウバースト",desc:"所持アイテムをコピーして全発動後、通常攻撃"} ],
   5:[ {name:"魔力チャージ",desc:"魔力+20（1回のみ）"},
       {name:"エレメントバースト",desc:"魔力30消費・30ダメージ"},
       {name:"メテオインパクト",desc:"魔力全消費→消費魔力-30ダメージ(必要魔力60以上)"} ],
@@ -4587,7 +5557,7 @@ const SKILLS = {
     },
     {
       name:"総仕立て直し",
-      desc:"装備している全ての部位の衣装の★を+1する"
+      desc:"装備している全ての部位の衣装の★を+1する（最大★8）"
     },
     {
       name:"人形暴走",
@@ -4667,6 +5637,89 @@ function spawnPopup(sprite, className, text, offsetPx) {
 
   sprite.appendChild(el);
   setTimeout(() => el.remove(), 1300);
+}
+
+const SKILL_EFFECT_ASSETS = {
+  warrior_1_target: "Assets/effect/warrior_1_target_transparent.png",
+  warrior_2_target: "Assets/effect/warrior_2_target_transparent.png",
+  warrior_2_self: "Assets/effect/warrior_2_self_transparent.png",
+  warrior_3_target: "Assets/effect/warrior_3_target_transparent.png",
+  knight_1_target: "Assets/effect/knight_1_target_transparent.png",
+  knight_1_self: "Assets/effect/knight_1_self_transparent.png",
+  knight_2_target: "Assets/effect/knight_2_target_transparent.png",
+  knight_2_self: "Assets/effect/knight_2_self_transparent.png",
+  knight_3_target: "Assets/effect/knight_3_target_transparent.png",
+  priest_1_self: "Assets/effect/priest_1_self_transparent.png",
+  priest_2_self: "Assets/effect/priest_2_self_transparent.png",
+  priest_3_target: "Assets/effect/priest_3_target_transparent.png",
+  thief_1_target: "Assets/effect/thief_1_target_transparent.png",
+  thief_2_target: "Assets/effect/thief_2_target_transparent.png",
+  thief_3_target: "Assets/effect/thief_3_target_transparent.png",
+  thief_3_self: "Assets/effect/thief_3_self_transparent.png",
+  mage_1_self: "Assets/effect/mage_1_self_transparent.png",
+  mage_2_target: "Assets/effect/mage_2_target_transparent.png",
+  mage_3_target: "Assets/effect/mage_3_target_transparent.png",
+  onmyoji_1_self: "Assets/effect/onmyoji_1_self_transparent.png",
+  onmyoji_2_self: "Assets/effect/onmyoji_2_self_transparent.png",
+  onmyoji_3_self: "Assets/effect/onmyoji_3_self_transparent.png",
+  alchemist_1_self: "Assets/effect/alchemist_1_self_transparent.png",
+  alchemist_2_self: "Assets/effect/alchemist_2_self_transparent.png",
+  alchemist_3_self: "Assets/effect/alchemist_3_self_transparent.png",
+  archer_1_self: "Assets/effect/archer_1_self_transparent.png",
+  archer_2_self: "Assets/effect/archer_2_self_transparent.png",
+  archer_3_self: "Assets/effect/archer_3_self_transparent.png",
+  doll_1_self: "Assets/effect/doll_1_self_transparent.png",
+  doll_2_self: "Assets/effect/doll_2_self_transparent.png",
+  doll_3_self: "Assets/effect/doll_3_self_transparent.png",
+  mad_1_self: "Assets/effect/mad_1_self_transparent.png",
+  mad_1_target: "Assets/effect/mad_1_target_transparent.png",
+  mad_2_self: "Assets/effect/mad_2_self_transparent.png",
+  mad_3_self: "Assets/effect/mad_3_self_transparent.png",
+};
+
+Object.values(SKILL_EFFECT_ASSETS).forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
+
+const skillEffectLastShown = {};
+
+function getFallbackWarriorEffectTarget() {
+  const target = (typeof myTurn !== "undefined" && myTurn) ? "enemy" : "self";
+  if (target === "self") {
+    const selfJob = String(window.myJob ?? (typeof myJob !== "undefined" ? myJob : ""));
+    if ((selfJob === "人形使い" || selfJob === "9") && document.getElementById("dollSprite")?.style.display !== "none") {
+      return "self_doll";
+    }
+    return "self";
+  }
+
+  const enemyJob = String(window.enemyJob ?? window.gilsysLatestEnemyStatus?.job ?? "");
+  if ((enemyJob === "人形使い" || enemyJob === "9") && document.getElementById("dollSpriteEnemy")?.style.display !== "none") {
+    return "enemy_doll";
+  }
+  return "enemy";
+}
+
+function showSkillEffectEvent(data) {
+  const sprites = getSprites();
+  const targetKey = data?.target || getFallbackWarriorEffectTarget();
+  const targetSprite = sprites[targetKey];
+  const src = SKILL_EFFECT_ASSETS[data?.effect];
+  if (!targetSprite || !src) return;
+
+  const dedupeKey = `${targetKey}:${data.effect}`;
+  const now = Date.now();
+  if (now - Number(skillEffectLastShown[dedupeKey] ?? 0) < 450) return;
+  skillEffectLastShown[dedupeKey] = now;
+
+  const el = document.createElement("img");
+  el.className = `skill-effect-image job-skill-effect ${String(data.effect ?? "")}`;
+  el.src = src;
+  el.alt = "";
+  el.draggable = false;
+  targetSprite.appendChild(el);
+  setTimeout(() => el.remove(), 1900);
 }
 
 function pulseClass(el, className, duration = 900) {
@@ -6020,6 +7073,7 @@ function attachWsHandlers() {
     if(data.type==="wait_turn"){
       myTurn = false;
       appendLog("systemBox","system-log", data.msg);
+      showCenterToast("相手が考え中...", 3200);
 
       // ★ 相手のターン開始：ターン +1
       turnCount++;
@@ -6145,6 +7199,11 @@ function attachWsHandlers() {
         amount ? `-${amount}` : "-",
         offsetPx
       );
+      return;
+    }
+
+    if (data.type === "skill_effect_event") {
+      showSkillEffectEvent(data);
       return;
     }
 
@@ -7233,6 +8292,13 @@ function renderInventoryCard(it, category){
         onclick: `toggleEquipCombineSelect('${escapeHtml(it?.uid)}')`
       }
     : null;
+  const actionStatus = isEquipCombineCard
+    ? "合成選択"
+    : (it?.is_equipped_normal || it?.is_equipped_special)
+      ? "装備中"
+      : category === "item"
+        ? `残り ${Math.max(0, Number(window.itemUsesRemaining ?? 2))}`
+        : "所持中";
 
   return `
     <div class="shop-card inventory-card ${theme}" style="${isSelectedForCombine ? "box-shadow:0 0 0 2px rgba(255,210,122,0.95), 0 10px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.05);" : ""}">
@@ -7247,6 +8313,7 @@ function renderInventoryCard(it, category){
         </div>
       </div>
       <div class="shop-buy-area">
+        <div class="shop-price">${escapeHtml(actionStatus)}</div>
         ${isEquipCombineCard
           ? `<button onclick="${combineAction.onclick}">${escapeHtml(combineAction.label)}</button>`
           : `<button ${action.disabled || isPending ? "disabled" : `onclick="${action.onclick}"`}>${escapeHtml(isPending ? "反映中" : action.label)}</button>`
@@ -7703,6 +8770,8 @@ setupTapTooltips();
 setPhase(PHASE.MODE_SELECT);
 
 document.getElementById("btnRandom").onclick = () => {
+  selectedJobId = selectedJobId || 1;
+  isConnecting = false;
   setPhase(PHASE.RANDOM_READY);
 
   document.getElementById("phase1Title").textContent = "ランダム対戦";
@@ -7711,17 +8780,24 @@ document.getElementById("btnRandom").onclick = () => {
   window.matchMode = "random";
 
   const roomArea = document.getElementById("roomCodeArea");
-  if (roomArea) roomArea.style.display = "none";
+  if (roomArea) {
+    roomArea.style.display = "block";
+    roomArea.style.visibility = "hidden";
+  }
 
   // CPU職業選択を隠す
   document.getElementById("cpuJobArea").style.display = "none";
 
   const status = document.getElementById("connectStatus");
   if (status) status.textContent = "";
+  const connectBtn = document.getElementById("btnConnectPhase1");
+  if (connectBtn) connectBtn.disabled = false;
 };
 
 
 document.getElementById("btnRoom").onclick = () => {
+  selectedJobId = selectedJobId || 1;
+  isConnecting = false;
   setPhase(PHASE.RANDOM_READY);
 
   document.getElementById("phase1Title").textContent = "ルーム対戦";
@@ -7730,19 +8806,25 @@ document.getElementById("btnRoom").onclick = () => {
   window.matchMode = "room";
 
   const roomArea = document.getElementById("roomCodeArea");
-  if (roomArea) roomArea.style.display = "block";
+  if (roomArea) {
+    roomArea.style.display = "block";
+    roomArea.style.visibility = "visible";
+  }
 
   // CPU職業選択を隠す
   document.getElementById("cpuJobArea").style.display = "none";
 
   const status = document.getElementById("connectStatus");
   if (status) status.textContent = "ルーム番号を入力し、職業を選んで接続してください";
+  const connectBtn = document.getElementById("btnConnectPhase1");
+  if (connectBtn) connectBtn.disabled = false;
 };
 
 
 
 document.getElementById("btnConnectPhase1").onclick = () => {
   if (isConnecting) return; // ★ 二重押し防止
+  if (!selectedJobId) selectedJobId = JOB_LIST[0]?.id ?? 1;
 
   // ★ 職業未選択なら接続不可
   if (!selectedJobId) {
@@ -7797,6 +8879,8 @@ document.getElementById("btnCancelRandom").onclick = () => {
 };
 
 document.getElementById("btnCPU").onclick = () => {
+  selectedJobId = selectedJobId || 1;
+  isConnecting = false;
   setPhase(PHASE.RANDOM_READY);
 
   document.getElementById("phase1Title").textContent = "CPU戦";
@@ -7806,13 +8890,18 @@ document.getElementById("btnCPU").onclick = () => {
   window.cpuKind = "menu";
 
   const roomArea = document.getElementById("roomCodeArea");
-  if (roomArea) roomArea.style.display = "none";
+  if (roomArea) {
+    roomArea.style.display = "block";
+    roomArea.style.visibility = "hidden";
+  }
 
   // CPU職業選択を表示
   document.getElementById("cpuJobArea").style.display = "block";
 
   document.getElementById("connectStatus").textContent =
     "CPUと対戦します（職業を選んで接続してください）";
+  const connectBtn = document.getElementById("btnConnectPhase1");
+  if (connectBtn) connectBtn.disabled = false;
 };
 
 
@@ -10997,6 +12086,71 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
   }
 }
 </style>
+<style id="gilsys-inventory-card-match-shop-style">
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: auto !important;
+  align-items: start !important;
+  gap: 12px !important;
+  padding: 14px 14px 14px 16px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-card-main,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-card-main {
+  min-width: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-buy-area,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: auto !important;
+  min-width: 92px !important;
+  align-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  margin: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-price,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-price {
+  min-width: 0 !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-buy-area button,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area button {
+  width: 100% !important;
+  min-width: 86px !important;
+}
+
+@media (max-width: 760px), (max-height: 700px), (hover: none) and (pointer: coarse) {
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card,
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-buy-area,
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area {
+    min-width: 72px !important;
+    gap: 6px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-buy-area button,
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area button {
+    min-width: 68px !important;
+    padding-inline: 8px !important;
+  }
+}
+</style>
 <style id="gilsys-mobile-hide-enemy-simple-status-style">
 @media (max-width: 1100px), (max-height: 700px), (hover: none) and (pointer: coarse) {
   #phase2.gilsys-battle-ui #enemy-status-simple,
@@ -11012,6 +12166,327 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
     padding: 0 !important;
     overflow: hidden !important;
     pointer-events: none !important;
+  }
+}
+</style>
+<style id="gilsys-mobile-job-select-fit-style">
+@media (max-width: 1200px), (max-height: 700px), (hover: none) and (pointer: coarse) {
+  body:has(#phase1.gilsys-job-select-ui[style*="display: block"]),
+  body:has(#phase1.gilsys-job-select-ui[style*="display:block"]) {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #05080d !important;
+  }
+
+  #phase1.gilsys-job-select-ui {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100svh !important;
+    height: 100dvh !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: max(4px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left)) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  #phase1.gilsys-job-select-ui::before {
+    inset: 4px !important;
+  }
+
+  #phase1.gilsys-job-select-ui::after {
+    opacity: 0.82 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-corner {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-corner.lt { top: 5px !important; left: 5px !important; }
+  #phase1.gilsys-job-select-ui .gilsys-job-corner.rt { top: 5px !important; right: 5px !important; }
+  #phase1.gilsys-job-select-ui .gilsys-job-corner.lb { bottom: 5px !important; left: 5px !important; }
+  #phase1.gilsys-job-select-ui .gilsys-job-corner.rb { bottom: 5px !important; right: 5px !important; }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-layout {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    display: grid !important;
+    grid-template-columns: clamp(132px, 25vw, 188px) minmax(0, 1fr) !important;
+    grid-template-rows: 34px minmax(0, 1fr) 28px !important;
+    gap: 4px 6px !important;
+    margin: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-title-area {
+    grid-column: 1 / -1 !important;
+    padding-top: 2px !important;
+    align-self: start !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-title {
+    font-size: clamp(18px, 5.2dvh, 28px) !important;
+    line-height: 1 !important;
+    letter-spacing: 0.14em !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-title-line {
+    width: min(280px, 44vw) !important;
+    margin: 4px auto 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-subtitle,
+  #phase1.gilsys-job-select-ui #accountNamePhase1 {
+    display: none !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-left {
+    grid-column: 1 !important;
+    grid-row: 2 / 4 !important;
+    min-height: 0 !important;
+    padding: 18px 6px 6px !important;
+    overflow: hidden !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-class-mark {
+    font-size: clamp(24px, 8dvh, 42px) !important;
+    margin-bottom: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-class-name {
+    font-size: clamp(18px, 5.4dvh, 30px) !important;
+    line-height: 1 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-class-en {
+    margin: 1px 0 0 !important;
+    font-size: clamp(10px, 2.8dvh, 14px) !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-hero-portrait {
+    right: -12px !important;
+    bottom: clamp(72px, 19dvh, 104px) !important;
+    width: clamp(104px, 24vw, 178px) !important;
+    height: clamp(150px, 43dvh, 258px) !important;
+    opacity: 0.96 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-hero-portrait.has-job-portrait {
+    bottom: clamp(82px, 22dvh, 118px) !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-star-list {
+    left: 6px !important;
+    right: 6px !important;
+    bottom: 5px !important;
+    padding-top: 4px !important;
+    gap: 2px !important;
+    font-size: clamp(9px, 2.5dvh, 12px) !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-star-row {
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-stars {
+    letter-spacing: 0.03em !important;
+    white-space: nowrap !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-main {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    grid-template-rows: minmax(0, 1fr) 8px clamp(76px, 22dvh, 112px) !important;
+    gap: 4px !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-card-frame {
+    min-height: 0 !important;
+    padding: 6px 6px 4px !important;
+    overflow: hidden !important;
+  }
+
+  #phase1.gilsys-job-select-ui #jobSelectArea {
+    height: 100% !important;
+    gap: 5px !important;
+    padding: 1px 2px 5px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  #phase1.gilsys-job-select-ui .job-card {
+    flex: 0 0 clamp(62px, 10.8vw, 86px) !important;
+    min-width: clamp(62px, 10.8vw, 86px) !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 4px 3px !important;
+    grid-template-rows: 20px 18px minmax(52px, 1fr) 22px 26px !important;
+  }
+
+  #phase1.gilsys-job-select-ui .job-card-icon {
+    font-size: clamp(16px, 4.8dvh, 24px) !important;
+  }
+
+  #phase1.gilsys-job-select-ui .job-card-name-top {
+    font-size: clamp(9px, 2.6dvh, 12px) !important;
+    letter-spacing: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .job-card-portrait {
+    margin: 1px 0 !important;
+    min-height: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .job-card-name-bottom {
+    font-size: clamp(12px, 3.4dvh, 17px) !important;
+    line-height: 1 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .job-card-record {
+    font-size: clamp(7px, 2dvh, 9px) !important;
+    line-height: 1.15 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-scrollbar-dummy {
+    height: 8px !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-scrollbar-dummy::before,
+  #phase1.gilsys-job-select-ui .gilsys-job-scrollbar-dummy::after {
+    font-size: 12px !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-detail-panel {
+    display: grid !important;
+    grid-template-columns: 1fr 0.74fr 1fr !important;
+    gap: 4px !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-detail-block {
+    padding: 2px 4px !important;
+    min-height: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-detail-heading {
+    font-size: clamp(10px, 2.7dvh, 13px) !important;
+    padding-bottom: 2px !important;
+    margin-bottom: 4px !important;
+    letter-spacing: 0.03em !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-status-list {
+    gap: 2px !important;
+    font-size: clamp(9px, 2.45dvh, 12px) !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-status-row {
+    grid-template-columns: 16px 1fr auto !important;
+    gap: 3px !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-passive-list {
+    padding-top: 0 !important;
+    gap: 3px !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-passive-icon {
+    width: clamp(30px, 8dvh, 42px) !important;
+    height: clamp(30px, 8dvh, 42px) !important;
+    font-size: clamp(16px, 4.4dvh, 22px) !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-passive-name {
+    font-size: clamp(8px, 2.2dvh, 10px) !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-passive-tooltip {
+    width: min(240px, 62vw) !important;
+    max-height: min(46dvh, 160px) !important;
+    overflow-y: auto !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+    padding: 7px 8px !important;
+    z-index: 2147483000 !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-decision-panel {
+    grid-template-rows: 26px 30px 18px !important;
+    gap: 4px !important;
+    padding-top: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui #roomCodeArea {
+    padding: 2px 4px !important;
+    min-height: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui #roomCodeInput {
+    height: 22px !important;
+    font-size: 10px !important;
+    padding: 2px 5px !important;
+  }
+
+  #phase1.gilsys-job-select-ui #btnConnectPhase1 {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 30px !important;
+    padding: 0 6px !important;
+    font-size: clamp(12px, 3.4dvh, 16px) !important;
+    letter-spacing: 0.04em !important;
+    box-shadow: 0 0 0 2px rgba(11,36,54,0.9), 0 0 10px rgba(94,165,219,0.22), inset 0 0 10px rgba(255,255,255,0.08) !important;
+  }
+
+  #phase1.gilsys-job-select-ui #btnConnectPhase1::after {
+    content: "" !important;
+  }
+
+  #phase1.gilsys-job-select-ui #connectStatus {
+    min-height: 0 !important;
+    font-size: clamp(7px, 2dvh, 9px) !important;
+    line-height: 1.1 !important;
+    overflow: hidden !important;
+  }
+
+  #phase1.gilsys-job-select-ui .gilsys-job-footer {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    justify-items: end !important;
+    align-items: center !important;
+    min-height: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui #btnCancelRandom {
+    position: static !important;
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    min-height: 0 !important;
+  }
+
+  #phase1.gilsys-job-select-ui #cpuJobArea {
+    position: absolute !important;
+    left: max(8px, env(safe-area-inset-left)) !important;
+    bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    width: clamp(128px, 26vw, 190px) !important;
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+  }
+
+  #phase1.gilsys-job-select-ui #cpuJobArea select {
+    max-width: 100% !important;
+    height: 22px !important;
+    font-size: 10px !important;
   }
 }
 </style>
