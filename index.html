@@ -3782,8 +3782,8 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 <button id="phase0Settings" disabled="">⚙</button>
 <div id="phase0HomeLayout">
 <div id="titleModePanel">
-<button id="btnRandom" class="phase0-menu-btn"><span class="phase0-menu-icon">⚔</span><span class="phase0-menu-text">ランダム対戦</span></button>
-<button id="btnRoom" class="phase0-menu-btn"><span class="phase0-menu-icon">🚪</span><span class="phase0-menu-text">ルーム対戦</span></button>
+<button id="btnRandom" class="phase0-menu-btn"><span class="phase0-menu-icon">⚔</span><span class="phase0-menu-text">ランク戦</span></button>
+<button id="btnRoom" class="phase0-menu-btn"><span class="phase0-menu-icon">🚪</span><span class="phase0-menu-text">ルーム戦</span></button>
 <button id="btnCPU" class="phase0-menu-btn"><span class="phase0-menu-icon">⛨</span><span class="phase0-menu-text">CPU戦</span></button>
 <button id="btnDojo" class="phase0-menu-btn" disabled=""><span class="phase0-menu-icon">道</span><span class="phase0-menu-text">達人への道<span class="phase0-menu-note">未実装</span></span></button>
 <button class="phase0-menu-btn" disabled=""><span class="phase0-menu-icon">🛡</span><span class="phase0-menu-text">ギルド<span class="phase0-menu-note">未実装</span></span></button>
@@ -3905,7 +3905,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   <div class="gilsys-job-corner rb"></div>
 
   <div id="accountNamePhase1"></div>
-  <h2 id="phase1Title">ランダム対戦</h2>
+  <h2 id="phase1Title">ランク戦</h2>
 
   <div class="gilsys-job-layout">
     <header class="gilsys-job-title-area">
@@ -8434,7 +8434,7 @@ function renderDojoTrailDetail(id) {
   detail.innerHTML = `
     <div class="dojo-trail-detail-icon is-major">✦</div>
     <h3>軌跡ボーナス</h3>
-    <p>横一列または縦一列の軌跡を解放したときに得られるボーナス効果です。未実装</p>
+    <p>選択した軌跡の効果と解放状態を確認できます。</p>
   `;
   const btn = document.getElementById("btnUnlockDojoTrail");
   if (!btn) return;
@@ -9908,7 +9908,7 @@ document.getElementById("btnRandom").onclick = () => {
   isConnecting = false;
   setPhase(PHASE.RANDOM_READY);
 
-  document.getElementById("phase1Title").textContent = "ランダム対戦";
+  document.getElementById("phase1Title").textContent = "ランク戦";
 
   window.isCpuMode = false;
   window.matchMode = "random";
@@ -9937,7 +9937,7 @@ document.getElementById("btnRoom").onclick = () => {
   isConnecting = false;
   setPhase(PHASE.RANDOM_READY);
 
-  document.getElementById("phase1Title").textContent = "ルーム対戦";
+  document.getElementById("phase1Title").textContent = "ルーム戦";
 
   window.isCpuMode = false;
   window.matchMode = "room";
@@ -13436,9 +13436,9 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
   z-index: 99960;
   color: #f7e4bd;
   background:
-    radial-gradient(circle at 50% 14%, rgba(45,111,156,.46), transparent 30%),
-    radial-gradient(circle at 50% 92%, rgba(235,179,76,.28), transparent 24%),
-    linear-gradient(180deg, #071727, #08101a 62%, #02060c);
+    radial-gradient(circle at 50% 14%, rgba(45,111,156,.22), transparent 34%),
+    linear-gradient(180deg, rgba(2,6,12,.22), rgba(2,6,12,.36) 62%, rgba(2,6,12,.62)),
+    url("Assets/haikei/kisekigamenn.png") center center / cover no-repeat;
   overflow: hidden;
 }
 .dojo-trail-shell {
