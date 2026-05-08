@@ -15106,6 +15106,7 @@ body,
 body * {
   writing-mode: horizontal-tb !important;
   text-orientation: mixed !important;
+  text-overflow: clip !important;
 }
 
 button,
@@ -15156,9 +15157,30 @@ button,
 .dojo-result-reward-label {
   min-width: 0 !important;
   max-width: 100%;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  text-overflow: clip !important;
   white-space: nowrap !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+button::-webkit-scrollbar,
+.phase0-menu-text::-webkit-scrollbar,
+.phase0-menu-note::-webkit-scrollbar,
+.gilsys-action-btn::-webkit-scrollbar,
+.gilsys-list-row > span:not(.gilsys-row-icon)::-webkit-scrollbar,
+.gilsys-list-row > b::-webkit-scrollbar,
+.gilsys-panel-title::-webkit-scrollbar,
+.gilsys-status-name::-webkit-scrollbar,
+.gilsys-category-name::-webkit-scrollbar,
+.job-card-name-top::-webkit-scrollbar,
+.job-card-name-bottom::-webkit-scrollbar,
+.gilsys-job-class-name::-webkit-scrollbar,
+.dojo-path-label::-webkit-scrollbar,
+.dojo-result-reward-label::-webkit-scrollbar {
+  display: none !important;
 }
 
 .phase0-menu-btn,
