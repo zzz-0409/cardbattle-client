@@ -354,6 +354,21 @@
       display:block;
     }
 
+    .shop-icon:has(.gilsys-generated-item-icon){
+      background: transparent !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+
+    .shop-icon .gilsys-generated-item-icon{
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain;
+      object-position: center center;
+      display: block;
+      transform: none;
+    }
+
     .shop-title-wrap{
       min-width:0;
       display:flex;
@@ -2686,6 +2701,8 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 .action-level { --btn-hi:#9a650d; --btn-lo:#493008; --btn-glow:rgba(255,190,76,0.28); }
 .action-item { --btn-hi:#315a24; --btn-lo:#0b2913; --btn-glow:rgba(74,255,124,0.20); }
 .action-shop { --btn-hi:#a56513; --btn-lo:#4a2607; --btn-glow:rgba(255,176,65,0.28); }
+.action-auto { --btn-hi:#14606a; --btn-lo:#06282f; --btn-glow:rgba(74,218,255,0.24); }
+.action-auto.is-on { --btn-hi:#207a45; --btn-lo:#0b321e; --btn-glow:rgba(94,255,157,0.30); }
 
 .gilsys-command-list-panel,
 .gilsys-command-detail-panel {
@@ -2860,6 +2877,19 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   width: 34px;
   height: 34px;
   font-size: 23px;
+}
+.gilsys-shop-icon-btn .shop-icon:has(.gilsys-generated-item-icon) {
+  width: 42px;
+  height: 42px;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.gilsys-shop-icon-btn .shop-icon .gilsys-generated-item-icon {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  object-position: center center;
 }
 .gilsys-shop-detail-card {
   height: 100%;
@@ -3755,7 +3785,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 <button id="btnRandom" class="phase0-menu-btn"><span class="phase0-menu-icon">⚔</span><span class="phase0-menu-text">ランダム対戦</span></button>
 <button id="btnRoom" class="phase0-menu-btn"><span class="phase0-menu-icon">🚪</span><span class="phase0-menu-text">ルーム対戦</span></button>
 <button id="btnCPU" class="phase0-menu-btn"><span class="phase0-menu-icon">⛨</span><span class="phase0-menu-text">CPU戦</span></button>
-<button class="phase0-menu-btn" disabled=""><span class="phase0-menu-icon">🐉</span><span class="phase0-menu-text">レイド戦<span class="phase0-menu-note">未実装</span></span></button>
+<button id="btnDojo" class="phase0-menu-btn" disabled=""><span class="phase0-menu-icon">道</span><span class="phase0-menu-text">達人への道<span class="phase0-menu-note">未実装</span></span></button>
 <button class="phase0-menu-btn" disabled=""><span class="phase0-menu-icon">🛡</span><span class="phase0-menu-text">ギルド<span class="phase0-menu-note">未実装</span></span></button>
 <button class="phase0-menu-btn" disabled=""><span class="phase0-menu-icon">⚙</span><span class="phase0-menu-text">設定<span class="phase0-menu-note">未実装</span></span></button>
 </div>
@@ -3778,6 +3808,94 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 <div id="titleRankingList">読み込み中...</div>
 </div>
 </div>
+</div>
+<div id="phaseDojoTop" class="gilsys-dojo-screen" style="display:none;">
+  <div class="gilsys-dojo-panel">
+    <button class="gilsys-dojo-back" onclick="backFromDojoTop()">戻る</button>
+    <h2>達人への道</h2>
+    <p>職業を1つ選び、全30ステージを連続攻略するソロ専用モード。</p>
+    <div class="gilsys-dojo-job"><b>対応職業</b><span>戦士</span></div>
+    <div id="dojoProgressSummary" class="gilsys-dojo-progress">最高到達層: - / クリア回数: -</div>
+    <button id="btnStartDojo" class="gilsys-dojo-primary">戦士で挑戦開始</button>
+    <p id="dojoTopStatus" class="gilsys-dojo-status"></p>
+  </div>
+</div>
+<div id="phaseDojoWait" class="gilsys-dojo-screen" style="display:none;">
+  <div class="gilsys-dojo-panel gilsys-dojo-wait-panel">
+    <h2 id="dojoWaitTitle">達人への道</h2>
+    <div id="dojoWaitSummary" class="gilsys-dojo-wait-summary"></div>
+    <div id="dojoDropSummary" class="gilsys-dojo-drops"></div>
+    <div class="gilsys-dojo-actions">
+      <button id="btnDojoPrepShop">ショップ</button>
+      <button id="btnDojoPrepLevelUp">レベルアップ</button>
+      <button id="btnDojoTrail">軌跡強化</button>
+      <button id="btnDojoPrepInventory">持ち物</button>
+      <button id="btnDojoNextStage">次のステージへ</button>
+      <button id="btnDojoEndRun">挑戦終了</button>
+    </div>
+  </div>
+</div>
+<div id="dojoTrailScreen" class="dojo-trail-screen" style="display:none;">
+  <div class="dojo-trail-shell">
+    <header class="dojo-trail-head">
+      <button type="button" onclick="closeDojoTrailScreen()">戻る</button>
+      <div>
+        <span>達人への道</span>
+        <h1>軌跡強化</h1>
+      </div>
+    </header>
+    <aside class="dojo-trail-left">
+      <h2>所持ポイント</h2>
+      <div class="dojo-trail-points"><b id="dojoTrailPoints">0</b><span>P</span></div>
+      <div class="dojo-trail-count">総強化数 <b id="dojoTrailCount">0 / 80</b></div>
+      <div class="dojo-trail-bonus">
+        <div id="dojoTrailSelectedEffect" class="dojo-trail-selected-effect">軌跡を選択してください。</div>
+      </div>
+    </aside>
+    <main class="dojo-trail-board" id="dojoTrailBoard"></main>
+    <aside class="dojo-trail-right">
+      <div id="dojoTrailDetail" class="dojo-trail-detail"></div>
+    </aside>
+  </div>
+</div>
+<div id="dojoResultScreen" class="dojo-result-screen" style="display:none;">
+  <div class="dojo-result-shell">
+    <header class="dojo-result-head">
+      <h1 id="dojoResultTitle">勝利</h1>
+      <div id="dojoResultStage" class="dojo-result-stage">第1層 クリア</div>
+      <div id="dojoResultRewardLabel" class="dojo-result-reward-label">ドロップ報酬</div>
+    </header>
+    <section class="dojo-result-left dojo-result-panel">
+      <h2>勝利情報</h2>
+      <div class="dojo-result-player">
+        <div class="dojo-result-portrait"></div>
+        <div>
+          <b>戦士</b>
+          <span id="dojoResultHp">残りHP -- / --</span>
+          <span id="dojoResultLevel">現在レベル --</span>
+          <span id="dojoResultCoins">所持コイン --</span>
+        </div>
+      </div>
+      <div class="dojo-result-lines" id="dojoResultBattleInfo"></div>
+      <div class="dojo-result-message" id="dojoResultMessage">見事な勝利です！</div>
+    </section>
+    <section class="dojo-result-center dojo-result-panel">
+      <h2 id="dojoResultRewardTitle">獲得報酬一覧</h2>
+      <div id="dojoResultDrops" class="dojo-result-drops"></div>
+      <div class="dojo-result-exp">
+        <h3>獲得経験値</h3>
+        <div id="dojoResultExpValue">EXP +0</div>
+        <div class="dojo-result-exp-bar"><i id="dojoResultExpFill"></i></div>
+        <span id="dojoResultExpNext">次のレベルまで -- / --</span>
+      </div>
+      <div class="dojo-result-extra" id="dojoResultExtraRewards"></div>
+    </section>
+    <aside class="dojo-result-right dojo-result-panel" id="dojoResultDetailPanel">
+      <h2>詳細情報</h2>
+      <div id="dojoResultDetail"></div>
+    </aside>
+    <footer class="dojo-result-actions" id="dojoResultActions"></footer>
+  </div>
 </div>
 <!-- ================= フェーズ1：職業選択 ================= -->
 <div id="phase1" class="gilsys-job-select-ui" style="display:none;">
@@ -4056,6 +4174,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
       <button disabled id="itemBtn" class="gilsys-action-btn action-item" onclick="openItemUI()"><span>⚗</span>持ち物</button>
       
       <button disabled id="dollBuffBtn" class="gilsys-action-btn action-doll-buff" onclick="openDollBuffSelectUI()" style="display:none"><span>◆</span>バフ選択</button>
+      <button disabled id="autoBtn" class="gilsys-action-btn action-auto" onclick="toggleDojoAuto()" style="display:none"><span>▶</span>オートOFF</button>
       <button disabled id="shopBtn" class="gilsys-action-btn action-shop" onclick="openShop()"><span>▣</span>ショップ</button>
     </div>
 
@@ -4218,7 +4337,9 @@ const DEBUG_MODE = false; // ← 開発中 true / 通常プレイ false
 const PHASE = {
   MODE_SELECT: 0,
   RANDOM_READY: 1,
-  BATTLE: 2
+  BATTLE: 2,
+  DOJO_TOP: 3,
+  DOJO_WAIT: 4
 };
 
 let currentPhase = PHASE.MODE_SELECT;
@@ -4250,6 +4371,12 @@ function setPhase(p) {
 
   document.getElementById("phase2").style.display =
     p === PHASE.BATTLE ? "block" : "none";
+
+  const dojoTop = document.getElementById("phaseDojoTop");
+  if (dojoTop) dojoTop.style.display = p === PHASE.DOJO_TOP ? "block" : "none";
+
+  const dojoWait = document.getElementById("phaseDojoWait");
+  if (dojoWait) dojoWait.style.display = p === PHASE.DOJO_WAIT ? "block" : "none";
 
   if (p === PHASE.RANDOM_READY) {
     if (!selectedJobId) selectedJobId = JOB_LIST[0]?.id ?? null;
@@ -4293,6 +4420,46 @@ let myJob = null;
 let myLevel = 1;
 let pendingArrowItem = null;   // ★ 追加：装備待ちの矢
 let battleEnded = false;
+let dojoAutoEnabled = false;
+let dojoAutoTimer = null;
+let dojoAutoSending = false;
+
+function updateDojoBattleButtons() {
+  const isDojo = window.matchMode === "dojo";
+  const shopBtn = document.getElementById("shopBtn");
+  const autoBtn = document.getElementById("autoBtn");
+  if (shopBtn) {
+    shopBtn.style.display = "";
+  }
+  if (autoBtn) {
+    autoBtn.style.display = isDojo ? "" : "none";
+    autoBtn.disabled = !isDojo || battleEnded;
+    autoBtn.classList.toggle("is-on", dojoAutoEnabled);
+    autoBtn.innerHTML = dojoAutoEnabled ? "<span>■</span>オートON" : "<span>▶</span>オートOFF";
+  }
+}
+
+function requestDojoAutoAction(delayMs = 450) {
+  if (!dojoAutoEnabled || window.matchMode !== "dojo" || !myTurn || battleEnded || dojoAutoSending) return;
+  clearTimeout(dojoAutoTimer);
+  dojoAutoTimer = setTimeout(() => {
+    if (!dojoAutoEnabled || window.matchMode !== "dojo" || !myTurn || battleEnded || dojoAutoSending) return;
+    dojoAutoSending = true;
+    ["atkBtn","skillBtn","lvupBtn","itemBtn","dollBuffBtn"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = true;
+    });
+    ws.send(JSON.stringify({ type: "dojo_auto_action" }));
+  }, delayMs);
+}
+
+function toggleDojoAuto() {
+  if (window.matchMode !== "dojo") return;
+  dojoAutoEnabled = !dojoAutoEnabled;
+  updateDojoBattleButtons();
+  showCenterToast(dojoAutoEnabled ? "オート戦闘 ON" : "オート戦闘 OFF", 1800);
+  if (dojoAutoEnabled) requestDojoAutoAction(180);
+}
 
 // ====================
 // ★ スキル残り回数（server の status_simple.skill_remaining を反映）
@@ -4514,6 +4681,7 @@ if (data?.ok && data.jobs) {
   const localJobs = loadLocalJobRecord(window.accountId) || {};
   const merged = mergeJobRecords(data.jobs, localJobs);
   window.jobRecord = merged;
+  window.dojoProgress = data.dojoProgress || {};
   saveLocalJobRecord(window.accountId, merged);
 
   // 画面反映
@@ -6132,6 +6300,7 @@ function updateBuffStrip(side, buffs) {
 // ============================
 let centerToastTimerId = null;
 let pendingItemConfirm = null;
+let pendingItemConfirmCancel = null;
 let pendingArrowEquipItem = null;
 let alchemistFusionCandidates = [];
 let alchemistFusionSelection = [];
@@ -6171,6 +6340,7 @@ function showCenterToast(msg, ms = 3000) {
 
 function openItemConfirm(message, onConfirm, options = {}){
   pendingItemConfirm = onConfirm;
+  pendingItemConfirmCancel = options.onCancel ?? null;
   document.getElementById("confirmPopupTitle").textContent = options.title ?? "確認";
   document.getElementById("itemConfirmMessage").textContent = message ?? "";
   document.getElementById("confirmPopupOkBtn").textContent = options.okLabel ?? "OK";
@@ -6181,9 +6351,13 @@ function openItemConfirm(message, onConfirm, options = {}){
 function closeItemConfirm(confirmed){
   document.getElementById("itemConfirmPopup").style.display = "none";
   const fn = pendingItemConfirm;
+  const cancelFn = pendingItemConfirmCancel;
   pendingItemConfirm = null;
+  pendingItemConfirmCancel = null;
   if (confirmed && typeof fn === "function") {
     fn();
+  } else if (!confirmed && typeof cancelFn === "function") {
+    cancelFn();
   }
 }
 
@@ -6525,6 +6699,12 @@ function showResultOverlay(result) {
 
 function backToMenuFromResult() {
   stopResultBgm();
+  dojoAutoEnabled = false;
+  dojoAutoSending = false;
+  clearTimeout(dojoAutoTimer);
+  const lvupBtn = document.getElementById("lvupBtn");
+  if (lvupBtn) lvupBtn.style.display = "";
+  updateDojoBattleButtons();
   const ov = document.getElementById("resultOverlay");
   if (ov) ov.style.display = "none";
 
@@ -6562,6 +6742,9 @@ function attachWsHandlers() {
 
     // ★ マッチ成立 → フェーズ2へ
     if (data.type === "match_start") {
+      battleEnded = false;
+      dojoAutoSending = false;
+      clearTimeout(dojoAutoTimer);
       window.gilsysSelfMatchName = data.self_name || window.accountName || "あなた";
       window.gilsysOpponentName = data.enemy_name || (window.matchMode === "cpu" ? "CPU" : "対戦相手");
       setGilsysText("gilsysSelfName", window.gilsysSelfMatchName);
@@ -6571,7 +6754,7 @@ function attachWsHandlers() {
       closeJobDetail();
 
       // ★ マッチング成立演出（中央3秒 + 鈴SE）
-      showCenterToast("マッチングしました", 3000);
+      showCenterToast(data.mode === "dojo" ? "ステージ開始" : "マッチングしました", 3000);
       playBellSfx();
 
       // ★ 対戦中BGM（Hiphop系：自作WebAudio）開始
@@ -6592,9 +6775,19 @@ function attachWsHandlers() {
       if (status) status.textContent = "";
 
       setPhase(PHASE.BATTLE);
+      const lvupBtn = document.getElementById("lvupBtn");
+      if (lvupBtn) {
+        lvupBtn.style.display = data.mode === "dojo" ? "none" : "";
+        lvupBtn.disabled = data.mode === "dojo" ? true : lvupBtn.disabled;
+      }
+      updateDojoBattleButtons();
 
       // ★ ラウンド/ターンカウンタ初期化
       resetRoundTurnCounter();
+      if (data.mode === "dojo" && dojoAutoEnabled && myTurn) {
+        dojoAutoSending = false;
+        requestDojoAutoAction(260);
+      }
       return;
     }
 
@@ -6932,8 +7125,10 @@ function attachWsHandlers() {
 
       const lvupBtn = document.getElementById("lvupBtn");
       if (lvupBtn) {
-        lvupBtn.disabled = !myTurn;
+        lvupBtn.disabled = window.matchMode === "dojo" || !myTurn;
+        lvupBtn.style.display = window.matchMode === "dojo" ? "none" : "";
       }
+      updateDojoBattleButtons();
       refreshAttackSkillPanelIfOpen(false);
 
       return;
@@ -7063,8 +7258,16 @@ function attachWsHandlers() {
         const el = document.getElementById(id);
         if (el) el.disabled = false;
       });
+      const lvupBtn = document.getElementById("lvupBtn");
+      if (lvupBtn && window.matchMode === "dojo") {
+        lvupBtn.disabled = true;
+        lvupBtn.style.display = "none";
+      }
+      dojoAutoSending = false;
+      updateDojoBattleButtons();
       refreshAttackSkillPanelIfOpen(true);
       if (typeof refreshGilsysDollChargeUI === "function") refreshGilsysDollChargeUI();
+      requestDojoAutoAction();
 
       return;
     }
@@ -7072,6 +7275,8 @@ function attachWsHandlers() {
     /* --- 相手ラウンド --- */
     if(data.type==="wait_turn"){
       myTurn = false;
+      dojoAutoSending = false;
+      clearTimeout(dojoAutoTimer);
       appendLog("systemBox","system-log", data.msg);
       showCenterToast("相手が考え中...", 3200);
 
@@ -7088,6 +7293,9 @@ function attachWsHandlers() {
         const el = document.getElementById(id);
         if (el) el.disabled = true;
       });
+      const lvupBtn = document.getElementById("lvupBtn");
+      if (lvupBtn) lvupBtn.style.display = window.matchMode === "dojo" ? "none" : "";
+      updateDojoBattleButtons();
       const commandList = document.getElementById("gilsysCommandList");
       if (commandList) {
         commandList.querySelectorAll("button").forEach(btn => {
@@ -7110,6 +7318,9 @@ function attachWsHandlers() {
     // ============================
     if (data.type === "battle_end") {
       battleEnded = true;
+      dojoAutoEnabled = false;
+      dojoAutoSending = false;
+      clearTimeout(dojoAutoTimer);
 
       // ★ 対戦中BGM停止
       stopBattleBgm();
@@ -7119,10 +7330,83 @@ function attachWsHandlers() {
       // 既存UIを閉じる（安全策）
       closeShopUI();
       closeItemUI();
+      updateDojoBattleButtons();
 
       setTimeout(() => {
         showResultOverlay(data.result);
       }, 1300);
+      return;
+    }
+
+    if (data.type === "dojo_stage_clear") {
+      battleEnded = true;
+      stopBattleBgm();
+      showDojoResultScreen("win", data.run, data.drops || [], false);
+      return;
+    }
+
+    if (data.type === "dojo_resume_available") {
+      const stage = Number(data.stage ?? 1);
+      openItemConfirm(`達人への道の保存データがあります（第${stage}層）。続きから始めますか？`, () => {
+        sendDojoResumeChoice("continue");
+      }, {
+        title: "保存データ",
+        okLabel: "続きから",
+        cancelLabel: "最初から",
+        onCancel: () => sendDojoResumeChoice("new")
+      });
+      return;
+    }
+
+    if (data.type === "dojo_shop_list") {
+      renderDojoPrepShop(data.items || []);
+      return;
+    }
+
+    if (data.type === "dojo_level_up_check") {
+      handleDojoPrepLevelUpCheck(data);
+      return;
+    }
+
+    if (data.type === "dojo_trail_state") {
+      renderDojoTrailScreen(data.trail || {});
+      return;
+    }
+
+    if (data.type === "dojo_waiting") {
+      battleEnded = true;
+      stopBattleBgm();
+      const wasInventoryOpen = document.getElementById("shopPopup")?.style.display === "flex" && document.getElementById("shopList")?.textContent?.includes("特殊装備");
+      renderDojoWaiting(data.run, data.run?.lastDrops || [], false, "戦闘準備");
+      setPhase(PHASE.DOJO_WAIT);
+      if (wasInventoryOpen) renderDojoPrepInventory();
+      return;
+    }
+
+    if (data.type === "dojo_clear") {
+      battleEnded = true;
+      stopBattleBgm();
+      showDojoResultScreen("win", data.run, data.drops || [], true);
+      showCenterToast("達人への道を踏破しました", 3600);
+      return;
+    }
+
+    if (data.type === "dojo_failed") {
+      battleEnded = true;
+      stopBattleBgm();
+      showDojoResultScreen("lose", data.run, [], false);
+      return;
+    }
+
+    if (data.type === "dojo_ended") {
+      hideDojoResultScreen();
+      cleanupSocket();
+      setPhase(PHASE.MODE_SELECT);
+      return;
+    }
+
+    if (data.type === "dojo_error") {
+      showCenterToast(data.msg ?? "達人への道でエラーが発生しました", 2600);
       return;
     }
 
@@ -7432,9 +7716,815 @@ function joinCpu() {
   };
 }
 
+function joinDojo() {
+  if (ws) return;
+  if (Number(selectedJobId) !== 1) {
+    alert("フェーズ1では戦士のみ挑戦できます。");
+    return;
+  }
+  myJob = selectedJobId;
+  window.matchMode = "dojo";
+  ws = new WebSocket(WS_URL);
+  attachWsHandlers();
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "join_dojo",
+      account_id: window.accountId,
+      name: window.accountName || "Player",
+      job: myJob
+    }));
+  };
+}
+
+function renderDojoTopProgress() {
+  const p = window.dojoProgress?.["戦士"] || {};
+  const el = document.getElementById("dojoProgressSummary");
+  if (el) {
+    el.textContent = `最高到達層: ${Number(p.highestStage ?? 0)} / クリア回数: ${Number(p.clearCount ?? 0)}${p.cleared ? " / クリア済み" : ""}${p.hasSavedRun ? ` / 保存: 第${Number(p.savedStage ?? 1)}層` : ""}`;
+  }
+}
+
+function formatDojoDrops(drops = []) {
+  if (!drops.length) return "獲得ドロップ: なし";
+  return "獲得ドロップ: " + drops.map(d => {
+    if (d.type === "coin") return `${Number(d.amount ?? 0)}コイン`;
+    if (d.type === "exp") return `${Number(d.amount ?? 0)}EXP`;
+    if (d.type === "prestige") return `${Number(d.amount ?? 0)}名声ポイント`;
+    if (d.type === "proof") return `達人の証 x${Number(d.amount ?? 0)}`;
+    return d.name || "アイテム";
+  }).join(" / ");
+}
+
+function renderDojoWaiting(run, drops = [], cleared = false, titleOverride = "") {
+  const title = document.getElementById("dojoWaitTitle");
+  const summary = document.getElementById("dojoWaitSummary");
+  const dropEl = document.getElementById("dojoDropSummary");
+  const nextBtn = document.getElementById("btnDojoNextStage");
+  const shopBtn = document.getElementById("btnDojoPrepShop");
+  const levelBtn = document.getElementById("btnDojoPrepLevelUp");
+  const trailBtn = document.getElementById("btnDojoTrail");
+  const inventoryBtn = document.getElementById("btnDojoPrepInventory");
+  const stage = Number(run?.stage ?? 1);
+  const maxStage = Number(run?.maxStage ?? 30);
+  window.gilsysDojoCanContinue = !cleared && titleOverride !== "挑戦失敗";
+  const hp = Number(run?.hp ?? 0);
+  const maxHp = Number(run?.max_hp ?? 0);
+  const hpRate = maxHp > 0 ? Math.max(0, Math.min(100, (hp / maxHp) * 100)) : 0;
+  const exp = Number(run?.exp ?? 0);
+  const nextExp = run?.next_level_exp == null ? null : Number(run.next_level_exp);
+  const expLabel = nextExp == null ? `EXP ${exp} / MAX` : `EXP ${exp} / ${nextExp}（次まで${Math.max(0, nextExp - exp)}）`;
+  const stageNodes = [1,2,3,4,5,6,7,8,9,10,30].map(n => {
+    const cls = n < stage ? "is-cleared" : n === stage ? "is-current" : "";
+    const gap = n === 30 ? `<span class="dojo-stage-ellipsis">...</span>` : "";
+    return `${gap}<span class="dojo-stage-node ${cls}">${n}</span>`;
+  }).join("");
+  const dropList = drops?.length ? drops : (run?.lastDrops || []);
+  window.gilsysDojoRunView = run || {};
+  const loadout = run?.loadout || {};
+  const slots = run?.carrySlots || { items: 1, equipment: 1, special: 1 };
+  const selectedItems = new Set((loadout.items || []).map(String));
+  const selectedEquip = new Set((loadout.equipment || []).map(String));
+  const selectedSpecial = new Set((loadout.special || []).map(String));
+  const equipment = (run?.equipment || []).filter((it) => selectedEquip.has(String(it?.uid ?? "")));
+  const special = (run?.special || []).filter((it) => selectedSpecial.has(String(it?.uid ?? "")));
+  const items = (run?.items || []).filter((it) => selectedItems.has(String(it?.uid ?? "")));
+  const makeEntry = (raw, kind, fallbackName, meta = "") => {
+    if (!raw) return null;
+    if (kind === "coin" || raw?.type === "coin") {
+      const amount = Number(raw?.amount ?? 0);
+      return { name: "コイン", effect_text: `${amount}コインを獲得`, price: amount, category: "coin", dojoKind: "coin" };
+    }
+    if (kind === "exp" || raw?.type === "exp") {
+      const amount = Number(raw?.amount ?? 0);
+      return { name: "EXP", effect_text: `${amount}EXPを獲得`, price: amount, category: "exp", dojoKind: "exp" };
+    }
+    if (kind === "prestige" || raw?.type === "prestige") {
+      const amount = Number(raw?.amount ?? 0);
+      return { name: "名声ポイント", effect_text: `${amount}名声ポイントを獲得`, price: amount, category: "prestige", dojoKind: "prestige" };
+    }
+    if (kind === "proof" || raw?.type === "proof") {
+      const amount = Number(raw?.amount ?? 0);
+      return { name: "達人の証", effect_text: `${amount}個の達人の証を獲得`, price: amount, category: "proof", dojoKind: "proof" };
+    }
+    const name = typeof raw === "string" ? raw : (raw?.name ?? fallbackName);
+    const effect = typeof raw === "object" ? (raw?.effect_text ?? raw?.desc ?? raw?.description ?? meta) : meta;
+    const entry = {
+      ...(typeof raw === "object" ? raw : {}),
+      name,
+      effect_text: effect || meta || "詳細情報はありません",
+      category: kind,
+      dojoKind: kind,
+    };
+    if (kind === "equip") entry.is_equip = true;
+    if (kind === "special") entry.equip_type = entry.equip_type || "dojo_special";
+    return entry;
+  };
+  const dojoEntries = [];
+  const registerEntry = (entry) => {
+    if (!entry) return -1;
+    dojoEntries.push(entry);
+    return dojoEntries.length - 1;
+  };
+  const renderDojoIcon = (entry, fallbackIcon = "◆") => {
+    if (!entry) {
+      return `<button class="gilsys-shop-icon-btn dojo-empty-icon" type="button" disabled><span class="shop-icon">${escapeHtml(fallbackIcon)}</span></button>`;
+    }
+    const idx = registerEntry(entry);
+    let icon = fallbackIcon;
+    let theme = "theme-bronze";
+    if (entry.dojoKind === "coin") {
+      icon = typeof gilsysGeneratedIcon === "function" ? gilsysGeneratedIcon("coin", "コイン") : "◎";
+      theme = "theme-gold";
+    } else if (entry.dojoKind === "exp") {
+      icon = `<img class="gilsys-generated-item-icon" src="Assets/dojo/dojo-exp-icon.svg" alt="EXP">`;
+      theme = "theme-rainbow-blue";
+    } else if (entry.dojoKind === "prestige") {
+      icon = "♛";
+      theme = "theme-gold";
+    } else if (entry.dojoKind === "proof") {
+      icon = "◇";
+      theme = "theme-rainbow";
+    } else if (typeof getShopVisualMeta === "function") {
+      const meta = getShopVisualMeta(entry);
+      icon = meta.icon;
+      theme = meta.theme || theme;
+    }
+    return `
+      <button class="gilsys-shop-icon-btn ${escapeHtml(theme)} ${idx === 0 ? "is-selected" : ""}" type="button" data-dojo-index="${idx}" title="${escapeHtml(entry?.name ?? "詳細")}" onclick="renderDojoWaitDetail(${idx})">
+        <span class="shop-icon">${String(icon).startsWith("<") ? icon : (typeof getShopIconMarkup === "function" ? getShopIconMarkup(icon) : escapeHtml(icon))}</span>
+      </button>
+    `;
+  };
+  const renderLockedIcon = () => `<button class="gilsys-shop-icon-btn dojo-locked-icon" type="button" disabled><span class="shop-icon">🔒</span></button>`;
+  const renderLoadoutSlots = (selected, slotCount, maxSlots, kind, fallbackName, icon) => {
+    const openCount = Math.max(1, Number(slotCount ?? 1));
+    const lockedCount = Math.max(0, maxSlots - openCount);
+    const selectedIcons = selected.map((it) => renderDojoIcon(makeEntry(it, kind, fallbackName, "持込中"), icon)).join("");
+    const emptyOpenIcons = Array.from({ length: Math.max(0, openCount - selected.length) }, () => renderDojoIcon(null, "－")).join("");
+    const lockedIcons = Array.from({ length: lockedCount }, renderLockedIcon).join("");
+    return selectedIcons + emptyOpenIcons + lockedIcons;
+  };
+  const itemIcons = renderLoadoutSlots(items, Number(slots.items ?? 1), 6, "item", "アイテム", "🧪");
+  const equipIcons = renderLoadoutSlots(equipment, Number(slots.equipment ?? 1), 6, "equip", "装備", "⚔");
+  const specialIcons = renderLoadoutSlots(special, Number(slots.special ?? 1), 6, "special", "特殊装備", "🔮");
+  const dropIcons = dropList.length
+    ? dropList.slice(0,6).map(d => {
+        if (d?.type === "coin") return renderDojoIcon(makeEntry(d, "coin", "コイン"), "◎");
+        if (d?.type === "exp") return renderDojoIcon(makeEntry(d, "exp", "EXP"), "✦");
+        if (d?.type === "prestige") return renderDojoIcon(makeEntry(d, "prestige", "名声ポイント"), "♛");
+        if (d?.type === "proof") return renderDojoIcon(makeEntry(d, "proof", "達人の証"), "◇");
+        if (d?.type === "equip") return renderDojoIcon(makeEntry(d, "equip", "装備", "獲得装備"), "⚔");
+        if (d?.type === "special") return renderDojoIcon(makeEntry(d, "special", "特殊装備", "獲得特殊装備"), "🔮");
+        return renderDojoIcon(makeEntry(d, "item", "アイテム", "獲得アイテム"), "🧪");
+      }).join("")
+    : [0,1,2].map(() => renderDojoIcon(null, "◆")).join("");
+  window.gilsysDojoWaitEntries = dojoEntries;
+  if (title) title.textContent = titleOverride || (cleared ? "達人への道 踏破" : "戦闘待機画面");
+  if (summary) {
+    summary.innerHTML = `
+      <div class="dojo-wait-hero">
+        <div class="dojo-path-label">戦士の道　第${escapeHtml(String(stage))}層へ</div>
+        <div class="dojo-stage-track">${stageNodes}</div>
+        <div class="dojo-current-stage">現在ステージ：${escapeHtml(String(stage))} / ${escapeHtml(String(maxStage))}</div>
+      </div>
+      <div class="dojo-wait-grid">
+        <section class="dojo-frame dojo-player-frame">
+          <h3>♙ プレイヤー情報</h3>
+          <div class="dojo-player-body">
+            <div class="dojo-player-card">
+              <div class="dojo-player-portrait"></div>
+              <strong>⚔ 戦士</strong>
+            </div>
+            <div class="dojo-player-stats">
+              <div><span>現在HP</span><b>${escapeHtml(String(hp))} / ${escapeHtml(String(maxHp))}</b><i style="--hp:${hpRate}%"></i></div>
+              <div><span>レベル</span><b>${escapeHtml(String(run?.level ?? 1))}</b><em>${escapeHtml(expLabel)}</em></div>
+              <div><span>コイン</span><b>${escapeHtml(String(run?.coins ?? 0))}</b></div>
+            </div>
+          </div>
+        </section>
+        <section class="dojo-frame dojo-loadout-frame">
+          <div class="dojo-icon-section">
+            <h4>アイテム</h4>
+            <div class="gilsys-shop-icon-grid dojo-icon-grid">${itemIcons}</div>
+          </div>
+          <div class="dojo-icon-section">
+            <h4>装備</h4>
+            <div class="gilsys-shop-icon-grid dojo-icon-grid">${equipIcons}</div>
+          </div>
+          <div class="dojo-icon-section">
+            <h4>特殊装備</h4>
+            <div class="gilsys-shop-icon-grid dojo-icon-grid">${specialIcons}</div>
+          </div>
+        </section>
+        <section class="dojo-frame dojo-drop-frame">
+          <h3>▣ 今回のドロップ</h3>
+          <div class="gilsys-shop-icon-grid dojo-icon-grid dojo-drop-row">${dropIcons}</div>
+          <div id="dojoWaitDetail" class="dojo-wait-detail"></div>
+        </section>
+      </div>
+    `;
+    renderDojoWaitDetail(0);
+  }
+  if (dropEl) dropEl.textContent = cleared ? "準備を整えて、さらなる高みへ。" : "準備を整えて、さらなる高みを目指そう。";
+  if (nextBtn) nextBtn.disabled = !!cleared || titleOverride === "挑戦失敗";
+  if (shopBtn) shopBtn.disabled = !!cleared || titleOverride === "挑戦失敗";
+  if (levelBtn) levelBtn.disabled = !!cleared || titleOverride === "挑戦失敗";
+  if (trailBtn) trailBtn.disabled = !!cleared || titleOverride === "挑戦失敗";
+  if (inventoryBtn) inventoryBtn.disabled = !!cleared || titleOverride === "挑戦失敗";
+}
+
+function renderDojoWaitDetail(index) {
+  const entries = window.gilsysDojoWaitEntries || [];
+  const item = entries[index];
+  const detail = document.getElementById("dojoWaitDetail");
+  if (!detail) return;
+  document.querySelectorAll("#phaseDojoWait .gilsys-shop-icon-btn[data-dojo-index]").forEach((btn) => {
+    btn.classList.toggle("is-selected", Number(btn.dataset.dojoIndex) === index);
+  });
+  if (!item) {
+    detail.innerHTML = `<div class="gilsys-inline-empty">アイコンを選択すると詳細を表示します</div>`;
+    return;
+  }
+  let icon = item.dojoKind === "coin" && typeof gilsysGeneratedIcon === "function" ? gilsysGeneratedIcon("coin", "コイン") : "◆";
+  let theme = item.dojoKind === "coin" ? "theme-gold" : "theme-bronze";
+  let badges = [];
+  let metaClass = "";
+  if (typeof getShopVisualMeta === "function" && item.dojoKind !== "coin") {
+    const meta = getShopVisualMeta(item);
+    icon = meta.icon;
+    theme = meta.theme || theme;
+    badges = meta.badges || [];
+    metaClass = meta.metaClass || "";
+  } else if (item.dojoKind === "coin") {
+    badges = [{ label: "報酬", kind: "rank" }];
+  } else if (item.dojoKind === "exp") {
+    icon = `<img class="gilsys-generated-item-icon" src="Assets/dojo/dojo-exp-icon.svg" alt="EXP">`;
+    theme = "theme-rainbow-blue";
+    badges = [{ label: "経験値", kind: "special" }];
+  } else if (item.dojoKind === "prestige") {
+    icon = "♛";
+    theme = "theme-gold";
+    badges = [{ label: "名声", kind: "rank" }];
+  } else if (item.dojoKind === "proof") {
+    icon = "◇";
+    theme = "theme-rainbow";
+    badges = [{ label: "証", kind: "rank" }];
+  }
+  const badgeHtml = badges.map(b => `<span class="shop-badge kind-${escapeHtml(b.kind)}">${escapeHtml(b.label)}</span>`).join("");
+  detail.innerHTML = `
+    <div class="gilsys-shop-detail-card dojo-shop-detail-card">
+      <div class="shop-card ${escapeHtml(theme)}">
+        <div class="shop-card-main">
+          <div class="shop-card-head">
+            <div class="shop-icon">${String(icon).startsWith("<") ? icon : (typeof getShopIconMarkup === "function" ? getShopIconMarkup(icon) : escapeHtml(icon))}</div>
+            <div class="shop-title-wrap">
+              <div class="shop-item-name">${escapeHtml(item?.name ?? "不明")}</div>
+              <div class="shop-meta-row ${escapeHtml(metaClass)}">${badgeHtml}</div>
+              <div class="shop-item-desc">${escapeHtml(item?.effect_text ?? "詳細情報はありません")}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+let dojoResultState = null;
+
+function getDojoRewardEntry(raw) {
+  if (!raw) return null;
+  const type = raw.type || raw.dojoKind || "item";
+  if (type === "coin") {
+    return { ...raw, dojoKind: "coin", name: "コイン", effect_text: `${Number(raw.amount ?? 0)}コインを獲得` };
+  }
+  if (type === "exp") {
+    return { ...raw, dojoKind: "exp", name: "EXP", effect_text: `${Number(raw.amount ?? 0)}EXPを獲得` };
+  }
+  if (type === "prestige") {
+    return { ...raw, dojoKind: "prestige", name: "名声ポイント", effect_text: `${Number(raw.amount ?? 0)}名声ポイントを獲得` };
+  }
+  if (type === "proof") {
+    return { ...raw, dojoKind: "proof", name: "達人の証", effect_text: `${Number(raw.amount ?? 0)}個の達人の証を獲得` };
+  }
+  const item = raw.item || raw;
+  return {
+    ...item,
+    dojoKind: type === "equip" ? "equip" : type === "special" ? "special" : "item",
+    name: raw.name || item.name || "報酬",
+    effect_text: item.effect_text || item.desc || raw.effect_text || "詳細情報はありません"
+  };
+}
+
+function getDojoRewardVisual(entry) {
+  let icon = "◆";
+  let theme = "theme-bronze";
+  if (entry.dojoKind === "coin") {
+    icon = typeof gilsysGeneratedIcon === "function" ? gilsysGeneratedIcon("coin", "コイン") : "◎";
+    theme = "theme-gold";
+  } else if (entry.dojoKind === "exp") {
+    icon = `<img class="gilsys-generated-item-icon" src="Assets/dojo/dojo-exp-icon.svg" alt="EXP">`;
+    theme = "theme-rainbow-blue";
+  } else if (entry.dojoKind === "prestige") {
+    icon = "♛";
+    theme = "theme-gold";
+  } else if (entry.dojoKind === "proof") {
+    icon = "◇";
+    theme = "theme-rainbow";
+  } else if (typeof getShopVisualMeta === "function") {
+    const meta = getShopVisualMeta(entry);
+    icon = meta.icon;
+    theme = meta.theme || theme;
+  }
+  return { icon, theme };
+}
+
+function renderDojoResultDetail(index) {
+  const entries = dojoResultState?.entries || [];
+  const entry = entries[index] || entries[0];
+  const detail = document.getElementById("dojoResultDetail");
+  if (!detail || !entry) return;
+  document.querySelectorAll(".dojo-result-drop").forEach((el, i) => el.classList.toggle("is-selected", i === index));
+  const visual = getDojoRewardVisual(entry);
+  const iconHtml = String(visual.icon).startsWith("<")
+    ? visual.icon
+    : (typeof getShopIconMarkup === "function" ? getShopIconMarkup(visual.icon) : escapeHtml(String(visual.icon)));
+  detail.innerHTML = `
+    <div class="dojo-result-detail-icon ${escapeHtml(visual.theme)}">${iconHtml}</div>
+    <h3>${escapeHtml(entry.name || "報酬")}</h3>
+    <div class="dojo-result-detail-kind">${escapeHtml(entry.dojoKind || "reward")}</div>
+    <p>${escapeHtml(entry.effect_text || "詳細情報はありません")}</p>
+    <div class="dojo-result-owned">所持数　1</div>
+  `;
+}
+
+function showDojoResultScreen(result, run, drops = [], cleared = false) {
+  dojoResultState = { result, run, drops, cleared, entries: drops.map(getDojoRewardEntry).filter(Boolean) };
+  const screen = document.getElementById("dojoResultScreen");
+  if (!screen) return;
+  const isWin = result === "win";
+  const stage = Math.max(1, Number(run?.stage ?? 1) - (isWin && !cleared ? 1 : 0));
+  screen.classList.toggle("is-defeat", !isWin);
+  setGilsysText("dojoResultTitle", isWin ? "勝利" : "敗北");
+  setGilsysText("dojoResultStage", isWin ? `第${stage}層 クリア` : `第${Number(run?.stage ?? stage)}層 挑戦失敗`);
+  setGilsysText("dojoResultRewardLabel", isWin ? "ドロップ報酬" : "戦闘結果");
+  setGilsysText("dojoResultHp", `残りHP ${Number(run?.hp ?? 0)} / ${Number(run?.max_hp ?? 0)}`);
+  setGilsysText("dojoResultLevel", `現在レベル ${Number(run?.level ?? 1)}`);
+  setGilsysText("dojoResultCoins", `所持コイン ${Number(run?.coins ?? 0)}`);
+  setGilsysText("dojoResultMessage", isWin ? "見事な勝利です！さらなる高みを目指しましょう。" : "挑戦はここで途絶えました。態勢を整えて再挑戦しましょう。");
+  const battleInfo = document.getElementById("dojoResultBattleInfo");
+  if (battleInfo) {
+    battleInfo.innerHTML = `
+      <div><span>到達階層</span><b>${escapeHtml(String(stage))}</b></div>
+      <div><span>保管アイテム</span><b>${escapeHtml(String((run?.items || []).length))}</b></div>
+      <div><span>保管装備</span><b>${escapeHtml(String((run?.equipment || []).length + (run?.special || []).length))}</b></div>
+    `;
+  }
+
+  const entries = dojoResultState.entries;
+  const dropsEl = document.getElementById("dojoResultDrops");
+  if (dropsEl) {
+    dropsEl.innerHTML = isWin && entries.length
+      ? entries.map((entry, idx) => {
+          const visual = getDojoRewardVisual(entry);
+          const amount = Number(entry.amount ?? 0);
+          const iconHtml = String(visual.icon).startsWith("<")
+            ? visual.icon
+            : (typeof getShopIconMarkup === "function" ? getShopIconMarkup(visual.icon) : escapeHtml(String(visual.icon)));
+          return `
+            <button class="dojo-result-drop ${escapeHtml(visual.theme)} ${idx === 0 ? "is-selected" : ""}" onclick="renderDojoResultDetail(${idx})">
+              <span>${iconHtml}</span>
+              <b>${escapeHtml(entry.name || "報酬")}</b>
+              <i>${amount > 0 ? `+${amount}` : "x1"}</i>
+            </button>
+          `;
+        }).join("")
+      : `<div class="dojo-result-empty">${isWin ? "報酬はありません" : "報酬は獲得できませんでした"}</div>`;
+  }
+  const expDrop = entries.find(e => e.dojoKind === "exp");
+  const expValue = Number(expDrop?.amount ?? 0);
+  const exp = Number(run?.exp ?? 0);
+  const next = run?.next_level_exp == null ? null : Number(run.next_level_exp);
+  setGilsysText("dojoResultExpValue", `EXP +${expValue}`);
+  setGilsysText("dojoResultExpNext", next == null ? `現在 ${exp} / MAX` : `次のレベルまで ${Math.max(0, next - exp)} / ${next}`);
+  const fill = document.getElementById("dojoResultExpFill");
+  if (fill) fill.style.width = next == null ? "100%" : `${Math.max(0, Math.min(100, exp / Math.max(1, next) * 100))}%`;
+  const extra = document.getElementById("dojoResultExtraRewards");
+  if (extra) {
+    const prestige = entries.find(e => e.dojoKind === "prestige");
+    const proof = entries.find(e => e.dojoKind === "proof");
+    extra.innerHTML = `
+      <div><span>名声ポイント</span><b>+${Number(prestige?.amount ?? 0)}</b></div>
+      <div><span>達人の証</span><b>+${Number(proof?.amount ?? 0)}</b></div>
+    `;
+  }
+  const actions = document.getElementById("dojoResultActions");
+  if (actions) {
+    actions.classList.toggle("is-defeat-actions", !isWin);
+    actions.innerHTML = isWin && !cleared
+      ? `<button onclick="dojoResultGoWait()">待機画面へ</button><button class="primary" onclick="dojoResultNextStage()">次のステージへ</button><button onclick="dojoResultEndRun()">挑戦を中断</button>`
+      : `<button class="primary" onclick="dojoResultEndRun()">挑戦終了</button>`;
+  }
+  const right = document.getElementById("dojoResultDetailPanel");
+  if (right) right.style.display = isWin ? "" : "none";
+  screen.style.display = "block";
+  if (isWin && entries.length) renderDojoResultDetail(0);
+}
+
+function hideDojoResultScreen() {
+  const screen = document.getElementById("dojoResultScreen");
+  if (screen) screen.style.display = "none";
+}
+
+function dojoResultGoWait() {
+  const state = dojoResultState;
+  hideDojoResultScreen();
+  renderDojoWaiting(state?.run, state?.drops || [], !!state?.cleared);
+  setPhase(PHASE.DOJO_WAIT);
+}
+
+function dojoResultNextStage() {
+  hideDojoResultScreen();
+  if (ws) ws.send(JSON.stringify({ type: "dojo_next_stage" }));
+}
+
+function dojoResultEndRun() {
+  hideDojoResultScreen();
+  if (!ws) {
+    setPhase(PHASE.MODE_SELECT);
+    return;
+  }
+  ws.send(JSON.stringify({ type: "dojo_end_run", mode: dojoResultState?.result === "win" && !dojoResultState?.cleared ? "save" : "abandon" }));
+}
+
+function openDojoPrepShop() {
+  if (!ws) return;
+  ws.send(JSON.stringify({ type: "open_dojo_shop" }));
+}
+
+function sendDojoResumeChoice(resume) {
+  if (!ws) return;
+  ws.send(JSON.stringify({
+    type: "join_dojo",
+    account_id: window.accountId,
+    name: window.accountName || "Player",
+    job: myJob || 1,
+    resume
+  }));
+}
+
+function requestDojoPrepLevelUp() {
+  if (!ws) return;
+  ws.send(JSON.stringify({ type: "dojo_level_up_request" }));
+}
+
+function handleDojoPrepLevelUpCheck(data) {
+  if (data.isMax) {
+    showCenterToast("すでに最大レベルです", 2200);
+    return;
+  }
+  if (data.canExp) {
+    openItemConfirm("EXPを消費してレベルアップしますか？", () => {
+      ws.send(JSON.stringify({ type: "dojo_level_up_exp" }));
+    }, {
+      title: "レベルアップ確認",
+      okLabel: "レベルアップ",
+      cancelLabel: "やめる"
+    });
+    return;
+  }
+  if (data.canCoins) {
+    openItemConfirm(`EXPが不足しています。\nコイン${Number(data.needCoins ?? 0)}で補填してレベルアップしますか？`, () => {
+      ws.send(JSON.stringify({ type: "dojo_level_up_coins" }));
+    }, {
+      title: "レベルアップ確認",
+      okLabel: "コインで補填",
+      cancelLabel: "やめる"
+    });
+    return;
+  }
+  showCenterToast("EXPとコインが足りません", 2400);
+}
+
+function renderDojoPrepShop(items = []) {
+  const popup = document.getElementById("shopPopup");
+  const list = document.getElementById("shopList");
+  if (!popup || !list) return;
+  const safe = (v) => typeof escapeHtml === "function" ? escapeHtml(String(v ?? "")) : String(v ?? "");
+  const rows = Array.isArray(items) && items.length
+    ? items.map((it, idx) => {
+        let icon = "🛒";
+        let badges = [];
+        let theme = "";
+        let metaClass = "";
+        if (typeof getShopVisualMeta === "function") {
+          const meta = getShopVisualMeta(it);
+          icon = meta.icon;
+          badges = meta.badges || [];
+          theme = meta.theme || "";
+          metaClass = meta.metaClass || "";
+        }
+        const iconHtml = typeof getShopIconMarkup === "function" ? getShopIconMarkup(icon) : safe(icon);
+        const badgeHtml = badges.map(b => `<span class="shop-badge kind-${safe(b.kind)}">${safe(b.label)}</span>`).join("");
+        return `
+          <div class="shop-card ${safe(theme)}">
+            <div class="shop-card-main">
+              <div class="shop-card-head">
+                <div class="shop-icon">${iconHtml}</div>
+                <div class="shop-title-wrap">
+                  <div class="shop-item-name">${safe(it?.name ?? "商品")}</div>
+                  <div class="shop-meta-row ${safe(metaClass)}">${badgeHtml}</div>
+                  <div class="shop-item-desc">${safe(it?.effect_text ?? "効果説明なし")}</div>
+                </div>
+              </div>
+            </div>
+            <div class="shop-buy-area">
+              <div class="shop-price">${Number(it?.price ?? 0)} コイン</div>
+              <button onclick="buyDojoPrepItem(${idx})">購入</button>
+            </div>
+          </div>
+        `;
+      }).join("")
+    : `<div class="gilsys-empty-row">ショップ商品がありません</div>`;
+  list.innerHTML = rows;
+  popup.style.display = "flex";
+}
+
+function buyDojoPrepItem(index) {
+  if (!ws) return;
+  ws.send(JSON.stringify({ type: "dojo_buy_item", index }));
+}
+
+function rerollDojoPrepShop() {
+  if (!ws) return;
+  ws.send(JSON.stringify({ type: "dojo_shop_reroll" }));
+}
+
+let dojoTrailState = null;
+let dojoTrailSelectedId = 1;
+let dojoTrailZoom = 1;
+const DOJO_TRAIL_BASE_W = 3200;
+const DOJO_TRAIL_BASE_H = 2400;
+const DOJO_TRAIL_MIN_ZOOM = 0.25;
+const DOJO_TRAIL_MAX_ZOOM = 1.8;
+
+function openDojoTrail() {
+  if (!ws) return;
+  ws.send(JSON.stringify({ type: "open_dojo_trail" }));
+}
+
+function closeDojoTrailScreen() {
+  const screen = document.getElementById("dojoTrailScreen");
+  if (screen) screen.style.display = "none";
+}
+
+function renderDojoTrailScreen(trail = {}) {
+  dojoTrailState = trail;
+  const screen = document.getElementById("dojoTrailScreen");
+  const board = document.getElementById("dojoTrailBoard");
+  if (!screen || !board) return;
+  const shouldCenter = screen.style.display === "none" || !screen.dataset.centered;
+  const prevScrollLeft = board.scrollLeft;
+  const prevScrollTop = board.scrollTop;
+  const nodes = Array.isArray(trail.nodes) ? trail.nodes : [];
+  const unlocked = new Set((trail.unlockedNodes || []).map(Number));
+  const firstLocked = nodes.find(n => !unlocked.has(Number(n.id)));
+  const selectedExists = nodes.some(n => Number(n.id) === Number(dojoTrailSelectedId));
+  if (!selectedExists && nodes.length) dojoTrailSelectedId = Number(firstLocked?.id ?? nodes[0].id);
+  setGilsysText("dojoTrailPoints", Number(trail.prestigePoints ?? 0));
+  setGilsysText("dojoTrailCount", `${Number(trail.unlockedCount ?? unlocked.size)} / ${Number(trail.total ?? 100)}`);
+  const nodeByBranchLane = new Map(nodes.map(n => [`${Number(n.branch ?? 0)}:${Number(n.lane ?? 0)}`, n]));
+  const linePairs = [];
+  const pushLine = (a, b, cls = "") => {
+    if (!a || !b) return;
+    linePairs.push(`<line class="${cls}" x1="${Number(a.x ?? 50)}" y1="${Number(a.y ?? 50)}" x2="${Number(b.x ?? 50)}" y2="${Number(b.y ?? 50)}" />`);
+  };
+  for (const node of nodes) {
+    const branch = Number(node.branch ?? 0);
+    const lane = Number(node.lane ?? 0);
+    if (branch >= 7) continue;
+    pushLine(node, nodeByBranchLane.get(`${branch + 1}:${lane}`), node?.isMajor ? "major-ring" : "row-link");
+  }
+  for (const node of nodes) {
+    const branch = Number(node.branch ?? 0);
+    const lane = Number(node.lane ?? 1);
+    const next = nodeByBranchLane.get(`${branch}:${lane + 1}`);
+    pushLine(node, next, "spoke");
+    if (lane === 1) pushLine({ x: 50, y: 90 }, node, "axis");
+  }
+  const lines = `<svg class="dojo-trail-lines" viewBox="0 0 100 100" preserveAspectRatio="none">${linePairs.join("")}</svg>`;
+  const buttons = nodes.map((node) => {
+    const id = Number(node.id);
+    const isUnlocked = unlocked.has(id);
+    const isSelected = id === Number(dojoTrailSelectedId);
+    const major = node.isMajor ? "is-major" : "is-small";
+    const iconHtml = node.icon
+      ? `<img src="${escapeHtml(node.icon)}" alt="${escapeHtml(node.name ?? "軌跡")}">`
+      : `<span>${node.isMajor ? "✦" : "✧"}</span>`;
+    return `
+      <button type="button" class="dojo-trail-node ${major} ${isUnlocked ? "is-unlocked" : "is-locked"} ${isSelected ? "is-selected" : ""}"
+        style="left:${Number(node.x ?? 50)}%;top:${Number(node.y ?? 50)}%;"
+        data-node-id="${id}"
+        onclick="selectDojoTrailNode(${id})">
+        ${iconHtml}
+      </button>
+    `;
+  }).join("");
+  board.innerHTML = `
+    <div class="dojo-trail-zoom">
+      <button type="button" onclick="setDojoTrailZoom(-0.15)">－</button>
+      <span id="dojoTrailZoomLabel">100%</span>
+      <button type="button" onclick="setDojoTrailZoom(0.15)">＋</button>
+      <button type="button" onclick="resetDojoTrailZoom()">等倍</button>
+    </div>
+    <div class="dojo-trail-legend">
+      <span><i class="legend-dot is-open"></i>解放済み</span>
+      <span><i class="legend-dot is-locked"></i>未解放</span>
+      <span><i class="legend-dot is-major"></i>大きな軌跡</span>
+    </div>
+    <div class="dojo-trail-canvas">${lines}<div class="dojo-trail-core" aria-label="核心"></div>${buttons}</div>
+  `;
+  applyDojoTrailZoom();
+  screen.style.display = "block";
+  if (shouldCenter) {
+    centerDojoTrailBoard();
+    screen.dataset.centered = "1";
+  } else {
+    board.scrollLeft = prevScrollLeft;
+    board.scrollTop = prevScrollTop;
+  }
+  renderDojoTrailDetail(dojoTrailSelectedId);
+}
+
+function applyDojoTrailZoom() {
+  const canvas = document.querySelector("#dojoTrailBoard .dojo-trail-canvas");
+  const label = document.getElementById("dojoTrailZoomLabel");
+  const zoom = Math.max(DOJO_TRAIL_MIN_ZOOM, Math.min(DOJO_TRAIL_MAX_ZOOM, Number(dojoTrailZoom || 1)));
+  dojoTrailZoom = zoom;
+  if (canvas) {
+    canvas.style.width = `${Math.round(DOJO_TRAIL_BASE_W * zoom)}px`;
+    canvas.style.height = `${Math.round(DOJO_TRAIL_BASE_H * zoom)}px`;
+    canvas.style.setProperty("--trail-zoom", String(zoom));
+  }
+  if (label) label.textContent = `${Math.round(zoom * 100)}%`;
+}
+
+function centerDojoTrailBoard() {
+  const board = document.getElementById("dojoTrailBoard");
+  if (!board) return;
+  requestAnimationFrame(() => {
+    board.scrollLeft = Math.max(0, board.scrollWidth * 0.5 - board.clientWidth / 2);
+    board.scrollTop = Math.max(0, board.scrollHeight * 0.9 - board.clientHeight / 2);
+  });
+}
+
+function setDojoTrailZoom(delta) {
+  const board = document.getElementById("dojoTrailBoard");
+  if (!board) return;
+  const beforeW = Math.max(1, board.scrollWidth);
+  const beforeH = Math.max(1, board.scrollHeight);
+  const rx = (board.scrollLeft + board.clientWidth / 2) / beforeW;
+  const ry = (board.scrollTop + board.clientHeight / 2) / beforeH;
+  dojoTrailZoom = Math.max(DOJO_TRAIL_MIN_ZOOM, Math.min(DOJO_TRAIL_MAX_ZOOM, Number(dojoTrailZoom || 1) + Number(delta || 0)));
+  applyDojoTrailZoom();
+  board.scrollLeft = Math.max(0, board.scrollWidth * rx - board.clientWidth / 2);
+  board.scrollTop = Math.max(0, board.scrollHeight * ry - board.clientHeight / 2);
+}
+
+function resetDojoTrailZoom() {
+  dojoTrailZoom = 1;
+  applyDojoTrailZoom();
+  centerDojoTrailBoard();
+}
+
+function selectDojoTrailNode(id) {
+  dojoTrailSelectedId = Number(id);
+  document.querySelectorAll("#dojoTrailBoard .dojo-trail-node").forEach((el) => {
+    const match = Number(el.dataset.nodeId) === Number(dojoTrailSelectedId);
+    el.classList.toggle("is-selected", match);
+  });
+  renderDojoTrailDetail(dojoTrailSelectedId);
+}
+
+function renderDojoTrailDetail(id) {
+  const detail = document.getElementById("dojoTrailDetail");
+  const selectedEffect = document.getElementById("dojoTrailSelectedEffect");
+  const nodes = Array.isArray(dojoTrailState?.nodes) ? dojoTrailState.nodes : [];
+  const node = nodes.find(n => Number(n.id) === Number(id));
+  if (!detail || !selectedEffect || !node) return;
+  const unlocked = !!node.unlocked;
+  const points = Number(dojoTrailState?.prestigePoints ?? 0);
+  const cost = Number(node.cost ?? 1);
+  const effectText = node.effect_text || node.effect || node.desc || "効果はまだ設定されていません。";
+  const selectedEffectLabel = node.isMajor
+    ? `大きな軌跡の効果：${effectText}`
+    : `全職業共通の小効果：${effectText}`;
+  selectedEffect.innerHTML = `
+    <div class="dojo-trail-selected-head">
+      <div class="dojo-trail-detail-icon ${node.isMajor ? "is-major" : ""}">${node.icon ? `<img src="${escapeHtml(node.icon)}" alt="${escapeHtml(node.name ?? "軌跡")}">` : (node.isMajor ? "✦" : "✧")}</div>
+      <div>
+        <h3>${escapeHtml(node.name ?? "軌跡")}<span class="dojo-trail-state-badge ${unlocked ? "is-unlocked" : "is-locked"}">${unlocked ? "開放済み" : "未開放"}</span></h3>
+        <p><b>効果</b><span>${escapeHtml(selectedEffectLabel)}</span></p>
+      </div>
+    </div>
+    <div class="dojo-trail-unlock-row">
+      <div class="dojo-trail-cost"><span>必要ポイント</span><b>${cost} P</b></div>
+      <button id="btnUnlockDojoTrail" type="button" onclick="unlockSelectedDojoTrail()">軌跡開放</button>
+    </div>
+  `;
+  detail.innerHTML = `
+    <div class="dojo-trail-detail-icon is-major">✦</div>
+    <h3>軌跡ボーナス</h3>
+    <p>横一列または縦一列の軌跡を解放したときに得られるボーナス効果です。未実装</p>
+  `;
+  const btn = document.getElementById("btnUnlockDojoTrail");
+  if (!btn) return;
+  btn.disabled = unlocked || points < cost;
+  btn.textContent = unlocked ? "開放済み" : points < cost ? "ポイント不足" : "軌跡開放";
+}
+
+function unlockSelectedDojoTrail() {
+  if (!ws || !dojoTrailSelectedId) return;
+  ws.send(JSON.stringify({ type: "dojo_unlock_trail", nodeId: dojoTrailSelectedId }));
+}
+
+function openDojoPrepInventory() {
+  renderDojoPrepInventory();
+}
+
+function renderDojoPrepInventory() {
+  const popup = document.getElementById("shopPopup");
+  const list = document.getElementById("shopList");
+  if (!popup || !list) return;
+  const run = window.gilsysDojoRunView || {};
+  const loadout = run.loadout || {};
+  const slots = run.carrySlots || { items: 1, equipment: 1, special: 1 };
+  const safe = (v) => typeof escapeHtml === "function" ? escapeHtml(String(v ?? "")) : String(v ?? "");
+  const renderGroup = (title, category, items, selectedUids, slotCount, iconFallback) => {
+    const selected = new Set((selectedUids || []).map(String));
+    const rows = Array.isArray(items) && items.length
+      ? items.map((it) => {
+          const uid = String(it?.uid ?? "");
+          const active = selected.has(uid);
+          let icon = iconFallback;
+          let badges = [];
+          let theme = "theme-bronze";
+          let metaClass = "";
+          if (typeof getShopVisualMeta === "function") {
+            const meta = getShopVisualMeta(it);
+            icon = meta.icon;
+            badges = meta.badges || [];
+            theme = meta.theme || theme;
+            metaClass = meta.metaClass || "";
+          }
+          const iconHtml = typeof getShopIconMarkup === "function" ? getShopIconMarkup(icon) : safe(icon);
+          const badgeHtml = badges.map(b => `<span class="shop-badge kind-${safe(b.kind)}">${safe(b.label)}</span>`).join("");
+          return `
+            <div class="shop-card inventory-card ${safe(theme)} ${active ? "is-dojo-loadout-selected" : ""}">
+              <div class="shop-card-main">
+                <div class="shop-card-head">
+                  <div class="shop-icon">${iconHtml}</div>
+                  <div class="shop-title-wrap">
+                    <div class="shop-item-name">${safe(it?.name ?? "持ち物")}</div>
+                    <div class="shop-meta-row ${safe(metaClass)}">${badgeHtml}</div>
+                    <div class="shop-item-desc">${safe(it?.effect_text ?? it?.desc ?? "詳細情報はありません")}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="shop-buy-area">
+                <div class="shop-price">${active ? "持込中" : `枠 ${selected.size}/${slotCount}`}</div>
+                <button onclick="toggleDojoLoadout('${safe(category)}','${safe(uid)}')">${active ? "外す" : "持ち込む"}</button>
+              </div>
+            </div>
+          `;
+        }).join("")
+      : `<div class="gilsys-empty-row">このカテゴリの持ち物はありません</div>`;
+    return `<div class="gilsys-category-row">${safe(title)}　${selected.size}/${slotCount}</div>${rows}`;
+  };
+  list.innerHTML = [
+    renderGroup("アイテム", "items", run.items || [], loadout.items || [], Number(slots.items ?? 1), "🧪"),
+    renderGroup("装備", "equipment", run.equipment || [], loadout.equipment || [], Number(slots.equipment ?? 1), "⚔"),
+    renderGroup("特殊装備", "special", run.special || [], loadout.special || [], Number(slots.special ?? 1), "🔮")
+  ].join("");
+  popup.style.display = "flex";
+}
+
+function toggleDojoLoadout(category, uid) {
+  if (!ws) return;
+  ws.send(JSON.stringify({ type: "dojo_set_loadout", category, uid }));
+}
+
+function backFromDojoTop() {
+  setPhase(PHASE.MODE_SELECT);
+}
+
 
 
 function rerollShop() {
+    const dojoWait = document.getElementById("phaseDojoWait");
+    if (window.matchMode === "dojo" && dojoWait && dojoWait.style.display !== "none") {
+      rerollDojoPrepShop();
+      return;
+    }
     ws.send(JSON.stringify({ type: "shop_reroll" }));
 }
 
@@ -7916,6 +9006,10 @@ function useDollSkill3(){
 
 /* ================= レベルアップ ================= */
 function tryLevelUp(){
+  if (window.matchMode === "dojo") {
+    showCenterToast("達人への道では戦闘中レベルアップは使用できません", 2400);
+    return;
+  }
   if (getClientNextLevelInfo(myLevel, 0).required == null) {
     showCenterToast("最大レベルです", 2200);
     return;
@@ -8297,7 +9391,7 @@ function renderInventoryCard(it, category){
     : (it?.is_equipped_normal || it?.is_equipped_special)
       ? "装備中"
       : category === "item"
-        ? `残り ${Math.max(0, Number(window.itemUsesRemaining ?? 2))}`
+        ? ""
         : "所持中";
 
   return `
@@ -8313,7 +9407,7 @@ function renderInventoryCard(it, category){
         </div>
       </div>
       <div class="shop-buy-area">
-        <div class="shop-price">${escapeHtml(actionStatus)}</div>
+        ${actionStatus ? `<div class="shop-price">${escapeHtml(actionStatus)}</div>` : ""}
         ${isEquipCombineCard
           ? `<button onclick="${combineAction.onclick}">${escapeHtml(combineAction.label)}</button>`
           : `<button ${action.disabled || isPending ? "disabled" : `onclick="${action.onclick}"`}>${escapeHtml(isPending ? "反映中" : action.label)}</button>`
@@ -8325,7 +9419,8 @@ function renderInventoryCard(it, category){
 
 function getShopIconMarkup(icon){
   if (icon && typeof icon === "object" && icon.type === "image" && icon.src) {
-    return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt ?? "")}">`;
+    const generatedClass = String(icon.src).includes("Assets/item_icons/") ? " gilsys-generated-item-icon" : "";
+    return `<img class="gilsys-shop-icon-image${generatedClass}" src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt ?? "")}">`;
   }
   return escapeHtml(icon ?? "");
 }
@@ -8347,18 +9442,28 @@ function getShopItemStar(it){
   return 1;
 }
 
+const GILSYS_ITEM_ICON_BASE = "Assets/item_icons/";
+function gilsysGeneratedIcon(file, alt = "") {
+  return { type: "image", src: `${GILSYS_ITEM_ICON_BASE}${file}.png`, alt };
+}
+
 function getShopVisualMeta(it){
   const star = Math.max(1, Math.min(3, getShopItemStar(it)));
   const badges = [];
-  let icon = "🧰";
+  let icon = gilsysGeneratedIcon("coin", "アイテム");
   let theme = "theme-bronze";
   let showStarBadge = false;
   let metaClass = "";
+  const name = String(it?.name ?? "");
+  if (it?.icon_src) {
+    icon = { type: "image", src: String(it.icon_src), alt: name || "装備" };
+    theme = "theme-rainbow";
+  }
   const mageEquipIcons = {
-    "魔導士の杖": { type: "image", src: "Assets/tokushusoubi/madousinotue.png", alt: "魔導士の杖" },
-    "魔力の指輪": { type: "image", src: "Assets/tokushusoubi/madousinoyubiwa.png", alt: "魔力の指輪" },
-    "魔導士のローブ": { type: "image", src: "Assets/tokushusoubi/madousinoro-bu.png", alt: "魔導士のローブ" },
-    "古代魔導書": { type: "image", src: "Assets/tokushusoubi/kodainomadousho.png", alt: "古代魔導書" },
+    "魔導士の杖": gilsysGeneratedIcon("mage_staff", "魔導士の杖"),
+    "魔力の指輪": gilsysGeneratedIcon("mage_ring", "魔力の指輪"),
+    "魔導士のローブ": gilsysGeneratedIcon("mage_robe", "魔導士のローブ"),
+    "古代魔導書": gilsysGeneratedIcon("mage_book", "古代魔導書"),
   };
 
   if (star === 2) {
@@ -8367,19 +9472,26 @@ function getShopVisualMeta(it){
     theme = "theme-gold";
   }
 
-  if (it?.is_onmyoji_item) {
-    icon = { type: "image", src: "Assets/tokushusoubi/sikigaminohuda.png", alt: String(it?.name ?? "式神のお札") };
+  if (it?.equip_type === "dojo_special") {
+    icon = it?.icon_src ? { type: "image", src: String(it.icon_src), alt: name || "特殊装備" } : icon;
+    theme = "theme-rainbow";
+    badges.push({ label: "達人への道", kind: "job" });
+    badges.push({ label: "特殊装備", kind: "special" });
+  } else if (it?.is_onmyoji_item) {
+    icon = gilsysGeneratedIcon("onmyoji_talisman", name || "式神のお札");
     theme = "theme-rainbow";
     badges.push({ label: "陰陽師", kind: "job" });
     badges.push({ label: "召喚札", kind: "special" });
     badges.push({ label: it.shikigami_rank === "high" ? "上級式神" : "下級式神", kind: "rank" });
   } else if (it?.is_mage_item) {
-    icon = "🧪";
+    icon = name.includes("大") ? gilsysGeneratedIcon("mana_large", name)
+      : name.includes("中") ? gilsysGeneratedIcon("mana_medium", name)
+      : gilsysGeneratedIcon("mana_small", name);
     showStarBadge = true;
     metaClass = "nowrap";
-    if (String(it?.name ?? "").includes("魔力水(中)") || String(it?.name ?? "").includes("魔力水（中）")) {
+    if (name.includes("魔力水(中)") || name.includes("魔力水（中）")) {
       theme = "theme-silver";
-    } else if (String(it?.name ?? "").includes("魔力水(大)") || String(it?.name ?? "").includes("魔力水（大）")) {
+    } else if (name.includes("魔力水(大)") || name.includes("魔力水（大）")) {
       theme = "theme-gold";
     } else {
       theme = "theme-bronze";
@@ -8392,47 +9504,69 @@ function getShopVisualMeta(it){
     badges.push({ label: "魔導士", kind: "job" });
     badges.push({ label: "専用装備", kind: "special" });
   } else if (it?.is_doll_item) {
-    icon = "🪡";
+    icon = gilsysGeneratedIcon("repair_kit", name || "修理キット");
     theme = "theme-rainbow";
     badges.push({ label: "人形使い", kind: "job" });
     badges.push({ label: "特殊アイテム", kind: "special" });
   } else if (it?.is_doll_costume) {
-    icon = "🎎";
+    if (it?.part === "head") icon = gilsysGeneratedIcon("doll_hat", name);
+    else if (it?.part === "body") icon = gilsysGeneratedIcon("doll_body", name);
+    else if (it?.part === "leg") icon = gilsysGeneratedIcon("doll_leg", name);
+    else if (it?.part === "foot") icon = gilsysGeneratedIcon("doll_foot", name);
+    else icon = gilsysGeneratedIcon("doll_body", name);
     showStarBadge = true;
     badges.push({ label: "人形使い", kind: "job" });
     badges.push({ label: "衣装", kind: "special" });
   } else if (it?.is_arrow || it?.equip_type === "arrow") {
-    icon = "🏹";
+    const effect = String(it?.effect ?? "").toLowerCase();
+    if (effect === "poison" || name.includes("毒")) icon = gilsysGeneratedIcon("arrow_poison", name);
+    else if (effect === "freeze" || name.includes("氷")) icon = gilsysGeneratedIcon("arrow_freeze", name);
+    else if (effect === "counter" || name.includes("反撃")) icon = gilsysGeneratedIcon("arrow_counter", name);
+    else if (effect === "critical" || name.includes("会心")) icon = gilsysGeneratedIcon("arrow_critical", name);
+    else icon = gilsysGeneratedIcon("arrow_normal", name);
     theme = "theme-rainbow";
     badges.push({ label: "弓兵", kind: "job" });
     badges.push({ label: "特殊装備", kind: "special" });
   } else if (it?.equip_type === "alchemist_unique") {
-    icon = "⚗️";
+    icon = gilsysGeneratedIcon("alchemist_unique", name || "錬金術師の合成武器");
     theme = "theme-rainbow";
     badges.push({ label: "錬金術師", kind: "job" });
     badges.push({ label: "特製装備", kind: "special" });
+  } else if (it?.is_priest_item) {
+    if (it?.priest_effect === "regen") icon = gilsysGeneratedIcon("priest_incense", name);
+    else if (it?.priest_effect === "blessing_attack") icon = gilsysGeneratedIcon("priest_blade", name);
+    else icon = gilsysGeneratedIcon("priest_chalice", name);
+    theme = "theme-rainbow";
+    badges.push({ label: "僧侶", kind: "job" });
+    badges.push({ label: "専用アイテム", kind: "special" });
+  } else if (it?.is_mad_special_item) {
+    icon = gilsysGeneratedIcon("mad_elixir", name || "狂気の秘薬");
+    theme = star >= 3 ? "theme-rainbow" : star === 2 ? "theme-silver" : "theme-bronze";
+    showStarBadge = true;
+    badges.push({ label: "狂人", kind: "job" });
+    badges.push({ label: "特殊アイテム", kind: "special" });
   } else if (it?.is_equip) {
     showStarBadge = true;
     if (it?.effect_type === "coin_per_turn" || it?.equip_category === "coin") {
-      icon = "💰";
+      icon = gilsysGeneratedIcon(`equip_coin_${star}`, name || "コイン装備");
     } else if (String(it?.effect_type ?? it?.equip_category ?? "").includes("攻撃")) {
-      icon = "⚔️";
+      icon = gilsysGeneratedIcon(`equip_atk_${star}`, name || "攻撃装備");
     } else if (String(it?.effect_type ?? it?.equip_category ?? "").includes("防御")) {
-      icon = "🛡️";
+      icon = gilsysGeneratedIcon(`equip_def_${star}`, name || "防御装備");
     } else {
-      icon = "🧱";
+      icon = gilsysGeneratedIcon(`equip_def_${star}`, name || "装備");
     }
     badges.push({ label: "通常装備", kind: "normal" });
   } else {
     showStarBadge = true;
     if (String(it?.effect_type ?? "").includes("HP")) {
-      icon = "❤️";
+      icon = gilsysGeneratedIcon(`item_hp_${star}`, name || "HP回復");
     } else if (String(it?.effect_type ?? "").includes("攻撃")) {
-      icon = "🗡️";
+      icon = gilsysGeneratedIcon(`item_atk_${star}`, name || "攻撃力UP");
     } else if (String(it?.effect_type ?? "").includes("防御")) {
-      icon = "🛡️";
+      icon = gilsysGeneratedIcon(`item_def_${star}`, name || "防御力UP");
     } else {
-      icon = "🧪";
+      icon = gilsysGeneratedIcon(`item_hp_${star}`, name || "アイテム");
     }
     badges.push({ label: "通常アイテム", kind: "normal" });
   }
@@ -8791,7 +9925,10 @@ document.getElementById("btnRandom").onclick = () => {
   const status = document.getElementById("connectStatus");
   if (status) status.textContent = "";
   const connectBtn = document.getElementById("btnConnectPhase1");
-  if (connectBtn) connectBtn.disabled = false;
+  if (connectBtn) {
+    connectBtn.textContent = "接続開始";
+    connectBtn.disabled = false;
+  }
 };
 
 
@@ -8817,7 +9954,10 @@ document.getElementById("btnRoom").onclick = () => {
   const status = document.getElementById("connectStatus");
   if (status) status.textContent = "ルーム番号を入力し、職業を選んで接続してください";
   const connectBtn = document.getElementById("btnConnectPhase1");
-  if (connectBtn) connectBtn.disabled = false;
+  if (connectBtn) {
+    connectBtn.textContent = "接続開始";
+    connectBtn.disabled = false;
+  }
 };
 
 
@@ -8851,6 +9991,19 @@ document.getElementById("btnConnectPhase1").onclick = () => {
     return;
   }
 
+  if (window.matchMode === "dojo") {
+    if (Number(selectedJobId) !== 1) {
+      isConnecting = false;
+      document.getElementById("btnConnectPhase1").disabled = false;
+      document.getElementById("connectStatus").textContent = "フェーズ1では戦士のみ挑戦できます";
+      alert("フェーズ1では戦士のみ挑戦できます。");
+      return;
+    }
+    document.getElementById("connectStatus").textContent = "達人への道に接続中...";
+    joinDojo();
+    return;
+  }
+
   // random / room
   startMatchTimer();
 
@@ -8872,6 +10025,8 @@ document.getElementById("btnCancelRandom").onclick = () => {
   isConnecting = false;
   document.getElementById("btnConnectPhase1").disabled = false;
   document.getElementById("connectStatus").textContent = "";
+  const connectBtn = document.getElementById("btnConnectPhase1");
+  if (connectBtn) connectBtn.textContent = "接続開始";
 
   setPhase(PHASE.MODE_SELECT);
   refreshSummary();
@@ -8901,7 +10056,70 @@ document.getElementById("btnCPU").onclick = () => {
   document.getElementById("connectStatus").textContent =
     "CPUと対戦します（職業を選んで接続してください）";
   const connectBtn = document.getElementById("btnConnectPhase1");
-  if (connectBtn) connectBtn.disabled = false;
+  if (connectBtn) {
+    connectBtn.textContent = "接続開始";
+    connectBtn.disabled = false;
+  }
+};
+
+document.getElementById("btnDojo").onclick = () => {
+  showCenterToast("達人への道は現在未実装です", 2200);
+};
+
+document.getElementById("btnStartDojo").onclick = () => {
+  const status = document.getElementById("dojoTopStatus");
+  if (status) status.textContent = "達人への道に接続中...";
+  cleanupSocket();
+  joinDojo();
+};
+
+document.getElementById("btnDojoNextStage").onclick = () => {
+  if (!ws) return;
+  ws.send(JSON.stringify({ type: "dojo_next_stage" }));
+};
+
+document.getElementById("btnDojoPrepShop").onclick = () => {
+  openDojoPrepShop();
+};
+
+document.getElementById("btnDojoPrepLevelUp").onclick = () => {
+  requestDojoPrepLevelUp();
+};
+
+document.getElementById("btnDojoTrail").onclick = () => {
+  openDojoTrail();
+};
+
+document.getElementById("btnDojoPrepInventory").onclick = () => {
+  openDojoPrepInventory();
+};
+
+document.getElementById("btnDojoEndRun").onclick = () => {
+  if (ws) {
+    const canSave = window.gilsysDojoCanContinue !== false;
+    if (!canSave) {
+      ws.send(JSON.stringify({ type: "dojo_end_run", mode: "abandon" }));
+      return;
+    }
+    openItemConfirm("挑戦を終了します。ここまでを保存して、次回は途中から再開しますか？", () => {
+      ws.send(JSON.stringify({ type: "dojo_end_run", mode: "save" }));
+    }, {
+      title: "挑戦終了",
+      okLabel: "保存して終了",
+      cancelLabel: "あきらめる",
+      onCancel: () => {
+        openItemConfirm("本当にあきらめますか？保存中の達人への道データは削除されます。", () => {
+          ws.send(JSON.stringify({ type: "dojo_end_run", mode: "abandon" }));
+        }, {
+          title: "あきらめる確認",
+          okLabel: "あきらめる",
+          cancelLabel: "戻る"
+        });
+      }
+    });
+  } else {
+    setPhase(PHASE.MODE_SELECT);
+  }
 };
 
 
@@ -8919,6 +10137,10 @@ document.getElementById("btnBackToMenu").onclick = () => {
   myTurn = false;
   myLevel = 1;
   battleEnded = false;
+  dojoAutoEnabled = false;
+  dojoAutoSending = false;
+  clearTimeout(dojoAutoTimer);
+  updateDojoBattleButtons();
   window.itemList = [];
   window.arrowSlots = 1;
 
@@ -12148,6 +13370,1394 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
   #phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area button {
     min-width: 68px !important;
     padding-inline: 8px !important;
+  }
+}
+</style>
+<style id="gilsys-dojo-style">
+.gilsys-dojo-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  min-height: 100vh;
+  background: url("Assets/fe-zu0and1haikei.png") center center / cover no-repeat;
+  color: #f7e8c6;
+  box-sizing: border-box;
+  padding: min(7vh, 54px) 18px;
+}
+.gilsys-dojo-panel {
+  width: min(760px, 94vw);
+  margin: 0 auto;
+  padding: 22px;
+  border: 1px solid rgba(231,178,86,.72);
+  border-radius: 10px;
+  background: rgba(16, 18, 24, .92);
+  box-shadow: 0 20px 48px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,245,200,.12);
+}
+.gilsys-dojo-panel h2 { margin: 0 0 12px; font-size: 28px; letter-spacing: .08em; }
+.gilsys-dojo-panel p { margin: 0 0 16px; color: rgba(247,232,198,.78); line-height: 1.7; }
+.gilsys-dojo-back,
+.gilsys-dojo-primary,
+.gilsys-dojo-actions button {
+  border: 1px solid rgba(231,178,86,.72);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(72,52,26,.95), rgba(22,24,31,.96));
+  color: #f7e8c6;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 10px 14px;
+}
+.gilsys-dojo-back { float: right; padding: 7px 12px; }
+.gilsys-dojo-primary { width: 100%; margin-top: 16px; font-size: 18px; }
+.gilsys-dojo-job,
+.gilsys-dojo-progress,
+.gilsys-dojo-wait-summary,
+.gilsys-dojo-drops {
+  border: 1px solid rgba(255,220,132,.32);
+  background: rgba(0,0,0,.22);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.gilsys-dojo-job { display: flex; justify-content: space-between; gap: 14px; }
+.gilsys-dojo-wait-summary { display: grid; gap: 8px; }
+.gilsys-dojo-actions { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0,1fr)); margin-top: 16px; }
+.gilsys-dojo-actions button:disabled { opacity: .45; cursor: default; }
+.gilsys-dojo-status { min-height: 20px; margin-top: 10px !important; }
+@media (max-width: 700px) {
+  .gilsys-dojo-panel { padding: 16px; }
+  .gilsys-dojo-panel h2 { font-size: 22px; }
+  .gilsys-dojo-actions { grid-template-columns: 1fr 1fr; }
+}
+</style>
+<style id="gilsys-dojo-wait-reference-style">
+.dojo-trail-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99960;
+  color: #f7e4bd;
+  background:
+    radial-gradient(circle at 50% 14%, rgba(45,111,156,.46), transparent 30%),
+    radial-gradient(circle at 50% 92%, rgba(235,179,76,.28), transparent 24%),
+    linear-gradient(180deg, #071727, #08101a 62%, #02060c);
+  overflow: hidden;
+}
+.dojo-trail-shell {
+  width: min(1760px, 100vw);
+  height: 100svh;
+  margin: 0 auto;
+  padding: 18px 26px 20px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(270px, .9fr) minmax(360px, 1.35fr) minmax(270px, .9fr);
+  grid-template-rows: auto minmax(0, 1fr) minmax(172px, 218px);
+  gap: 12px 18px;
+}
+.dojo-trail-head {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 190px 1fr 190px;
+  align-items: center;
+}
+.dojo-trail-head button,
+.dojo-trail-right button,
+.dojo-trail-unlock-row button {
+  min-height: 58px;
+  border: 2px solid rgba(218,154,58,.82);
+  background: linear-gradient(180deg, rgba(24,36,42,.96), rgba(4,9,12,.98));
+  color: #ffe6ac;
+  font-weight: 900;
+  font-size: 22px;
+}
+.dojo-trail-head div {
+  text-align: center;
+}
+.dojo-trail-head span {
+  display: block;
+  color: #d8a85a;
+  font-size: 14px;
+}
+.dojo-trail-head h1 {
+  margin: 0;
+  color: #ffe9b0;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(42px, 4.2vw, 76px);
+  line-height: 1;
+  letter-spacing: 0;
+}
+.dojo-trail-left,
+.dojo-trail-right {
+  min-height: 0;
+  border: 2px solid rgba(191,122,40,.82);
+  background: linear-gradient(180deg, rgba(12,24,32,.9), rgba(4,9,13,.94));
+  box-shadow: inset 0 0 0 1px rgba(255,226,142,.14), 0 20px 42px rgba(0,0,0,.45);
+  padding: 18px;
+}
+.dojo-trail-left {
+  grid-column: 1 / 3;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 14px 22px;
+  align-items: start;
+  transform: translateY(-12px);
+}
+.dojo-trail-right {
+  grid-column: 3;
+  grid-row: 3;
+  transform: translateY(-12px);
+}
+.dojo-trail-left h2,
+.dojo-trail-right h2 {
+  margin: 0 0 16px;
+  color: #f5cf84;
+  text-align: center;
+  font-family: "Yu Mincho", serif;
+  letter-spacing: 0;
+}
+.dojo-trail-points {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid rgba(225,166,70,.52);
+  background: rgba(0,0,0,.25);
+}
+.dojo-trail-points b {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  color: #ffe3a2;
+}
+.dojo-trail-count {
+  margin-top: 16px;
+  padding: 14px;
+  border-bottom: 1px solid rgba(225,166,70,.35);
+  color: #d9bd8c;
+}
+.dojo-trail-bonus {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  margin-top: 0;
+  color: #e5c99a;
+  line-height: 1.7;
+}
+.dojo-trail-bonus h3 {
+  color: #dba95b;
+}
+.dojo-trail-selected-effect {
+  color: #ead1a4;
+}
+.dojo-trail-selected-head {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+.dojo-trail-selected-head .dojo-trail-detail-icon {
+  width: 74px;
+  margin: 0;
+  font-size: 32px;
+}
+.dojo-trail-selected-head h3 {
+  margin: 0 0 8px;
+  color: #ffe4a0;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dojo-trail-state-badge {
+  display: inline-grid;
+  place-items: center;
+  min-height: 26px;
+  padding: 2px 10px;
+  border: 1px solid rgba(216,161,74,.5);
+  color: #ffd98b;
+  background: rgba(0,0,0,.24);
+  font-size: 13px;
+  line-height: 1;
+}
+.dojo-trail-state-badge.is-unlocked {
+  border-color: rgba(255,220,96,.85);
+  color: #fff0bd;
+  box-shadow: 0 0 12px rgba(255,205,92,.28);
+}
+.dojo-trail-selected-head p {
+  margin: 0;
+  color: #d9bd8c;
+}
+.dojo-trail-selected-head p b {
+  display: block;
+  color: #d8a85a;
+  margin-bottom: 4px;
+}
+.dojo-trail-selected-head p span {
+  display: block;
+  color: #ead1a4;
+  line-height: 1.55;
+  max-height: 76px;
+  overflow: auto;
+  padding-right: 6px;
+}
+.dojo-trail-unlock-row {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  border-top: 1px solid rgba(216,161,74,.3);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+.dojo-trail-cost {
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(216,161,74,.34);
+  background: rgba(0,0,0,.2);
+  padding: 0 14px;
+}
+.dojo-trail-cost span {
+  color: #d8a85a;
+}
+.dojo-trail-cost b {
+  color: #ffe2a3;
+}
+.dojo-trail-unlock-row button {
+  flex: 1;
+  font-size: 18px;
+}
+.dojo-trail-board {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  position: relative;
+  min-height: 0;
+  border: 2px solid rgba(183,124,48,.68);
+  overflow: auto;
+  background:
+    linear-gradient(90deg, rgba(255,200,92,.09), transparent 18%, transparent 82%, rgba(255,200,92,.09)),
+    radial-gradient(circle at 50% 86%, rgba(28,134,217,.22), transparent 30%),
+    rgba(2,7,11,.75);
+  box-shadow: inset 0 0 0 1px rgba(255,232,157,.14), 0 18px 44px rgba(0,0,0,.45);
+}
+.dojo-trail-zoom {
+  position: sticky;
+  top: 12px;
+  left: 12px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  margin: 12px 0 -58px 12px;
+  border: 1px solid rgba(225,166,70,.6);
+  background: rgba(4,10,14,.88);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+.dojo-trail-zoom button {
+  width: 46px;
+  min-height: 36px;
+  border: 1px solid rgba(225,166,70,.75);
+  background: linear-gradient(180deg, rgba(31,47,51,.96), rgba(6,13,16,.98));
+  color: #ffe6ac;
+  font-weight: 900;
+}
+.dojo-trail-zoom button:last-child {
+  width: 64px;
+}
+.dojo-trail-zoom span {
+  min-width: 54px;
+  text-align: center;
+  color: #ffe6ac;
+  font-weight: 900;
+}
+.dojo-trail-legend {
+  position: sticky;
+  top: 12px;
+  left: calc(100% - 360px);
+  z-index: 30;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 12px;
+  margin: 12px 12px -59px auto;
+  border: 1px solid rgba(225,166,70,.55);
+  background: rgba(4,10,16,.9);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  color: #f4d69a;
+  font-size: 13px;
+  font-weight: 800;
+}
+.dojo-trail-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.legend-dot {
+  width: 12px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid rgba(255,239,190,.7);
+  background: #244b77;
+}
+.legend-dot.is-open {
+  background: #e8b34d;
+  box-shadow: 0 0 10px rgba(255,206,91,.75);
+}
+.legend-dot.is-locked {
+  background: #18324a;
+  opacity: .65;
+}
+.legend-dot.is-major {
+  width: 16px;
+  background: #c77b20;
+}
+.dojo-trail-canvas {
+  position: relative;
+  --trail-zoom: 1;
+  width: 3200px;
+  height: 2400px;
+  min-width: 100%;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 50% 90%, rgba(245,170,61,.28), transparent 15%),
+    radial-gradient(circle at 50% 52%, rgba(51,129,188,.3), transparent 42%),
+    radial-gradient(circle at 50% 12%, rgba(44,74,105,.34), transparent 48%);
+}
+.dojo-trail-core {
+  position: absolute;
+  left: 50%;
+  top: 90%;
+  width: calc(110px * var(--trail-zoom));
+  min-width: 34px;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-radius: 50%;
+  border: max(1px, calc(3px * var(--trail-zoom))) solid #f8d683;
+  background: radial-gradient(circle, rgba(179,113,23,.98), rgba(35,19,4,.98));
+  color: #fff2c4;
+  font-weight: 900;
+  z-index: 4;
+}
+.dojo-trail-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+.dojo-trail-lines line {
+  stroke: rgba(232,177,82,.48);
+  stroke-width: .22;
+  vector-effect: non-scaling-stroke;
+}
+.dojo-trail-lines line.spoke,
+.dojo-trail-lines line.axis {
+  stroke: rgba(120,190,255,.72);
+  stroke-width: .32;
+}
+.dojo-trail-lines line.major-ring {
+  stroke: rgba(255,206,79,.72);
+  stroke-width: .34;
+}
+.dojo-trail-lines line.row-link {
+  stroke: rgba(255,206,79,.58);
+  stroke-width: .24;
+}
+.dojo-trail-node {
+  position: absolute;
+  width: calc(44px * var(--trail-zoom));
+  min-width: 12px;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: max(1px, calc(2px * var(--trail-zoom))) solid rgba(155,202,255,.82);
+  background: radial-gradient(circle, rgba(28,98,168,.98), rgba(5,18,36,.98));
+  color: #dcefff;
+  padding: 0;
+  z-index: 5;
+}
+.dojo-trail-node span {
+  font-size: max(10px, calc(20px * var(--trail-zoom)));
+  line-height: 1;
+}
+.dojo-trail-node img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(255,213,101,.65));
+}
+.dojo-trail-node.is-major {
+  width: calc(94px * var(--trail-zoom));
+  min-width: 26px;
+  border-color: #ffe19a;
+  background: radial-gradient(circle, rgba(205,136,26,.98), rgba(69,38,5,.98));
+  color: #fff0bf;
+}
+.dojo-trail-node.is-major span {
+  font-size: max(14px, calc(34px * var(--trail-zoom)));
+}
+.dojo-trail-node.is-unlocked {
+  box-shadow: 0 0 18px rgba(255,205,92,.75), inset 0 0 0 1px rgba(255,239,190,.26);
+}
+.dojo-trail-node.is-locked {
+  filter: grayscale(.5);
+  opacity: .72;
+}
+.dojo-trail-node.is-selected {
+  outline: max(1px, calc(3px * var(--trail-zoom))) solid rgba(255,238,175,.96);
+  outline-offset: max(1px, calc(5px * var(--trail-zoom)));
+  box-shadow: 0 0 24px rgba(255,211,94,.62), inset 0 0 0 1px rgba(255,239,190,.24);
+}
+.dojo-trail-node:hover,
+.dojo-trail-node:active,
+.dojo-trail-node:focus {
+  transform: translate(-50%, -50%) !important;
+}
+.dojo-trail-detail {
+  min-height: 0;
+}
+.dojo-trail-detail-icon {
+  width: 120px;
+  aspect-ratio: 1;
+  margin: 12px auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid rgba(215,161,74,.92);
+  background: radial-gradient(circle, rgba(44,53,57,.98), rgba(7,10,13,.98));
+  font-size: 52px;
+}
+.dojo-trail-detail-icon.is-major {
+  border-color: #ffe19a;
+  background: radial-gradient(circle, rgba(116,38,31,.98), rgba(28,9,8,.98));
+}
+.dojo-trail-detail-icon img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(255,213,101,.65));
+}
+.dojo-trail-detail h3 {
+  margin: 0 0 14px;
+  color: #ffe4a0;
+  text-align: center;
+  font-size: 28px;
+}
+.dojo-trail-detail p {
+  color: #ead1a4;
+  line-height: 1.7;
+}
+.dojo-trail-effect-box {
+  border: 1px solid rgba(216,161,74,.38);
+  background: rgba(0,0,0,.24);
+  padding: 12px;
+  margin: 14px 0;
+}
+.dojo-trail-effect-box b {
+  display: block;
+  color: #d8a85a;
+  margin-bottom: 6px;
+}
+.dojo-trail-effect-box p {
+  margin: 0;
+}
+.dojo-trail-detail dl {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+}
+.dojo-trail-detail dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid rgba(216,161,74,.3);
+  padding-top: 10px;
+}
+.dojo-trail-detail dt {
+  color: #d8a85a;
+}
+.dojo-trail-detail dd {
+  margin: 0;
+  text-align: right;
+}
+#btnUnlockDojoTrail {
+  width: auto;
+  margin-top: 0;
+  background: linear-gradient(180deg, rgba(151,101,20,.98), rgba(56,31,5,.98));
+}
+#btnUnlockDojoTrail:disabled {
+  opacity: .52;
+}
+.dojo-result-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99970;
+  color: #f8e7bd;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.82), rgba(0,0,0,.28) 17%, rgba(0,0,0,.18) 50%, rgba(0,0,0,.3) 83%, rgba(0,0,0,.82)),
+    radial-gradient(circle at 50% 10%, rgba(255,175,52,.34), transparent 28%),
+    linear-gradient(180deg, #11191e, #03070b 72%);
+  overflow: hidden;
+}
+.dojo-result-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(2,7,12,.42);
+  pointer-events: none;
+}
+.dojo-result-screen.is-defeat {
+  filter: saturate(.78);
+}
+.dojo-result-screen.is-defeat::before {
+  background: rgba(5,5,9,.68);
+}
+.dojo-result-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1540px, 100vw);
+  height: 100svh;
+  margin: 0 auto;
+  padding: clamp(16px, 2vw, 34px) clamp(18px, 3vw, 56px) clamp(18px, 2vw, 32px);
+  display: grid;
+  grid-template-columns: minmax(250px, .85fr) minmax(520px, 1.7fr) minmax(250px, .9fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(12px, 1.2vw, 22px);
+  box-sizing: border-box;
+}
+.dojo-result-head {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  text-shadow: 0 0 22px rgba(255,190,66,.8), 0 4px 0 rgba(25,11,0,.95);
+}
+.dojo-result-head h1 {
+  margin: 0;
+  font-size: clamp(58px, 8.5vw, 132px);
+  line-height: .86;
+  letter-spacing: 0;
+  color: #ffe9a6;
+}
+.is-defeat .dojo-result-head h1 {
+  color: #c9d1e6;
+  text-shadow: 0 0 20px rgba(120,150,210,.55), 0 4px 0 rgba(0,0,0,.95);
+}
+.dojo-result-stage {
+  margin-top: 10px;
+  font-size: clamp(20px, 2.1vw, 36px);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+.dojo-result-reward-label {
+  width: min(620px, 52vw);
+  margin: 16px auto 0;
+  border-top: 1px solid rgba(225,164,70,.78);
+  border-bottom: 1px solid rgba(225,164,70,.5);
+  padding: 7px 0;
+  color: #ffd98b;
+  font-size: clamp(18px, 1.5vw, 28px);
+  letter-spacing: 0;
+}
+.dojo-result-panel {
+  min-height: 0;
+  border: 2px solid rgba(190,121,38,.9);
+  background:
+    linear-gradient(180deg, rgba(8,19,29,.92), rgba(3,8,13,.88)),
+    radial-gradient(circle at 50% 0, rgba(211,139,39,.14), transparent 48%);
+  box-shadow: inset 0 0 0 1px rgba(255,225,143,.16), 0 20px 40px rgba(0,0,0,.58);
+  padding: clamp(12px, 1.05vw, 18px);
+  overflow: hidden;
+}
+.dojo-result-panel h2 {
+  margin: 0 0 14px;
+  text-align: center;
+  color: #ffd88c;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(17px, 1.35vw, 24px);
+  letter-spacing: 0;
+}
+.dojo-result-player {
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 14px;
+}
+.dojo-result-portrait {
+  min-height: 190px;
+  border: 1px solid rgba(217,154,70,.8);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(230,211,172,.18), transparent 46%),
+    url("Assets/shokugyousenntaku/sennsi1_transparent.png") center 50% / 92% auto no-repeat,
+    rgba(4,8,12,.72);
+}
+.dojo-result-player b {
+  display: block;
+  font-size: 24px;
+  color: #fff0c8;
+  font-family: "Yu Mincho", serif;
+  margin: 10px 0 12px;
+}
+.dojo-result-player span,
+.dojo-result-lines div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(242,193,108,.18);
+  padding: 8px 0;
+  color: #f2d199;
+}
+.dojo-result-lines {
+  margin-top: 14px;
+}
+.dojo-result-lines b {
+  color: #fff2d4;
+  font-size: 18px;
+}
+.dojo-result-message {
+  margin-top: 18px;
+  border: 1px solid rgba(216,161,74,.46);
+  background: rgba(0,0,0,.28);
+  padding: 14px;
+  color: #fff3d1;
+  line-height: 1.6;
+}
+.dojo-result-drops {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  min-height: 150px;
+}
+.dojo-result-drop {
+  min-width: 0;
+  min-height: 148px;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 6px;
+  place-items: center;
+  border: 2px solid rgba(185,125,45,.75);
+  background: linear-gradient(180deg, rgba(19,25,28,.92), rgba(5,10,15,.94));
+  color: #f8e2b0;
+  font-family: "Yu Mincho", serif;
+}
+.dojo-result-drop.theme-gold { border-color: rgba(255,220,96,.95); box-shadow: 0 0 22px rgba(255,192,61,.3); }
+.dojo-result-drop.theme-rainbow,
+.dojo-result-drop.theme-rainbow-blue { border-color: rgba(188,128,255,.9); box-shadow: 0 0 22px rgba(134,203,255,.28); }
+.dojo-result-drop.is-selected {
+  outline: 2px solid #ffe39a;
+  box-shadow: 0 0 24px rgba(255,204,82,.54);
+}
+.dojo-result-drop span {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+}
+.dojo-result-drop img {
+  width: 58px;
+  height: 58px;
+}
+.dojo-result-drop b {
+  font-size: 15px;
+  line-height: 1.2;
+}
+.dojo-result-drop i {
+  color: #ffd77e;
+  font-style: normal;
+  font-size: 18px;
+}
+.dojo-result-exp {
+  margin-top: 18px;
+  border: 1px solid rgba(211,151,61,.6);
+  padding: 12px 16px;
+  background: rgba(0,0,0,.24);
+}
+.dojo-result-exp h3 {
+  margin: 0 0 8px;
+  color: #f6cb76;
+  font-family: "Yu Mincho", serif;
+}
+#dojoResultExpValue {
+  font-family: Georgia, serif;
+  font-size: clamp(28px, 3vw, 48px);
+  color: #ffe19a;
+}
+.dojo-result-exp-bar {
+  height: 10px;
+  border: 1px solid rgba(242,201,108,.42);
+  background: rgba(0,0,0,.44);
+  margin: 8px 0;
+}
+.dojo-result-exp-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #b07a18, #ffe28a);
+}
+.dojo-result-extra {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.dojo-result-extra div {
+  border: 1px solid rgba(216,161,74,.38);
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  color: #f3d39a;
+}
+.dojo-result-extra b {
+  color: #ffeab2;
+}
+.dojo-result-detail-icon {
+  width: 150px;
+  height: 150px;
+  margin: 8px auto 18px;
+  display: grid;
+  place-items: center;
+  font-size: 74px;
+  border: 2px solid rgba(190,121,38,.9);
+  background: rgba(0,0,0,.3);
+}
+.dojo-result-detail-icon img {
+  width: 118px;
+  height: 118px;
+}
+#dojoResultDetail h3 {
+  margin: 0;
+  color: #fff0c7;
+  font-size: 26px;
+  font-family: "Yu Mincho", serif;
+}
+.dojo-result-detail-kind {
+  margin: 10px 0 16px;
+  color: #d8a85a;
+}
+#dojoResultDetail p {
+  line-height: 1.75;
+  color: #ead1a4;
+}
+.dojo-result-owned {
+  margin-top: 28px;
+  border: 1px solid rgba(211,151,61,.55);
+  padding: 8px 12px;
+  text-align: center;
+}
+.dojo-result-actions {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr;
+  gap: clamp(14px, 2vw, 34px);
+  align-items: center;
+  padding: 0 min(8vw, 120px);
+}
+.dojo-result-actions.is-defeat-actions {
+  grid-template-columns: minmax(220px, 420px);
+  justify-content: center;
+}
+.dojo-result-actions button {
+  min-height: 72px;
+  border: 2px solid rgba(210,145,50,.92);
+  background: linear-gradient(180deg, rgba(30,45,44,.95), rgba(4,13,15,.98));
+  color: #ffe5ad;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(20px, 2vw, 34px);
+  font-weight: 900;
+  letter-spacing: 0;
+  box-shadow: inset 0 0 0 1px rgba(255,233,174,.16), 0 0 22px rgba(0,0,0,.55);
+}
+.dojo-result-actions button.primary {
+  border-color: #ffe39a;
+  background: linear-gradient(180deg, rgba(151,101,20,.98), rgba(56,31,5,.98));
+  box-shadow: 0 0 30px rgba(255,194,64,.58), inset 0 0 0 1px rgba(255,245,200,.3);
+}
+.dojo-locked-icon {
+  filter: grayscale(.28);
+  opacity: .58;
+  border-style: dashed !important;
+}
+.dojo-locked-icon .shop-icon {
+  color: #b8a98a;
+}
+.inventory-card.is-dojo-loadout-selected {
+  outline: 2px solid rgba(255,229,142,.9);
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 1px rgba(255,245,200,.24), 0 0 18px rgba(255,211,96,.28);
+}
+.dojo-result-empty {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+  color: #d8c19b;
+  border: 1px dashed rgba(216,161,74,.5);
+}
+@media (max-width: 980px) {
+  .dojo-result-shell {
+    padding: 10px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    overflow: auto;
+  }
+  .dojo-result-head h1 { font-size: 46px; }
+  .dojo-result-right { display: none !important; }
+  .dojo-result-drops { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dojo-result-actions { grid-template-columns: 1fr; padding: 0; }
+  .dojo-result-actions button { min-height: 48px; font-size: 18px; }
+}
+#phaseDojoWait.gilsys-dojo-screen {
+  padding: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(4,7,10,.18), rgba(2,3,5,.82)),
+    url("Assets/dojo/dojo-wait-bg.png") center center / cover no-repeat;
+}
+#phaseDojoWait .gilsys-dojo-wait-panel {
+  position: relative;
+  width: min(1500px, 100vw);
+  height: 100svh;
+  min-height: 0;
+  margin: 0 auto;
+  padding: clamp(10px, 1.25vw, 20px) clamp(12px, 2vw, 34px);
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(6,10,15,.82), transparent 12%, transparent 88%, rgba(6,10,15,.82)),
+    radial-gradient(circle at 50% 6%, rgba(214,159,67,.16), transparent 28%);
+  box-shadow: none;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: clamp(6px, .8vw, 12px);
+  box-sizing: border-box;
+}
+#phaseDojoWait #dojoWaitTitle {
+  margin: 0;
+  text-align: center;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(24px, 3.2vw, 48px);
+  line-height: 1;
+  letter-spacing: .16em;
+  color: #ffe6a6;
+  text-shadow: 0 0 18px rgba(255,198,91,.55), 0 3px 0 rgba(42,20,2,.95);
+}
+#phaseDojoWait #dojoWaitTitle::after {
+  content: "◇　戦闘待機画面　◇";
+  display: block;
+  margin-top: 4px;
+  font-size: clamp(11px, 1.15vw, 17px);
+  letter-spacing: .14em;
+  color: #f4d18b;
+  text-shadow: 0 0 12px rgba(255,185,78,.38);
+}
+#phaseDojoWait .gilsys-dojo-wait-summary {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: block;
+  min-height: 0;
+  overflow: hidden;
+}
+.dojo-wait-hero {
+  width: min(920px, 78vw);
+  margin: 0 auto clamp(6px, .7vw, 10px);
+  text-align: center;
+}
+.dojo-path-label {
+  text-align: left;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-weight: 900;
+  font-size: clamp(13px, 1.35vw, 20px);
+  letter-spacing: .08em;
+  color: #fff0c7;
+  text-shadow: 0 0 10px rgba(0,0,0,.8);
+}
+.dojo-stage-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(5px, .72vw, 11px);
+  margin-top: 5px;
+  color: #e6bc64;
+}
+.dojo-stage-node {
+  width: clamp(22px, 2.15vw, 34px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(214,162,72,.86);
+  background: radial-gradient(circle, rgba(36,25,13,.98), rgba(4,8,13,.95));
+  color: #f8d98e;
+  font-family: Georgia, serif;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px rgba(25,13,2,.8), inset 0 0 12px rgba(255,213,111,.1);
+}
+.dojo-stage-node.is-cleared {
+  background: radial-gradient(circle, rgba(119,82,24,.98), rgba(23,17,8,.96));
+}
+.dojo-stage-node.is-current {
+  color: #fff4c8;
+  box-shadow: 0 0 22px rgba(255,196,74,.95), 0 0 0 3px rgba(255,226,143,.2);
+}
+.dojo-stage-ellipsis {
+  font-size: clamp(13px, 1.4vw, 20px);
+  color: rgba(243,202,124,.65);
+  letter-spacing: .2em;
+}
+.dojo-current-stage {
+  margin-top: 4px;
+  text-align: left;
+  color: #fff2ce;
+  font-weight: 900;
+  font-size: clamp(12px, 1.05vw, 16px);
+}
+.dojo-wait-grid {
+  display: grid;
+  grid-template-columns: minmax(210px, .74fr) minmax(360px, 1.2fr) minmax(320px, 1.02fr);
+  gap: clamp(8px, .9vw, 16px);
+  align-items: stretch;
+  min-height: 0;
+  height: clamp(250px, 43vh, 410px);
+  max-height: 43vh;
+}
+.dojo-frame {
+  position: relative;
+  border: 2px solid rgba(190,119,35,.9);
+  background:
+    linear-gradient(180deg, rgba(10,20,31,.9), rgba(4,9,14,.82)),
+    radial-gradient(circle at 50% 0, rgba(195,125,38,.12), transparent 42%);
+  box-shadow: inset 0 0 0 1px rgba(255,226,142,.18), 0 0 0 1px rgba(4,6,8,.9), 0 18px 34px rgba(0,0,0,.42);
+  padding: clamp(8px, .82vw, 14px);
+  min-height: 0;
+  overflow: hidden;
+}
+.dojo-frame h3 {
+  margin: 0 0 7px;
+  text-align: center;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(13px, 1.15vw, 18px);
+  color: #ffd98e;
+  letter-spacing: .08em;
+}
+.dojo-subhead { margin-top: 9px !important; }
+.dojo-player-body {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 8px;
+  align-items: stretch;
+  height: calc(100% - 28px);
+  min-height: 0;
+}
+.dojo-player-card {
+  border: 1px solid rgba(214,151,59,.85);
+  background: linear-gradient(180deg, rgba(222,207,171,.18), rgba(4,8,12,.86));
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+}
+.dojo-player-portrait {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(237,219,178,.2), transparent 42%),
+    url("Assets/shokugyousenntaku/sennsi1_transparent.png") center 44% / 86% auto no-repeat;
+  filter: brightness(.72) contrast(1.1) drop-shadow(0 16px 18px rgba(0,0,0,.75));
+}
+.dojo-player-card strong {
+  padding: 6px 8px;
+  font-size: clamp(11px, .9vw, 14px);
+  font-family: "Yu Mincho", serif;
+  color: #fff0c9;
+  background: rgba(4,6,9,.74);
+  text-align: center;
+}
+.dojo-player-stats {
+  display: grid;
+  gap: 7px;
+  align-content: center;
+}
+.dojo-player-stats div {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,218,143,.18);
+  background: rgba(0,0,0,.28);
+  padding: 8px 10px;
+  min-height: 42px;
+}
+.dojo-player-stats span {
+  display: block;
+  color: #e7c37d;
+  font-weight: 800;
+  font-size: 11px;
+}
+.dojo-player-stats b {
+  display: block;
+  margin-top: 3px;
+  color: #fff4d6;
+  font-size: clamp(15px, 1.25vw, 21px);
+  font-family: Georgia, "Yu Mincho", serif;
+}
+.dojo-player-stats i {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: var(--hp);
+  background: linear-gradient(90deg, #7a1010, #ff5b4b);
+  box-shadow: 0 0 12px rgba(255,70,55,.7);
+}
+.dojo-icon-section {
+  min-height: 0;
+  margin-bottom: 8px;
+}
+.dojo-icon-section:last-child {
+  margin-bottom: 0;
+}
+.dojo-icon-section h4 {
+  margin: 0 0 5px;
+  color: #f4d088;
+  font-size: clamp(11px, .9vw, 14px);
+  letter-spacing: .08em;
+}
+#phaseDojoWait .dojo-icon-grid.gilsys-shop-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(5px, .55vw, 9px);
+  width: 100%;
+}
+#phaseDojoWait .gilsys-shop-icon-btn {
+  width: auto;
+  min-width: 0;
+  height: clamp(42px, 4.4vw, 64px);
+  min-height: 0;
+  border-radius: 9px;
+  padding: 4px;
+}
+#phaseDojoWait .gilsys-shop-icon-btn .shop-icon {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 7px;
+  font-size: clamp(18px, 2vw, 30px);
+}
+#phaseDojoWait .gilsys-shop-icon-btn .shop-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#phaseDojoWait .dojo-empty-icon {
+  opacity: .42;
+  filter: grayscale(.55);
+}
+.dojo-wait-detail {
+  margin-top: 8px;
+  min-height: 0;
+}
+#phaseDojoWait .dojo-shop-detail-card {
+  min-height: 0;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-card {
+  margin: 0;
+  min-height: 0;
+  padding: 8px;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-card-head {
+  gap: 8px;
+  align-items: start;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-icon {
+  width: clamp(42px, 4.4vw, 60px);
+  height: clamp(42px, 4.4vw, 60px);
+  min-width: clamp(42px, 4.4vw, 60px);
+  font-size: clamp(20px, 2vw, 30px);
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-item-name {
+  font-size: clamp(12px, 1.05vw, 16px);
+  line-height: 1.2;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-meta-row {
+  gap: 4px;
+  margin-top: 3px;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-badge {
+  font-size: 10px;
+  padding: 2px 5px;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-item-desc {
+  max-height: clamp(48px, 7vh, 74px);
+  margin-top: 5px;
+  overflow: auto;
+  font-size: clamp(10px, .86vw, 13px);
+  line-height: 1.45;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-item-desc::-webkit-scrollbar {
+  display: none;
+}
+.dojo-card-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(6px, .7vw, 10px);
+}
+.dojo-mini-card {
+  min-height: clamp(82px, 8.6vw, 126px);
+  border: 1px solid rgba(185,126,50,.82);
+  background:
+    linear-gradient(180deg, rgba(23,31,38,.88), rgba(5,9,13,.94)),
+    radial-gradient(circle at 50% 28%, rgba(255,213,117,.12), transparent 48%);
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  place-items: center;
+  padding: 6px;
+  text-align: center;
+  box-shadow: inset 0 0 0 1px rgba(255,237,184,.08);
+}
+.dojo-mini-card.is-drop.coin { background-color: rgba(87,58,7,.38); border-color: rgba(255,194,65,.95); }
+.dojo-mini-card.is-drop.equip { background-color: rgba(54,30,64,.32); border-color: rgba(182,98,202,.75); }
+.dojo-mini-card.is-drop.item { background-color: rgba(20,67,27,.32); border-color: rgba(95,171,79,.78); }
+.dojo-mini-card.is-empty { opacity: .56; filter: grayscale(.4); }
+.dojo-mini-icon {
+  font-size: clamp(23px, 2.5vw, 38px);
+  filter: drop-shadow(0 0 10px rgba(255,202,97,.35));
+}
+.dojo-mini-card b {
+  color: #fff0cb;
+  font-size: clamp(11px, .95vw, 15px);
+  font-family: "Yu Mincho", serif;
+}
+.dojo-mini-card span {
+  min-height: 16px;
+  color: #f4d088;
+  font-weight: 800;
+  font-size: clamp(10px, .8vw, 13px);
+}
+#phaseDojoWait .gilsys-dojo-drops {
+  border: 0;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #d9a63c;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(11px, 1vw, 16px);
+  letter-spacing: .12em;
+}
+#phaseDojoWait .gilsys-dojo-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1.8fr 1fr;
+  gap: clamp(7px, .85vw, 14px);
+  margin-top: 0;
+}
+#phaseDojoWait .gilsys-dojo-actions button {
+  min-height: clamp(38px, 4.1vw, 62px);
+  border-radius: 0;
+  border: 2px solid rgba(199,129,42,.88);
+  background:
+    linear-gradient(180deg, rgba(48,57,34,.92), rgba(5,15,13,.98));
+  color: #fff0c8;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(13px, 1.2vw, 20px);
+  box-shadow: inset 0 0 0 1px rgba(255,238,184,.16), 0 0 14px rgba(0,0,0,.5);
+}
+#phaseDojoWait .gilsys-dojo-actions #btnDojoNextStage {
+  background:
+    linear-gradient(180deg, rgba(161,105,18,.96), rgba(71,38,5,.98));
+  border-color: #ffe19a;
+  box-shadow: 0 0 28px rgba(255,190,73,.55), inset 0 0 0 1px rgba(255,245,199,.36);
+  font-size: clamp(16px, 1.65vw, 26px);
+}
+#phaseDojoWait .gilsys-dojo-actions #btnDojoEndRun {
+  background: linear-gradient(180deg, rgba(81,31,18,.95), rgba(24,7,6,.98));
+}
+@media (max-width: 980px) {
+  #phaseDojoWait.gilsys-dojo-screen {
+    height: 100dvh;
+  }
+  #phaseDojoWait .gilsys-dojo-wait-panel {
+    width: 100vw;
+    height: 100dvh;
+    min-height: 0;
+    padding: 7px;
+    overflow: hidden;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 5px;
+  }
+  #phaseDojoWait #dojoWaitTitle {
+    font-size: clamp(20px, 6.4vw, 30px);
+    letter-spacing: .08em;
+  }
+  #phaseDojoWait #dojoWaitTitle::after {
+    margin-top: 2px;
+    font-size: clamp(10px, 3.2vw, 13px);
+  }
+  .dojo-wait-hero {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  .dojo-path-label,
+  .dojo-current-stage {
+    font-size: 11px;
+  }
+  .dojo-stage-track {
+    gap: 3px;
+    margin-top: 3px;
+  }
+  .dojo-stage-node {
+    width: clamp(18px, 5.1vw, 25px);
+    font-size: 10px;
+    border-width: 1px;
+  }
+  .dojo-stage-ellipsis {
+    font-size: 11px;
+    letter-spacing: .05em;
+  }
+  .dojo-wait-grid {
+    grid-template-columns: .95fr 1.05fr;
+    grid-template-rows: minmax(0, .92fr) minmax(0, .72fr);
+    gap: 5px;
+    min-height: 0;
+    height: min(43dvh, 320px);
+    max-height: 43dvh;
+  }
+  .dojo-player-frame {
+    grid-row: 1 / 3;
+  }
+  .dojo-loadout-frame,
+  .dojo-drop-frame {
+    min-height: 0;
+  }
+  .dojo-frame {
+    padding: 5px;
+  }
+  .dojo-frame h3 {
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+  .dojo-subhead {
+    margin-top: 5px !important;
+  }
+  .dojo-player-body {
+    grid-template-columns: 54px 1fr;
+    grid-template-rows: 1fr;
+    gap: 5px;
+    height: calc(100% - 20px);
+  }
+  .dojo-player-card strong {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+  .dojo-player-portrait {
+    background-position: center 42%;
+    background-size: 92% auto;
+  }
+  .dojo-player-stats {
+    gap: 4px;
+  }
+  .dojo-player-stats div {
+    min-height: 34px;
+    padding: 4px 6px;
+  }
+  .dojo-player-stats span {
+    font-size: 9px;
+  }
+  .dojo-player-stats b {
+    margin-top: 1px;
+    font-size: 14px;
+  }
+  .dojo-icon-section {
+    margin-bottom: 5px;
+  }
+  .dojo-icon-section h4 {
+    margin-bottom: 3px;
+    font-size: 9px;
+  }
+  #phaseDojoWait .dojo-icon-grid.gilsys-shop-icon-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 3px;
+  }
+  #phaseDojoWait .gilsys-shop-icon-btn {
+    height: 28px;
+    padding: 2px;
+    border-radius: 6px;
+  }
+  #phaseDojoWait .gilsys-shop-icon-btn .shop-icon {
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  .dojo-wait-detail {
+    margin-top: 5px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-card {
+    padding: 5px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-card-head {
+    gap: 5px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    font-size: 16px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-item-name {
+    font-size: 10px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-badge {
+    font-size: 8px;
+    padding: 1px 3px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-item-desc {
+    max-height: 42px;
+    font-size: 9px;
+    line-height: 1.35;
+  }
+  .dojo-card-row {
+    gap: 4px;
+  }
+  .dojo-mini-card {
+    min-height: 50px;
+    padding: 3px;
+  }
+  .dojo-mini-icon {
+    font-size: 16px;
+  }
+  .dojo-mini-card b {
+    font-size: 9px;
+    line-height: 1.15;
+  }
+  .dojo-mini-card span {
+    min-height: 10px;
+    font-size: 8px;
+  }
+  #phaseDojoWait .gilsys-dojo-drops {
+    font-size: 10px;
+    line-height: 1.1;
+  }
+  #phaseDojoWait .gilsys-dojo-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+  #phaseDojoWait .gilsys-dojo-actions button {
+    min-height: 32px;
+    font-size: 11px;
+    border-width: 1px;
+    padding: 4px 3px;
+  }
+  #phaseDojoWait .gilsys-dojo-actions #btnDojoNextStage {
+    grid-column: auto;
+    font-size: 12px;
   }
 }
 </style>
