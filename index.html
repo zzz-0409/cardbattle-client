@@ -15100,6 +15100,73 @@ window.addEventListener("resize", () => touchLike() && hide(), true);
   }
 }
 </style>
+<style id="gilsys-force-horizontal-text-style">
+html,
+body,
+body * {
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+button,
+input,
+select,
+textarea,
+.phase0-menu-text,
+.phase0-menu-note,
+.gilsys-action-btn,
+.gilsys-action-btn *,
+.gilsys-list-row > span:not(.gilsys-row-icon),
+.gilsys-list-row > b,
+.gilsys-panel-title,
+.gilsys-detail-head,
+.gilsys-detail-head *,
+.gilsys-status-name,
+.gilsys-status-rank,
+.gilsys-hp-text,
+.gilsys-param-row,
+.gilsys-category-name,
+.gilsys-category-desc,
+.job-card-name-top,
+.job-card-name-bottom,
+.gilsys-job-class-name,
+.gilsys-job-passive-name,
+.dojo-path-label,
+.dojo-result-reward-label,
+.dojo-trail-node,
+.dojo-trail-node * {
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  line-break: strict !important;
+}
+
+button,
+.phase0-menu-text,
+.phase0-menu-note,
+.gilsys-action-btn,
+.gilsys-list-row > span:not(.gilsys-row-icon),
+.gilsys-list-row > b,
+.gilsys-panel-title,
+.gilsys-status-name,
+.gilsys-category-name,
+.job-card-name-top,
+.job-card-name-bottom,
+.gilsys-job-class-name,
+.dojo-path-label,
+.dojo-result-reward-label {
+  min-width: 0 !important;
+  max-width: 100%;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.phase0-menu-btn,
+.gilsys-action-btn,
+.gilsys-list-row {
+  min-width: 0 !important;
+}
+</style>
 <script id="gilsys-pwa-register">
 (() => {
   if (location.protocol === "http:" || location.protocol === "https:") {
