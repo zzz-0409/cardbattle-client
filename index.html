@@ -3996,6 +3996,21 @@ body.gilsys-assets-loading #game-wrapper {
     <div class="gilsys-boot-loader-text">LOADING...</div>
   </div>
 </div>
+<div id="gilsysVsIntro" class="gilsys-vs-intro" hidden aria-live="polite">
+  <div class="gilsys-vs-intro-card self">
+    <div class="gilsys-vs-intro-title" id="gilsysVsSelfTitle"></div>
+    <div class="gilsys-vs-intro-icon" id="gilsysVsSelfIcon"></div>
+    <div class="gilsys-vs-intro-name" id="gilsysVsSelfName">あなた</div>
+    <div class="gilsys-vs-intro-job" id="gilsysVsSelfJob">職業</div>
+  </div>
+  <div class="gilsys-vs-intro-mark">VS</div>
+  <div class="gilsys-vs-intro-card enemy">
+    <div class="gilsys-vs-intro-title" id="gilsysVsEnemyTitle"></div>
+    <div class="gilsys-vs-intro-icon" id="gilsysVsEnemyIcon"></div>
+    <div class="gilsys-vs-intro-name" id="gilsysVsEnemyName">対戦相手</div>
+    <div class="gilsys-vs-intro-job" id="gilsysVsEnemyJob">職業</div>
+  </div>
+</div>
 <div id="game-wrapper">
 <!-- ================= フェーズ0：モード選択 ================= -->
 <div id="phase0">
@@ -4579,6 +4594,149 @@ const PHASE = {
 };
 
 let currentPhase = PHASE.MODE_SELECT;
+let gilsysPendingVsIntro = null;
+let gilsysVsIntroRunning = false;
+let gilsysVsIntroFinishing = false;
+let gilsysMatchStartData = null;
+const gilsysDeferredVsMessages = [];
+
+function shouldDeferDuringVsIntro(data) {
+  if (!gilsysVsIntroRunning || gilsysVsIntroFinishing || !data) return false;
+  if (
+    data.type === "match_start" ||
+    data.type === "status_simple" ||
+    data.type === "job_info" ||
+    data.type === "hp" ||
+    data.type === "mana_info" ||
+    data.type === "exp_info" ||
+    data.type === "level_info" ||
+    data.type === "item_list"
+  ) {
+    return false;
+  }
+  return shouldQueueGilsysBattleEvent(data);
+}
+
+function flushDeferredVsMessages() {
+  if (!ws || !gilsysDeferredVsMessages.length) return;
+  const messages = gilsysDeferredVsMessages.splice(0);
+  for (const raw of messages) {
+    ws.onmessage?.({ data: raw });
+  }
+}
+
+function getJobIdByNameForProfile(jobName) {
+  const job = getProfileJobs().find(j => String(j.name) === String(jobName));
+  return job?.id || "";
+}
+
+function normalizeVsProfile(profile, fallbackJobName = "") {
+  if (profile && typeof profile === "object") return profile;
+  const jobId = getJobIdByNameForProfile(fallbackJobName);
+  return {
+    iconJobId: jobId,
+    titleText: "",
+    iconSrc: jobId ? getProfileIconPortrait(jobId) : ""
+  };
+}
+
+function setVsIntroIcon(id, profile, jobName = "") {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const normalized = normalizeVsProfile(profile, jobName);
+  const iconSrc = normalized.iconSrc || (normalized.iconJobId ? getProfileIconPortrait(normalized.iconJobId) : "");
+  if (iconSrc) {
+    el.style.setProperty("--gilsys-vs-icon-image", `url("${String(iconSrc).replace(/"/g, '\\"')}")`);
+    el.dataset.profileIconJobId = String(normalized.iconJobId || "");
+  } else {
+    el.style.removeProperty("--gilsys-vs-icon-image");
+    delete el.dataset.profileIconJobId;
+  }
+}
+
+function updateVsIntroFromStatus(data) {
+  if (!gilsysPendingVsIntro || !data || data.type !== "status_simple") return;
+  const side = data.side === "self" ? "self" : data.side === "enemy" ? "enemy" : "";
+  if (!side) return;
+  gilsysPendingVsIntro[side] = {
+    name: data.name || gilsysPendingVsIntro[side]?.name || (side === "self" ? "あなた" : "対戦相手"),
+    job: data.job || gilsysPendingVsIntro[side]?.job || "職業",
+    profile: data.profile || gilsysPendingVsIntro[side]?.profile || null
+  };
+}
+
+function renderVsIntro() {
+  const info = gilsysPendingVsIntro || {};
+  const self = info.self || {};
+  const enemy = info.enemy || {};
+  setGilsysText("gilsysVsSelfName", self.name || window.gilsysSelfMatchName || "あなた");
+  setGilsysText("gilsysVsEnemyName", enemy.name || window.gilsysOpponentName || "対戦相手");
+  setGilsysText("gilsysVsSelfJob", self.job || "職業");
+  setGilsysText("gilsysVsEnemyJob", enemy.job || "職業");
+  setGilsysText("gilsysVsSelfTitle", self.profile?.titleText || getProfileTitleText());
+  setGilsysText("gilsysVsEnemyTitle", enemy.profile?.titleText || "");
+  setVsIntroIcon("gilsysVsSelfIcon", self.profile || getBattleProfilePayload(), self.job);
+  setVsIntroIcon("gilsysVsEnemyIcon", enemy.profile, enemy.job);
+}
+
+function startVsIntro(data) {
+  gilsysDeferredVsMessages.length = 0;
+  gilsysMatchStartData = data || {};
+  gilsysPendingVsIntro = {
+    mode: data?.mode || window.matchMode || "",
+    self: {
+      name: data?.self_name || window.accountName || "あなた",
+      job: data?.self_job || "",
+      profile: data?.self_profile || getBattleProfilePayload()
+    },
+    enemy: {
+      name: data?.enemy_name || (window.matchMode === "cpu" ? "CPU" : "対戦相手"),
+      job: data?.enemy_job || "",
+      profile: data?.enemy_profile || null
+    }
+  };
+  renderVsIntro();
+  const intro = document.getElementById("gilsysVsIntro");
+  if (intro) {
+    intro.hidden = false;
+    intro.classList.remove("is-leaving");
+    intro.classList.add("is-open");
+  }
+  gilsysVsIntroRunning = true;
+  gilsysVsIntroFinishing = false;
+  gilsysPendingVsIntro.__fallbackTimer = setTimeout(finishVsIntro, 3200);
+}
+
+function finishVsIntro() {
+  if (!gilsysVsIntroRunning || gilsysVsIntroFinishing) return;
+  gilsysVsIntroFinishing = true;
+  clearTimeout(gilsysPendingVsIntro?.__fallbackTimer);
+  clearTimeout(gilsysPendingVsIntro?.__finishTimer);
+  renderVsIntro();
+  const intro = document.getElementById("gilsysVsIntro");
+  if (intro) {
+    intro.classList.add("is-leaving");
+    setTimeout(() => {
+      intro.classList.remove("is-open", "is-leaving");
+      intro.hidden = true;
+      gilsysVsIntroRunning = false;
+      gilsysVsIntroFinishing = false;
+      flushDeferredVsMessages();
+    }, 360);
+  } else {
+    gilsysVsIntroRunning = false;
+    gilsysVsIntroFinishing = false;
+    flushDeferredVsMessages();
+  }
+  if (currentPhase !== PHASE.BATTLE) setPhase(PHASE.BATTLE);
+}
+
+function maybeFinishVsIntroAfterStatus() {
+  if (!gilsysVsIntroRunning || !gilsysPendingVsIntro) return;
+  if (!gilsysPendingVsIntro.__finishTimer) {
+    gilsysPendingVsIntro.__finishTimer = setTimeout(finishVsIntro, 2300);
+  }
+}
 
 
 function setPhase(p) {
@@ -7594,6 +7752,10 @@ function attachWsHandlers() {
     console.log("[WS RECEIVE RAW]", msg.data);
 
     const data = JSON.parse(msg.data);
+    if (shouldDeferDuringVsIntro(data)) {
+      gilsysDeferredVsMessages.push(msg.data);
+      return;
+    }
     if (shouldQueueGilsysBattleEvent(data)) {
       enqueueGilsysBattleEvent(data);
       return;
@@ -7609,12 +7771,18 @@ function attachWsHandlers() {
       setGilsysText("gilsysSelfName", window.gilsysSelfMatchName);
       setGilsysText("gilsysEnemyName", window.gilsysOpponentName);
 
+      // 初期ステータスやターン通知が直後に届くため、演出より先にバトル画面を準備する。
+      setPhase(PHASE.BATTLE);
+
       // ★ 職業詳細ポップアップを強制的に閉じる
       closeJobDetail();
 
-      // ★ マッチング成立演出（中央3秒 + 鈴SE）
-      showCenterToast(data.mode === "dojo" ? "ステージ開始" : "マッチングしました", 3000);
-      playBellSfx();
+      gilsysBattleEventQueue.length = 0;
+      gilsysBattleEventQueueBusy = false;
+      gilsysBattleCurrentEvent = null;
+
+      // ★ マッチング成立演出（VS画面）
+      startVsIntro(data);
 
       // ★ 対戦中BGM（Hiphop系：自作WebAudio）開始
       playBattleBgm();
@@ -7633,7 +7801,6 @@ function attachWsHandlers() {
       const status = document.getElementById("connectStatus");
       if (status) status.textContent = "";
 
-      setPhase(PHASE.BATTLE);
       const lvupBtn = document.getElementById("lvupBtn");
       if (lvupBtn) {
         lvupBtn.style.display = data.mode === "dojo" ? "none" : "";
@@ -7763,6 +7930,7 @@ function attachWsHandlers() {
 
 
     if (data.type === "status_simple") {
+      updateVsIntroFromStatus(data);
 
       // ================================
       // ★ スキル残り回数（self側のみ）
@@ -7859,6 +8027,7 @@ function attachWsHandlers() {
       // ★ 人形使い：人形スプライト更新（self / enemy）
       // ============================
       updateDollSprite(data.side, data.job, data.doll);
+      maybeFinishVsIntroAfterStatus();
 
       return;
     }
@@ -22286,6 +22455,20 @@ html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn:no
 
   const GILSYS_HOME_NOTICES = [
     {
+      title: "ver5.12.1アップデート内容",
+      body: [
+        "・新機能について",
+        "対戦開始前にマッチした相手が分かるVS演出を追加しました。",
+        "・表示調整",
+        "バトル画面の相手錬金術師が薄く表示される問題を調整しました。",
+        "・バグ修正",
+        "マッチング後にキャラや行動ボタンが表示されず進行できない場合がある問題を修正しました。",
+        "バトルステージの装備、特殊装備、人形衣装の詳細表示が出ない問題を修正しました。",
+        "・演出調整",
+        "マッチング時の雷演出と効果音を取り消しました。"
+      ].join("\n")
+    },
+    {
       title: "ver5.21アップデート内容",
       body: [
         "・新機能について",
@@ -24951,6 +25134,157 @@ html.gilsys-fixed-game .gilsys-notice-close:hover::before {
   transform: scale(1.06);
 }
 </style>
+<style id="gilsys-vs-intro-style">
+.gilsys-vs-intro[hidden] {
+  display: none !important;
+}
+
+.gilsys-vs-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 90000;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(18px, 4vw, 52px);
+  padding: clamp(24px, 5vw, 70px);
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 216, 119, .14), transparent 22%),
+    linear-gradient(90deg, rgba(12, 18, 32, .96), rgba(28, 10, 14, .92) 50%, rgba(12, 18, 32, .96));
+  color: #fff0c4;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gilsys-vs-intro.is-open {
+  opacity: 1;
+  animation: gilsysVsIntroIn .34s ease-out both;
+}
+
+.gilsys-vs-intro.is-leaving {
+  animation: gilsysVsIntroOut .34s ease-in both;
+}
+
+.gilsys-vs-intro-card {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  transform: translateX(var(--vs-card-from, 0));
+  animation: gilsysVsCardIn .62s cubic-bezier(.16, .9, .18, 1.05) both;
+}
+
+.gilsys-vs-intro-card.self {
+  --vs-card-from: -42px;
+}
+
+.gilsys-vs-intro-card.enemy {
+  --vs-card-from: 42px;
+  animation-delay: .08s;
+}
+
+.gilsys-vs-intro-icon {
+  width: clamp(124px, 18vw, 220px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 222, 132, .78);
+  background:
+    var(--gilsys-vs-icon-image) center 10% / 190% auto no-repeat,
+    radial-gradient(circle at 50% 34%, rgba(255, 218, 128, .18), rgba(8, 10, 16, .92) 68%);
+  box-shadow:
+    inset 0 0 18px rgba(255, 242, 190, .12),
+    0 0 24px rgba(255, 205, 95, .22),
+    0 18px 38px rgba(0, 0, 0, .48);
+}
+
+.gilsys-vs-intro-icon[data-profile-icon-job-id="4"] {
+  background:
+    var(--gilsys-vs-icon-image) center 0% / 190% auto no-repeat,
+    radial-gradient(circle at 50% 34%, rgba(255, 218, 128, .18), rgba(8, 10, 16, .92) 68%);
+}
+
+.gilsys-vs-intro-title {
+  min-height: 20px;
+  color: #ffe0a0;
+  font-size: clamp(12px, 1.8vw, 18px);
+  font-weight: 900;
+  text-shadow: 0 2px 8px rgba(0,0,0,.8);
+}
+
+.gilsys-vs-intro-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff7db;
+  font-size: clamp(22px, 4vw, 48px);
+  font-weight: 900;
+  line-height: 1.05;
+  text-shadow: 0 4px 16px rgba(0,0,0,.78), 0 0 18px rgba(255, 203, 90, .25);
+}
+
+.gilsys-vs-intro-job {
+  color: rgba(234, 252, 255, .84);
+  font-size: clamp(13px, 2.2vw, 24px);
+  font-weight: 800;
+}
+
+.gilsys-vs-intro-mark {
+  display: grid;
+  place-items: center;
+  width: clamp(74px, 12vw, 148px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: #ff2d2d;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 6.2vw, 82px);
+  font-weight: 900;
+  line-height: 1;
+  text-shadow:
+    0 2px 0 #fff2c0,
+    0 0 18px rgba(255, 50, 45, .52),
+    0 0 34px rgba(255, 218, 122, .26);
+  animation: gilsysVsMarkPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes gilsysVsIntroIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gilsysVsIntroOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes gilsysVsCardIn {
+  from {
+    opacity: 0;
+    transform: translateX(var(--vs-card-from)) scale(.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes gilsysVsMarkPulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.08); filter: brightness(1.22); }
+}
+
+@media (max-width: 760px) {
+  .gilsys-vs-intro {
+    gap: 10px;
+    padding: 18px;
+  }
+
+  .gilsys-vs-intro-icon {
+    width: clamp(92px, 24vw, 136px);
+  }
+}
+</style>
 <style id="gilsys-mobile-battle-log-readable-final">
 @media (max-width: 1100px), (max-height: 660px), (hover: none) and (pointer: coarse) {
   html.gilsys-fixed-game #phase2.gilsys-battle-ui {
@@ -25207,13 +25541,189 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
   }
 </style>
 <style id="gilsys-alchemist-battle-opacity-fix">
-  #phase2.gilsys-battle-ui #battleStage .sprite.job-alchemist {
+  #phase2.gilsys-battle-ui #battleStage .sprite.job-alchemist,
+  #phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist,
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.job-alchemist {
     opacity: 1 !important;
-    background:
-      url("Assets/kyara/rennkinnjyutusi.png") center bottom / contain no-repeat,
-      url("Assets/kyara/rennkinnjyutusi.png") center bottom / contain no-repeat,
-      url("Assets/kyara/rennkinnjyutusi.png") center bottom / contain no-repeat !important;
+    mix-blend-mode: normal !important;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .28)) saturate(1.08) brightness(1.04) !important;
+    background-image:
+      url("Assets/kyara/rennkinnjyutusi.png"),
+      url("Assets/kyara/rennkinnjyutusi.png"),
+      url("Assets/kyara/rennkinnjyutusi.png"),
+      url("Assets/kyara/rennkinnjyutusi.png") !important;
+    background-position: center bottom, center bottom, center bottom, center bottom !important;
+    background-size: contain, contain, contain, contain !important;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
   }
 </style>
+<style id="gilsys-battle-equip-tooltip-hit-fix">
+  #phase2.gilsys-battle-ui #battleStage,
+  #phase2.gilsys-battle-ui #battleStage .side,
+  #phase2.gilsys-battle-ui #battleStage .main-unit,
+  #phase2.gilsys-battle-ui #battleStage .gilsys-equip-wrapper,
+  #phase2.gilsys-battle-ui #battleStage .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-area,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-area.doll,
+  #phase2.gilsys-battle-ui #battleStage .equip-slot,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot {
+    pointer-events: auto !important;
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll::before,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll::after,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot.boroboro::after {
+    pointer-events: none !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-slot,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot {
+    position: relative !important;
+    cursor: help !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-area.doll {
+    z-index: 80 !important;
+  }
+
+  #gilsysFloatingTooltip {
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+  }
+</style>
+<script id="gilsys-battle-equip-tooltip-hit-fix-script">
+(() => {
+  const slotSelector = [
+    "#phase2.gilsys-battle-ui #battleStage .equip-slot",
+    "#phase2.gilsys-battle-ui #battleStage .special-equip-slot",
+    "#phase2.gilsys-battle-ui .buff-slot"
+  ].join(",");
+  const tooltipSelector = ".equip-tooltip, .buff-tooltip";
+  let activeSlot = null;
+
+  const touchLike = () =>
+    window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches ||
+    Number(navigator.maxTouchPoints || 0) > 0;
+
+  const escapeText = (value) => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+  const floating = () => {
+    let el = document.getElementById("gilsysFloatingTooltip");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "gilsysFloatingTooltip";
+      document.body.appendChild(el);
+    }
+    return el;
+  };
+
+  const tooltipHtml = (slot) => {
+    const tip = slot?.querySelector?.(tooltipSelector);
+    if (tip?.innerHTML?.trim()) return tip.innerHTML;
+    const title = slot?.getAttribute?.("title") || slot?.dataset?.tapTitle || "";
+    return escapeText(title);
+  };
+
+  const place = (slot, el) => {
+    if (!slot || !el) return;
+    const rect = slot.getBoundingClientRect();
+    el.style.display = "block";
+    el.style.setProperty("transform", "translate3d(-9999px, -9999px, 0)", "important");
+    const tipRect = el.getBoundingClientRect();
+    const gap = 8;
+    const pad = 8;
+    const left = Math.min(
+      Math.max(pad, window.innerWidth - tipRect.width - pad),
+      Math.max(pad, rect.left + rect.width / 2 - tipRect.width / 2)
+    );
+    let top = rect.top - tipRect.height - gap;
+    if (top < pad) top = rect.bottom + gap;
+    top = Math.min(Math.max(pad, top), Math.max(pad, window.innerHeight - tipRect.height - pad));
+    el.style.setProperty("left", `${Math.round(left)}px`, "important");
+    el.style.setProperty("top", `${Math.round(top)}px`, "important");
+    el.style.setProperty("transform", "translate3d(0, 0, 0)", "important");
+  };
+
+  const show = (slot) => {
+    const html = tooltipHtml(slot);
+    if (!html) return false;
+    activeSlot = slot;
+    const el = floating();
+    el.innerHTML = html;
+    requestAnimationFrame(() => {
+      if (activeSlot === slot) place(slot, el);
+    });
+    return true;
+  };
+
+  const hide = () => {
+    activeSlot = null;
+    const el = document.getElementById("gilsysFloatingTooltip");
+    if (!el) return;
+    el.style.display = "none";
+    el.style.setProperty("transform", "translate3d(-9999px, -9999px, 0)", "important");
+    el.innerHTML = "";
+  };
+
+  const slotFromEvent = (event) => event.target?.closest?.(slotSelector);
+
+  document.addEventListener("pointerover", (event) => {
+    if (touchLike()) return;
+    const slot = slotFromEvent(event);
+    if (!slot || slot.contains(event.relatedTarget)) return;
+    show(slot);
+  }, true);
+
+  document.addEventListener("pointerout", (event) => {
+    if (touchLike()) return;
+    const slot = slotFromEvent(event);
+    if (!slot || slot.contains(event.relatedTarget)) return;
+    if (slot === activeSlot) hide();
+  }, true);
+
+  document.addEventListener("pointerdown", (event) => {
+    const slot = slotFromEvent(event);
+    const floatTip = event.target?.closest?.("#gilsysFloatingTooltip");
+    if (!slot) {
+      if (!floatTip) hide();
+      return;
+    }
+    if (!tooltipHtml(slot)) return;
+    if (touchLike()) {
+      const shouldOpen = activeSlot !== slot;
+      requestAnimationFrame(() => shouldOpen ? show(slot) : hide());
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      show(slot);
+    }
+  }, true);
+
+  document.addEventListener("click", (event) => {
+    const slot = slotFromEvent(event);
+    if (slot && tooltipHtml(slot)) {
+      show(slot);
+      if (touchLike()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return;
+    }
+    if (!event.target?.closest?.("#gilsysFloatingTooltip")) hide();
+  }, true);
+
+  window.addEventListener("scroll", () => activeSlot ? place(activeSlot, floating()) : undefined, true);
+  window.addEventListener("resize", () => activeSlot ? place(activeSlot, floating()) : undefined, true);
+})();
+</script>
 </body>
 </html>
