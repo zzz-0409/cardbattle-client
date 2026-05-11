@@ -3969,9 +3969,33 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 }
 
 </style>
+<style id="gilsys-boot-loader-early-style">
+body.gilsys-assets-loading {
+  background: #050403 !important;
+  overflow: hidden !important;
+}
+body.gilsys-assets-loading #game-wrapper {
+  visibility: hidden !important;
+}
+#gilsysBootLoader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: grid;
+  place-items: center;
+  background: #050403;
+  color: #fff2c8;
+}
+</style>
 </head>
-<body>
+<body class="gilsys-assets-loading">
 <div id="gilsysOrientationGuard" aria-hidden="true">横画面でプレイしてください</div>
+<div id="gilsysBootLoader" role="status" aria-live="polite">
+  <div class="gilsys-boot-loader-box">
+    <div class="gilsys-boot-loader-ring" aria-hidden="true"></div>
+    <div class="gilsys-boot-loader-text">LOADING...</div>
+  </div>
+</div>
 <div id="game-wrapper">
 <!-- ================= フェーズ0：モード選択 ================= -->
 <div id="phase0">
@@ -5018,14 +5042,16 @@ function openNameChangeModal(initialName = "") {
             <span>名前</span>
             <input id="nameChangeModalInput" maxlength="12" autocomplete="off" />
           </label>
-          <div class="gilsys-name-modal-choice">
-            <span>アイコン</span>
-            <div id="nameChangeIconGrid" class="gilsys-profile-icon-grid"></div>
+          <div class="gilsys-profile-choice-grid">
+            <div class="gilsys-name-modal-choice">
+              <span>アイコン</span>
+              <div id="nameChangeIconGrid" class="gilsys-profile-icon-grid"></div>
+            </div>
+            <label class="gilsys-name-modal-field gilsys-title-select-field">
+              <span>称号</span>
+              <select id="nameChangeTitleSelect"></select>
+            </label>
           </div>
-          <label class="gilsys-name-modal-field">
-            <span>称号</span>
-            <select id="nameChangeTitleSelect"></select>
-          </label>
           <div id="nameChangeModalStatus" class="gilsys-name-modal-status"></div>
           <div class="gilsys-name-modal-actions">
             <button id="nameChangeModalCancel" type="button">キャンセル</button>
@@ -5054,9 +5080,12 @@ function openNameChangeModal(initialName = "") {
         btn.type = "button";
         btn.className = "gilsys-profile-icon-btn";
         btn.dataset.jobId = String(job.id);
+        btn.dataset.jobName = String(job.name);
         btn.setAttribute("aria-label", `${job.name}の顔アイコン`);
         btn.setAttribute("aria-pressed", String(String(job.id) === String(currentIconJobId)));
-        btn.style.setProperty("--profile-icon-image", `url("${getProfileIconPortrait(job.id)}")`);
+        const portrait = getProfileIconPortrait(job.id);
+        btn.style.setProperty("--profile-icon-image", `url("${portrait}")`);
+        btn.innerHTML = `<img src="${escapeHtml(portrait)}" alt="" loading="eager" decoding="async">`;
         btn.classList.toggle("is-selected", String(job.id) === String(currentIconJobId));
         iconGrid.appendChild(btn);
       });
@@ -5070,7 +5099,7 @@ function openNameChangeModal(initialName = "") {
         opt.selected = String(option.value) === String(currentTitleJobId);
         titleSelect.appendChild(opt);
       });
-      titleSelect.size = Math.min(6, Math.max(1, titleSelect.options.length));
+      titleSelect.size = Math.min(10, Math.max(4, titleSelect.options.length));
     }
     const close = value => {
       backdrop.classList.remove("is-open");
@@ -9628,10 +9657,12 @@ function updateBattleProfileBadge(data, isSelf) {
   if (icon && iconSrc) {
     icon.classList.add("has-profile-icon");
     icon.style.setProperty("--battle-profile-icon-image", `url("${String(iconSrc).replace(/"/g, '\\"')}")`);
+    icon.dataset.profileIconJobId = String(profile?.iconJobId || "");
     icon.style.display = "";
   } else if (icon) {
     icon.classList.remove("has-profile-icon");
     icon.style.removeProperty("--battle-profile-icon-image");
+    delete icon.dataset.profileIconJobId;
     icon.style.display = "none";
   }
 
@@ -24208,6 +24239,87 @@ html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-drawer-body .dojo-trail-unlo
   }
 })();
 </script>
+<script id="gilsys-asset-preloader">
+(() => {
+  const TIMEOUT_MS = 8000;
+  const IMAGE_EXT = /\.(?:png|jpe?g|webp|gif|svg)(?:[?#][^"'()\s<>]*)?$/i;
+  const REQUIRED_ASSETS = [
+    "Assets/haikei/7cc56fd2-92f8-44c9-a2b9-b8e605d1affd.png",
+    "Assets/home/gilsys-home-notice-button.png",
+    "Assets/home/gilsys-home-mission-document.png"
+  ];
+
+  function normalizeAssetPath(raw) {
+    if (!raw) return "";
+    let value = String(raw).trim().replace(/^['"]|['"]$/g, "");
+    value = value.replace(/&quot;/g, "").replace(/&amp;/g, "&");
+    if (!value || value.startsWith("data:") || value.startsWith("blob:")) return "";
+    if (/^https?:\/\//i.test(value)) return "";
+    const assetIndex = value.indexOf("Assets/");
+    if (assetIndex >= 0) value = value.slice(assetIndex);
+    if (!value.startsWith("Assets/") && !value.startsWith("./Assets/")) return "";
+    value = value.replace(/^\.\//, "");
+    return IMAGE_EXT.test(value) ? value : "";
+  }
+
+  function collectImageAssets() {
+    const found = new Set(REQUIRED_ASSETS);
+    if (typeof getProfileJobs === "function" && typeof getProfileIconPortrait === "function") {
+      getProfileJobs().forEach(job => {
+        const path = normalizeAssetPath(getProfileIconPortrait(job.id));
+        if (path) found.add(path);
+      });
+    }
+    const html = document.documentElement.innerHTML;
+    const urlPattern = /url\(\s*(['"]?)([^'")]+)\1\s*\)/gi;
+    const attrPattern = /\b(?:src|href)\s*=\s*(['"])([^'"]+)\1/gi;
+    const stringPattern = /(['"])(\.?\/?Assets\/[^'"]+\.(?:png|jpe?g|webp|gif|svg)(?:[?#][^'"]*)?)\1/gi;
+    for (const pattern of [urlPattern, attrPattern, stringPattern]) {
+      for (const match of html.matchAll(pattern)) {
+        const path = normalizeAssetPath(match[2]);
+        if (path) found.add(path);
+      }
+    }
+    return [...found];
+  }
+
+  function preloadImage(src) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve({ src, ok: true });
+      img.onerror = () => resolve({ src, ok: false });
+      img.src = src;
+    });
+  }
+
+  function finishLoading() {
+    document.body.classList.remove("gilsys-assets-loading");
+    document.body.classList.add("gilsys-assets-ready");
+    const loader = document.getElementById("gilsysBootLoader");
+    if (loader) {
+      loader.classList.add("is-hidden");
+      setTimeout(() => loader.remove(), 420);
+    }
+  }
+
+  async function startPreload() {
+    const assets = collectImageAssets();
+    if (!assets.length) {
+      finishLoading();
+      return;
+    }
+    const timeout = new Promise(resolve => setTimeout(resolve, TIMEOUT_MS));
+    await Promise.race([Promise.allSettled(assets.map(preloadImage)), timeout]);
+    finishLoading();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startPreload, { once: true });
+  } else {
+    startPreload();
+  }
+})();
+</script>
 <script id="gilsys-title-mission-system">
 (() => {
   const missionRanks = [2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -24341,11 +24453,14 @@ html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-drawer-body .dojo-trail-unlo
   window.addEventListener("load", () => {
     ensureMissionButton();
     refreshMissionButtonBadge();
+    setTimeout(refreshMissionButtonBadge, 900);
+    setTimeout(refreshMissionButtonBadge, 2400);
   });
   setTimeout(() => {
     ensureMissionButton();
     refreshMissionButtonBadge();
   }, 300);
+  setInterval(refreshMissionButtonBadge, 5000);
 })();
 </script>
 <style id="gilsys-title-mission-style">
@@ -24631,6 +24746,73 @@ html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-drawer-body .dojo-trail-unlo
     }
   }
 </style>
+<style id="gilsys-boot-loader-style">
+body.gilsys-assets-loading {
+  background: #050403 !important;
+  overflow: hidden !important;
+}
+
+body.gilsys-assets-loading #game-wrapper {
+  visibility: hidden !important;
+}
+
+#gilsysBootLoader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(154, 38, 28, .22), transparent 30%),
+    linear-gradient(180deg, #090706, #020202);
+  color: #fff2c8;
+  opacity: 1;
+  transition: opacity .36s ease, visibility .36s ease;
+}
+
+#gilsysBootLoader.is-hidden,
+body.gilsys-assets-ready #gilsysBootLoader {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.gilsys-boot-loader-box {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+
+.gilsys-boot-loader-ring {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 226, 154, .18);
+  border-top-color: #ffdf86;
+  border-right-color: #d73a2e;
+  animation: gilsysBootSpin 1.05s linear infinite;
+  filter: drop-shadow(0 0 12px rgba(255, 191, 76, .35));
+}
+
+.gilsys-boot-loader-text {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  color: #fff1c2;
+  text-shadow: 0 2px 10px rgba(0,0,0,.8), 0 0 18px rgba(255, 193, 85, .3);
+  animation: gilsysBootTextPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes gilsysBootSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes gilsysBootTextPulse {
+  0%, 100% { opacity: .44; }
+  50% { opacity: 1; }
+}
+</style>
 <style id="gilsys-title-screen-new-background-final">
 html.gilsys-fixed-game #gilsysStartScreen {
   position: absolute !important;
@@ -24769,10 +24951,222 @@ html.gilsys-fixed-game .gilsys-notice-close:hover::before {
   transform: scale(1.06);
 }
 </style>
+<style id="gilsys-mobile-battle-log-readable-final">
+@media (max-width: 1100px), (max-height: 660px), (hover: none) and (pointer: coarse) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+    --gilsys-command-height: clamp(194px, 42dvh, 310px) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+    grid-template-columns: minmax(168px, 1.08fr) 76px minmax(140px, .92fr) minmax(190px, 1.05fr) !important;
+    gap: 5px !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked {
+    min-width: 168px !important;
+    padding: 5px !important;
+    overflow: hidden !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked h3 {
+    display: block !important;
+    height: 18px !important;
+    flex: 0 0 18px !important;
+    margin: 0 0 4px !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    font-size: 11px !important;
+    line-height: 18px !important;
+    letter-spacing: 0 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked .gilsys-visible-log {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked #battleBox {
+    display: block !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    padding: 6px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    font-size: 9px !important;
+    line-height: 1.32 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked .log-title {
+    display: block !important;
+    white-space: nowrap !important;
+    writing-mode: horizontal-tb !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 3px !important;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+    grid-template-columns: minmax(0, 1fr) 82px !important;
+    grid-template-rows: 118px minmax(0, .78fr) minmax(0, 1.12fr) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+}
+</style>
+<style id="gilsys-profile-modal-readable-final">
+html.gilsys-fixed-game .gilsys-name-modal {
+  width: min(760px, calc(100vw - 28px)) !important;
+  max-height: calc(100dvh - 24px) !important;
+  overflow: hidden !important;
+  padding: clamp(28px, 4.8dvh, 44px) clamp(28px, 4vw, 44px) clamp(22px, 3.6dvh, 34px) !important;
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto !important;
+  gap: 10px !important;
+}
+
+html.gilsys-fixed-game .gilsys-profile-choice-grid {
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+html.gilsys-fixed-game .gilsys-profile-choice-grid .gilsys-name-modal-choice,
+html.gilsys-fixed-game .gilsys-profile-choice-grid .gilsys-name-modal-field {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin-top: 0 !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+}
+
+html.gilsys-fixed-game .gilsys-profile-icon-grid {
+  grid-template-columns: repeat(auto-fit, minmax(66px, 1fr)) !important;
+  gap: 10px !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding: 2px 4px 4px !important;
+  align-content: start !important;
+}
+
+html.gilsys-fixed-game .gilsys-profile-icon-btn {
+  position: relative !important;
+  min-height: 66px !important;
+  border-radius: 8px !important;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(0,229,255,.18), rgba(7,12,25,.88) 66%) !important;
+}
+
+html.gilsys-fixed-game .gilsys-profile-icon-btn img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(2.18);
+  transform-origin: 50% 18%;
+  pointer-events: none;
+}
+
+html.gilsys-fixed-game .gilsys-profile-icon-btn[data-job-name="盗賊"] img,
+html.gilsys-fixed-game .gilsys-profile-icon-btn[data-job-name="狂人"] img {
+  object-position: center top;
+  transform: translateY(10%) scale(2.18);
+  transform-origin: 50% 18%;
+}
+
+html.gilsys-fixed-game .gilsys-profile-icon-btn[data-job-name="盗賊"] img {
+  transform: translateY(18%) scale(2.18);
+}
+
+html.gilsys-fixed-game #nameChangeTitleSelect {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  padding: 8px !important;
+  line-height: 1.45 !important;
+}
+
+html.gilsys-fixed-game #nameChangeTitleSelect option {
+  padding: 7px 8px !important;
+  min-height: 30px !important;
+}
+
+@media (max-width: 560px) {
+  html.gilsys-fixed-game .gilsys-name-modal {
+    width: calc(100vw - 18px) !important;
+    padding: 26px 20px 22px !important;
+    gap: 8px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-profile-choice-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-profile-icon-grid {
+    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-profile-icon-btn {
+    min-height: 48px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-profile-icon-btn img {
+    transform: scale(2.32);
+    transform-origin: 50% 18%;
+  }
+
+  html.gilsys-fixed-game .gilsys-profile-icon-btn[data-job-name="盗賊"] img,
+  html.gilsys-fixed-game .gilsys-profile-icon-btn[data-job-name="狂人"] img {
+    transform: translateY(12%) scale(2.32);
+    transform-origin: 50% 18%;
+  }
+
+  html.gilsys-fixed-game .gilsys-profile-icon-btn[data-job-name="盗賊"] img {
+    transform: translateY(20%) scale(2.32);
+  }
+
+  html.gilsys-fixed-game #nameChangeTitleSelect option {
+    padding: 5px 6px !important;
+    min-height: 26px !important;
+  }
+}
+</style>
 <style id="gilsys-battle-profile-badge-final">
   #phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon {
     background:
       var(--battle-profile-icon-image) center 10% / 190% auto no-repeat,
+      radial-gradient(circle at 50% 32%, rgba(179, 132, 62, .18), rgba(18, 16, 14, .86) 66%) !important;
+  }
+  html.gilsys-fixed-game .gilsys-home-avatar[data-profile-icon-job-id="4"] {
+    background:
+      var(--gilsys-home-avatar-image) center 0% / 190% auto no-repeat,
+      radial-gradient(circle at 50% 35%, rgba(0, 229, 255, .2), rgba(6, 12, 28, .88) 64%) !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon[data-profile-icon-job-id="4"] {
+    background:
+      var(--battle-profile-icon-image) center 0% / 190% auto no-repeat,
       radial-gradient(circle at 50% 32%, rgba(179, 132, 62, .18), rgba(18, 16, 14, .86) 66%) !important;
   }
   #phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon::before,
