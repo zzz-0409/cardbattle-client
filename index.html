@@ -7971,17 +7971,7 @@ function attachWsHandlers() {
         lvupBtn.disabled = data.mode === "dojo" ? true : lvupBtn.disabled;
       }
       updateDojoBattleButtons();
-      if (data.enemy_is_dojo_enemy && data.enemy_dojo_enemy_image) {
-        const enemySprite = document.getElementById("enemySprite");
-        if (enemySprite) {
-          enemySprite.classList.add("job-image", "dojo-monster-image");
-          if (data.enemy_dojo_stage_kind && data.enemy_dojo_stage_kind !== "normal") {
-            enemySprite.classList.add("dojo-boss-image");
-          }
-          enemySprite.style.setProperty("--dojo-enemy-image", `url("${String(data.enemy_dojo_enemy_image).replace(/"/g, '\\"')}")`);
-          enemySprite.style.setProperty("--dojo-enemy-scale", String(Number(data.enemy_dojo_enemy_scale ?? 1) || 1));
-        }
-      }
+      applyDojoEnemySprite(data);
 
       // ★ ラウンド/ターンカウンタ初期化
       resetRoundTurnCounter();
@@ -10275,6 +10265,71 @@ function updateBattleProfileBadge(data, isSelf) {
   title.style.display = titleText ? "" : "none";
 }
 
+function getDojoEnemySpriteUrl(src) {
+  return String(src ?? "").replace(/\\/g, "/").trim();
+}
+
+function clearDojoEnemySprite(sprite) {
+  if (!sprite) return;
+  sprite.classList.remove("dojo-monster-image", "dojo-boss-image");
+  sprite.style.removeProperty("--dojo-enemy-image");
+  sprite.style.removeProperty("--dojo-enemy-scale");
+  sprite.style.removeProperty("background");
+  sprite.style.removeProperty("background-image");
+  sprite.style.removeProperty("background-repeat");
+  sprite.style.removeProperty("background-position");
+  sprite.style.removeProperty("background-size");
+  sprite.querySelectorAll(".dojo-monster-sprite-img").forEach(img => img.remove());
+}
+
+function applyDojoEnemySprite(data = {}) {
+  const sprite = document.getElementById("enemySprite");
+  if (!sprite) return false;
+
+  const stored = window.gilsysLatestDojoEnemySprite || {};
+  const image = getDojoEnemySpriteUrl(
+    data.enemy_dojo_enemy_image ??
+    data.dojo_enemy_image ??
+    stored.image
+  );
+  const isDojoEnemy = !!(
+    data.enemy_is_dojo_enemy ??
+    data.is_dojo_enemy ??
+    (window.matchMode === "dojo" && image)
+  );
+  if (!isDojoEnemy || !image) return false;
+
+  const scale = Number(data.enemy_dojo_enemy_scale ?? data.dojo_enemy_scale ?? stored.scale ?? 1) || 1;
+  const kind = String(data.enemy_dojo_stage_kind ?? data.dojo_stage_kind ?? stored.kind ?? "");
+  window.gilsysLatestDojoEnemySprite = { image, scale, kind };
+
+  sprite.classList.remove(
+    "job-warrior", "job-knight", "job-priest", "job-thief", "job-mage",
+    "job-onmyoji", "job-alchemist", "job-dollmaster", "job-madman", "job-archer"
+  );
+  sprite.classList.add("job-image", "dojo-monster-image");
+  sprite.classList.toggle("dojo-boss-image", !!kind && kind !== "normal");
+
+  const cssUrl = `url("${image.replace(/"/g, '\\"')}")`;
+  sprite.style.setProperty("--dojo-enemy-image", cssUrl);
+  sprite.style.setProperty("--dojo-enemy-scale", String(scale));
+  sprite.style.backgroundImage = cssUrl;
+  sprite.style.backgroundRepeat = "no-repeat";
+  sprite.style.backgroundPosition = "center bottom";
+  sprite.style.backgroundSize = "contain";
+
+  let img = sprite.querySelector(".dojo-monster-sprite-img");
+  if (!img) {
+    img = document.createElement("img");
+    img.className = "dojo-monster-sprite-img";
+    sprite.insertBefore(img, sprite.firstChild);
+  }
+  if (img.getAttribute("src") !== image) img.setAttribute("src", image);
+  img.alt = String(data.enemy_name ?? data.name ?? stored.name ?? "モンスター");
+  img.draggable = false;
+  return true;
+}
+
 function updateGilsysBattleHud(data) {
   if (!data) return;
   const isSelf = data.side === "self";
@@ -10355,14 +10410,10 @@ function updateGilsysBattleHud(data) {
     };
     const jobClasses = ["job-image", ...Object.values(jobClassMap)];
     sprite.classList.remove(...jobClasses, "dojo-monster-image", "dojo-boss-image");
-    sprite.style.removeProperty("--dojo-enemy-image");
-    sprite.style.removeProperty("--dojo-enemy-scale");
-    if (!isSelf && data.is_dojo_enemy && data.dojo_enemy_image) {
-      sprite.classList.add("job-image", "dojo-monster-image");
-      if (String(data.job ?? "") === "ボス") sprite.classList.add("dojo-boss-image");
-      sprite.style.setProperty("--dojo-enemy-image", `url("${String(data.dojo_enemy_image).replace(/"/g, '\\"')}")`);
-      sprite.style.setProperty("--dojo-enemy-scale", String(Number(data.dojo_enemy_scale ?? 1) || 1));
+    if (!isSelf && applyDojoEnemySprite(data)) {
+      // Dojo enemies use their own monster image instead of a job portrait.
     } else {
+      if (!isSelf) clearDojoEnemySprite(sprite);
       const cls = jobClassMap[data.job];
       if (cls) sprite.classList.add("job-image", cls);
     }
@@ -10504,6 +10555,10 @@ function getGilsysSkillUseHandler(skillNo){
   return () => useSkill(skillNo);
 }
 
+function isDojoOnlySkillVisible(skillNo) {
+  return Number(skillNo) <= 3 || window.matchMode === "dojo";
+}
+
 function renderGilsysDefaultCommandList() {
   const list = document.getElementById("gilsysCommandList");
   if (!list || document.activeElement?.closest?.("#gilsysCommandList")) return;
@@ -10551,6 +10606,7 @@ function openAttackSkillPanel(markManual = true) {
 
   skills.forEach((skill, i) => {
     const skillNo = i + 1;
+    if (!isDojoOnlySkillVisible(skillNo)) return;
     const needLv = skillNo;
     const currentLv = Number(myLevel ?? 1);
     const remain = Number(window.skillRemaining?.[skillNo] ?? 1);
@@ -10605,6 +10661,7 @@ function openSkillUI(){
 
   SKILLS[jobId].forEach((s, i) => {
     const needLv = i + 1;
+    if (!isDojoOnlySkillVisible(needLv)) return;
 
     const row = document.createElement("div");
     row.className = "skillRow";
@@ -12481,6 +12538,7 @@ document.addEventListener("DOMContentLoaded",()=>{labels();const e=document.quer
 
     skills.forEach((skill, index) => {
       const no = index + 1;
+      if (!isDojoOnlySkillVisible(no)) return;
       const need = Number(skill?.level ?? no);
       const level = Number(typeof myLevel !== "undefined" ? myLevel : 1);
       const remain = Number(window.skillRemaining?.[no] ?? 1);

@@ -4,7 +4,20 @@
   const REQUIRED_ASSETS = [
     "Assets/haikei/7cc56fd2-92f8-44c9-a2b9-b8e605d1affd.png",
     "Assets/home/gilsys-home-notice-button.png",
-    "Assets/home/gilsys-home-mission-document.png"
+    "Assets/home/gilsys-home-mission-document.png",
+    "Assets/dojo/enemies/slime.png",
+    "Assets/dojo/enemies/goblin.png",
+    "Assets/dojo/enemies/wolf.png",
+    "Assets/dojo/enemies/golem.png",
+    "Assets/dojo/enemies/ghost.png",
+    "Assets/dojo/enemies/mushroom.png",
+    "Assets/dojo/enemies/anubis.png",
+    "Assets/dojo/enemies/athena.png",
+    "Assets/dojo/enemies/kali.png",
+    "Assets/dojo/enemies/susanoo.png",
+    "Assets/dojo/enemies/thor.png",
+    "Assets/dojo/enemies/zeus.png",
+    "Assets/dojo/enemies/ashura.png"
   ];
 
   function normalizeAssetPath(raw) {

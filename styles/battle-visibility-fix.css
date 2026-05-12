@@ -177,6 +177,30 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-
   transform-origin: center bottom !important;
 }
 
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image .dojo-monster-sprite-img,
+#battleStage .sprite.enemy.dojo-monster-image .dojo-monster-sprite-img {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+  pointer-events: none !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image .hp-bar,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image .sprite-label-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image .damage-popup,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image .heal-popup,
+#battleStage .sprite.enemy.dojo-monster-image .hp-bar,
+#battleStage .sprite.enemy.dojo-monster-image .sprite-label-row,
+#battleStage .sprite.enemy.dojo-monster-image .damage-popup,
+#battleStage .sprite.enemy.dojo-monster-image .heal-popup {
+  z-index: 2 !important;
+}
+
 html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image::before,
 html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image::after {
   content: none !important;
