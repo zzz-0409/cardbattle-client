@@ -1,0 +1,87 @@
+/* Extracted from <style id="gilsys-inventory-right-panel-style"> */
+#phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-command-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  overflow-y: auto !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card.inventory-card {
+  margin: 0 !important;
+  min-width: 0 !important;
+  height: 132px !important;
+  min-height: 132px !important;
+  grid-template-columns: minmax(0, 1fr) 92px !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+  height: 48px !important;
+  max-height: 48px !important;
+  overflow-y: auto !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-command-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  overflow-y: auto !important;
+}
+#phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-inline-toolbar {
+  margin-bottom: 0;
+}
+.gilsys-item-stack-count,
+.gilsys-shop-arrow-count,
+#phase2.gilsys-battle-ui .gilsys-item-stack-count,
+#phase2.gilsys-battle-ui .gilsys-shop-arrow-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  margin-left: 7px;
+  padding: 1px 7px;
+  border: 1px solid rgba(255, 220, 132, .68);
+  border-radius: 999px;
+  background: rgba(20, 16, 8, .62);
+  color: #ffe29b;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.2;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.gilsys-shop-arrow-count,
+#phase2.gilsys-battle-ui .gilsys-shop-arrow-count {
+  min-width: 24px;
+  color: #dff7ff;
+  border-color: rgba(132, 236, 255, .68);
+  background: rgba(9, 27, 36, .62);
+}
+
+/* Extracted from <style id="gilsys-inventory-confirm-hide-and-damage-style"> */
+.gilsys-command-list-panel.is-inventory-mode + .gilsys-command-detail-panel .gilsys-confirm-btn {
+  display: none !important;
+}
+.gilsys-damage-preview {
+  color: #ffdf8a !important;
+  font-weight: 900 !important;
+  white-space: nowrap;
+}
+
+#phase2.gilsys-battle-ui .shop-buy-area.is-multi-action,
+#phase2.gilsys-battle-ui .inventory-card .shop-buy-area.is-multi-action {
+  gap: 5px !important;
+  min-width: 92px !important;
+}
+
+#phase2.gilsys-battle-ui .shop-buy-area.is-multi-action button,
+#phase2.gilsys-battle-ui .inventory-card .shop-buy-area.is-multi-action button {
+  min-width: 86px !important;
+  min-height: 30px !important;
+  padding: 6px 8px !important;
+  font-size: 12px !important;
+  line-height: 1.1 !important;
+}
+
+#phase2.gilsys-battle-ui .shop-buy-area.is-multi-action .gilsys-secondary-action {
+  background: linear-gradient(180deg, rgba(42, 63, 83, .96), rgba(16, 25, 38, .98)) !important;
+  border-color: rgba(135, 209, 255, .72) !important;
+  color: #e8f7ff !important;
+}

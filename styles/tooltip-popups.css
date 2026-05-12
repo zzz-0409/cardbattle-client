@@ -1,0 +1,537 @@
+/* Extracted from <style id="gilsys-touch-tooltip-style"> */
+@media (hover: none), (pointer: coarse) {
+  #phase2.gilsys-battle-ui .equip-slot,
+  #phase2.gilsys-battle-ui .special-equip-slot,
+  #phase2.gilsys-battle-ui .buff-slot {
+    cursor: pointer !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+    display: block !important;
+    z-index: 999999 !important;
+    max-width: min(260px, calc(100vw - 24px)) !important;
+  }
+
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip,
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip {
+    pointer-events: auto !important;
+  }
+}
+
+/* Extracted from <style id="gilsys-mobile-stage-doll-equip-final-style"> */
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-round-card {
+    min-width: 64px !important;
+    padding: 4px 7px !important;
+    line-height: 1.05 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-round-card #roundLabel {
+    font-size: 9px !important;
+    margin-bottom: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-round-card #turnLabel {
+    font-size: 13px !important;
+    line-height: 1 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-vs-center {
+    top: 4px !important;
+    min-width: 72px !important;
+    padding: 3px 7px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-vs-round,
+  #phase2.gilsys-battle-ui .gilsys-vs-turn {
+    font-size: 9px !important;
+    line-height: 1.15 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-meter,
+  #phase2.gilsys-battle-ui .gilsys-mage-mana-meter {
+    width: 50% !important;
+    margin-top: 2px !important;
+    min-width: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-durability-meter {
+    margin-top: 2px !important;
+    min-width: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-head,
+  #phase2.gilsys-battle-ui .gilsys-mage-mana-head {
+    font-size: 8px !important;
+    line-height: 1 !important;
+    margin-bottom: 1px !important;
+    gap: 4px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-durability-head {
+    font-size: 8px !important;
+    line-height: 1 !important;
+    margin-bottom: 1px !important;
+    gap: 4px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-bar,
+  #phase2.gilsys-battle-ui .gilsys-mage-mana-bar {
+    height: 6px !important;
+    border-radius: 999px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-durability-bar {
+    height: 6px !important;
+    border-radius: 999px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side {
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .main-unit {
+    position: relative !important;
+    overflow: visible !important;
+    padding-bottom: 6px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-area[data-side]:not(.doll) {
+    position: absolute !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: 116px !important;
+    max-height: none !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 3px !important;
+    overflow: visible !important;
+    z-index: 30 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-area {
+    bottom: 20px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .special-equip-area[data-side]:not(.doll) {
+    bottom: -5px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .special-equip-area[data-side="self"]:not(.doll) {
+    left: -50px !important;
+    right: auto !important;
+    transform: none !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .special-equip-area[data-side="enemy"]:not(.doll) {
+    left: auto !important;
+    right: -50px !important;
+    transform: none !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .equip-area {
+    bottom: 26px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-self .main-unit > .special-equip-area[data-side]:not(.doll),
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .main-unit > .special-equip-area[data-side]:not(.doll) {
+    bottom: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui.is-dojo-mode #battleStage .gilsys-equip-wrapper .equip-area,
+  #phase2.gilsys-battle-ui.is-dojo-mode #battleStage .gilsys-equip-wrapper .special-equip-area[data-side]:not(.doll) {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    width: 46px !important;
+    max-width: 46px !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-slot,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot {
+    width: 22px !important;
+    min-width: 22px !important;
+    height: 22px !important;
+    min-height: 22px !important;
+    border-radius: 4px !important;
+    font-size: 7px !important;
+    padding: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-slot-icon,
+  #phase2.gilsys-battle-ui #battleStage .equip-slot-icon img,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot-icon,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot-icon img {
+    width: 15px !important;
+    height: 15px !important;
+    font-size: 12px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll {
+    width: clamp(54px, 13vw, 76px) !important;
+    height: clamp(70px, 18vw, 96px) !important;
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .hp-bar,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .doll-bar {
+    display: block !important;
+    top: -9px !important;
+    left: 3px !important;
+    right: 3px !important;
+    height: 5px !important;
+    z-index: 45 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-area.doll {
+    left: -28px !important;
+    right: auto !important;
+    bottom: 0 !important;
+    width: 24px !important;
+    max-width: 24px !important;
+    gap: 2px !important;
+    z-index: 46 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.doll .special-equip-area.doll {
+    left: auto !important;
+    right: -28px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-slot {
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    font-size: 7px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-slot-icon,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-slot-icon img {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .buff-slot {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+    position: fixed !important;
+    left: 50% !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: min(280px, calc(100vw - 20px)) !important;
+    white-space: pre-line !important;
+    pointer-events: auto !important;
+    z-index: 2147483500 !important;
+  }
+}
+
+/* Extracted from <style id="gilsys-mobile-doll-part-popup-fit-style"> */
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #skillPopup.gilsys-doll-part-popup,
+  #skillPopup:has(#skillList.gilsys-doll-part-list) {
+    align-items: stretch !important;
+    justify-content: flex-end !important;
+    padding: max(4px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left)) !important;
+    box-sizing: border-box !important;
+    background: rgba(0,0,0,0.48) !important;
+  }
+
+  #skillPopup.gilsys-doll-part-popup #skillBox,
+  #skillPopup:has(#skillList.gilsys-doll-part-list) #skillBox {
+    width: min(42vw, 240px) !important;
+    max-width: calc(100vw - 12px) !important;
+    max-height: calc(100dvh - max(10px, env(safe-area-inset-top)) - max(10px, env(safe-area-inset-bottom))) !important;
+    min-height: 0 !important;
+    padding: 7px !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    background: rgba(8,11,16,0.94) !important;
+  }
+
+  #skillPopup.gilsys-doll-part-popup #skillBox h3,
+  #skillPopup.gilsys-doll-part-popup #skillBox > button,
+  #skillPopup:has(#skillList.gilsys-doll-part-list) #skillBox h3,
+  #skillPopup:has(#skillList.gilsys-doll-part-list) #skillBox > button {
+    display: none !important;
+  }
+
+  #skillList.gilsys-doll-part-list {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #skillList.gilsys-doll-part-list::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  #skillList.gilsys-doll-part-list .gilsys-doll-part-select {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    min-height: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #skillList.gilsys-doll-part-list .gilsys-doll-part-title {
+    flex: 0 0 auto !important;
+    color: #f6e5c6 !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+  }
+
+  #skillList.gilsys-doll-part-list .gilsys-doll-part-row {
+    display: grid !important;
+    grid-template-columns: minmax(30px, auto) minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 5px !important;
+    margin: 0 !important;
+    padding: 4px 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  #skillList.gilsys-doll-part-list .skillName,
+  #skillList.gilsys-doll-part-list .skillDesc {
+    min-width: 0 !important;
+    color: #e8edf5 !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    white-space: pre-line !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #skillList.gilsys-doll-part-list .skillName {
+    color: #9fd9ff !important;
+    font-weight: 800 !important;
+  }
+
+  #skillList.gilsys-doll-part-list .gilsys-doll-part-row button {
+    min-width: 34px !important;
+    min-height: 20px !important;
+    padding: 2px 5px !important;
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+    border-color: rgba(120,180,230,0.44) !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Extracted from <style id="gilsys-tooltip-front-fixed-final-style"> */
+#phase2.gilsys-battle-ui .equip-slot .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot .buff-tooltip {
+  z-index: 2147483600 !important;
+}
+
+#phase2.gilsys-battle-ui .equip-slot:hover .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot:hover .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot:hover .buff-tooltip,
+#phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+  z-index: 2147483600 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #phase2.gilsys-battle-ui .equip-slot,
+  #phase2.gilsys-battle-ui .special-equip-slot,
+  #phase2.gilsys-battle-ui .buff-slot {
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot:hover .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot:hover .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot:hover .buff-tooltip {
+    position: fixed !important;
+    left: 50% !important;
+    top: max(14px, env(safe-area-inset-top)) !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: min(340px, calc(100vw - 24px)) !important;
+    white-space: pre-line !important;
+    pointer-events: auto !important;
+    display: block !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+    position: fixed !important;
+    left: 50% !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate3d(-50%, 0, 0) !important;
+    width: max-content !important;
+    max-width: min(300px, calc(100vw - 20px)) !important;
+    max-height: min(46vh, 180px) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    white-space: pre-line !important;
+    text-align: left !important;
+    pointer-events: auto !important;
+    display: block !important;
+    z-index: 2147483600 !important;
+    isolation: isolate;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip::-webkit-scrollbar,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip::-webkit-scrollbar,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+/* Extracted from <style id="gilsys-mobile-floating-tooltip-style"> */
+@media (hover: none), (pointer: coarse) {
+  #gilsysFloatingTooltip {
+    position: fixed !important;
+    left: 50% !important;
+    top: max(8px, env(safe-area-inset-top)) !important;
+    transform: translate3d(-50%, 0, 0) !important;
+    z-index: 2147483647 !important;
+    display: none;
+    width: max-content;
+    max-width: min(320px, calc(100vw - 16px));
+    max-height: min(52vh, 200px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255,226,164,0.78);
+    border-radius: 7px;
+    background: rgba(4,7,12,0.98);
+    color: #f7ead0;
+    font-size: 11px;
+    line-height: 1.4;
+    white-space: pre-line;
+    text-align: left;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+    pointer-events: auto;
+    isolation: isolate;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #gilsysFloatingTooltip::-webkit-scrollbar {
+    display: none;
+  }
+
+  #phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+  #phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+    display: none !important;
+  }
+}
+
+/* Extracted from <style id="gilsys-universal-floating-tooltip-final-style"> */
+#gilsysFloatingTooltip {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  transform: translate3d(-9999px, -9999px, 0) !important;
+  z-index: 2147483647 !important;
+  display: none;
+  width: max-content;
+  max-width: min(340px, calc(100vw - 16px));
+  max-height: min(46vh, 240px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255,226,164,0.86);
+  border-radius: 7px;
+  background: rgba(4,7,12,0.99);
+  color: #f7ead0;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-line;
+  text-align: left;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.62), 0 0 0 1px rgba(255,255,255,0.06) inset;
+  pointer-events: auto;
+  isolation: isolate;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#gilsysFloatingTooltip::-webkit-scrollbar {
+  display: none;
+}
+
+#phase2.gilsys-battle-ui .equip-slot:hover .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot:hover .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot:hover .buff-tooltip,
+#phase2.gilsys-battle-ui .equip-slot.tooltip-open .equip-tooltip,
+#phase2.gilsys-battle-ui .special-equip-slot.tooltip-open .equip-tooltip,
+#phase2.gilsys-battle-ui .buff-slot.tooltip-open .buff-tooltip {
+  display: none !important;
+}
+
+@media (hover: none), (pointer: coarse) {
+  #gilsysFloatingTooltip {
+    max-width: min(320px, calc(100vw - 14px));
+    max-height: min(48vh, 210px);
+    font-size: 11px;
+  }
+}

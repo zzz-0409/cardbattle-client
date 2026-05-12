@@ -1,0 +1,1618 @@
+/* Extracted from <style id="gilsys-dojo-style"> */
+.gilsys-dojo-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  min-height: 100vh;
+  background: url("../Assets/fe-zu0and1haikei.png") center center / cover no-repeat;
+  color: #f7e8c6;
+  box-sizing: border-box;
+  padding: min(7vh, 54px) 18px;
+}
+.gilsys-dojo-panel {
+  width: min(760px, 94vw);
+  margin: 0 auto;
+  padding: 22px;
+  border: 1px solid rgba(231,178,86,.72);
+  border-radius: 10px;
+  background: rgba(16, 18, 24, .92);
+  box-shadow: 0 20px 48px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,245,200,.12);
+}
+.gilsys-dojo-panel h2 { margin: 0 0 12px; font-size: 28px; letter-spacing: .08em; }
+.gilsys-dojo-panel p { margin: 0 0 16px; color: rgba(247,232,198,.78); line-height: 1.7; }
+.gilsys-dojo-back,
+.gilsys-dojo-primary,
+.gilsys-dojo-actions button {
+  border: 1px solid rgba(231,178,86,.72);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(72,52,26,.95), rgba(22,24,31,.96));
+  color: #f7e8c6;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 10px 14px;
+}
+.gilsys-dojo-back { float: right; padding: 7px 12px; }
+.gilsys-dojo-primary { width: 100%; margin-top: 16px; font-size: 18px; }
+.gilsys-dojo-job,
+.gilsys-dojo-progress,
+.gilsys-dojo-wait-summary,
+.gilsys-dojo-drops {
+  border: 1px solid rgba(255,220,132,.32);
+  background: rgba(0,0,0,.22);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.gilsys-dojo-job { display: flex; justify-content: space-between; gap: 14px; }
+.gilsys-dojo-wait-summary { display: grid; gap: 8px; }
+.gilsys-dojo-actions { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0,1fr)); margin-top: 16px; }
+.gilsys-dojo-actions button:disabled { opacity: .45; cursor: default; }
+.gilsys-dojo-status { min-height: 20px; margin-top: 10px !important; }
+@media (max-width: 700px) {
+  .gilsys-dojo-panel { padding: 16px; }
+  .gilsys-dojo-panel h2 { font-size: 22px; }
+  .gilsys-dojo-actions { grid-template-columns: 1fr 1fr; }
+}
+
+/* Extracted from <style id="gilsys-dojo-wait-reference-style"> */
+.dojo-trail-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99960;
+  color: #f7e4bd;
+  background:
+    radial-gradient(circle at 50% 14%, rgba(45,111,156,.22), transparent 34%),
+    linear-gradient(180deg, rgba(2,6,12,.22), rgba(2,6,12,.36) 62%, rgba(2,6,12,.62)),
+    url("../Assets/haikei/kisekigamenn.png") center center / cover no-repeat;
+  overflow: hidden;
+}
+.dojo-trail-shell {
+  width: min(1760px, 100vw);
+  height: 100svh;
+  margin: 0 auto;
+  padding: 18px 26px 20px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(270px, .9fr) minmax(360px, 1.35fr) minmax(270px, .9fr);
+  grid-template-rows: auto minmax(0, 1fr) minmax(172px, 218px);
+  gap: 12px 18px;
+}
+.dojo-trail-head {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 190px 1fr 190px;
+  align-items: center;
+}
+.dojo-trail-head button,
+.dojo-trail-right button,
+.dojo-trail-unlock-row button {
+  min-height: 58px;
+  border: 2px solid rgba(218,154,58,.82);
+  background: linear-gradient(180deg, rgba(24,36,42,.96), rgba(4,9,12,.98));
+  color: #ffe6ac;
+  font-weight: 900;
+  font-size: 22px;
+}
+.dojo-trail-head div {
+  text-align: center;
+}
+.dojo-trail-head span {
+  display: block;
+  color: #d8a85a;
+  font-size: 14px;
+}
+.dojo-trail-head h1 {
+  margin: 0;
+  color: #ffe9b0;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(42px, 4.2vw, 76px);
+  line-height: 1;
+  letter-spacing: 0;
+}
+.dojo-trail-left,
+.dojo-trail-right {
+  min-height: 0;
+  border: 2px solid rgba(191,122,40,.82);
+  background: linear-gradient(180deg, rgba(12,24,32,.9), rgba(4,9,13,.94));
+  box-shadow: inset 0 0 0 1px rgba(255,226,142,.14), 0 20px 42px rgba(0,0,0,.45);
+  padding: 18px;
+}
+.dojo-trail-left {
+  grid-column: 1 / 3;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 14px 22px;
+  align-items: start;
+  transform: translateY(-12px);
+}
+.dojo-trail-right {
+  grid-column: 3;
+  grid-row: 3;
+  transform: translateY(-12px);
+}
+.dojo-trail-left h2,
+.dojo-trail-right h2 {
+  margin: 0 0 16px;
+  color: #f5cf84;
+  text-align: center;
+  font-family: "Yu Mincho", serif;
+  letter-spacing: 0;
+}
+.dojo-trail-points {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid rgba(225,166,70,.52);
+  background: rgba(0,0,0,.25);
+}
+.dojo-trail-points b {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  color: #ffe3a2;
+}
+.dojo-trail-count {
+  margin-top: 16px;
+  padding: 14px;
+  border-bottom: 1px solid rgba(225,166,70,.35);
+  color: #d9bd8c;
+}
+.dojo-trail-bonus {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  margin-top: 0;
+  color: #e5c99a;
+  line-height: 1.7;
+}
+.dojo-trail-bonus h3 {
+  color: #dba95b;
+}
+.dojo-trail-selected-effect {
+  color: #ead1a4;
+}
+.dojo-trail-selected-head {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+.dojo-trail-selected-head .dojo-trail-detail-icon {
+  width: 74px;
+  margin: 0;
+  font-size: 32px;
+}
+.dojo-trail-selected-head h3 {
+  margin: 0 0 8px;
+  color: #ffe4a0;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dojo-trail-state-badge {
+  display: inline-grid;
+  place-items: center;
+  min-height: 26px;
+  padding: 2px 10px;
+  border: 1px solid rgba(216,161,74,.5);
+  color: #ffd98b;
+  background: rgba(0,0,0,.24);
+  font-size: 13px;
+  line-height: 1;
+}
+.dojo-trail-state-badge.is-unlocked {
+  border-color: rgba(255,220,96,.85);
+  color: #fff0bd;
+  box-shadow: 0 0 12px rgba(255,205,92,.28);
+}
+.dojo-trail-selected-head p {
+  margin: 0;
+  color: #d9bd8c;
+}
+.dojo-trail-selected-head p b {
+  display: block;
+  color: #d8a85a;
+  margin-bottom: 4px;
+}
+.dojo-trail-selected-head p span {
+  display: block;
+  color: #ead1a4;
+  line-height: 1.55;
+  max-height: 76px;
+  overflow: auto;
+  padding-right: 6px;
+}
+.dojo-trail-current-bonus {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  padding: 9px 12px;
+  border: 1px solid rgba(216,161,74,.32);
+  background: rgba(0,0,0,.22);
+  color: #ead1a4;
+  font-size: 13px;
+}
+.dojo-trail-current-bonus b {
+  color: #ffe2a3;
+  white-space: nowrap;
+}
+.dojo-trail-current-bonus span {
+  min-width: 0;
+  color: #f3d79a;
+}
+@media (max-width: 720px) {
+  .dojo-trail-current-bonus {
+    grid-template-columns: 1fr;
+  }
+}
+.dojo-trail-unlock-row {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  border-top: 1px solid rgba(216,161,74,.3);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+.dojo-trail-cost {
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(216,161,74,.34);
+  background: rgba(0,0,0,.2);
+  padding: 0 14px;
+}
+.dojo-trail-cost span {
+  color: #d8a85a;
+}
+.dojo-trail-cost b {
+  color: #ffe2a3;
+}
+.dojo-trail-unlock-row button {
+  flex: 1;
+  font-size: 18px;
+}
+.dojo-trail-preview {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  color: #ead1a4;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.dojo-trail-preview b {
+  color: #ffe2a3;
+}
+.dojo-trail-preview span {
+  max-height: 54px;
+  overflow: auto;
+  scrollbar-width: none;
+}
+.dojo-trail-preview span::-webkit-scrollbar {
+  display: none;
+}
+.dojo-trail-board {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  position: relative;
+  min-height: 0;
+  border: 2px solid rgba(183,124,48,.68);
+  overflow: auto;
+  background:
+    linear-gradient(180deg, rgba(2,6,12,.18), rgba(2,6,12,.42)),
+    url("../Assets/haikei/kisekigamenn.png") center center / cover no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(255,232,157,.14), 0 18px 44px rgba(0,0,0,.45);
+}
+.dojo-trail-zoom {
+  position: sticky;
+  top: 12px;
+  left: 12px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  margin: 12px 0 -58px 12px;
+  border: 1px solid rgba(225,166,70,.6);
+  background: rgba(4,10,14,.88);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+.dojo-trail-zoom button {
+  width: 46px;
+  min-height: 36px;
+  border: 1px solid rgba(225,166,70,.75);
+  background: linear-gradient(180deg, rgba(31,47,51,.96), rgba(6,13,16,.98));
+  color: #ffe6ac;
+  font-weight: 900;
+}
+.dojo-trail-zoom button:last-child {
+  width: 64px;
+}
+.dojo-trail-zoom span {
+  min-width: 54px;
+  text-align: center;
+  color: #ffe6ac;
+  font-weight: 900;
+}
+.dojo-trail-legend {
+  position: sticky;
+  top: 12px;
+  left: calc(100% - 360px);
+  z-index: 30;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 12px;
+  margin: 12px 12px -59px auto;
+  border: 1px solid rgba(225,166,70,.55);
+  background: rgba(4,10,16,.9);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  color: #f4d69a;
+  font-size: 13px;
+  font-weight: 800;
+}
+.dojo-trail-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.legend-dot {
+  width: 12px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid rgba(255,239,190,.7);
+  background: #244b77;
+}
+.legend-dot.is-open {
+  background: #e8b34d;
+  box-shadow: 0 0 10px rgba(255,206,91,.75);
+}
+.legend-dot.is-locked {
+  background: #18324a;
+  opacity: .65;
+}
+.legend-dot.is-major {
+  width: 16px;
+  background: #c77b20;
+}
+.dojo-trail-canvas {
+  position: relative;
+  --trail-zoom: 1;
+  width: 3200px;
+  height: 2400px;
+  min-width: 100%;
+  min-height: 100%;
+  background:
+    linear-gradient(180deg, rgba(2,6,12,.14), rgba(2,6,12,.28)),
+    url("../Assets/haikei/kisekigamenn.png") center center / cover no-repeat;
+}
+.dojo-trail-core {
+  position: absolute;
+  left: 50%;
+  top: 90%;
+  width: calc(110px * var(--trail-zoom));
+  min-width: 34px;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-radius: 50%;
+  border: max(1px, calc(3px * var(--trail-zoom))) solid #f8d683;
+  background: radial-gradient(circle, rgba(179,113,23,.98), rgba(35,19,4,.98));
+  color: #fff2c4;
+  font-weight: 900;
+  z-index: 4;
+}
+.dojo-trail-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+.dojo-trail-lines line {
+  stroke: rgba(232,177,82,.48);
+  stroke-width: .22;
+  vector-effect: non-scaling-stroke;
+}
+.dojo-trail-lines line.spoke,
+.dojo-trail-lines line.axis {
+  stroke: rgba(120,190,255,.72);
+  stroke-width: .32;
+}
+.dojo-trail-lines line.major-ring {
+  stroke: rgba(255,206,79,.72);
+  stroke-width: .34;
+}
+.dojo-trail-lines line.row-link {
+  stroke: rgba(255,206,79,.58);
+  stroke-width: .24;
+}
+.dojo-trail-node {
+  position: absolute;
+  width: calc(44px * var(--trail-zoom));
+  min-width: 12px;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: max(1px, calc(2px * var(--trail-zoom))) solid rgba(155,202,255,.82);
+  background: radial-gradient(circle, rgba(28,98,168,.98), rgba(5,18,36,.98));
+  color: #dcefff;
+  padding: 0;
+  z-index: 5;
+  overflow: hidden;
+  isolation: isolate;
+}
+.dojo-trail-node span {
+  position: relative;
+  z-index: 1;
+  font-size: max(10px, calc(20px * var(--trail-zoom)));
+  line-height: 1;
+}
+.dojo-trail-node img {
+  position: relative;
+  z-index: 1;
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(255,213,101,.65));
+}
+.dojo-trail-node.is-major {
+  width: calc(94px * var(--trail-zoom));
+  min-width: 26px;
+  border-color: #ffe19a;
+  background: radial-gradient(circle, rgba(205,136,26,.98), rgba(69,38,5,.98));
+  color: #fff0bf;
+}
+.dojo-trail-node.is-major span {
+  font-size: max(14px, calc(34px * var(--trail-zoom)));
+}
+.dojo-trail-node.is-branch-1 {
+  border-color: rgba(255,108,92,.95);
+  background: radial-gradient(circle, rgba(197,47,40,.98), rgba(48,8,9,.98));
+  box-shadow: 0 0 22px rgba(255,60,48,.42), inset 0 0 18px rgba(255,142,118,.18);
+}
+.dojo-trail-node.is-branch-2 {
+  border-color: rgba(122,193,255,.95);
+  background: radial-gradient(circle, rgba(35,117,205,.98), rgba(5,22,55,.98));
+  box-shadow: 0 0 22px rgba(68,157,255,.42), inset 0 0 18px rgba(132,207,255,.18);
+}
+.dojo-trail-node.is-branch-3 {
+  border-color: rgba(120,244,155,.95);
+  background: radial-gradient(circle, rgba(42,158,82,.98), rgba(4,43,23,.98));
+  box-shadow: 0 0 22px rgba(67,226,113,.38), inset 0 0 18px rgba(142,255,172,.16);
+}
+.dojo-trail-node.is-branch-1.is-major {
+  background: radial-gradient(circle, rgba(228,78,48,.98), rgba(74,18,7,.98));
+}
+.dojo-trail-node.is-branch-2.is-major {
+  background: radial-gradient(circle, rgba(65,145,235,.98), rgba(8,35,78,.98));
+}
+.dojo-trail-node.is-branch-3.is-major {
+  background: radial-gradient(circle, rgba(64,188,96,.98), rgba(9,62,28,.98));
+}
+.dojo-trail-node.is-major.is-step-5 {
+  border-color: rgba(255,236,153,.98);
+  background:
+    radial-gradient(circle at 38% 28%, rgba(255,255,218,.98), transparent 16%),
+    radial-gradient(circle, rgba(255,202,64,.98), rgba(122,74,9,.98) 72%, rgba(45,22,2,.98));
+  color: #fff7cf;
+  box-shadow: 0 0 28px rgba(255,204,71,.72), inset 0 0 18px rgba(255,249,199,.28);
+}
+.dojo-trail-node.is-major.is-step-10 {
+  border-color: rgba(255,255,255,.96);
+  background:
+    conic-gradient(from 22deg, #ff4d4d, #ffcf4d, #5cff80, #52c7ff, #9b6bff, #ff5ad8, #ff4d4d);
+  color: #ffffff;
+  box-shadow: 0 0 30px rgba(116,214,255,.72), 0 0 18px rgba(255,92,205,.42), inset 0 0 20px rgba(255,255,255,.32);
+}
+.dojo-trail-node.is-major.is-step-10::before {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,12,24,.42), rgba(6,12,24,.82));
+  z-index: 0;
+}
+.dojo-trail-node.is-unlocked {
+  box-shadow: 0 0 18px rgba(255,205,92,.75), inset 0 0 0 1px rgba(255,239,190,.26);
+}
+.dojo-trail-node.is-branch-1.is-unlocked {
+  box-shadow: 0 0 26px rgba(255,63,48,.78), inset 0 0 0 1px rgba(255,218,190,.28);
+}
+.dojo-trail-node.is-branch-2.is-unlocked {
+  box-shadow: 0 0 26px rgba(70,163,255,.78), inset 0 0 0 1px rgba(205,232,255,.28);
+}
+.dojo-trail-node.is-branch-3.is-unlocked {
+  box-shadow: 0 0 26px rgba(72,230,118,.72), inset 0 0 0 1px rgba(205,255,218,.26);
+}
+.shop-card.inventory-card.is-equip-combine-selected {
+  outline: 2px solid rgba(255,226,130,.95);
+  outline-offset: -2px;
+  box-shadow: 0 0 22px rgba(255,205,92,.46), inset 0 0 0 1px rgba(255,244,198,.24) !important;
+}
+.dojo-inventory-tools {
+  margin: 6px 0 10px;
+}
+.dojo-inventory-tools span {
+  align-self: center;
+  color: rgba(245,232,200,.76);
+  font-size: 12px;
+}
+.dojo-inventory-tools .dojo-auto-combine-toggle.is-on {
+  border-color: rgba(104, 224, 154, .88);
+  color: #d9ffe9;
+  box-shadow: 0 0 14px rgba(88, 218, 142, .28), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.dojo-trail-node.is-locked {
+  filter: grayscale(.5);
+  opacity: .72;
+}
+.dojo-trail-node.is-selected {
+  outline: max(1px, calc(3px * var(--trail-zoom))) solid rgba(255,238,175,.96);
+  outline-offset: max(1px, calc(5px * var(--trail-zoom)));
+  box-shadow: 0 0 24px rgba(255,211,94,.62), inset 0 0 0 1px rgba(255,239,190,.24);
+}
+.dojo-trail-node:hover,
+.dojo-trail-node:active,
+.dojo-trail-node:focus {
+  transform: translate(-50%, -50%) !important;
+}
+.dojo-trail-detail {
+  min-height: 0;
+}
+.dojo-trail-detail-icon {
+  width: 120px;
+  aspect-ratio: 1;
+  margin: 12px auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid rgba(215,161,74,.92);
+  background: radial-gradient(circle, rgba(44,53,57,.98), rgba(7,10,13,.98));
+  font-size: 52px;
+}
+.dojo-trail-detail-icon.is-major {
+  border-color: #ffe19a;
+  background: radial-gradient(circle, rgba(116,38,31,.98), rgba(28,9,8,.98));
+}
+.dojo-trail-detail-icon img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(255,213,101,.65));
+}
+.dojo-trail-detail h3 {
+  margin: 0 0 14px;
+  color: #ffe4a0;
+  text-align: center;
+  font-size: 28px;
+}
+.dojo-trail-detail p {
+  color: #ead1a4;
+  line-height: 1.7;
+}
+.dojo-trail-effect-box {
+  border: 1px solid rgba(216,161,74,.38);
+  background: rgba(0,0,0,.24);
+  padding: 12px;
+  margin: 14px 0;
+}
+.dojo-trail-effect-box b {
+  display: block;
+  color: #d8a85a;
+  margin-bottom: 6px;
+}
+.dojo-trail-effect-box p {
+  margin: 0;
+}
+.dojo-trail-detail dl {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+}
+.dojo-trail-detail dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid rgba(216,161,74,.3);
+  padding-top: 10px;
+}
+.dojo-trail-detail dt {
+  color: #d8a85a;
+}
+.dojo-trail-detail dd {
+  margin: 0;
+  text-align: right;
+}
+#btnUnlockDojoTrail {
+  width: auto;
+  margin-top: 0;
+  background: linear-gradient(180deg, rgba(151,101,20,.98), rgba(56,31,5,.98));
+}
+#btnUnlockDojoTrail:disabled {
+  opacity: .52;
+}
+.dojo-result-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99970;
+  color: #f8e7bd;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.82), rgba(0,0,0,.28) 17%, rgba(0,0,0,.18) 50%, rgba(0,0,0,.3) 83%, rgba(0,0,0,.82)),
+    radial-gradient(circle at 50% 10%, rgba(255,175,52,.34), transparent 28%),
+    linear-gradient(180deg, #11191e, #03070b 72%);
+  overflow: hidden;
+}
+.dojo-result-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(2,7,12,.42);
+  pointer-events: none;
+}
+.dojo-result-screen.is-defeat {
+  filter: saturate(.78);
+}
+.dojo-result-screen.is-defeat::before {
+  background: rgba(5,5,9,.68);
+}
+.dojo-result-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1540px, 100vw);
+  height: 100svh;
+  margin: 0 auto;
+  padding: clamp(16px, 2vw, 34px) clamp(18px, 3vw, 56px) clamp(18px, 2vw, 32px);
+  display: grid;
+  grid-template-columns: minmax(250px, .85fr) minmax(520px, 1.7fr) minmax(250px, .9fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(12px, 1.2vw, 22px);
+  box-sizing: border-box;
+}
+.dojo-result-head {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  text-shadow: 0 0 22px rgba(255,190,66,.8), 0 4px 0 rgba(25,11,0,.95);
+}
+.dojo-result-head h1 {
+  margin: 0;
+  font-size: clamp(58px, 8.5vw, 132px);
+  line-height: .86;
+  letter-spacing: 0;
+  color: #ffe9a6;
+}
+.is-defeat .dojo-result-head h1 {
+  color: #c9d1e6;
+  text-shadow: 0 0 20px rgba(120,150,210,.55), 0 4px 0 rgba(0,0,0,.95);
+}
+.dojo-result-stage {
+  margin-top: 10px;
+  font-size: clamp(20px, 2.1vw, 36px);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+.dojo-result-reward-label {
+  width: min(620px, 52vw);
+  margin: 16px auto 0;
+  border-top: 1px solid rgba(225,164,70,.78);
+  border-bottom: 1px solid rgba(225,164,70,.5);
+  padding: 7px 0;
+  color: #ffd98b;
+  font-size: clamp(18px, 1.5vw, 28px);
+  letter-spacing: 0;
+}
+.dojo-result-panel {
+  min-height: 0;
+  border: 2px solid rgba(190,121,38,.9);
+  background:
+    linear-gradient(180deg, rgba(8,19,29,.92), rgba(3,8,13,.88)),
+    radial-gradient(circle at 50% 0, rgba(211,139,39,.14), transparent 48%);
+  box-shadow: inset 0 0 0 1px rgba(255,225,143,.16), 0 20px 40px rgba(0,0,0,.58);
+  padding: clamp(12px, 1.05vw, 18px);
+  overflow: hidden;
+}
+.dojo-result-panel h2 {
+  margin: 0 0 14px;
+  text-align: center;
+  color: #ffd88c;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(17px, 1.35vw, 24px);
+  letter-spacing: 0;
+}
+.dojo-result-player {
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 14px;
+}
+.dojo-result-portrait {
+  min-height: 190px;
+  border: 1px solid rgba(217,154,70,.8);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(230,211,172,.18), transparent 46%),
+    url("../Assets/shokugyousenntaku/sennsi1_facefix_transparent.png") center 50% / 92% auto no-repeat,
+    rgba(4,8,12,.72);
+}
+.dojo-result-player b {
+  display: block;
+  font-size: 24px;
+  color: #fff0c8;
+  font-family: "Yu Mincho", serif;
+  margin: 10px 0 12px;
+}
+.dojo-result-player span,
+.dojo-result-lines div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(242,193,108,.18);
+  padding: 8px 0;
+  color: #f2d199;
+}
+.dojo-result-lines {
+  margin-top: 14px;
+}
+.dojo-result-lines b {
+  color: #fff2d4;
+  font-size: 18px;
+}
+.dojo-result-message {
+  margin-top: 18px;
+  border: 1px solid rgba(216,161,74,.46);
+  background: rgba(0,0,0,.28);
+  padding: 14px;
+  color: #fff3d1;
+  line-height: 1.6;
+}
+.dojo-result-drops {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  min-height: 150px;
+}
+.dojo-result-drop {
+  min-width: 0;
+  min-height: 104px;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 4px;
+  place-items: center;
+  padding: 8px 6px;
+  box-sizing: border-box;
+  border: 2px solid rgba(185,125,45,.75);
+  background: linear-gradient(180deg, rgba(19,25,28,.92), rgba(5,10,15,.94));
+  color: #f8e2b0;
+  font-family: "Yu Mincho", serif;
+}
+.dojo-result-drop.theme-gold { border-color: rgba(255,220,96,.95); box-shadow: 0 0 22px rgba(255,192,61,.3); }
+.dojo-result-drop.theme-rainbow,
+.dojo-result-drop.theme-rainbow-blue { border-color: rgba(188,128,255,.9); box-shadow: 0 0 22px rgba(134,203,255,.28); }
+.dojo-result-drop.is-selected {
+  outline: 2px solid #ffe39a;
+  box-shadow: 0 0 24px rgba(255,204,82,.54);
+}
+.dojo-result-drop span {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+}
+.dojo-result-drop img {
+  width: 58px;
+  height: 58px;
+}
+.dojo-result-drop b {
+  display: none !important;
+}
+.dojo-result-drop i {
+  color: #ffd77e;
+  font-style: normal;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+}
+.dojo-result-exp {
+  margin-top: 18px;
+  border: 1px solid rgba(211,151,61,.6);
+  padding: 12px 16px;
+  background: rgba(0,0,0,.24);
+}
+.dojo-result-exp h3 {
+  margin: 0 0 8px;
+  color: #f6cb76;
+  font-family: "Yu Mincho", serif;
+}
+#dojoResultExpValue {
+  font-family: Georgia, serif;
+  font-size: clamp(28px, 3vw, 48px);
+  color: #ffe19a;
+}
+.dojo-result-exp-bar {
+  height: 10px;
+  border: 1px solid rgba(242,201,108,.42);
+  background: rgba(0,0,0,.44);
+  margin: 8px 0;
+}
+.dojo-result-exp-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #b07a18, #ffe28a);
+}
+.dojo-result-extra {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.dojo-result-extra div {
+  border: 1px solid rgba(216,161,74,.38);
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  color: #f3d39a;
+}
+.dojo-result-extra b {
+  color: #ffeab2;
+}
+.dojo-result-detail-icon {
+  width: 150px;
+  height: 150px;
+  margin: 8px auto 18px;
+  display: grid;
+  place-items: center;
+  font-size: 74px;
+  border: 2px solid rgba(190,121,38,.9);
+  background: rgba(0,0,0,.3);
+}
+.dojo-result-detail-icon img {
+  width: 118px;
+  height: 118px;
+}
+#dojoResultDetail h3 {
+  margin: 0;
+  color: #fff0c7;
+  font-size: 26px;
+  font-family: "Yu Mincho", serif;
+}
+.dojo-result-detail-kind {
+  margin: 10px 0 16px;
+  color: #d8a85a;
+}
+#dojoResultDetail p {
+  line-height: 1.75;
+  color: #ead1a4;
+}
+.dojo-result-owned {
+  margin-top: 28px;
+  border: 1px solid rgba(211,151,61,.55);
+  padding: 8px 12px;
+  text-align: center;
+}
+.dojo-result-actions {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr;
+  gap: clamp(14px, 2vw, 34px);
+  align-items: center;
+  padding: 0 min(8vw, 120px);
+}
+.dojo-result-actions.is-defeat-actions {
+  grid-template-columns: minmax(220px, 420px);
+  justify-content: center;
+}
+.dojo-result-actions button {
+  min-height: 72px;
+  border: 2px solid rgba(210,145,50,.92);
+  background: linear-gradient(180deg, rgba(30,45,44,.95), rgba(4,13,15,.98));
+  color: #ffe5ad;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(20px, 2vw, 34px);
+  font-weight: 900;
+  letter-spacing: 0;
+  box-shadow: inset 0 0 0 1px rgba(255,233,174,.16), 0 0 22px rgba(0,0,0,.55);
+}
+.dojo-result-actions button.primary {
+  border-color: #ffe39a;
+  background: linear-gradient(180deg, rgba(151,101,20,.98), rgba(56,31,5,.98));
+  box-shadow: 0 0 30px rgba(255,194,64,.58), inset 0 0 0 1px rgba(255,245,200,.3);
+}
+.dojo-locked-icon {
+  filter: grayscale(.28);
+  opacity: .58;
+  border-style: dashed !important;
+}
+.dojo-locked-icon .shop-icon {
+  color: #b8a98a;
+}
+.inventory-card.is-dojo-loadout-selected {
+  outline: 2px solid rgba(255,229,142,.9);
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 1px rgba(255,245,200,.24), 0 0 18px rgba(255,211,96,.28);
+}
+.dojo-result-empty {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+  color: #d8c19b;
+  border: 1px dashed rgba(216,161,74,.5);
+}
+@media (max-width: 980px) {
+  .dojo-result-shell {
+    padding: 10px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    overflow: auto;
+  }
+  .dojo-result-head h1 { font-size: 46px; }
+  .dojo-result-right { display: none !important; }
+  .dojo-result-drops { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dojo-result-actions { grid-template-columns: 1fr; padding: 0; }
+  .dojo-result-actions button { min-height: 48px; font-size: 18px; }
+}
+#phaseDojoWait.gilsys-dojo-screen {
+  padding: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(4,7,10,.18), rgba(2,3,5,.82)),
+    url("../Assets/dojo/dojo-wait-bg.png") center center / cover no-repeat;
+}
+#phaseDojoWait .gilsys-dojo-wait-panel {
+  position: relative;
+  width: min(1500px, 100vw);
+  height: 100svh;
+  min-height: 0;
+  margin: 0 auto;
+  padding: clamp(10px, 1.25vw, 20px) clamp(12px, 2vw, 34px);
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(6,10,15,.82), transparent 12%, transparent 88%, rgba(6,10,15,.82)),
+    radial-gradient(circle at 50% 6%, rgba(214,159,67,.16), transparent 28%);
+  box-shadow: none;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: clamp(6px, .8vw, 12px);
+  box-sizing: border-box;
+}
+#phaseDojoWait #dojoWaitTitle {
+  margin: 0;
+  text-align: center;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(24px, 3.2vw, 48px);
+  line-height: 1;
+  letter-spacing: .16em;
+  color: #ffe6a6;
+  text-shadow: 0 0 18px rgba(255,198,91,.55), 0 3px 0 rgba(42,20,2,.95);
+}
+#phaseDojoWait #dojoWaitTitle::after {
+  content: "◇　戦闘待機画面　◇";
+  display: block;
+  margin-top: 4px;
+  font-size: clamp(11px, 1.15vw, 17px);
+  letter-spacing: .14em;
+  color: #f4d18b;
+  text-shadow: 0 0 12px rgba(255,185,78,.38);
+}
+#phaseDojoWait .gilsys-dojo-wait-summary {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: block;
+  min-height: 0;
+  overflow: hidden;
+}
+.dojo-wait-hero {
+  width: min(920px, 78vw);
+  margin: 0 auto clamp(6px, .7vw, 10px);
+  text-align: center;
+}
+.dojo-path-label {
+  text-align: left;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-weight: 900;
+  font-size: clamp(13px, 1.35vw, 20px);
+  letter-spacing: .08em;
+  color: #fff0c7;
+  text-shadow: 0 0 10px rgba(0,0,0,.8);
+}
+.dojo-stage-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(5px, .72vw, 11px);
+  margin-top: 5px;
+  color: #e6bc64;
+}
+.dojo-stage-node {
+  width: clamp(22px, 2.15vw, 34px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(214,162,72,.86);
+  background: radial-gradient(circle, rgba(36,25,13,.98), rgba(4,8,13,.95));
+  color: #f8d98e;
+  font-family: Georgia, serif;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px rgba(25,13,2,.8), inset 0 0 12px rgba(255,213,111,.1);
+}
+.dojo-stage-node.is-cleared {
+  background: radial-gradient(circle, rgba(119,82,24,.98), rgba(23,17,8,.96));
+}
+.dojo-stage-node.is-current {
+  color: #fff4c8;
+  box-shadow: 0 0 22px rgba(255,196,74,.95), 0 0 0 3px rgba(255,226,143,.2);
+}
+.dojo-stage-ellipsis {
+  font-size: clamp(13px, 1.4vw, 20px);
+  color: rgba(243,202,124,.65);
+  letter-spacing: .2em;
+}
+.dojo-current-stage {
+  margin-top: 4px;
+  text-align: left;
+  color: #fff2ce;
+  font-weight: 900;
+  font-size: clamp(12px, 1.05vw, 16px);
+}
+.dojo-wait-grid {
+  display: grid;
+  grid-template-columns: minmax(210px, .74fr) minmax(360px, 1.2fr) minmax(320px, 1.02fr);
+  gap: clamp(8px, .9vw, 16px);
+  align-items: stretch;
+  min-height: 0;
+  height: clamp(250px, 43vh, 410px);
+  max-height: 43vh;
+}
+.dojo-frame {
+  position: relative;
+  border: 2px solid rgba(190,119,35,.9);
+  background:
+    linear-gradient(180deg, rgba(10,20,31,.9), rgba(4,9,14,.82)),
+    radial-gradient(circle at 50% 0, rgba(195,125,38,.12), transparent 42%);
+  box-shadow: inset 0 0 0 1px rgba(255,226,142,.18), 0 0 0 1px rgba(4,6,8,.9), 0 18px 34px rgba(0,0,0,.42);
+  padding: clamp(8px, .82vw, 14px);
+  min-height: 0;
+  overflow: hidden;
+}
+.dojo-frame h3 {
+  margin: 0 0 7px;
+  text-align: center;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(13px, 1.15vw, 18px);
+  color: #ffd98e;
+  letter-spacing: .08em;
+}
+.dojo-subhead { margin-top: 9px !important; }
+.dojo-player-body {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 8px;
+  align-items: stretch;
+  height: calc(100% - 28px);
+  min-height: 0;
+}
+.dojo-player-card {
+  border: 1px solid rgba(214,151,59,.85);
+  background: linear-gradient(180deg, rgba(222,207,171,.18), rgba(4,8,12,.86));
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+}
+.dojo-player-portrait {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(237,219,178,.2), transparent 42%),
+    url("../Assets/shokugyousenntaku/sennsi1_facefix_transparent.png") center 44% / 86% auto no-repeat;
+  filter: brightness(.72) contrast(1.1) drop-shadow(0 16px 18px rgba(0,0,0,.75));
+}
+.dojo-player-card strong {
+  padding: 6px 8px;
+  font-size: clamp(11px, .9vw, 14px);
+  font-family: "Yu Mincho", serif;
+  color: #fff0c9;
+  background: rgba(4,6,9,.74);
+  text-align: center;
+}
+.dojo-player-stats {
+  display: grid;
+  gap: 7px;
+  align-content: center;
+}
+.dojo-player-stats div {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,218,143,.18);
+  background: rgba(0,0,0,.28);
+  padding: 8px 10px;
+  min-height: 42px;
+}
+.dojo-player-stats span {
+  display: block;
+  color: #e7c37d;
+  font-weight: 800;
+  font-size: 11px;
+}
+.dojo-player-stats b {
+  display: block;
+  margin-top: 3px;
+  color: #fff4d6;
+  font-size: clamp(15px, 1.25vw, 21px);
+  font-family: Georgia, "Yu Mincho", serif;
+}
+.dojo-player-stats em {
+  display: block;
+  margin-top: 3px;
+  color: rgba(255,244,214,.78);
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1.35;
+}
+.dojo-player-stats .dojo-trail-buff-list em {
+  max-height: 46px;
+  overflow-y: auto;
+}
+.dojo-player-stats i {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: var(--hp);
+  background: linear-gradient(90deg, #7a1010, #ff5b4b);
+  box-shadow: 0 0 12px rgba(255,70,55,.7);
+}
+.dojo-icon-section {
+  min-height: 0;
+  margin-bottom: 8px;
+}
+.dojo-loadout-frame {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 5px;
+}
+.dojo-loadout-category {
+  min-height: 0;
+}
+.dojo-loadout-frame .dojo-equip-slot-category:last-child {
+  display: none;
+}
+.dojo-carry-slot-category {
+  overflow-y: auto;
+  padding-right: 2px;
+  scrollbar-width: none;
+}
+.dojo-carry-slot-category::-webkit-scrollbar {
+  display: none;
+}
+.dojo-loadout-category h3 {
+  margin-bottom: 4px;
+  font-size: clamp(11px, .92vw, 14px);
+}
+.dojo-equip-slot-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+.dojo-equip-slot-card {
+  min-height: 38px;
+  border: 1px solid rgba(255,218,143,.26);
+  background: linear-gradient(180deg, rgba(38,31,21,.74), rgba(5,9,14,.82));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 1px 6px;
+  padding: 5px 7px;
+}
+.dojo-equip-slot-card span {
+  color: #f4d088;
+  font-size: 10px;
+  font-weight: 900;
+}
+.dojo-equip-slot-card b {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  color: #fff4d6;
+  font-family: Georgia, "Yu Mincho", serif;
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1;
+}
+.dojo-equip-slot-card em {
+  color: rgba(255,244,214,.72);
+  font-size: 9px;
+  font-style: normal;
+}
+.dojo-icon-section:last-child {
+  margin-bottom: 0;
+}
+.dojo-icon-section h4 {
+  margin: 0 0 5px;
+  color: #f4d088;
+  font-size: clamp(11px, .9vw, 14px);
+  letter-spacing: .08em;
+}
+#phaseDojoWait .dojo-icon-grid.gilsys-shop-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(5px, .55vw, 9px);
+  width: 100%;
+}
+#phaseDojoWait .dojo-loadout-frame .dojo-icon-section {
+  margin-bottom: 4px;
+}
+#phaseDojoWait .dojo-loadout-frame .dojo-icon-section h4 {
+  margin-bottom: 3px;
+  font-size: clamp(10px, .78vw, 12px);
+}
+#phaseDojoWait .dojo-loadout-frame .dojo-icon-grid.gilsys-shop-icon-grid {
+  gap: clamp(3px, .35vw, 5px);
+}
+#phaseDojoWait .gilsys-shop-icon-btn {
+  width: auto;
+  min-width: 0;
+  height: clamp(42px, 4.4vw, 64px);
+  min-height: 0;
+  border-radius: 9px;
+  padding: 4px;
+}
+#phaseDojoWait .gilsys-shop-icon-btn .shop-icon {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 7px;
+  font-size: clamp(18px, 2vw, 30px);
+}
+#phaseDojoWait .gilsys-shop-icon-btn .shop-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#phaseDojoWait .dojo-loadout-frame .gilsys-shop-icon-btn {
+  height: clamp(28px, 2.9vw, 42px);
+  padding: 2px;
+}
+#phaseDojoWait .dojo-loadout-frame .gilsys-shop-icon-btn .shop-icon {
+  border-radius: 5px;
+  font-size: clamp(13px, 1.45vw, 22px);
+}
+#phaseDojoWait .dojo-empty-icon {
+  opacity: .42;
+  filter: grayscale(.55);
+}
+.dojo-wait-detail {
+  margin-top: 8px;
+  min-height: 0;
+}
+#phaseDojoWait .dojo-shop-detail-card {
+  min-height: 0;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-card {
+  margin: 0;
+  min-height: 0;
+  padding: 8px;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-card-head {
+  gap: 8px;
+  align-items: start;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-icon {
+  width: clamp(42px, 4.4vw, 60px);
+  height: clamp(42px, 4.4vw, 60px);
+  min-width: clamp(42px, 4.4vw, 60px);
+  font-size: clamp(20px, 2vw, 30px);
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-item-name {
+  font-size: clamp(12px, 1.05vw, 16px);
+  line-height: 1.2;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-meta-row {
+  gap: 4px;
+  margin-top: 3px;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-badge {
+  font-size: 10px;
+  padding: 2px 5px;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-item-desc {
+  max-height: clamp(48px, 7vh, 74px);
+  margin-top: 5px;
+  overflow: auto;
+  font-size: clamp(10px, .86vw, 13px);
+  line-height: 1.45;
+}
+#phaseDojoWait .dojo-shop-detail-card .shop-item-desc::-webkit-scrollbar {
+  display: none;
+}
+.dojo-card-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(6px, .7vw, 10px);
+}
+.dojo-mini-card {
+  min-height: clamp(82px, 8.6vw, 126px);
+  border: 1px solid rgba(185,126,50,.82);
+  background:
+    linear-gradient(180deg, rgba(23,31,38,.88), rgba(5,9,13,.94)),
+    radial-gradient(circle at 50% 28%, rgba(255,213,117,.12), transparent 48%);
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  place-items: center;
+  padding: 6px;
+  text-align: center;
+  box-shadow: inset 0 0 0 1px rgba(255,237,184,.08);
+}
+.dojo-mini-card.is-drop.coin { background-color: rgba(87,58,7,.38); border-color: rgba(255,194,65,.95); }
+.dojo-mini-card.is-drop.equip { background-color: rgba(54,30,64,.32); border-color: rgba(182,98,202,.75); }
+.dojo-mini-card.is-drop.item { background-color: rgba(20,67,27,.32); border-color: rgba(95,171,79,.78); }
+.dojo-mini-card.is-empty { opacity: .56; filter: grayscale(.4); }
+.dojo-mini-icon {
+  font-size: clamp(23px, 2.5vw, 38px);
+  filter: drop-shadow(0 0 10px rgba(255,202,97,.35));
+}
+.dojo-mini-card b {
+  color: #fff0cb;
+  font-size: clamp(11px, .95vw, 15px);
+  font-family: "Yu Mincho", serif;
+}
+.dojo-mini-card span {
+  min-height: 16px;
+  color: #f4d088;
+  font-weight: 800;
+  font-size: clamp(10px, .8vw, 13px);
+}
+#phaseDojoWait .gilsys-dojo-drops {
+  border: 0;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #d9a63c;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(11px, 1vw, 16px);
+  letter-spacing: .12em;
+}
+#phaseDojoWait .gilsys-dojo-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1.8fr 1fr;
+  gap: clamp(7px, .85vw, 14px);
+  margin-top: 0;
+}
+#phaseDojoWait .gilsys-dojo-actions button {
+  min-height: clamp(38px, 4.1vw, 62px);
+  border-radius: 0;
+  border: 2px solid rgba(199,129,42,.88);
+  background:
+    linear-gradient(180deg, rgba(48,57,34,.92), rgba(5,15,13,.98));
+  color: #fff0c8;
+  font-family: "Yu Mincho", serif;
+  font-size: clamp(13px, 1.2vw, 20px);
+  box-shadow: inset 0 0 0 1px rgba(255,238,184,.16), 0 0 14px rgba(0,0,0,.5);
+}
+#phaseDojoWait .gilsys-dojo-actions #btnDojoNextStage {
+  background:
+    linear-gradient(180deg, rgba(161,105,18,.96), rgba(71,38,5,.98));
+  border-color: #ffe19a;
+  box-shadow: 0 0 28px rgba(255,190,73,.55), inset 0 0 0 1px rgba(255,245,199,.36);
+  font-size: clamp(16px, 1.65vw, 26px);
+}
+#phaseDojoWait .gilsys-dojo-actions #btnDojoEndRun {
+  background: linear-gradient(180deg, rgba(81,31,18,.95), rgba(24,7,6,.98));
+}
+@media (max-width: 980px) {
+  #phaseDojoWait.gilsys-dojo-screen {
+    height: 100dvh;
+  }
+  #phaseDojoWait .gilsys-dojo-wait-panel {
+    width: 100vw;
+    height: 100dvh;
+    min-height: 0;
+    padding: 7px;
+    overflow: hidden;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 5px;
+  }
+  #phaseDojoWait #dojoWaitTitle {
+    font-size: clamp(20px, 6.4vw, 30px);
+    letter-spacing: .08em;
+  }
+  #phaseDojoWait #dojoWaitTitle::after {
+    margin-top: 2px;
+    font-size: clamp(10px, 3.2vw, 13px);
+  }
+  .dojo-wait-hero {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  .dojo-path-label,
+  .dojo-current-stage {
+    font-size: 11px;
+  }
+  .dojo-stage-track {
+    gap: 3px;
+    margin-top: 3px;
+  }
+  .dojo-stage-node {
+    width: clamp(18px, 5.1vw, 25px);
+    font-size: 10px;
+    border-width: 1px;
+  }
+  .dojo-stage-ellipsis {
+    font-size: 11px;
+    letter-spacing: .05em;
+  }
+  .dojo-wait-grid {
+    grid-template-columns: .95fr 1.05fr;
+    grid-template-rows: minmax(0, .92fr) minmax(0, .72fr);
+    gap: 5px;
+    min-height: 0;
+    height: min(43dvh, 320px);
+    max-height: 43dvh;
+  }
+  .dojo-player-frame {
+    grid-row: 1 / 3;
+  }
+  .dojo-loadout-frame,
+  .dojo-drop-frame {
+    min-height: 0;
+  }
+  .dojo-loadout-frame {
+    gap: 5px;
+  }
+  .dojo-equip-slot-summary {
+    gap: 5px;
+  }
+  .dojo-equip-slot-card {
+    min-height: 38px;
+    padding: 5px 7px;
+  }
+  .dojo-equip-slot-card span {
+    font-size: 10px;
+  }
+  .dojo-equip-slot-card b {
+    font-size: 22px;
+  }
+  .dojo-equip-slot-card em {
+    font-size: 9px;
+  }
+  .dojo-frame {
+    padding: 5px;
+  }
+  .dojo-frame h3 {
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+  .dojo-subhead {
+    margin-top: 5px !important;
+  }
+  .dojo-player-body {
+    grid-template-columns: 54px 1fr;
+    grid-template-rows: 1fr;
+    gap: 5px;
+    height: calc(100% - 20px);
+  }
+  .dojo-player-card strong {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+  .dojo-player-portrait {
+    background-position: center 42%;
+    background-size: 92% auto;
+  }
+  .dojo-player-stats {
+    gap: 4px;
+  }
+  .dojo-player-stats div {
+    min-height: 34px;
+    padding: 4px 6px;
+  }
+  .dojo-player-stats span {
+    font-size: 9px;
+  }
+  .dojo-player-stats b {
+    margin-top: 1px;
+    font-size: 14px;
+  }
+  .dojo-icon-section {
+    margin-bottom: 5px;
+  }
+  .dojo-icon-section h4 {
+    margin-bottom: 3px;
+    font-size: 9px;
+  }
+  #phaseDojoWait .dojo-icon-grid.gilsys-shop-icon-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 3px;
+  }
+  #phaseDojoWait .gilsys-shop-icon-btn {
+    height: 28px;
+    padding: 2px;
+    border-radius: 6px;
+  }
+  #phaseDojoWait .gilsys-shop-icon-btn .shop-icon {
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  .dojo-wait-detail {
+    margin-top: 5px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-card {
+    padding: 5px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-card-head {
+    gap: 5px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    font-size: 16px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-item-name {
+    font-size: 10px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-badge {
+    font-size: 8px;
+    padding: 1px 3px;
+  }
+  #phaseDojoWait .dojo-shop-detail-card .shop-item-desc {
+    max-height: 42px;
+    font-size: 9px;
+    line-height: 1.35;
+  }
+  .dojo-card-row {
+    gap: 4px;
+  }
+  .dojo-mini-card {
+    min-height: 50px;
+    padding: 3px;
+  }
+  .dojo-mini-icon {
+    font-size: 16px;
+  }
+  .dojo-mini-card b {
+    font-size: 9px;
+    line-height: 1.15;
+  }
+  .dojo-mini-card span {
+    min-height: 10px;
+    font-size: 8px;
+  }
+  #phaseDojoWait .gilsys-dojo-drops {
+    font-size: 10px;
+    line-height: 1.1;
+  }
+  #phaseDojoWait .gilsys-dojo-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+  #phaseDojoWait .gilsys-dojo-actions button {
+    min-height: 32px;
+    font-size: 11px;
+    border-width: 1px;
+    padding: 4px 3px;
+  }
+  #phaseDojoWait .gilsys-dojo-actions #btnDojoNextStage {
+    grid-column: auto;
+    font-size: 12px;
+  }
+}

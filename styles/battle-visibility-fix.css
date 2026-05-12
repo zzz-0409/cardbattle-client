@@ -1,0 +1,343 @@
+html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .damage-popup,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .heal-popup {
+  display: block !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .damage-popup {
+  color: #ffb3b3 !important;
+  text-shadow: 0 2px 6px rgba(0,0,0,.72), 0 0 10px rgba(255,77,109,.30) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .damage-popup.kind-dot,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .damage-popup.kind-poison,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .damage-popup.kind-onibi {
+  color: #c7b3ff !important;
+  text-shadow: 0 2px 6px rgba(0,0,0,.72), 0 0 12px rgba(199,179,255,.42) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .damage-popup.kind-pursuit {
+  color: #ffd28a !important;
+  text-shadow: 0 2px 6px rgba(0,0,0,.72), 0 0 12px rgba(255,210,138,.38) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .heal-popup {
+  color: #b7ffb7 !important;
+  text-shadow: 0 2px 6px rgba(0,0,0,.72), 0 0 12px rgba(110,255,149,.38) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+  grid-template-columns: minmax(180px, 250px) 148px minmax(260px, .92fr) minmax(340px, 1.08fr) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  position: relative !important;
+  flex-direction: column !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 6px !important;
+  border: 1px solid rgba(190, 142, 72, .46) !important;
+  background: linear-gradient(180deg, rgba(30, 26, 22, .82), rgba(12, 11, 10, .9)) !important;
+  pointer-events: auto !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked h3 {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  flex: 0 0 18px !important;
+  height: 18px !important;
+  margin: 0 0 4px !important;
+  overflow: hidden !important;
+  color: #d6b274 !important;
+  font-size: 11px !important;
+  line-height: 18px !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked h3 span,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked p,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked #systemBox,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked #debugBox {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked .gilsys-visible-log {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked #battleBox {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 6px !important;
+  border: 1px solid rgba(190, 142, 72, .32) !important;
+  background: rgba(7, 6, 6, .56) !important;
+  color: rgba(238, 220, 184, .92) !important;
+  font-size: 10px !important;
+  line-height: 1.28 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  pointer-events: auto !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked #battleBox > :not(.log-title) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 0 2px !important;
+  border: 0 !important;
+  white-space: normal !important;
+  writing-mode: horizontal-tb !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked .log-title {
+  display: block !important;
+  color: #d6b274 !important;
+  font-size: 9px !important;
+  line-height: 1.15 !important;
+  margin-bottom: 3px !important;
+  white-space: nowrap !important;
+  writing-mode: horizontal-tb !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: var(--dojo-enemy-image) center bottom / contain no-repeat !important;
+  filter: drop-shadow(0 22px 20px rgba(0, 0, 0, .5)) !important;
+  transform: scale(var(--dojo-enemy-scale, 1)) !important;
+  transform-origin: center bottom !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image::after {
+  content: none !important;
+  display: none !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image.attack,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image.hit,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-monster-image.heal {
+  transform: scale(var(--dojo-enemy-scale, 1)) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-boss-image {
+  filter:
+    drop-shadow(0 24px 22px rgba(0, 0, 0, .54))
+    drop-shadow(0 0 18px rgba(255, 210, 118, .28)) !important;
+}
+
+@media (max-width: 1100px), (max-height: 660px), (hover: none) and (pointer: coarse) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+    --gilsys-command-height: clamp(176px, 38dvh, 292px) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+    grid-template-columns: minmax(132px, .78fr) 72px minmax(0, 1fr) minmax(0, 1.05fr) !important;
+    gap: 4px !important;
+    padding: 4px !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked {
+    padding: 4px !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked h3 {
+    flex-basis: 14px !important;
+    height: 14px !important;
+    margin-bottom: 2px !important;
+    font-size: 9px !important;
+    line-height: 14px !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked #battleBox {
+    padding: 4px !important;
+    font-size: 8px !important;
+    line-height: 1.18 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked .log-title {
+    display: none !important;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+    --gilsys-command-height: min(46dvh, 350px) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+    grid-template-columns: minmax(0, 1fr) 82px !important;
+    grid-template-rows: 90px minmax(0, .82fr) minmax(0, 1.18fr) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock #action-area.gilsys-action-column {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-command-list-panel {
+    grid-column: 1 / 3 !important;
+    grid-row: 2 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-command-detail-panel {
+    grid-column: 1 / 3 !important;
+    grid-row: 3 !important;
+  }
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.04 !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn span {
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+@media (max-width: 1100px), (max-height: 660px), (hover: none) and (pointer: coarse) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+    grid-template-columns: minmax(124px, .72fr) 96px minmax(0, .96fr) minmax(0, 1.04fr) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column {
+    gap: 3px !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn {
+    height: auto !important;
+    min-height: 0 !important;
+    grid-template-columns: 13px minmax(0, 1fr) !important;
+    gap: 3px !important;
+    padding: 0 3px !important;
+    font-size: 9px !important;
+    line-height: 1.02 !important;
+    align-items: center !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn span {
+    width: 13px !important;
+    min-width: 13px !important;
+    font-size: 10px !important;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+    grid-template-columns: minmax(0, 1fr) 100px !important;
+    grid-template-rows: 104px minmax(0, .82fr) minmax(0, 1.18fr) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column {
+    gap: 2px !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn {
+    grid-template-columns: 12px minmax(0, 1fr) !important;
+    gap: 2px !important;
+    padding: 0 3px !important;
+    font-size: 8.5px !important;
+    line-height: 1 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column .gilsys-action-btn span {
+    width: 12px !important;
+    min-width: 12px !important;
+    font-size: 9px !important;
+  }
+}

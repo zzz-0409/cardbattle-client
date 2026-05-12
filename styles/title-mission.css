@@ -1,0 +1,281 @@
+  html.gilsys-fixed-game #gilsysHomeMissionBtn {
+    position: absolute;
+    top: 158px;
+    right: 22px;
+    z-index: 45;
+    width: 58px;
+    height: 58px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background-color: transparent !important;
+    background-image: url("../Assets/home/gilsys-home-mission-document.png") !important;
+    background-position: center center !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,.55));
+  }
+  html.gilsys-fixed-game #gilsysHomeNoticeBtn {
+    position: absolute;
+    top: 92px;
+    right: 22px;
+    z-index: 45;
+    width: 58px;
+    height: 58px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background-color: transparent !important;
+    background-image: url("../Assets/home/gilsys-home-notice-button.png") !important;
+    background-position: center center !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,.55));
+  }
+  html.gilsys-fixed-game #gilsysHomeMissionBtn.has-ready::after {
+    content: "!";
+    position: absolute;
+    right: -2px;
+    top: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #e23b36;
+    color: #fff7d0;
+    border: 2px solid #ffe29a;
+    font-weight: 900;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .gilsys-mission-modal[hidden] {
+    display: none !important;
+  }
+  .gilsys-mission-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10020;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,.58);
+  }
+  .gilsys-mission-panel {
+    width: min(560px, calc(100vw - 28px));
+    max-height: min(720px, calc(100dvh - 40px));
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    padding: 18px;
+    color: #f8e7c6;
+    background: rgba(22,18,14,.96);
+    border: 1px solid rgba(226,182,109,.72);
+    border-radius: 8px;
+    box-shadow: 0 22px 50px rgba(0,0,0,.55);
+  }
+  .gilsys-mission-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .gilsys-mission-head h2 {
+    margin: 0;
+    font-size: 22px;
+  }
+  .gilsys-mission-close {
+    width: 46px;
+    height: 46px;
+    border: 0;
+    padding: 0;
+    background-color: transparent !important;
+    background-image: url("../Assets/home/gilsys-close-x-button.png") !important;
+    background-position: center center !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    cursor: pointer;
+    filter: drop-shadow(0 5px 9px rgba(0,0,0,.48));
+  }
+  .gilsys-mission-close:hover {
+    filter: brightness(1.16);
+  }
+  .gilsys-mission-list {
+    min-height: 0;
+    overflow-y: auto;
+    display: grid;
+    gap: 10px;
+    padding-right: 4px;
+  }
+  .gilsys-mission-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 94px;
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(226,182,109,.36);
+    background: rgba(255,255,255,.045);
+  }
+  .gilsys-mission-card.is-ready {
+    border-color: rgba(255,220,132,.9);
+    background: rgba(148,94,26,.22);
+  }
+  .gilsys-mission-card-main {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+  }
+  .gilsys-mission-card-main b,
+  .gilsys-mission-card-main span,
+  .gilsys-mission-card-main em {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .gilsys-mission-card-main b {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .gilsys-mission-reward-tag {
+    flex: 0 0 auto;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,226,154,.8);
+    background: rgba(70,45,17,.88);
+    color: #ffe1a6;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+  .gilsys-mission-card-main em {
+    color: rgba(248,231,198,.72);
+    font-style: normal;
+    font-size: 12px;
+  }
+  .gilsys-mission-card button {
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid rgba(226,182,109,.76);
+    background: rgba(83,52,20,.92);
+    color: #ffe1a6;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .gilsys-mission-card button:disabled {
+    opacity: .55;
+    cursor: default;
+  }
+  .gilsys-mission-empty {
+    padding: 22px;
+    text-align: center;
+    color: rgba(248,231,198,.7);
+  }
+  #nameChangeTitleSelect {
+    width: 100%;
+    min-height: 38px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .gilsys-home-notice-card {
+    cursor: pointer;
+  }
+  .gilsys-home-notice-card p {
+    font-weight: 900;
+    color: #ffe1a6 !important;
+  }
+  .gilsys-notice-modal[hidden] {
+    display: none !important;
+  }
+  .gilsys-notice-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10021;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,.58);
+  }
+  .gilsys-notice-panel {
+    width: min(560px, calc(100vw - 28px));
+    max-height: min(680px, calc(100dvh - 40px));
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    padding: 18px;
+    color: #f8e7c6;
+    background: rgba(22,18,14,.96);
+    border: 1px solid rgba(226,182,109,.72);
+    border-radius: 8px;
+    box-shadow: 0 22px 50px rgba(0,0,0,.55);
+  }
+  .gilsys-notice-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .gilsys-notice-head h2 {
+    margin: 0;
+    font-size: 22px;
+  }
+  .gilsys-notice-close {
+    width: 46px;
+    height: 46px;
+    border: 0;
+    padding: 0;
+    background-color: transparent !important;
+    background-image: url("../Assets/home/gilsys-close-x-button.png") !important;
+    background-position: center center !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    cursor: pointer;
+    filter: drop-shadow(0 5px 9px rgba(0,0,0,.48));
+  }
+  .gilsys-notice-close:hover {
+    filter: brightness(1.16);
+  }
+  .gilsys-notice-body {
+    min-height: 0;
+    overflow-y: auto;
+    white-space: pre-line;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  .gilsys-notice-list {
+    display: grid;
+    gap: 10px;
+    white-space: normal;
+  }
+  .gilsys-notice-title-row {
+    min-height: 48px;
+    border-radius: 8px;
+    border: 1px solid rgba(226,182,109,.52);
+    background: rgba(255,255,255,.055);
+    color: #ffe1a6;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .gilsys-notice-title-row:hover {
+    background: rgba(148,94,26,.26);
+    border-color: rgba(255,220,132,.82);
+  }
+  @media (max-width: 760px) {
+    html.gilsys-fixed-game #gilsysHomeNoticeBtn {
+      top: 88px;
+      right: 14px;
+      width: 48px;
+      height: 48px;
+    }
+    html.gilsys-fixed-game #gilsysHomeMissionBtn {
+      top: 142px;
+      right: 14px;
+      width: 48px;
+      height: 48px;
+    }
+    .gilsys-mission-card {
+      grid-template-columns: 1fr;
+    }
+  }

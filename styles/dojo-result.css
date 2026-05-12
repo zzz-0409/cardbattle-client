@@ -1,0 +1,381 @@
+/* Extracted from <style id="gilsys-dojo-result-reward-icon-only-fix"> */
+html.gilsys-fixed-game .dojo-result-drops {
+    align-content: start !important;
+  }
+
+  html.gilsys-fixed-game .dojo-result-drop {
+    min-height: 96px !important;
+    grid-template-rows: 1fr auto !important;
+    gap: 4px !important;
+    padding: 8px 6px !important;
+    overflow: visible !important;
+  }
+
+  html.gilsys-fixed-game .dojo-result-drop b {
+    display: none !important;
+  }
+
+  html.gilsys-fixed-game .dojo-result-drop span {
+    width: 58px !important;
+    height: 58px !important;
+  }
+
+  html.gilsys-fixed-game .dojo-result-drop img {
+    width: 58px !important;
+    height: 58px !important;
+    object-fit: contain !important;
+  }
+
+  html.gilsys-fixed-game .dojo-result-drop i {
+    display: block !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: #ffd77e !important;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    font-style: normal !important;
+  }
+
+/* Extracted from <style id="gilsys-dojo-result-fixed-viewport-fit"> */
+html.gilsys-fixed-game #dojoResultScreen {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-shell {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 10px !important;
+  display: grid !important;
+  grid-template-columns: 276px minmax(0, 1fr) 276px !important;
+  grid-template-rows: 92px minmax(0, 1fr) 64px !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-head {
+  grid-column: 1 / -1 !important;
+  grid-row: 1 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-head h1 {
+  font-size: 52px !important;
+  line-height: .82 !important;
+  margin: 0 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-stage {
+  margin-top: 4px !important;
+  font-size: 17px !important;
+  line-height: 1.1 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-reward-label {
+  width: 420px !important;
+  margin-top: 5px !important;
+  padding: 2px 0 !important;
+  font-size: 15px !important;
+  line-height: 1.1 !important;
+  max-height: 22px !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-left {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-center {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-right {
+  grid-column: 3 !important;
+  grid-row: 2 !important;
+  display: block !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-panel {
+  min-height: 0 !important;
+  padding: 10px !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-panel h2 {
+  margin: 0 0 7px !important;
+  font-size: 15px !important;
+  line-height: 1.15 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-player {
+  grid-template-columns: 82px minmax(0, 1fr) !important;
+  gap: 8px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-portrait {
+  min-height: 116px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-player b {
+  margin: 0 0 6px !important;
+  font-size: 18px !important;
+  line-height: 1.1 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-player span,
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-lines div {
+  padding: 5px 0 !important;
+  gap: 8px !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-lines {
+  margin-top: 8px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-lines b {
+  font-size: 13px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-message {
+  margin-top: 8px !important;
+  padding: 8px !important;
+  max-height: 72px !important;
+  overflow: auto !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-drops {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  min-height: 0 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-drop {
+  min-height: 82px !important;
+  padding: 6px 4px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-drop span {
+  width: 46px !important;
+  height: 46px !important;
+  font-size: 28px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-drop img {
+  width: 46px !important;
+  height: 46px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-drop i {
+  font-size: 14px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-exp {
+  margin-top: 9px !important;
+  padding: 8px 10px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-exp h3 {
+  margin: 0 0 4px !important;
+  font-size: 14px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen #dojoResultExpValue {
+  font-size: 26px !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-exp-bar {
+  height: 8px !important;
+  margin: 6px 0 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen #dojoResultExpNext {
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-extra {
+  margin-top: 8px !important;
+  gap: 8px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-extra div {
+  padding: 7px 8px !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-detail-icon {
+  width: 92px !important;
+  height: 92px !important;
+  margin: 0 auto 8px !important;
+  font-size: 42px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-detail-icon img {
+  width: 72px !important;
+  height: 72px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen #dojoResultDetail h3 {
+  font-size: 18px !important;
+  line-height: 1.15 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen.is-final-clear {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 244, 188, .28), transparent 34%),
+    radial-gradient(circle at 16% 18%, rgba(119, 211, 255, .18), transparent 28%),
+    linear-gradient(180deg, rgba(31, 24, 10, .98), rgba(8, 11, 18, .99)) !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen.is-final-clear::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background:
+    conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255, 220, 116, .18) 26deg, transparent 58deg, rgba(116, 211, 255, .14) 91deg, transparent 132deg);
+  animation: dojoFinalAura 18s linear infinite;
+  opacity: .72;
+}
+
+html.gilsys-fixed-game #dojoResultScreen.is-final-clear .dojo-result-shell {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen.is-final-clear .dojo-result-head h1 {
+  color: #fff3bd !important;
+  text-shadow:
+    0 0 8px rgba(255, 242, 168, .92),
+    0 0 24px rgba(255, 183, 68, .62),
+    0 4px 0 rgba(65, 32, 0, .9) !important;
+  animation: dojoFinalTitlePulse 3.8s ease-in-out infinite;
+}
+
+html.gilsys-fixed-game #dojoResultScreen.is-final-clear .dojo-result-stage,
+html.gilsys-fixed-game #dojoResultScreen.is-final-clear .dojo-result-reward-label {
+  color: #eaf8ff !important;
+  border-color: rgba(255, 224, 126, .72) !important;
+  box-shadow: 0 0 18px rgba(255, 211, 91, .24) !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen.is-final-clear .dojo-result-panel {
+  border-color: rgba(255, 219, 113, .8) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .18),
+    0 0 20px rgba(255, 203, 83, .22),
+    0 18px 34px rgba(0, 0, 0, .36) !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen.is-final-clear .dojo-result-message {
+  border-color: rgba(255, 220, 116, .7) !important;
+  background: rgba(44, 31, 10, .72) !important;
+  color: #fff0be !important;
+  font-weight: 800 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-actions.is-final-actions {
+  grid-template-columns: minmax(260px, 520px) !important;
+  justify-content: center !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-actions.is-final-actions .dojo-final-end {
+  min-height: 48px !important;
+  border-color: rgba(255, 231, 139, .95) !important;
+  background: linear-gradient(180deg, #ffe58b, #d78a22) !important;
+  color: #271404 !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 0 24px rgba(255, 203, 83, .42) !important;
+}
+
+@keyframes dojoFinalAura {
+  from { transform: rotate(0deg) scale(1); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes dojoFinalTitlePulse {
+  0%, 100% { filter: brightness(1); transform: translateY(0); }
+  50% { filter: brightness(1.25); transform: translateY(-1px); }
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-detail-kind {
+  margin: 6px 0 8px !important;
+  font-size: 12px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen #dojoResultDetail p {
+  max-height: 156px !important;
+  overflow: auto !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-owned {
+  margin-top: 8px !important;
+  padding: 6px 8px !important;
+  font-size: 12px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-actions {
+  grid-column: 1 / -1 !important;
+  grid-row: 3 !important;
+  position: static !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1.6fr 1fr !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+  padding: 0 146px !important;
+  background: transparent !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-actions.is-defeat-actions {
+  grid-template-columns: minmax(220px, 420px) !important;
+  justify-content: center !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-actions button {
+  min-height: 0 !important;
+  height: 100% !important;
+  font-size: 18px !important;
+  line-height: 1.05 !important;
+  padding: 0 18px !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-actions.is-final-actions {
+  grid-template-columns: minmax(260px, 520px) !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
+
+html.gilsys-fixed-game #dojoResultScreen .dojo-result-actions.is-final-actions .dojo-final-end {
+  min-height: 48px !important;
+  border-color: rgba(255, 231, 139, .95) !important;
+  background: linear-gradient(180deg, #ffe58b, #d78a22) !important;
+  color: #271404 !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 0 24px rgba(255, 203, 83, .42) !important;
+}

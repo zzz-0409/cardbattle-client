@@ -1,0 +1,65 @@
+body.gilsys-assets-loading {
+  background: #050403 !important;
+  overflow: hidden !important;
+}
+
+body.gilsys-assets-loading #game-wrapper {
+  visibility: hidden !important;
+}
+
+#gilsysBootLoader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(154, 38, 28, .22), transparent 30%),
+    linear-gradient(180deg, #090706, #020202);
+  color: #fff2c8;
+  opacity: 1;
+  transition: opacity .36s ease, visibility .36s ease;
+}
+
+#gilsysBootLoader.is-hidden,
+body.gilsys-assets-ready #gilsysBootLoader {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.gilsys-boot-loader-box {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+
+.gilsys-boot-loader-ring {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 226, 154, .18);
+  border-top-color: #ffdf86;
+  border-right-color: #d73a2e;
+  animation: gilsysBootSpin 1.05s linear infinite;
+  filter: drop-shadow(0 0 12px rgba(255, 191, 76, .35));
+}
+
+.gilsys-boot-loader-text {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  color: #fff1c2;
+  text-shadow: 0 2px 10px rgba(0,0,0,.8), 0 0 18px rgba(255, 193, 85, .3);
+  animation: gilsysBootTextPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes gilsysBootSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes gilsysBootTextPulse {
+  0%, 100% { opacity: .44; }
+  50% { opacity: 1; }
+}

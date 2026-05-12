@@ -1,0 +1,44 @@
+html.gilsys-fixed-game .gilsys-mission-close,
+html.gilsys-fixed-game .gilsys-notice-close {
+  position: relative !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: visible !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .72)) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game .gilsys-mission-close::before,
+html.gilsys-fixed-game .gilsys-notice-close::before {
+  content: "×" !important;
+  display: block !important;
+  color: #ff2424 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 46px !important;
+  font-weight: 900 !important;
+  line-height: .82 !important;
+  text-shadow:
+    0 2px 0 #fff6df,
+    0 -1px 0 #fff6df,
+    2px 0 0 #fff6df,
+    -2px 0 0 #fff6df,
+    0 0 10px rgba(0, 0, 0, .82) !important;
+}
+
+html.gilsys-fixed-game .gilsys-mission-close:hover::before,
+html.gilsys-fixed-game .gilsys-notice-close:hover::before {
+  color: #ff4747 !important;
+  transform: scale(1.06);
+}

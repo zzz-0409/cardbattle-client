@@ -1,0 +1,379 @@
+/* Extracted from <style id="gilsys-inventory-shop-compact-text-style"> */
+#phase2.gilsys-battle-ui .gilsys-panel-subtools:empty,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-tools:empty,
+#phase2.gilsys-battle-ui button[onclick="returnToItemCategory()"],
+#phase2.gilsys-battle-ui button[onclick="renderGilsysItemCategoryPanel()"] {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .shop-title-wrap {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-desc,
+#phase2.gilsys-battle-ui .shop-item-name,
+#phase2.gilsys-battle-ui .shop-meta-row,
+#phase2.gilsys-battle-ui .shop-badge,
+#phase2.gilsys-battle-ui .gilsys-category-desc {
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-name,
+#phase2.gilsys-battle-ui .shop-meta-row,
+#phase2.gilsys-battle-ui .shop-badge {
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  line-break: strict !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-name {
+  display: block !important;
+  max-width: 100% !important;
+  max-height: 2.4em !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  line-height: 1.2 !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#phase2.gilsys-battle-ui .shop-meta-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+  max-height: 2.5em !important;
+  min-width: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#phase2.gilsys-battle-ui .shop-badge {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-category-desc {
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  line-break: strict !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+  display: block !important;
+  flex: 1 1 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  line-height: 1.3 !important;
+  padding-right: 0 !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc::-webkit-scrollbar,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc::-webkit-scrollbar,
+#phase2.gilsys-battle-ui .shop-item-name::-webkit-scrollbar,
+#phase2.gilsys-battle-ui .shop-meta-row::-webkit-scrollbar {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-head {
+  min-height: 0 !important;
+  gap: 4px !important;
+  line-height: 1.15 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-head b {
+  font-size: 13px !important;
+  line-height: 1.15 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-head span {
+  font-size: 10px !important;
+  line-height: 1.15 !important;
+  opacity: 0.82 !important;
+  text-align: right !important;
+}
+
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-wrap {
+    gap: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-head {
+    flex: 0 0 18px !important;
+    max-height: 18px !important;
+    overflow: hidden !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card.inventory-card {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) auto !important;
+    gap: 6px !important;
+    overflow: hidden !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card-head {
+    gap: 6px !important;
+    margin-bottom: 2px !important;
+    align-items: flex-start !important;
+    min-height: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card-main,
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-title-wrap,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card-main,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-title-wrap {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-title-wrap,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-title-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-buy-area,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-buy-area {
+    grid-row: 2 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 5px !important;
+    padding-top: 0 !important;
+    transform: none !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-buy-area button,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-buy-area button {
+    min-width: 48px !important;
+    min-height: 20px !important;
+    padding: 2px 5px !important;
+    font-size: 9px !important;
+    line-height: 1.15 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-price,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-price {
+    padding: 2px 6px !important;
+    font-size: 9px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-item-name,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-name {
+    font-size: 11px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-badge,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-badge {
+    padding: 2px 5px !important;
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-item-desc,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+    font-size: 9px !important;
+    min-height: 1.3em !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-category-card {
+    grid-template-columns: 32px minmax(0, 1fr) !important;
+    min-height: 48px !important;
+    padding: 6px 8px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-category-icon {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 16px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-category-name {
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-category-desc {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    margin-top: 1px !important;
+  }
+}
+
+/* Extracted from <style id="gilsys-shop-inventory-compact-empty-space-style"> */
+#phase2.gilsys-battle-ui .shop-meta-row:empty,
+#phase2.gilsys-battle-ui .shop-buy-area:empty {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+  flex: 0 1 auto !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .shop-title-wrap {
+  gap: 3px !important;
+}
+
+#phase2.gilsys-battle-ui .shop-card-main,
+#phase2.gilsys-battle-ui .shop-card-head,
+#phase2.gilsys-battle-ui .shop-title-wrap {
+  min-height: 0 !important;
+}
+
+/* Extracted from <style id="gilsys-shop-inventory-action-gap-tight-style"> */
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-buy-area,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area,
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-buy-area,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card .shop-buy-area {
+  align-self: start !important;
+  justify-content: flex-start !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  gap: 4px !important;
+  transform: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card {
+  height: auto !important;
+  min-height: 0 !important;
+  align-items: start !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 6px !important;
+}
+
+#phase2.gilsys-battle-ui .shop-card-head {
+  margin-bottom: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-desc {
+  margin-bottom: 0 !important;
+}
+
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card.inventory-card {
+    grid-template-rows: auto auto !important;
+    gap: 3px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-buy-area,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-buy-area {
+    justify-content: flex-end !important;
+    gap: 4px !important;
+  }
+}
+
+/* Extracted from <style id="gilsys-shop-inventory-full-text-scroll-tight-style"> */
+#phase2.gilsys-battle-ui .shop-card {
+  align-items: start !important;
+}
+
+#phase2.gilsys-battle-ui .shop-card-main,
+#phase2.gilsys-battle-ui .shop-title-wrap {
+  min-height: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-name,
+#phase2.gilsys-battle-ui .shop-meta-row,
+#phase2.gilsys-battle-ui .shop-item-desc {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  max-width: 100% !important;
+  white-space: pre !important;
+  text-overflow: clip !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#phase2.gilsys-battle-ui .shop-item-name::-webkit-scrollbar,
+#phase2.gilsys-battle-ui .shop-meta-row::-webkit-scrollbar,
+#phase2.gilsys-battle-ui .shop-item-desc::-webkit-scrollbar {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .shop-item-desc {
+  display: block !important;
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: 4.8em !important;
+  margin: 0 !important;
+  padding: 0 2px 1px 0 !important;
+  line-height: 1.35 !important;
+  overflow-y: auto !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-card,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card,
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card {
+  height: auto !important;
+  min-height: 0 !important;
+  grid-auto-rows: auto !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc,
+#phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: 3.9em !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+}
+
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card.inventory-card {
+    grid-template-rows: auto auto !important;
+    gap: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card-main,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-card-main,
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-title-wrap,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-title-wrap {
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card .shop-item-desc,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel.is-inventory-list .shop-item-desc {
+    max-height: 3.1em !important;
+    line-height: 1.25 !important;
+  }
+}
