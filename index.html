@@ -4630,6 +4630,48 @@ function getJobIdByNameForProfile(jobName) {
   return job?.id || "";
 }
 
+const DOJO_ENEMY_ICON_BASE = "Assets/dojo/enemy-icons/";
+const DOJO_ENEMY_ICON_IDS = new Set([
+  "slime",
+  "goblin",
+  "wolf",
+  "golem",
+  "ghost",
+  "mushroom",
+  "anubis",
+  "athena",
+  "kali",
+  "susanoo",
+  "thor",
+  "zeus",
+  "ashura",
+]);
+
+function getDojoEnemyIconIdFromData(data) {
+  let id = String(data?.enemy_dojo_enemy_id ?? data?.dojo_enemy_id ?? "").trim().toLowerCase();
+  if (!id) {
+    const src = String(data?.enemy_dojo_enemy_image ?? data?.dojo_enemy_image ?? "");
+    const match = src.match(/\/([^\/.]+)\.(?:png|webp|jpe?g|gif|svg)(?:[?#].*)?$/i);
+    id = match ? match[1].toLowerCase() : "";
+  }
+  id = id.replace(/[^a-z0-9_-]/g, "");
+  return DOJO_ENEMY_ICON_IDS.has(id) ? id : "";
+}
+
+function buildDojoEnemyIconProfile(data) {
+  const id = getDojoEnemyIconIdFromData(data);
+  if (!id) return null;
+  return {
+    iconJobId: `dojo-${id}`,
+    titleText: "",
+    iconSrc: `${DOJO_ENEMY_ICON_BASE}${id}.png`,
+    frameId: PROFILE_ICON_FRAME_NONE,
+    frameSrc: "",
+    dojoEnemyIcon: true,
+    dojoEnemyId: id,
+  };
+}
+
 function normalizeVsProfile(profile, fallbackJobName = "") {
   if (profile && typeof profile === "object") {
     const frameId = profile.frameId || PROFILE_ICON_FRAME_NONE;
@@ -4654,6 +4696,12 @@ function setVsIntroIcon(id, profile, jobName = "") {
   if (!el) return;
   const normalized = normalizeVsProfile(profile, jobName);
   const iconSrc = normalized.iconSrc || (normalized.iconJobId ? getProfileIconPortrait(normalized.iconJobId) : "");
+  el.classList.toggle("is-dojo-enemy-icon", !!normalized.dojoEnemyIcon);
+  if (normalized.dojoEnemyIcon) {
+    el.dataset.dojoEnemyIcon = "true";
+  } else {
+    delete el.dataset.dojoEnemyIcon;
+  }
   if (iconSrc) {
     el.style.setProperty("--gilsys-vs-icon-image", `url("${String(iconSrc).replace(/"/g, '\\"')}")`);
     el.dataset.profileIconJobId = String(normalized.iconJobId || "");
@@ -4676,10 +4724,11 @@ function updateVsIntroFromStatus(data) {
   if (!gilsysPendingVsIntro || !data || data.type !== "status_simple") return;
   const side = data.side === "self" ? "self" : data.side === "enemy" ? "enemy" : "";
   if (!side) return;
+  const dojoEnemyProfile = side === "enemy" ? buildDojoEnemyIconProfile(data) : null;
   gilsysPendingVsIntro[side] = {
     name: data.name || gilsysPendingVsIntro[side]?.name || (side === "self" ? "あなた" : "対戦相手"),
     job: data.job || gilsysPendingVsIntro[side]?.job || "職業",
-    profile: data.profile || gilsysPendingVsIntro[side]?.profile || null
+    profile: data.profile || dojoEnemyProfile || gilsysPendingVsIntro[side]?.profile || null
   };
 }
 
@@ -4700,6 +4749,7 @@ function renderVsIntro() {
 function startVsIntro(data) {
   gilsysDeferredVsMessages.length = 0;
   gilsysMatchStartData = data || {};
+  const dojoEnemyProfile = buildDojoEnemyIconProfile(data);
   gilsysPendingVsIntro = {
     mode: data?.mode || window.matchMode || "",
     self: {
@@ -4710,7 +4760,7 @@ function startVsIntro(data) {
     enemy: {
       name: data?.enemy_name || (window.matchMode === "cpu" ? "CPU" : "対戦相手"),
       job: data?.enemy_job || "",
-      profile: data?.enemy_profile || null
+      profile: data?.enemy_profile || dojoEnemyProfile || null
     }
   };
   renderVsIntro();
@@ -20410,6 +20460,12 @@ html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-drawer-body .dojo-trail-unlo
     inset 0 0 18px rgba(255, 242, 190, .12),
     0 0 24px rgba(255, 205, 95, .22),
     0 18px 38px rgba(0, 0, 0, .48);
+}
+
+.gilsys-vs-intro-icon[data-dojo-enemy-icon="true"] {
+  background:
+    var(--gilsys-vs-icon-image) center center / cover no-repeat,
+    radial-gradient(circle at 50% 34%, rgba(255, 218, 128, .18), rgba(8, 10, 16, .92) 68%);
 }
 
 .gilsys-vs-intro-icon.has-profile-frame::after {

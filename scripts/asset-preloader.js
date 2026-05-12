@@ -17,7 +17,20 @@
     "Assets/dojo/enemies/susanoo.png",
     "Assets/dojo/enemies/thor.png",
     "Assets/dojo/enemies/zeus.png",
-    "Assets/dojo/enemies/ashura.png"
+    "Assets/dojo/enemies/ashura.png",
+    "Assets/dojo/enemy-icons/slime.png",
+    "Assets/dojo/enemy-icons/goblin.png",
+    "Assets/dojo/enemy-icons/wolf.png",
+    "Assets/dojo/enemy-icons/golem.png",
+    "Assets/dojo/enemy-icons/ghost.png",
+    "Assets/dojo/enemy-icons/mushroom.png",
+    "Assets/dojo/enemy-icons/anubis.png",
+    "Assets/dojo/enemy-icons/athena.png",
+    "Assets/dojo/enemy-icons/kali.png",
+    "Assets/dojo/enemy-icons/susanoo.png",
+    "Assets/dojo/enemy-icons/thor.png",
+    "Assets/dojo/enemy-icons/zeus.png",
+    "Assets/dojo/enemy-icons/ashura.png"
   ];
 
   function normalizeAssetPath(raw) {
