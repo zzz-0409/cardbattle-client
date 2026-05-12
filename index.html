@@ -4032,7 +4032,7 @@ body.gilsys-assets-loading #game-wrapper {
 <div id="phase0HomeLayout">
 <div id="titleModePanel">
 <button id="btnRandom" class="phase0-menu-btn"><span class="phase0-menu-icon">⚔</span><span class="phase0-menu-text">ランク戦</span></button>
-<button id="btnTutorial" class="phase0-menu-btn"><span class="phase0-menu-icon">?</span><span class="phase0-menu-text">チュートリアル</span></button>
+<button id="btnTutorial" class="phase0-menu-btn"><span class="phase0-menu-icon">🔰</span><span class="phase0-menu-text">チュートリアル</span></button>
 <button id="btnRoom" class="phase0-menu-btn"><span class="phase0-menu-icon">🚪</span><span class="phase0-menu-text">ルーム戦</span></button>
 <button id="btnCPU" class="phase0-menu-btn"><span class="phase0-menu-icon">⛨</span><span class="phase0-menu-text">CPU戦</span></button>
 <button id="btnDojo" class="phase0-menu-btn"><span class="phase0-menu-icon">道</span><span class="phase0-menu-text">達人への道</span></button>
@@ -4790,11 +4790,13 @@ function finishVsIntro() {
       gilsysVsIntroRunning = false;
       gilsysVsIntroFinishing = false;
       flushDeferredVsMessages();
+      window.gilsysStartTutorialIfNeeded?.();
     }, 360);
   } else {
     gilsysVsIntroRunning = false;
     gilsysVsIntroFinishing = false;
     flushDeferredVsMessages();
+    window.gilsysStartTutorialIfNeeded?.();
   }
   if (currentPhase !== PHASE.BATTLE) setPhase(PHASE.BATTLE);
 }
@@ -4929,6 +4931,13 @@ function toggleDojoAuto() {
   updateDojoBattleButtons();
   showCenterToast(dojoAutoEnabled ? "オート戦闘 ON" : "オート戦闘 OFF", 1800);
   if (dojoAutoEnabled) requestDojoAutoAction(180);
+}
+
+function stopDojoBattleAuto() {
+  dojoAutoEnabled = false;
+  dojoAutoSending = false;
+  clearTimeout(dojoAutoTimer);
+  updateDojoBattleButtons();
 }
 
 // ====================
@@ -7559,6 +7568,7 @@ function getMatchModeLabel(mode = window.matchMode, cpuKind = window.cpuKind) {
   if (mode === "room") return "ルーム戦";
   if (mode === "cpu") return cpuKind === "auto" ? "ランク戦 / 自動CPU" : "CPU戦";
   if (mode === "dojo") return "達人への道";
+  if (mode === "tutorial") return "チュートリアル";
   return "ランク戦";
 }
 
@@ -7634,6 +7644,7 @@ function resetBattleStateForResultAction() {
 }
 
 function renderNormalResultOverlay(result, detail = window.gilsysLastBattleResultDetail) {
+  const overlay = document.getElementById("resultOverlay");
   const title = document.getElementById("resultTitle");
   const sub = document.getElementById("resultSub");
   const summary = document.getElementById("resultMatchSummary");
@@ -7642,10 +7653,12 @@ function renderNormalResultOverlay(result, detail = window.gilsysLastBattleResul
   if (!title || !sub || !summary || !ratePanel) return;
 
   const mode = detail?.matchType || window.gilsysLastMatchConfig?.mode || window.matchMode;
+  const isTutorialResult = mode === "tutorial" || window.gilsysTutorialBattleActive;
   const resultText = result === "win" ? "勝利" : result === "lose" ? "敗北" : "引き分け";
   title.textContent = result === "win" ? "VICTORY" : result === "lose" ? "DEFEAT" : "DRAW";
-  document.getElementById("resultOverlay")?.classList.toggle("is-defeat", result === "lose");
-  document.getElementById("resultOverlay")?.classList.toggle("is-draw", result === "draw");
+  overlay?.classList.toggle("is-defeat", result === "lose");
+  overlay?.classList.toggle("is-draw", result === "draw");
+  overlay?.classList.toggle("is-tutorial", isTutorialResult);
   sub.textContent = `${getMatchModeLabel(mode, window.gilsysLastMatchConfig?.cpuKind)} / ${resultText}`;
   summary.innerHTML = `
     <div><span>自分</span><b>${escapeHtml(window.gilsysSelfMatchName || window.accountName || "あなた")}</b></div>
@@ -7667,6 +7680,11 @@ function renderNormalResultOverlay(result, detail = window.gilsysLastBattleResul
       <div class="gilsys-result-rate-delta ${delta >= 0 ? "is-plus" : "is-minus"}">${sign}${escapeHtml(String(delta))}</div>
       <div class="gilsys-result-record">${escapeHtml(String(rating.wins ?? 0))}勝 ${escapeHtml(String(rating.losses ?? 0))}敗</div>
     `;
+  } else if (isTutorialResult) {
+    ratePanel.innerHTML = `
+      <div class="gilsys-result-rate-label">TUTORIAL</div>
+      <div class="gilsys-result-rate-none">基本ルールの確認完了</div>
+    `;
   } else {
     const note = mode === "room"
       ? "ルーム戦はレート変動なし"
@@ -7682,8 +7700,16 @@ function renderNormalResultOverlay(result, detail = window.gilsysLastBattleResul
   if (reconnect) reconnect.disabled = !window.gilsysLastMatchConfig || mode === "dojo";
 }
 
-function showResultOverlay(result) {
+function ensureResultOverlayViewportRoot() {
   const ov = document.getElementById("resultOverlay");
+  if (ov && ov.parentElement !== document.body) {
+    document.body.appendChild(ov);
+  }
+  return ov;
+}
+
+function showResultOverlay(result) {
+  const ov = ensureResultOverlayViewportRoot();
   if (!ov) return;
 
   if (result === "win") {
@@ -7968,17 +7994,25 @@ function attachWsHandlers() {
       return;
     }
     if (shouldQueueGilsysBattleEvent(data)) {
+      window.handleTutorialWsEvent?.(data);
       enqueueGilsysBattleEvent(data);
       return;
     }
+
+    if (data.type === "match_start" && (data.mode === "tutorial" || data.tutorial || window.matchMode === "tutorial")) {
+      window.matchMode = "tutorial";
+      window.gilsysTutorialBattleActive = true;
+      window.gilsysTutorialStarted = false;
+    }
+    window.handleTutorialWsEvent?.(data);
 
     // ★ マッチ成立 → フェーズ2へ
     if (data.type === "match_start") {
       battleEnded = false;
       dojoAutoSending = false;
       clearTimeout(dojoAutoTimer);
-      if ((data.mode === "dojo" || data.dojo || window.matchMode === "dojo") && typeof setDojoAutoCombineEnabled === "function") {
-        setDojoAutoCombineEnabled(false);
+      if ((data.mode === "dojo" || data.dojo || window.matchMode === "dojo") && typeof dojoAutoCombineBusy !== "undefined") {
+        dojoAutoCombineBusy = false;
       }
       window.gilsysSelfMatchName = data.self_name || window.accountName || "あなた";
       window.gilsysOpponentName = data.enemy_name || (window.matchMode === "cpu" ? "CPU" : "対戦相手");
@@ -8568,9 +8602,7 @@ function attachWsHandlers() {
     if (data.type === "battle_end") {
       battleEnded = true;
       window.gilsysLastBattleResultDetail = null;
-      dojoAutoEnabled = false;
-      dojoAutoSending = false;
-      clearTimeout(dojoAutoTimer);
+      stopDojoBattleAuto();
 
       // ★ 対戦中BGM停止
       stopBattleBgm();
@@ -8590,6 +8622,7 @@ function attachWsHandlers() {
 
     if (data.type === "dojo_stage_clear") {
       battleEnded = true;
+      stopDojoBattleAuto();
       stopBattleBgm();
       showDojoResultScreen("win", data.run, data.drops || [], false);
       return;
@@ -8637,6 +8670,7 @@ function attachWsHandlers() {
 
     if (data.type === "dojo_clear") {
       battleEnded = true;
+      stopDojoBattleAuto();
       stopBattleBgm();
       syncLocalDojoProgressFromRun(data.run, true);
       showDojoResultScreen("win", data.run, data.drops || [], true);
@@ -8981,6 +9015,29 @@ function joinCpu() {
       profile: getBattleProfilePayload(),
       cpu_job: cpuJobValue || null,
       turn_order: turnOrder
+    }));
+  };
+}
+
+function joinTutorial() {
+  if (ws) return;
+
+  selectedJobId = 1;
+  myJob = 1;
+  window.matchMode = "tutorial";
+  window.isCpuMode = false;
+  window.cpuKind = "";
+
+  ws = new WebSocket(WS_URL);
+  attachWsHandlers();
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "join_tutorial",
+      account_id: window.accountId,
+      name: window.accountName || "Player",
+      job: 1,
+      profile: getBattleProfilePayload()
     }));
   };
 }
@@ -9557,7 +9614,7 @@ function dojoResultGoWait() {
 
 function dojoResultNextStage() {
   hideDojoResultScreen();
-  if (typeof setDojoAutoCombineEnabled === "function") setDojoAutoCombineEnabled(false);
+  if (typeof dojoAutoCombineBusy !== "undefined") dojoAutoCombineBusy = false;
   if (ws) ws.send(JSON.stringify({ type: "dojo_next_stage" }));
 }
 
@@ -11205,6 +11262,8 @@ function getGilsysDisplayEffectText(item, fallback = "") {
 
 function shouldPromptEquipAfterPurchase(item) {
   if (!item) return false;
+  if (window.matchMode === "tutorial" || window.gilsysTutorialBattleActive) return false;
+  if (item?.tutorial_no_equip_prompt) return false;
   if (item?.is_arrow || item?.equip_type === "arrow") return true;
   if (item?.is_doll_costume) return true;
   if (item?.equip_type === "mage_equip") return true;
@@ -11821,7 +11880,35 @@ document.getElementById("btnRandom").onclick = () => {
 };
 
 document.getElementById("btnTutorial").onclick = () => {
-  showCenterToast("チュートリアルは現在準備中です", 2200);
+  cleanupSocket();
+  selectedJobId = 1;
+  myJob = 1;
+  isConnecting = false;
+  window.matchMode = "tutorial";
+  window.isCpuMode = false;
+  window.cpuKind = "";
+  setPhase(PHASE.RANDOM_READY);
+
+  const title = document.getElementById("phase1Title");
+  if (title) title.textContent = "チュートリアル";
+
+  const roomArea = document.getElementById("roomCodeArea");
+  if (roomArea) {
+    roomArea.style.display = "none";
+    roomArea.style.visibility = "hidden";
+  }
+
+  const cpuJobArea = document.getElementById("cpuJobArea");
+  if (cpuJobArea) cpuJobArea.style.display = "none";
+
+  const status = document.getElementById("connectStatus");
+  if (status) status.textContent = "戦士で基本ルールを練習します。";
+
+  const connectBtn = document.getElementById("btnConnectPhase1");
+  if (connectBtn) {
+    connectBtn.textContent = "チュートリアル開始";
+    connectBtn.disabled = false;
+  }
 };
 
 
@@ -11895,6 +11982,12 @@ document.getElementById("btnConnectPhase1").onclick = () => {
     }
     document.getElementById("connectStatus").textContent = "達人への道に接続中...";
     joinDojo();
+    return;
+  }
+
+  if (window.matchMode === "tutorial") {
+    document.getElementById("connectStatus").textContent = "チュートリアルに接続中...";
+    joinTutorial();
     return;
   }
 
@@ -11989,7 +12082,7 @@ document.getElementById("btnDojo").onclick = () => {
 
 document.getElementById("btnDojoNextStage").onclick = () => {
   if (!ws) return;
-  if (typeof setDojoAutoCombineEnabled === "function") setDojoAutoCombineEnabled(false);
+  if (typeof dojoAutoCombineBusy !== "undefined") dojoAutoCombineBusy = false;
   ws.send(JSON.stringify({ type: "dojo_next_stage" }));
 };
 
@@ -18049,8 +18142,7 @@ html.gilsys-fixed-game .gilsys-home-legacy-hidden {
 }
 
 html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn.gilsys-home-legacy-hidden,
-html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial,
-html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn:not(#btnRandom):not(#btnRoom):not(#btnCPU):not(#btnDojo) {
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn:not(#btnRandom):not(#btnRoom):not(#btnCPU):not(#btnDojo):not(#btnTutorial) {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -18385,6 +18477,22 @@ html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn:no
 
   const GILSYS_HOME_NOTICES = [
     {
+      title: "ver5.13.1アップデート内容",
+      body: [
+        "・新機能について",
+        "通常対戦の基本操作を練習できるチュートリアルを追加しました。",
+        "チュートリアルでは攻撃、スキル、アイテム、装備、レベルアップ、ショップの流れを確認できます。",
+        "・調整",
+        "チュートリアル中の案内文、押す場所の誘導、ショップ内容を調整しました。",
+        "達人への道の自動合成は、手動で切り替えたON/OFFが維持されるようにしました。",
+        "達人への道の戦闘オートは、ステージクリア時にOFFへ戻るようにしました。",
+        "・バグ修正",
+        "チュートリアルの勝利画面が左側に寄って表示される問題を修正しました。",
+        "チュートリアル中に購入後装備確認やカテゴリ選択で進行できなくなる場合がある問題を修正しました。",
+        "チュートリアルのショップ詳細画像が動いてしまう問題を修正しました。"
+      ].join("\n")
+    },
+    {
       title: "ver5.12.15アップデート内容",
       body: [
         "・新機能について",
@@ -18631,7 +18739,7 @@ html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn:no
 
     if (modePanel) {
       [...modePanel.querySelectorAll(".phase0-menu-btn")].forEach(btn => {
-        const keep = ["btnRandom", "btnRoom", "btnCPU", "btnDojo"].includes(btn.id);
+        const keep = ["btnRandom", "btnRoom", "btnCPU", "btnDojo", "btnTutorial"].includes(btn.id);
         btn.classList.toggle("gilsys-home-legacy-hidden", !keep);
       });
     }
@@ -18873,6 +18981,65 @@ html.gilsys-fixed-game .gilsys-result-actions button {
 html.gilsys-fixed-game #resultReconnectBtn { --gilsys-button-frame-v2: var(--gilsys-frame-attack-wide); }
 html.gilsys-fixed-game #resultHomeBtn { --gilsys-button-frame-v2: var(--gilsys-frame-neutral-wide); }
 
+html.gilsys-fixed-game body > #resultOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  z-index: 2147483000 !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay #resultPanel {
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-normal-result-frame {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(78px, .5fr) auto auto auto minmax(72px, .65fr);
+  align-content: center;
+  justify-items: center;
+  padding: clamp(18px, 2.6vw, 42px);
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial #resultTitle,
+html.gilsys-fixed-game #resultOverlay.is-tutorial #resultSub,
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary,
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-rate-panel,
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-actions {
+  grid-column: 1;
+  grid-row: auto;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary,
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-rate-panel {
+  width: min(760px, 86vw);
+  max-width: 100%;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-rate-panel {
+  min-height: 86px;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-actions {
+  width: min(780px, 88vw);
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  justify-content: center;
+}
+
 @media (max-width: 620px) {
   html.gilsys-fixed-game .gilsys-normal-result-frame {
     grid-template-columns: 1fr;
@@ -18891,6 +19058,10 @@ html.gilsys-fixed-game #resultHomeBtn { --gilsys-button-frame-v2: var(--gilsys-f
   }
   html.gilsys-fixed-game .gilsys-result-summary,
   html.gilsys-fixed-game .gilsys-result-actions { grid-template-columns: 1fr; }
+  html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary,
+  html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-actions {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 <style id="gilsys-cyber-dojo-prep-result-redesign">
@@ -20865,6 +21036,572 @@ html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-drawer-body .dojo-trail-unlo
     window.setPhase.__gilsysBattleLogDockWrapped = true;
   }
   runSoon();
+})();
+</script>
+<style id="gilsys-tutorial-style">
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 86px !important;
+  min-height: 86px !important;
+  max-height: 86px !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  padding: 0 16px !important;
+  border: 1px solid rgba(141, 226, 125, .74) !important;
+  border-radius: 12px !important;
+  background:
+    linear-gradient(135deg, rgba(24, 68, 45, .92), rgba(11, 31, 38, .95) 52%, rgba(56, 74, 21, .88)) !important;
+  color: #f6ffe8 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .24),
+    0 0 18px rgba(93, 218, 99, .24) !important;
+  text-align: left !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  font-size: 27px !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-text {
+  display: block !important;
+  flex: 1 1 auto !important;
+  font-size: clamp(15px, 1.75vw, 20px) !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial:hover {
+  filter: brightness(1.1) saturate(1.06) !important;
+}
+
+.gilsys-tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2600;
+  pointer-events: none;
+}
+
+.gilsys-tutorial-card {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  left: 50%;
+  width: min(680px, calc(100vw - 24px));
+  transform: translateX(-50%);
+  pointer-events: auto;
+  border: 1px solid rgba(255, 228, 145, .84);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(47, 36, 21, .98), rgba(13, 17, 25, .98));
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, .55),
+    inset 0 1px 0 rgba(255, 255, 255, .16);
+  color: #fff4d5;
+  padding: 15px 17px 14px;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, .55);
+}
+
+.gilsys-tutorial-title {
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.gilsys-tutorial-text {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.58;
+}
+
+.gilsys-tutorial-hint {
+  margin-top: 12px;
+  color: rgba(255, 232, 176, .76);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.gilsys-tutorial-target {
+  position: relative !important;
+  z-index: 2603 !important;
+  outline: 3px solid rgba(126, 255, 112, .95) !important;
+  outline-offset: 3px !important;
+  box-shadow:
+    0 0 0 7px rgba(34, 194, 70, .28),
+    0 0 24px rgba(128, 255, 100, .68) !important;
+  animation: gilsysTutorialPulse 1.25s ease-in-out infinite;
+}
+
+@keyframes gilsysTutorialPulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.22); }
+}
+
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-card::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-icon,
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-icon * {
+  animation: none !important;
+  transform: none !important;
+}
+
+body.gilsys-tutorial-battle #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-inline-toolbar {
+  display: none !important;
+}
+
+@media (max-width: 520px) {
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial {
+    height: 72px !important;
+    min-height: 72px !important;
+    max-height: 72px !important;
+    padding: 0 10px !important;
+    gap: 9px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-icon {
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    font-size: 23px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-text {
+    font-size: clamp(12px, 3.35vw, 16px) !important;
+  }
+
+  .gilsys-tutorial-card {
+    padding: 15px 15px 13px;
+  }
+
+  .gilsys-tutorial-title {
+    font-size: 20px;
+  }
+
+  .gilsys-tutorial-text {
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .gilsys-tutorial-hint {
+    font-size: 13px;
+  }
+}
+</style>
+<script id="gilsys-tutorial-controller">
+(() => {
+  const state = {
+    active: false,
+    index: 0,
+    waiting: "",
+    targetEl: null,
+    refreshTimers: []
+  };
+
+  const byId = (id) => document.getElementById(id);
+  const q = (selector) => selector ? document.querySelector(selector) : null;
+  const commandRows = () => [...document.querySelectorAll("#gilsysCommandList .gilsys-list-row")];
+  const isVisibleElement = (el) => {
+    const rect = el?.getBoundingClientRect?.();
+    return !!rect && rect.width > 1 && rect.height > 1;
+  };
+  const shopIconButtons = () => [...document.querySelectorAll("#gilsysCommandList .gilsys-shop-icon-btn")].filter(isVisibleElement);
+  const isTutorialShopSold = (item) => {
+    if (!item) return true;
+    if (typeof isShopItemSoldOut === "function" && isShopItemSoldOut(item)) return true;
+    return !!(item.sold_out || item.soldOut || item.shop_sold_out);
+  };
+  const shopButtons = () => {
+    const items = Array.isArray(window.gilsysLatestShopItems) ? window.gilsysLatestShopItems : [];
+    return shopIconButtons().filter((btn, idx) => !btn.classList.contains("is-shop-sold-out") && !isTutorialShopSold(items[idx]));
+  };
+  const shopButtonForKind = (kind) => {
+    const items = Array.isArray(window.gilsysLatestShopItems) ? window.gilsysLatestShopItems : [];
+    const idx = items.findIndex(item => {
+      if (!item || isTutorialShopSold(item)) return false;
+      if (kind === "item") return !item.is_equip && item.equip_type !== "normal";
+      if (kind === "equip") return !!item.is_equip && item.equip_type === "normal";
+      return false;
+    });
+    const icons = shopIconButtons();
+    return idx >= 0 ? (icons[idx] || null) : (shopButtons()[0] || null);
+  };
+  const inventoryButtons = () => [...document.querySelectorAll([
+    "#gilsysCommandList .shop-card.inventory-card .shop-buy-area button:not(:disabled)",
+    ".gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area button:not(:disabled)",
+    "#gilsysSideCommandDetail .shop-card.inventory-card .shop-buy-area button:not(:disabled)"
+  ].join(","))].filter(isVisibleElement);
+  const categoryButtons = () => {
+    const list = byId("gilsysCommandList");
+    const manual = String(list?.dataset?.manual ?? "");
+    const rowButtons = list ? [...list.querySelectorAll(".gilsys-list-row")] : [];
+    if ((manual === "items" || manual === "inventoryCategory") && rowButtons.length) {
+      return rowButtons.filter(isVisibleElement);
+    }
+    return [...document.querySelectorAll([
+      "#gilsysCommandList .gilsys-category-card",
+      "#gilsysSideCommandDetail .gilsys-category-card",
+      ".gilsys-detail-inventory-list .gilsys-category-card"
+    ].join(","))].filter(isVisibleElement);
+  };
+
+  const steps = [
+    {
+      kind: "message",
+      title: "基本ルール",
+      text: "相手のHPを0にすると勝利です。チュートリアルでは戦士を使って、通常対戦で使う基本ボタンを順番に練習します。"
+    },
+    {
+      kind: "click",
+      title: "攻撃",
+      text: "攻撃/スキルボタンでは、通常攻撃と職業スキルを選べます。まずはここを押してください。",
+      target: "#atkBtn",
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "通常攻撃",
+      text: "通常攻撃が選ばれています。決定を押すと行動確認が出ます。",
+      target: "#gilsysConfirmBtn",
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "行動確認",
+      text: "実行するを押すと攻撃してターンを使います。行動後はEXPが5増え、次の自分のターン開始時に10コインを獲得します。",
+      target: "#confirmPopupOkBtn",
+      wait: "your_turn"
+    },
+    {
+      kind: "click",
+      title: "スキル",
+      text: "次はスキルです。攻撃/スキルボタンから、職業ごとのスキルを選べます。",
+      target: "#atkBtn",
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "スキル選択",
+      text: "スキル1を選んでください。スキルはレベルや使用回数の条件を満たすと使えます。",
+      target: () => commandRows()[1] || null,
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "スキル発動",
+      text: "決定を押すと行動確認が出ます。",
+      target: "#gilsysConfirmBtn",
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "スキル発動",
+      text: "実行するを押すとスキルを発動します。スキルも基本的にはターンを使う行動です。",
+      target: "#confirmPopupOkBtn",
+      wait: "your_turn"
+    },
+    {
+      kind: "click",
+      title: "ショップ",
+      text: "ショップではコインでアイテムや装備を購入できます。コインは毎ターン10ずつ増えます。",
+      target: "#shopBtn",
+      wait: "shop_list"
+    },
+    {
+      kind: "click",
+      title: "アイテム購入",
+      text: "最初の商品を選んでください。今回は回復アイテムを買います。",
+      target: () => shopButtonForKind("item"),
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "購入",
+      text: "購入ボタンで持ち物に入ります。",
+      target: ".gilsys-shop-detail-card .shop-buy-area button:not(:disabled)",
+      wait: "purchased_item"
+    },
+    {
+      kind: "click",
+      title: "装備購入",
+      text: "次に装備を買います。装備は持ち物から装備するとステータスを強化できます。",
+      target: () => shopButtonForKind("equip"),
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "購入",
+      text: "この装備も購入してください。",
+      target: ".gilsys-shop-detail-card .shop-buy-area button:not(:disabled)",
+      wait: "purchased_item"
+    },
+    {
+      kind: "click",
+      title: "アイテム",
+      text: "持ち物ボタンでは、アイテム、装備、特殊装備をカテゴリごとに確認できます。",
+      target: "#itemBtn",
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "アイテムカテゴリ",
+      text: "アイテムカテゴリを開いて、さっき買った回復アイテムを使ってみます。",
+      target: () => categoryButtons()[0] || null,
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "アイテム使用",
+      text: "アイテムは所持数を消費して効果を発動します。使うボタンを押してください。",
+      target: () => inventoryButtons()[0] || null,
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "装備",
+      text: "次は装備です。もう一度、持ち物ボタンを押してください。",
+      target: "#itemBtn",
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "装備カテゴリ",
+      text: "装備カテゴリを開きます。装備は外したり付け替えたりできます。",
+      target: () => categoryButtons()[1] || null,
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
+      title: "装備する",
+      text: "購入した装備を装備してください。",
+      target: () => inventoryButtons()[0] || null,
+      nextAfterClick: true
+    },
+    {
+      kind: "message",
+      title: "装備合成",
+      text: "同じ通常装備を複数持っているときは、装備画面の合成から強化できます。装備が増えたらここで整理していきます。"
+    },
+    {
+      kind: "click",
+      title: "レベルアップ",
+      text: "レベルアップではEXPを使って強くなれます。EXPは毎ラウンド行動後に5ずつ入ります。足りない分はコインで補うこともできます。",
+      target: "#lvupBtn",
+      wait: "level_up_check"
+    },
+    {
+      kind: "click",
+      title: "レベルアップ確認",
+      text: "確認でOKを押すとレベルアップします。",
+      target: "#confirmPopupOkBtn",
+      wait: "level_info"
+    },
+    {
+      kind: "message",
+      title: "練習完了",
+      text: "これで通常対戦の基本操作は完了です。あとは自由に攻撃やスキルを使って、訓練用の相手を倒してみてください。",
+      freeAfter: true
+    }
+  ];
+
+  function ensureOverlay() {
+    let root = byId("gilsysTutorialOverlay");
+    if (root) return root;
+    root = document.createElement("div");
+    root.id = "gilsysTutorialOverlay";
+    root.className = "gilsys-tutorial-overlay";
+    root.hidden = true;
+    root.innerHTML = `
+      <div class="gilsys-tutorial-card" role="dialog" aria-live="polite">
+        <div class="gilsys-tutorial-title" id="gilsysTutorialTitle"></div>
+        <div class="gilsys-tutorial-text" id="gilsysTutorialText"></div>
+        <div class="gilsys-tutorial-hint" id="gilsysTutorialHint"></div>
+      </div>
+    `;
+    document.body.appendChild(root);
+    return root;
+  }
+
+  function currentStep() {
+    return steps[state.index] || null;
+  }
+
+  function resolveTarget(step = currentStep()) {
+    if (!step?.target) return null;
+    return typeof step.target === "function" ? step.target() : q(step.target);
+  }
+
+  function clearTarget() {
+    if (state.targetEl) state.targetEl.classList.remove("gilsys-tutorial-target");
+    state.targetEl = null;
+    for (const timer of state.refreshTimers) clearTimeout(timer);
+    state.refreshTimers = [];
+  }
+
+  function refreshTarget() {
+    if (!state.active) return;
+    const step = currentStep();
+    if (step?.kind !== "click") {
+      clearTarget();
+      return;
+    }
+    const nextTarget = resolveTarget(step);
+    if (state.targetEl && state.targetEl !== nextTarget) {
+      state.targetEl.classList.remove("gilsys-tutorial-target");
+    }
+    state.targetEl = nextTarget || null;
+    if (state.targetEl) {
+      state.targetEl.classList.add("gilsys-tutorial-target");
+      state.targetEl.scrollIntoView?.({ block: "center", inline: "center", behavior: "smooth" });
+    }
+  }
+
+  function scheduleTargetRefresh() {
+    clearTarget();
+    for (let i = 0; i < 24; i += 1) {
+      state.refreshTimers.push(setTimeout(refreshTarget, i * 120));
+    }
+  }
+
+  function renderStep() {
+    const step = currentStep();
+    if (!step) {
+      finish(false);
+      return;
+    }
+
+    const root = ensureOverlay();
+    root.hidden = false;
+    document.body.classList.add("gilsys-tutorial-active");
+    byId("gilsysTutorialTitle").textContent = step.title || "チュートリアル";
+    byId("gilsysTutorialText").textContent = step.text || "";
+    byId("gilsysTutorialHint").textContent =
+      step.kind === "message"
+        ? "説明をタップして次へ"
+        : state.waiting
+          ? "処理が終わるまで待ってください"
+          : "光っている場所を押してください";
+    scheduleTargetRefresh();
+  }
+
+  function finish(keepTutorialFlag) {
+    state.active = false;
+    state.waiting = "";
+    clearTarget();
+    const root = byId("gilsysTutorialOverlay");
+    if (root) root.hidden = true;
+    document.body.classList.remove("gilsys-tutorial-active");
+    if (!keepTutorialFlag) {
+      window.gilsysTutorialBattleActive = false;
+      document.body.classList.remove("gilsys-tutorial-battle");
+    }
+  }
+
+  function nextStep() {
+    const step = currentStep();
+    if (step?.freeAfter) {
+      finish(true);
+      return;
+    }
+    state.index += 1;
+    state.waiting = "";
+    renderStep();
+  }
+
+  function waitMatches(wait, data) {
+    if (!wait || !data) return false;
+    if (wait === "your_turn") return data.type === "your_turn";
+    if (wait === "shop_list") return data.type === "shop_list";
+    if (wait === "purchased_item") return data.type === "purchased_item";
+    if (wait === "level_up_check") return data.type === "level_up_check";
+    if (wait === "level_info") return data.type === "level_info" && Number(data.level ?? 0) >= 2;
+    return data.type === wait;
+  }
+
+  function startTutorial() {
+    if (state.active) return;
+    state.active = true;
+    state.index = 0;
+    state.waiting = "";
+    renderStep();
+  }
+
+  document.addEventListener("click", (event) => {
+    if (!state.active) return;
+    const step = currentStep();
+    if (!step) return;
+    const card = byId("gilsysTutorialOverlay")?.querySelector(".gilsys-tutorial-card");
+
+    if (step.kind === "message") {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      nextStep();
+      return;
+    }
+
+    const target = resolveTarget(step);
+    const hitTarget = target && target.contains(event.target);
+    if (!hitTarget) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      byId("gilsysTutorialHint").textContent = "まず光っている場所を押してください";
+      refreshTarget();
+      return;
+    }
+
+    if (step.wait) {
+      state.waiting = step.wait;
+      renderStep();
+    }
+    if (step.nextAfterClick) {
+      setTimeout(nextStep, step.delay ?? 140);
+    }
+  }, true);
+
+  window.handleTutorialWsEvent = function(data) {
+    if (data?.type === "match_start" && (data.mode === "tutorial" || data.tutorial || window.matchMode === "tutorial")) {
+      window.gilsysTutorialBattleActive = true;
+      window.gilsysTutorialStarted = false;
+      document.body.classList.add("gilsys-tutorial-battle");
+    }
+
+    if (data?.type === "purchased_item" && window.gilsysTutorialBattleActive) {
+      const confirmPopup = byId("itemConfirmPopup");
+      if (confirmPopup && confirmPopup.style.display !== "none") confirmPopup.style.display = "none";
+    }
+
+    if (data?.type === "battle_end" && window.gilsysTutorialBattleActive) {
+      finish(false);
+      if (typeof showCenterToast === "function") showCenterToast("チュートリアル完了！", 2200);
+      return;
+    }
+
+    if (!state.active || !state.waiting || !waitMatches(state.waiting, data)) return;
+    const delay = state.waiting === "your_turn" ? 360 : 120;
+    setTimeout(nextStep, delay);
+  };
+
+  window.gilsysStartTutorialIfNeeded = function() {
+    if (!window.gilsysTutorialBattleActive || window.gilsysTutorialStarted) return;
+    window.gilsysTutorialStarted = true;
+    startTutorial();
+  };
 })();
 </script>
 </body>
