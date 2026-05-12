@@ -9873,25 +9873,6 @@ function renderDojoTrailDetail(id) {
   const selectedEffectLabel = node.isMajor
     ? `大きな軌跡の効果：${effectText}`
     : `小さな軌跡の効果：${effectText}`;
-  const skillDamageBonus = Math.max(0, Number(dojoTrailState?.skillDamageBonus ?? 0));
-  const coinGainPercent = Math.max(0, Number(dojoTrailState?.coinGainPercent ?? 0));
-  const dropRateBonus = Math.max(0, Number(dojoTrailState?.dropRateBonusPercent ?? 0));
-  const rareDropBonusCount = Math.max(0, Number(dojoTrailState?.rareDropBonusCount ?? 0));
-  const guaranteedDropText = dojoTrailState?.doubleGuaranteedDrop
-    ? "アイテム1種+装備1種保証"
-    : dojoTrailState?.guaranteedDrop
-      ? "アイテム/装備 1枠保証"
-      : "保証なし";
-  const currentBonusMarkup = `
-    <div class="dojo-trail-current-bonus">
-      <b>現在の軌跡効果</b>
-      <span>戦士スキルダメージ +${escapeHtml(String(skillDamageBonus))}</span>
-      <span>コイン獲得量 +${escapeHtml(String(coinGainPercent))}%</span>
-      <span>アイテム・装備ドロップ率 +${escapeHtml(String(dropRateBonus))}%</span>
-      <span>★2・★3ドロップ ${escapeHtml(String(rareDropBonusCount))}段階</span>
-      <span>${escapeHtml(guaranteedDropText)}</span>
-    </div>
-  `;
   const buildSelectedMarkup = (buttonId) => `
     <div class="dojo-trail-selected-head">
       <div class="dojo-trail-detail-icon ${node.isMajor ? "is-major" : ""}">${node.icon ? `<img src="${escapeHtml(node.icon)}" alt="${escapeHtml(node.name ?? "軌跡")}">` : (node.isMajor ? "✦" : "✧")}</div>
@@ -9900,7 +9881,6 @@ function renderDojoTrailDetail(id) {
         <p><b>効果</b><span>${escapeHtml(selectedEffectLabel)}</span></p>
       </div>
     </div>
-    ${currentBonusMarkup}
     <div class="dojo-trail-unlock-row">
       <div class="dojo-trail-cost"><span>必要ポイント</span><b>${unlockCost} P</b></div>
       <button id="${buttonId}" type="button" onclick="unlockSelectedDojoTrail()">${preview.nodes.length > 1 ? "一括開放" : "軌跡開放"}</button>

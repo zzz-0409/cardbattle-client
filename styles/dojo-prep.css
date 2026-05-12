@@ -225,7 +225,9 @@ html.gilsys-fixed-game #phaseDojoWait .dojo-icon-grid.gilsys-shop-icon-grid {
 }
 
 html.gilsys-fixed-game #phaseDojoWait .dojo-loadout-frame .gilsys-shop-icon-btn {
-  height: 32px !important;
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
   min-height: 0 !important;
   padding: 2px !important;
 }
