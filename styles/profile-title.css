@@ -206,8 +206,8 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     left: 50%;
     top: 50%;
     z-index: 4;
-    width: 144%;
-    height: 144%;
+    width: 162%;
+    height: 162%;
     transform: translate(-50%, -50%);
     object-fit: contain;
     pointer-events: none;
@@ -254,5 +254,9 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     flex: 0 0 38px !important;
     width: 38px !important;
     height: 38px !important;
+  }
+  #phase2.gilsys-battle-ui .gilsys-battle-portrait-frame-img {
+    width: 158%;
+    height: 158%;
   }
 }
