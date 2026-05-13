@@ -1,4 +1,4 @@
-const CACHE_NAME = "gilsys-pwa-v20";
+const CACHE_NAME = "gilsys-pwa-v21";
 const CORE_ASSETS = [
   "./",
   "./index.html",
