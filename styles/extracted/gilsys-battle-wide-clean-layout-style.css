@@ -1,0 +1,102 @@
+html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+  --gilsys-edge: 12px !important;
+  --gilsys-side-width: 0px !important;
+  --gilsys-center-inset: 12px !important;
+  --gilsys-stage-top: 12px !important;
+  --gilsys-command-bottom: 12px !important;
+  --gilsys-command-height: 204px !important;
+  --gilsys-stage-gap: 12px !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-side-panel,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-battle-header,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-bottom-bar,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #gilsysCoinHud,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-bottom-bar .gilsys-mini-btn {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+  left: var(--gilsys-center-inset) !important;
+  right: var(--gilsys-center-inset) !important;
+  top: var(--gilsys-stage-top) !important;
+  bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + var(--gilsys-stage-gap)) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel {
+  left: var(--gilsys-center-inset) !important;
+  right: var(--gilsys-center-inset) !important;
+  bottom: var(--gilsys-command-bottom) !important;
+  height: var(--gilsys-command-height) !important;
+  grid-template-columns: 150px minmax(320px, .92fr) minmax(420px, 1.08fr) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-top-status {
+  width: calc(50% - 70px) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .side {
+  top: 120px !important;
+  width: 48% !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .side-self {
+  left: 1.5% !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .side-enemy {
+  right: 1.5% !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite {
+  width: clamp(150px, 17vw, 250px) !important;
+  height: clamp(220px, 36vh, 330px) !important;
+}
+
+@media (max-width: 900px), (max-height: 620px), (hover: none) and (pointer: coarse) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+    --gilsys-edge: max(5px, env(safe-area-inset-left)) !important;
+    --gilsys-center-inset: max(5px, env(safe-area-inset-left)) !important;
+    --gilsys-stage-top: max(4px, env(safe-area-inset-top)) !important;
+    --gilsys-command-bottom: max(4px, env(safe-area-inset-bottom)) !important;
+    --gilsys-command-height: clamp(174px, 38dvh, 286px) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage,
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel {
+    left: max(5px, env(safe-area-inset-left)) !important;
+    right: max(5px, env(safe-area-inset-right)) !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel {
+    grid-template-columns: 78px minmax(0, .92fr) minmax(0, 1.08fr) !important;
+    padding: 5px !important;
+    gap: 5px !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-column {
+    position: static !important;
+    width: auto !important;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+    --gilsys-command-height: min(44dvh, 330px) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(0, .85fr) minmax(0, 1.15fr) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-column {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+}

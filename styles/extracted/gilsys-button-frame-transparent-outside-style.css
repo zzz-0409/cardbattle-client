@@ -1,0 +1,59 @@
+html.gilsys-fixed-game #gilsysStartButton,
+html.gilsys-fixed-game #phase0Settings,
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn,
+html.gilsys-fixed-game #btnChangeName,
+html.gilsys-fixed-game #titleRankingJobs button,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnConnectPhase1,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-confirm-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-mini-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-card,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-detail-inventory-tools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-panel-subtools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button {
+  background-color: transparent !important;
+  background-image:
+    var(--gilsys-button-frame-v2),
+    linear-gradient(90deg, rgba(0, 229, 255, .17), rgba(5, 10, 28, .32) 42%, rgba(255, 46, 220, .15)),
+    linear-gradient(180deg, rgba(255, 255, 255, .1), rgba(0, 0, 0, .08)) !important;
+  background-position: center center, center center, center center !important;
+  background-size:
+    100% 100%,
+    max(1px, calc(100% - 34px)) max(1px, calc(100% - 18px)),
+    max(1px, calc(100% - 34px)) max(1px, calc(100% - 18px)) !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+  background-origin: border-box, border-box, border-box !important;
+  background-clip: border-box, border-box, border-box !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton:hover,
+html.gilsys-fixed-game #phase0Settings:hover,
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn:hover:not(:disabled),
+html.gilsys-fixed-game #btnChangeName:hover,
+html.gilsys-fixed-game #titleRankingJobs button:hover,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom:hover,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1:hover:not(:disabled),
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn:hover:not(:disabled),
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row.is-selected,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-confirm-btn:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-mini-btn:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-card:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-detail-inventory-tools button:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-panel-subtools button:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button:hover:not(:disabled) {
+  background-color: transparent !important;
+  background-image:
+    var(--gilsys-button-frame-v2),
+    linear-gradient(90deg, rgba(0, 238, 255, .24), rgba(9, 14, 34, .36) 42%, rgba(255, 52, 224, .22)),
+    linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(0, 0, 0, .06)) !important;
+  background-position: center center, center center, center center !important;
+  background-size:
+    100% 100%,
+    max(1px, calc(100% - 34px)) max(1px, calc(100% - 18px)),
+    max(1px, calc(100% - 34px)) max(1px, calc(100% - 18px)) !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+}

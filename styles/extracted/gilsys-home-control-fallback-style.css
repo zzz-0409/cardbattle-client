@@ -1,0 +1,27 @@
+html.gilsys-fixed-game #gilsysStartScreen.is-hidden,
+html.gilsys-fixed-game #gilsysBootLoader.is-hidden {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBottomNav .gilsys-home-nav-btn {
+  position: relative !important;
+  pointer-events: auto !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBottomNav .gilsys-home-nav-btn i {
+  position: absolute !important;
+  top: 8px !important;
+  left: 0 !important;
+  right: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  height: 28px !important;
+  font-style: normal !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  color: #fff3cf !important;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, .82), 0 0 9px rgba(255, 218, 127, .5) !important;
+  pointer-events: none !important;
+}

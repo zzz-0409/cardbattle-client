@@ -1,0 +1,350 @@
+html.gilsys-fixed-game,
+html.gilsys-fixed-game body {
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #020409 !important;
+  overscroll-behavior: none;
+}
+
+html.gilsys-fixed-game body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(176, 119, 47, .18), transparent 34%),
+    linear-gradient(180deg, #020409, #07090d);
+}
+
+html.gilsys-fixed-game #gilsysOrientationGuard {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #game-wrapper {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: var(--gilsys-game-width, 1280px) !important;
+  height: var(--gilsys-game-height, 720px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  transform-origin: 0 0 !important;
+  transform: translate(var(--gilsys-game-left, 0px), var(--gilsys-game-top, 0px)) scale(var(--gilsys-game-scale, 1));
+  background: #05070b;
+  box-shadow: 0 0 0 1px rgba(231, 178, 86, .32), 0 22px 80px rgba(0, 0, 0, .72);
+}
+
+html.gilsys-fixed-game #phase0,
+html.gilsys-fixed-game #phaseDojoTop,
+html.gilsys-fixed-game #phaseDojoWait,
+html.gilsys-fixed-game #dojoTrailScreen,
+html.gilsys-fixed-game #dojoResultScreen,
+html.gilsys-fixed-game #phase1,
+html.gilsys-fixed-game #phase2 {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #skillPopup,
+html.gilsys-fixed-game #itemCategoryPopup,
+html.gilsys-fixed-game #itemPopup,
+html.gilsys-fixed-game #shopPopup,
+html.gilsys-fixed-game #statusDetailPopup,
+html.gilsys-fixed-game #itemConfirmPopup,
+html.gilsys-fixed-game #arrowSlotPopup,
+html.gilsys-fixed-game #alchemistFusionPopup,
+html.gilsys-fixed-game #resultOverlay,
+html.gilsys-fixed-game .gilsys-name-modal-backdrop,
+html.gilsys-fixed-game #centerToast {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+html.gilsys-fixed-game .gilsys-name-modal-backdrop.is-open {
+  display: flex !important;
+}
+
+html.gilsys-fixed-game #skillBox,
+html.gilsys-fixed-game #itemBox {
+  width: 620px !important;
+  max-width: 620px !important;
+  max-height: 620px !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #shopPopup .popup-inner {
+  width: 760px !important;
+  max-width: 760px !important;
+  max-height: 620px !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #statusDetailPopup > div,
+html.gilsys-fixed-game #itemCategoryPopup > div,
+html.gilsys-fixed-game #itemConfirmPopup .popup-inner,
+html.gilsys-fixed-game #arrowSlotPopup .popup-inner,
+html.gilsys-fixed-game #resultPanel,
+html.gilsys-fixed-game .gilsys-name-modal {
+  width: 420px !important;
+  max-width: 420px !important;
+  max-height: 600px !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #alchemistFusionPopup .popup-inner {
+  width: 640px !important;
+  max-width: 640px !important;
+  max-height: 620px !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #centerToastBox {
+  max-width: 760px !important;
+}
+
+html.gilsys-fixed-game #phase0HomeLayout {
+  min-height: 100% !important;
+  height: 100% !important;
+  grid-template-columns: minmax(380px, 500px) minmax(180px, 1fr) 290px !important;
+  gap: 16px !important;
+  align-items: center !important;
+  padding: 28px 40px 24px !important;
+}
+
+html.gilsys-fixed-game #titleModePanel {
+  order: initial !important;
+  max-width: 500px !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  padding-top: 44px !important;
+}
+
+html.gilsys-fixed-game #phase0Hero {
+  order: initial !important;
+  padding-top: 34px !important;
+}
+
+html.gilsys-fixed-game #titleRankingPanel {
+  order: initial !important;
+  max-width: 360px !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui {
+  padding: 16px 18px 18px !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-layout {
+  height: 100% !important;
+  max-width: 1500px !important;
+  display: grid !important;
+  grid-template-columns: 380px minmax(0, 1fr) !important;
+  grid-template-rows: 126px minmax(0, 1fr) 62px !important;
+  gap: 14px 20px !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-title-area {
+  grid-column: 1 / -1 !important;
+  padding-top: 18px !important;
+  text-align: center !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-left {
+  grid-column: 1 !important;
+  grid-row: 2 / 4 !important;
+  display: block !important;
+  padding: 52px 18px 20px !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-main {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  display: grid !important;
+  grid-template-rows: 1fr 16px minmax(120px, .42fr) !important;
+  min-height: 0 !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-footer {
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+  display: flex !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #jobSelectArea {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+  --gilsys-edge: 18px !important;
+  --gilsys-side-width: 220px !important;
+  --gilsys-center-inset: 282px !important;
+  --gilsys-stage-top: 10px !important;
+  --gilsys-command-bottom: 72px !important;
+  --gilsys-command-height: 220px !important;
+  --gilsys-stage-gap: 20px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-side-panel {
+  display: flex !important;
+  width: var(--gilsys-side-width) !important;
+  max-height: 624px !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+  left: var(--gilsys-center-inset) !important;
+  right: var(--gilsys-center-inset) !important;
+  top: var(--gilsys-stage-top) !important;
+  bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + var(--gilsys-stage-gap)) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel {
+  left: var(--gilsys-center-inset) !important;
+  right: var(--gilsys-center-inset) !important;
+  bottom: var(--gilsys-command-bottom) !important;
+  height: var(--gilsys-command-height) !important;
+  display: grid !important;
+  grid-template-columns: 150px minmax(160px, .9fr) minmax(210px, 1fr) !important;
+  grid-template-rows: 1fr !important;
+  gap: 10px !important;
+  padding: 10px 12px !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-column {
+  display: flex !important;
+  flex-direction: column !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  gap: 9px !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn {
+  height: 46px !important;
+  min-height: 0 !important;
+  grid-template-columns: 34px 1fr !important;
+  gap: 8px !important;
+  padding: 0 10px !important;
+  font-size: 16px !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  min-height: 0 !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list {
+  max-height: 165px !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-bottom-bar {
+  left: var(--gilsys-center-inset) !important;
+  right: var(--gilsys-edge) !important;
+}
+
+html.gilsys-fixed-game .gilsys-dojo-screen,
+html.gilsys-fixed-game .dojo-trail-screen,
+html.gilsys-fixed-game .dojo-result-screen {
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game .dojo-trail-shell {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 12px !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 300px minmax(0, 1fr) 300px !important;
+  grid-template-rows: 86px minmax(0, 1fr) 170px !important;
+  gap: 12px !important;
+}
+
+html.gilsys-fixed-game .dojo-trail-head {
+  grid-column: 1 / -1 !important;
+  grid-template-columns: 190px 1fr 190px !important;
+}
+
+html.gilsys-fixed-game .dojo-trail-board {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+html.gilsys-fixed-game .dojo-trail-left,
+html.gilsys-fixed-game .dojo-trail-right {
+  display: block !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game .dojo-trail-bonus {
+  display: block !important;
+}
+
+html.gilsys-fixed-game .dojo-trail-drawer {
+  display: none !important;
+}
+
+html.gilsys-fixed-game .dojo-result-shell {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 12px !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 300px minmax(0, 1fr) 300px !important;
+  grid-template-rows: 94px minmax(0, 1fr) 74px !important;
+  gap: 12px !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phaseDojoTop .gilsys-dojo-panel {
+  width: 760px !important;
+  max-width: 760px !important;
+  max-height: none !important;
+  margin: 70px auto 0 !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #phaseDojoWait .gilsys-dojo-wait-panel {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phaseDojoWait .dojo-wait-grid {
+  grid-template-columns: minmax(240px, .82fr) minmax(0, 1.18fr) minmax(270px, .95fr) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+  height: auto !important;
+  max-height: none !important;
+}

@@ -1,0 +1,46 @@
+#phase2.gilsys-battle-ui #battleStage,
+  #phase2.gilsys-battle-ui #battleStage .side,
+  #phase2.gilsys-battle-ui #battleStage .main-unit,
+  #phase2.gilsys-battle-ui #battleStage .gilsys-equip-wrapper,
+  #phase2.gilsys-battle-ui #battleStage .equip-area,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-area,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-area.doll,
+  #phase2.gilsys-battle-ui #battleStage .equip-slot,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot {
+    pointer-events: auto !important;
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll::before,
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll::after,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot.boroboro::after {
+    pointer-events: none !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .equip-slot,
+  #phase2.gilsys-battle-ui #battleStage .special-equip-slot {
+    position: relative !important;
+    z-index: 2 !important;
+    cursor: help !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .gilsys-equip-wrapper {
+    z-index: 120 !important;
+    isolation: isolate !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .gilsys-equip-wrapper {
+    z-index: 130 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .special-equip-area.doll {
+    z-index: 80 !important;
+  }
+
+  #gilsysFloatingTooltip {
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+  }

@@ -1,0 +1,120 @@
+html.gilsys-fixed-game #phaseDojoTop.gilsys-dojo-screen,
+html.gilsys-fixed-game #dojoTrailScreen.dojo-trail-screen {
+  background:
+    linear-gradient(90deg, rgba(9, 8, 7, .84), rgba(20, 17, 13, .2) 50%, rgba(9, 8, 7, .84)),
+    linear-gradient(180deg, rgba(18, 15, 12, .2), rgba(8, 7, 7, .8)),
+    url("../../Assets/fe-zu0and1haikei.png") center center / cover no-repeat !important;
+}
+
+html.gilsys-fixed-game #skillPopup,
+html.gilsys-fixed-game #itemCategoryPopup,
+html.gilsys-fixed-game #itemPopup,
+html.gilsys-fixed-game #shopPopup,
+html.gilsys-fixed-game #statusDetailPopup,
+html.gilsys-fixed-game #itemConfirmPopup,
+html.gilsys-fixed-game #arrowSlotPopup,
+html.gilsys-fixed-game #alchemistFusionPopup,
+html.gilsys-fixed-game .gilsys-name-modal-backdrop {
+  background: rgba(7, 6, 6, .72) !important;
+  backdrop-filter: blur(4px) saturate(.82) !important;
+}
+
+html.gilsys-fixed-game #skillBox,
+html.gilsys-fixed-game #itemBox,
+html.gilsys-fixed-game #shopPopup .popup-inner,
+html.gilsys-fixed-game #statusDetailPopup > div,
+html.gilsys-fixed-game #itemCategoryPopup > div,
+html.gilsys-fixed-game #itemConfirmPopup .popup-inner,
+html.gilsys-fixed-game #arrowSlotPopup .popup-inner,
+html.gilsys-fixed-game #alchemistFusionPopup .popup-inner,
+html.gilsys-fixed-game .gilsys-name-modal,
+html.gilsys-fixed-game .dojo-trail-shell,
+html.gilsys-fixed-game .dojo-trail-left,
+html.gilsys-fixed-game .dojo-trail-right,
+html.gilsys-fixed-game .dojo-trail-board,
+html.gilsys-fixed-game .dojo-trail-drawer-panel,
+html.gilsys-fixed-game #phaseDojoTop .gilsys-dojo-panel {
+  border-color: rgba(181, 136, 70, .46) !important;
+  background:
+    linear-gradient(rgba(31, 28, 24, .88), rgba(12, 11, 10, .92)),
+    url("../../Assets/home/gilsys-home-panel-frame.png") center center / 100% 100% no-repeat !important;
+  color: #ead8b2 !important;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .42), inset 0 0 0 1px rgba(255, 231, 177, .08) !important;
+}
+
+html.gilsys-fixed-game input,
+html.gilsys-fixed-game select,
+html.gilsys-fixed-game textarea,
+html.gilsys-fixed-game #roomCodeInput,
+html.gilsys-fixed-game #cpuJob,
+html.gilsys-fixed-game #cpuTurnOrder {
+  border-color: rgba(181, 136, 70, .54) !important;
+  background: rgba(17, 15, 13, .88) !important;
+  color: #f0dfbd !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 177, .06) !important;
+}
+
+html.gilsys-fixed-game .shop-card,
+html.gilsys-fixed-game .inventory-card,
+html.gilsys-fixed-game .gilsys-category-card,
+html.gilsys-fixed-game .gilsys-list-row,
+html.gilsys-fixed-game .skillRow,
+html.gilsys-fixed-game .dojo-trail-detail,
+html.gilsys-fixed-game .dojo-trail-effect-box,
+html.gilsys-fixed-game .dojo-trail-bonus,
+html.gilsys-fixed-game .dojo-trail-points,
+html.gilsys-fixed-game .dojo-mini-card,
+html.gilsys-fixed-game .gilsys-detail-body,
+html.gilsys-fixed-game .gilsys-command-list,
+html.gilsys-fixed-game .gilsys-command-detail-panel {
+  border-color: rgba(181, 136, 70, .34) !important;
+  background: linear-gradient(180deg, rgba(36, 31, 25, .78), rgba(13, 12, 11, .84)) !important;
+  color: #e8d4ad !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 177, .05) !important;
+}
+
+html.gilsys-fixed-game .shop-item-name,
+html.gilsys-fixed-game .skillName,
+html.gilsys-fixed-game .gilsys-category-name,
+html.gilsys-fixed-game .gilsys-panel-title,
+html.gilsys-fixed-game .dojo-trail-detail h3,
+html.gilsys-fixed-game .dojo-trail-points b,
+html.gilsys-fixed-game .dojo-trail-count b,
+html.gilsys-fixed-game .gilsys-result-rate-main b,
+html.gilsys-fixed-game .gilsys-result-summary b,
+html.gilsys-fixed-game .gilsys-home-user-text b {
+  color: #fff0c8 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .7) !important;
+}
+
+html.gilsys-fixed-game .shop-item-desc,
+html.gilsys-fixed-game .skillDesc,
+html.gilsys-fixed-game .gilsys-category-desc,
+html.gilsys-fixed-game .gilsys-detail-text,
+html.gilsys-fixed-game .gilsys-detail-body,
+html.gilsys-fixed-game .dojo-trail-detail p,
+html.gilsys-fixed-game .dojo-trail-effect-box,
+html.gilsys-fixed-game .title-rank-row .left,
+html.gilsys-fixed-game .title-rank-row .right {
+  color: rgba(232, 208, 166, .86) !important;
+}
+
+html.gilsys-fixed-game .shop-badge,
+html.gilsys-fixed-game .gilsys-home-currency,
+html.gilsys-fixed-game .dojo-trail-state-badge {
+  color: #f2d59e !important;
+  background: rgba(61, 43, 22, .72) !important;
+  border-color: rgba(181, 136, 70, .42) !important;
+}
+
+html.gilsys-fixed-game #phase0LogoMark,
+html.gilsys-fixed-game #phase0TitleSub,
+html.gilsys-fixed-game .gilsys-job-subtitle,
+html.gilsys-fixed-game .cyber-muted {
+  color: rgba(232, 208, 166, .72) !important;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, .72) !important;
+}
+
+html.gilsys-fixed-game * {
+  scrollbar-color: rgba(181, 136, 70, .58) rgba(14, 12, 10, .6);
+}

@@ -1,0 +1,12 @@
+#phase2.gilsys-battle-ui .gilsys-blessing-count {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border: 1px solid rgba(150, 220, 255, .55);
+  border-radius: 999px;
+  color: #dff7ff;
+  background: rgba(70, 155, 210, .16);
+  font-weight: 800;
+  white-space: nowrap;
+}

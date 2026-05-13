@@ -1,0 +1,257 @@
+html.gilsys-fixed-game {
+  --gilsys-frame-neutral: url("../../Assets/home/gilsys-button-frame-neutral.png");
+  --gilsys-frame-neutral-slim: url("../../Assets/home/gilsys-button-frame-neutral-slim.png");
+  --gilsys-frame-neutral-wide: url("../../Assets/home/gilsys-button-frame-neutral-wide.png");
+  --gilsys-frame-attack: url("../../Assets/home/gilsys-button-frame-attack.png");
+  --gilsys-frame-attack-slim: url("../../Assets/home/gilsys-button-frame-attack-slim.png");
+  --gilsys-frame-attack-wide: url("../../Assets/home/gilsys-button-frame-attack-wide.png");
+  --gilsys-frame-level: url("../../Assets/home/gilsys-button-frame-level.png");
+  --gilsys-frame-level-slim: url("../../Assets/home/gilsys-button-frame-level-slim.png");
+  --gilsys-frame-level-wide: url("../../Assets/home/gilsys-button-frame-level-wide.png");
+  --gilsys-frame-item: url("../../Assets/home/gilsys-button-frame-item.png");
+  --gilsys-frame-item-slim: url("../../Assets/home/gilsys-button-frame-item-slim.png");
+  --gilsys-frame-item-wide: url("../../Assets/home/gilsys-button-frame-item-wide.png");
+  --gilsys-frame-shop: url("../../Assets/home/gilsys-button-frame-shop.png");
+  --gilsys-frame-shop-slim: url("../../Assets/home/gilsys-button-frame-shop-slim.png");
+  --gilsys-frame-shop-wide: url("../../Assets/home/gilsys-button-frame-shop-wide.png");
+  --gilsys-frame-auto: url("../../Assets/home/gilsys-button-frame-auto.png");
+  --gilsys-frame-auto-slim: url("../../Assets/home/gilsys-button-frame-auto-slim.png");
+  --gilsys-frame-auto-wide: url("../../Assets/home/gilsys-button-frame-auto-wide.png");
+  --gilsys-frame-special: url("../../Assets/home/gilsys-button-frame-special.png");
+  --gilsys-frame-special-slim: url("../../Assets/home/gilsys-button-frame-special-slim.png");
+  --gilsys-frame-special-wide: url("../../Assets/home/gilsys-button-frame-special-wide.png");
+  --gilsys-button-frame-v2: var(--gilsys-frame-neutral);
+  --gilsys-frame-fill-x: 34px;
+  --gilsys-frame-fill-y: 18px;
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(0, 229, 255, .17), rgba(5, 10, 28, .32) 42%, rgba(255, 46, 220, .15));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(0, 238, 255, .24), rgba(9, 14, 34, .36) 42%, rgba(255, 52, 224, .22));
+  --gilsys-button-fill-gloss: linear-gradient(180deg, rgba(255, 255, 255, .1), rgba(0, 0, 0, .08));
+  --gilsys-button-fill-gloss-hover: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(0, 0, 0, .06));
+  --gilsys-button-shadow: 0 0 16px rgba(0, 229, 255, .14), 0 0 26px rgba(255, 52, 220, .08);
+  --gilsys-button-shadow-hover: 0 0 20px rgba(0, 234, 255, .26), 0 0 34px rgba(255, 55, 221, .14);
+}
+
+html.gilsys-fixed-game #gilsysStartButton,
+html.gilsys-fixed-game #phase0Settings,
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn,
+html.gilsys-fixed-game #btnChangeName,
+html.gilsys-fixed-game #titleRankingJobs button,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnConnectPhase1,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-confirm-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-mini-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-card,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-inline-toolbar button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-detail-inventory-tools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-panel-subtools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    var(--gilsys-button-frame-v2),
+    var(--gilsys-button-fill-main),
+    var(--gilsys-button-fill-gloss) !important;
+  background-position: center center, center center, center center !important;
+  background-size:
+    100% 100%,
+    max(1px, calc(100% - var(--gilsys-frame-fill-x))) max(1px, calc(100% - var(--gilsys-frame-fill-y))),
+    max(1px, calc(100% - var(--gilsys-frame-fill-x))) max(1px, calc(100% - var(--gilsys-frame-fill-y))) !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+  background-origin: border-box, border-box, border-box !important;
+  background-clip: border-box, border-box, border-box !important;
+  box-shadow: var(--gilsys-button-shadow) !important;
+  clip-path: none !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton:hover,
+html.gilsys-fixed-game #phase0Settings:hover,
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn:hover:not(:disabled),
+html.gilsys-fixed-game #btnChangeName:hover,
+html.gilsys-fixed-game #titleRankingJobs button:hover,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom:hover,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1:hover:not(:disabled),
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn:hover:not(:disabled),
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row.is-selected,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-confirm-btn:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-mini-btn:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-card:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-row:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-inline-toolbar button:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-detail-inventory-tools button:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-panel-subtools button:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button:hover:not(:disabled) {
+  background-image:
+    var(--gilsys-button-frame-v2),
+    var(--gilsys-button-fill-main-hover),
+    var(--gilsys-button-fill-gloss-hover) !important;
+  box-shadow: var(--gilsys-button-shadow-hover) !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton,
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom {
+  --gilsys-button-frame-v2: var(--gilsys-frame-neutral-slim);
+  --gilsys-frame-fill-x: 30px;
+  --gilsys-frame-fill-y: 16px;
+}
+
+html.gilsys-fixed-game #phase0Settings,
+html.gilsys-fixed-game #btnChangeName,
+html.gilsys-fixed-game #titleRankingJobs button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-mini-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-confirm-btn {
+  --gilsys-button-frame-v2: var(--gilsys-frame-neutral);
+  --gilsys-frame-fill-x: 34px;
+  --gilsys-frame-fill-y: 18px;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnConnectPhase1,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1 {
+  --gilsys-button-frame-v2: var(--gilsys-frame-neutral-wide);
+  --gilsys-frame-fill-x: 42px;
+  --gilsys-frame-fill-y: 14px;
+}
+
+html.gilsys-fixed-game #btnRandom,
+html.gilsys-fixed-game #titleModePanel #btnRandom {
+  --gilsys-button-frame-v2: var(--gilsys-frame-attack-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(255, 54, 45, .2), rgba(20, 7, 16, .34) 45%, rgba(255, 112, 48, .12));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(255, 64, 52, .3), rgba(27, 8, 17, .38) 45%, rgba(255, 126, 54, .2));
+  --gilsys-button-shadow: 0 0 16px rgba(255, 59, 47, .14), 0 0 24px rgba(255, 132, 58, .08);
+  --gilsys-button-shadow-hover: 0 0 22px rgba(255, 66, 54, .3), 0 0 34px rgba(255, 135, 58, .14);
+}
+
+html.gilsys-fixed-game #btnTutorial,
+html.gilsys-fixed-game #btnCPU,
+html.gilsys-fixed-game #titleModePanel #btnTutorial,
+html.gilsys-fixed-game #titleModePanel #btnCPU {
+  --gilsys-button-frame-v2: var(--gilsys-frame-auto-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(151, 78, 255, .2), rgba(11, 8, 30, .34) 45%, rgba(0, 223, 255, .11));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(166, 88, 255, .3), rgba(13, 9, 35, .38) 45%, rgba(0, 230, 255, .18));
+  --gilsys-button-shadow: 0 0 16px rgba(148, 75, 255, .13), 0 0 24px rgba(0, 229, 255, .08);
+  --gilsys-button-shadow-hover: 0 0 22px rgba(158, 83, 255, .28), 0 0 34px rgba(0, 231, 255, .14);
+}
+
+html.gilsys-fixed-game #btnDojo,
+html.gilsys-fixed-game #titleModePanel #btnDojo {
+  --gilsys-button-frame-v2: var(--gilsys-frame-special-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(255, 56, 220, .2), rgba(18, 6, 28, .34) 45%, rgba(114, 76, 255, .14));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(255, 64, 224, .3), rgba(22, 7, 32, .38) 45%, rgba(124, 86, 255, .22));
+  --gilsys-button-shadow: 0 0 16px rgba(255, 55, 221, .15), 0 0 24px rgba(116, 78, 255, .08);
+  --gilsys-button-shadow-hover: 0 0 22px rgba(255, 61, 223, .3), 0 0 34px rgba(124, 86, 255, .16);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn {
+  --gilsys-frame-fill-x: 26px;
+  --gilsys-frame-fill-y: 14px;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .action-skill,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel:not(.is-inventory-mode):not(.is-shop-mode) .gilsys-list-row {
+  --gilsys-button-frame-v2: var(--gilsys-frame-attack-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(255, 54, 45, .19), rgba(14, 7, 18, .36) 46%, rgba(255, 96, 58, .1));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(255, 63, 52, .3), rgba(20, 8, 19, .4) 46%, rgba(255, 113, 64, .18));
+  --gilsys-button-shadow: 0 0 14px rgba(255, 58, 48, .14), 0 0 22px rgba(255, 118, 55, .07);
+  --gilsys-button-shadow-hover: 0 0 21px rgba(255, 65, 53, .28), 0 0 32px rgba(255, 125, 58, .13);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .action-level {
+  --gilsys-button-frame-v2: var(--gilsys-frame-level-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(0, 202, 255, .19), rgba(5, 15, 30, .36) 46%, rgba(70, 126, 255, .11));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(0, 220, 255, .3), rgba(6, 18, 36, .4) 46%, rgba(82, 138, 255, .2));
+  --gilsys-button-shadow: 0 0 14px rgba(0, 220, 255, .14), 0 0 22px rgba(82, 138, 255, .07);
+  --gilsys-button-shadow-hover: 0 0 21px rgba(0, 226, 255, .28), 0 0 32px rgba(90, 146, 255, .13);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .action-item,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-list-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-category-card,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-category-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel:has(.gilsys-command-list-panel.is-inventory-mode) .gilsys-detail-inventory-tools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel:has(.gilsys-command-list-panel.is-inventory-mode) .gilsys-panel-subtools button {
+  --gilsys-button-frame-v2: var(--gilsys-frame-item-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(39, 255, 142, .17), rgba(4, 24, 23, .36) 46%, rgba(0, 221, 255, .1));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(51, 255, 154, .28), rgba(5, 30, 26, .4) 46%, rgba(0, 230, 255, .18));
+  --gilsys-button-shadow: 0 0 14px rgba(49, 255, 151, .13), 0 0 22px rgba(0, 229, 255, .06);
+  --gilsys-button-shadow-hover: 0 0 21px rgba(53, 255, 156, .26), 0 0 32px rgba(0, 230, 255, .12);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .action-shop,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-list-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-category-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-inline-toolbar button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel:has(.gilsys-command-list-panel.is-shop-mode) .gilsys-detail-inventory-tools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel:has(.gilsys-command-list-panel.is-shop-mode) .gilsys-panel-subtools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel:has(.gilsys-command-list-panel.is-shop-mode) .shop-buy-area button {
+  --gilsys-button-frame-v2: var(--gilsys-frame-shop-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(255, 188, 46, .19), rgba(29, 16, 5, .36) 46%, rgba(255, 88, 45, .1));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(255, 199, 58, .31), rgba(34, 19, 6, .4) 46%, rgba(255, 101, 55, .18));
+  --gilsys-button-shadow: 0 0 14px rgba(255, 190, 50, .14), 0 0 22px rgba(255, 91, 47, .07);
+  --gilsys-button-shadow-hover: 0 0 21px rgba(255, 200, 61, .28), 0 0 32px rgba(255, 104, 55, .13);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .action-auto {
+  --gilsys-button-frame-v2: var(--gilsys-frame-auto-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(146, 82, 255, .18), rgba(10, 8, 31, .36) 46%, rgba(0, 224, 255, .1));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(160, 92, 255, .29), rgba(13, 9, 36, .4) 46%, rgba(0, 231, 255, .18));
+  --gilsys-button-shadow: 0 0 14px rgba(149, 84, 255, .14), 0 0 22px rgba(0, 224, 255, .07);
+  --gilsys-button-shadow-hover: 0 0 21px rgba(162, 94, 255, .28), 0 0 32px rgba(0, 231, 255, .13);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .action-doll-buff {
+  --gilsys-button-frame-v2: var(--gilsys-frame-special-slim);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(255, 56, 220, .18), rgba(20, 7, 30, .36) 46%, rgba(122, 82, 255, .12));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(255, 64, 224, .29), rgba(24, 8, 35, .4) 46%, rgba(132, 92, 255, .2));
+  --gilsys-button-shadow: 0 0 14px rgba(255, 57, 221, .14), 0 0 22px rgba(125, 84, 255, .08);
+  --gilsys-button-shadow-hover: 0 0 21px rgba(255, 64, 224, .28), 0 0 32px rgba(132, 92, 255, .14);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel .gilsys-list-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button {
+  --gilsys-button-frame-v2: var(--gilsys-frame-attack-wide);
+  --gilsys-frame-fill-x: 40px;
+  --gilsys-frame-fill-y: 14px;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-list-row {
+  --gilsys-button-frame-v2: var(--gilsys-frame-item-wide);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-list-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel:has(.gilsys-command-list-panel.is-shop-mode) .shop-buy-area button {
+  --gilsys-button-frame-v2: var(--gilsys-frame-shop-wide);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel:has(.gilsys-command-list-panel.is-inventory-mode) .gilsys-confirm-btn {
+  --gilsys-button-frame-v2: var(--gilsys-frame-item);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel:has(.gilsys-command-list-panel.is-shop-mode) .gilsys-confirm-btn {
+  --gilsys-button-frame-v2: var(--gilsys-frame-shop);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-category-card {
+  --gilsys-button-frame-v2: var(--gilsys-frame-item);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-category-card:nth-child(2) {
+  --gilsys-button-frame-v2: var(--gilsys-frame-attack);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(255, 54, 45, .19), rgba(14, 7, 18, .36) 46%, rgba(255, 96, 58, .1));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(255, 63, 52, .3), rgba(20, 8, 19, .4) 46%, rgba(255, 113, 64, .18));
+  --gilsys-button-shadow: 0 0 14px rgba(255, 58, 48, .14), 0 0 22px rgba(255, 118, 55, .07);
+  --gilsys-button-shadow-hover: 0 0 21px rgba(255, 65, 53, .28), 0 0 32px rgba(255, 125, 58, .13);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-category-card:nth-child(3) {
+  --gilsys-button-frame-v2: var(--gilsys-frame-special);
+  --gilsys-button-fill-main: linear-gradient(90deg, rgba(255, 56, 220, .18), rgba(20, 7, 30, .36) 46%, rgba(122, 82, 255, .12));
+  --gilsys-button-fill-main-hover: linear-gradient(90deg, rgba(255, 64, 224, .29), rgba(24, 8, 35, .4) 46%, rgba(132, 92, 255, .2));
+  --gilsys-button-shadow: 0 0 14px rgba(255, 57, 221, .14), 0 0 22px rgba(125, 84, 255, .08);
+  --gilsys-button-shadow-hover: 0 0 21px rgba(255, 64, 224, .28), 0 0 32px rgba(132, 92, 255, .14);
+}

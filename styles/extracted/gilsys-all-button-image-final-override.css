@@ -1,0 +1,94 @@
+html.gilsys-fixed-game button,
+html.gilsys-fixed-game input[type="button"],
+html.gilsys-fixed-game input[type="submit"],
+html.gilsys-fixed-game .phase0-menu-btn,
+html.gilsys-fixed-game .gilsys-action-btn,
+html.gilsys-fixed-game .gilsys-confirm-btn,
+html.gilsys-fixed-game .gilsys-mini-btn,
+html.gilsys-fixed-game .gilsys-home-hud-btn,
+html.gilsys-fixed-game .gilsys-home-nav-btn,
+html.gilsys-fixed-game .gilsys-home-panel-btn,
+html.gilsys-fixed-game .gilsys-home-event-btn,
+html.gilsys-fixed-game .gilsys-shop-icon-btn,
+html.gilsys-fixed-game .dojo-result-drop,
+html.gilsys-fixed-game .dojo-trail-node,
+html.gilsys-fixed-game [role="button"],
+html.gilsys-fixed-game .job-card,
+html.gilsys-fixed-game .gilsys-job-passive-item,
+html.gilsys-fixed-game .gilsys-category-card,
+html.gilsys-fixed-game .shop-card.is-clickable,
+html.gilsys-fixed-game .inventory-card.is-clickable {
+  border: 1px solid rgba(190, 142, 72, .82) !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    url("../../Assets/home/gilsys-classic-button-neutral.png"),
+    linear-gradient(180deg, rgba(70, 56, 35, .88), rgba(22, 20, 18, .94)) !important;
+  background-size: 100% 100%, 100% 100% !important;
+  background-position: center, center !important;
+  background-repeat: no-repeat !important;
+}
+
+html.gilsys-fixed-game .gilsys-action-btn.action-attack,
+html.gilsys-fixed-game #atkBtn,
+html.gilsys-fixed-game #btnConnectPhase1,
+html.gilsys-fixed-game #btnStartDojo,
+html.gilsys-fixed-game #btnDojoNextStage,
+html.gilsys-fixed-game #resultReconnectBtn,
+html.gilsys-fixed-game .dojo-result-actions button.primary,
+html.gilsys-fixed-game .gilsys-result-actions #resultReconnectBtn,
+html.gilsys-fixed-game .shop-buy-area button:not(:disabled),
+html.gilsys-fixed-game #nameChangeModalOk {
+  background-image:
+    url("../../Assets/home/gilsys-classic-button-action.png"),
+    linear-gradient(180deg, rgba(112, 52, 40, .82), rgba(38, 17, 15, .94)) !important;
+}
+
+html.gilsys-fixed-game .gilsys-action-btn.action-level,
+html.gilsys-fixed-game .gilsys-action-btn.action-item,
+html.gilsys-fixed-game .gilsys-action-btn.action-shop,
+html.gilsys-fixed-game #lvupBtn,
+html.gilsys-fixed-game #itemBtn,
+html.gilsys-fixed-game #shopBtn,
+html.gilsys-fixed-game #btnDojoPrepShop,
+html.gilsys-fixed-game #btnDojoPrepLevelUp,
+html.gilsys-fixed-game #btnDojoTrail,
+html.gilsys-fixed-game #btnDojoPrepInventory,
+html.gilsys-fixed-game .gilsys-home-panel-btn,
+html.gilsys-fixed-game .gilsys-home-event-btn,
+html.gilsys-fixed-game .dojo-trail-unlock-row button,
+html.gilsys-fixed-game .gilsys-category-card {
+  background-image:
+    url("../../Assets/home/gilsys-classic-button-utility.png"),
+    linear-gradient(180deg, rgba(58, 83, 64, .76), rgba(17, 31, 24, .92)) !important;
+}
+
+html.gilsys-fixed-game .job-card.selected,
+html.gilsys-fixed-game .dojo-result-drop.is-selected,
+html.gilsys-fixed-game .dojo-trail-node.is-selected,
+html.gilsys-fixed-game .gilsys-category-card.is-selected,
+html.gilsys-fixed-game [role="button"].selected,
+html.gilsys-fixed-game [role="button"].is-selected {
+  background-image:
+    url("../../Assets/home/gilsys-classic-button-action.png"),
+    linear-gradient(180deg, rgba(112, 52, 40, .82), rgba(38, 17, 15, .94)) !important;
+  border-color: rgba(224, 171, 88, .96) !important;
+}
+
+html.gilsys-fixed-game button::before,
+html.gilsys-fixed-game button::after,
+html.gilsys-fixed-game .phase0-menu-btn::before,
+html.gilsys-fixed-game .phase0-menu-btn::after,
+html.gilsys-fixed-game .gilsys-action-btn::before,
+html.gilsys-fixed-game .gilsys-action-btn::after,
+html.gilsys-fixed-game .gilsys-home-nav-btn::before,
+html.gilsys-fixed-game .gilsys-home-nav-btn::after,
+html.gilsys-fixed-game [role="button"]::before,
+html.gilsys-fixed-game [role="button"]::after,
+html.gilsys-fixed-game .job-card::before,
+html.gilsys-fixed-game .job-card::after,
+html.gilsys-fixed-game .gilsys-category-card::before,
+html.gilsys-fixed-game .gilsys-category-card::after {
+  display: none !important;
+  content: none !important;
+}

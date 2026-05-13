@@ -1,0 +1,26 @@
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui {
+    --gilsys-command-bottom: max(10px, calc(env(safe-area-inset-bottom) + 8px)) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    bottom: var(--gilsys-command-bottom) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status-self,
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status {
+    top: 3px !important;
+    width: min(34vw, 142px) !important;
+    min-height: 0 !important;
+    padding: 4px 5px !important;
+    gap: 4px !important;
+  }
+}

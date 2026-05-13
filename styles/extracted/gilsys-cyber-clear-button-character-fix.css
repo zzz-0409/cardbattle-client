@@ -1,0 +1,68 @@
+html.gilsys-fixed-game #gilsysStartScreen::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  opacity: 0 !important;
+}
+
+html.gilsys-fixed-game #phase0Hero::before {
+  width: 430px !important;
+  height: 510px !important;
+  background: url("../../Assets/shokugyousenntaku/sennsi1_facefix_transparent.png") 50% 100% / auto 100% no-repeat !important;
+  opacity: .96 !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton,
+html.gilsys-fixed-game .phase0-menu-btn,
+html.gilsys-fixed-game #phase0Settings,
+html.gilsys-fixed-game #btnChangeName,
+html.gilsys-fixed-game #titleRankingJobs button,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnConnectPhase1,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1 {
+  border: 1px solid rgba(77, 244, 255, .48) !important;
+  border-radius: 8px !important;
+  background:
+    linear-gradient(90deg, rgba(0, 229, 255, .16), rgba(8, 12, 30, .28) 42%, rgba(255, 46, 220, .14)),
+    linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(0, 0, 0, .08)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .08),
+    inset 0 -16px 28px rgba(0, 0, 0, .14),
+    0 0 16px rgba(0, 229, 255, .16),
+    0 0 28px rgba(255, 50, 220, .08) !important;
+  backdrop-filter: blur(3px) saturate(1.18) !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton::before,
+html.gilsys-fixed-game .phase0-menu-btn::before,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom::before,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 4px 7px !important;
+  border: 1px solid rgba(135, 252, 255, .32) !important;
+  border-radius: 5px !important;
+  pointer-events: none !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton:hover,
+html.gilsys-fixed-game .phase0-menu-btn:hover:not(:disabled),
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom:hover,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1:hover:not(:disabled) {
+  background:
+    linear-gradient(90deg, rgba(0, 238, 255, .24), rgba(10, 14, 34, .32) 42%, rgba(255, 52, 224, .22)),
+    linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(0, 0, 0, .06)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .12),
+    0 0 20px rgba(0, 234, 255, .28),
+    0 0 34px rgba(255, 55, 221, .16) !important;
+}
+
+html.gilsys-fixed-game #phase0Hero::after,
+html.gilsys-fixed-game .gilsys-start-title {
+  background:
+    linear-gradient(90deg, rgba(0, 229, 255, .1), rgba(5, 9, 24, .34), rgba(255, 44, 220, .08)) !important;
+  border: 1px solid rgba(80, 238, 255, .24) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 0 30px rgba(0, 229, 255, .12) !important;
+  backdrop-filter: blur(3px) !important;
+}

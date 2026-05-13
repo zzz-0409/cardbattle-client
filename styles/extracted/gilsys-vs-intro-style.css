@@ -1,0 +1,189 @@
+.gilsys-vs-intro[hidden] {
+  display: none !important;
+}
+
+.gilsys-vs-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 90000;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(18px, 4vw, 52px);
+  padding: clamp(24px, 5vw, 70px);
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 216, 119, .14), transparent 22%),
+    linear-gradient(90deg, rgba(12, 18, 32, .96), rgba(28, 10, 14, .92) 50%, rgba(12, 18, 32, .96));
+  color: #fff0c4;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gilsys-vs-intro.is-open {
+  opacity: 1;
+  animation: gilsysVsIntroIn .34s ease-out both;
+}
+
+.gilsys-vs-intro.is-leaving {
+  animation: gilsysVsIntroOut .34s ease-in both;
+}
+
+.gilsys-vs-intro-card {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  transform: translateX(var(--vs-card-from, 0));
+  animation: gilsysVsCardIn .62s cubic-bezier(.16, .9, .18, 1.05) both;
+}
+
+.gilsys-vs-intro-card.self {
+  --vs-card-from: -42px;
+}
+
+.gilsys-vs-intro-card.enemy {
+  --vs-card-from: 42px;
+  animation-delay: .08s;
+}
+
+.gilsys-vs-intro-icon {
+  position: relative;
+  width: clamp(124px, 18vw, 220px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 222, 132, .78);
+  background:
+    var(--gilsys-vs-icon-image) center 10% / 190% auto no-repeat,
+    radial-gradient(circle at 50% 34%, rgba(255, 218, 128, .18), rgba(8, 10, 16, .92) 68%);
+  box-shadow:
+    inset 0 0 18px rgba(255, 242, 190, .12),
+    0 0 24px rgba(255, 205, 95, .22),
+    0 18px 38px rgba(0, 0, 0, .48);
+}
+
+.gilsys-vs-intro-icon-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 10%;
+  transform: none;
+  border-radius: 50%;
+  clip-path: circle(49% at 50% 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gilsys-vs-intro-icon[data-dojo-enemy-icon="true"] {
+  background:
+    var(--gilsys-vs-icon-image) center center / cover no-repeat,
+    radial-gradient(circle at 50% 34%, rgba(255, 218, 128, .18), rgba(8, 10, 16, .92) 68%);
+}
+
+.gilsys-vs-intro-icon[data-dojo-enemy-icon="true"] .gilsys-vs-intro-icon-img {
+  object-position: center center;
+  transform: none;
+}
+
+.gilsys-vs-intro-icon.has-profile-frame::after {
+  content: "";
+  position: absolute;
+  inset: -22%;
+  background: var(--gilsys-profile-frame-image) center center / contain no-repeat;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.gilsys-vs-intro-icon[data-profile-icon-job-id="4"] {
+  background:
+    var(--gilsys-vs-icon-image) center 0% / 190% auto no-repeat,
+    radial-gradient(circle at 50% 34%, rgba(255, 218, 128, .18), rgba(8, 10, 16, .92) 68%);
+}
+
+.gilsys-vs-intro-icon[data-profile-icon-job-id="4"] .gilsys-vs-intro-icon-img {
+  object-position: center 0%;
+}
+
+.gilsys-vs-intro-title {
+  min-height: 20px;
+  color: #ffe0a0;
+  font-size: clamp(12px, 1.8vw, 18px);
+  font-weight: 900;
+  text-shadow: 0 2px 8px rgba(0,0,0,.8);
+}
+
+.gilsys-vs-intro-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff7db;
+  font-size: clamp(22px, 4vw, 48px);
+  font-weight: 900;
+  line-height: 1.05;
+  text-shadow: 0 4px 16px rgba(0,0,0,.78), 0 0 18px rgba(255, 203, 90, .25);
+}
+
+.gilsys-vs-intro-job {
+  color: rgba(234, 252, 255, .84);
+  font-size: clamp(13px, 2.2vw, 24px);
+  font-weight: 800;
+}
+
+.gilsys-vs-intro-mark {
+  display: grid;
+  place-items: center;
+  width: clamp(74px, 12vw, 148px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: #ff2d2d;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 6.2vw, 82px);
+  font-weight: 900;
+  line-height: 1;
+  text-shadow:
+    0 2px 0 #fff2c0,
+    0 0 18px rgba(255, 50, 45, .52),
+    0 0 34px rgba(255, 218, 122, .26);
+  animation: gilsysVsMarkPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes gilsysVsIntroIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gilsysVsIntroOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes gilsysVsCardIn {
+  from {
+    opacity: 0;
+    transform: translateX(var(--vs-card-from)) scale(.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes gilsysVsMarkPulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.08); filter: brightness(1.22); }
+}
+
+@media (max-width: 760px) {
+  .gilsys-vs-intro {
+    gap: 10px;
+    padding: 18px;
+  }
+
+  .gilsys-vs-intro-icon {
+    width: clamp(92px, 24vw, 136px);
+  }
+}

@@ -1,0 +1,279 @@
+html.gilsys-fixed-game #resultOverlay {
+  background:
+    linear-gradient(90deg, rgba(1, 4, 12, .9), rgba(1, 4, 12, .18) 24%, rgba(1, 4, 12, .18) 76%, rgba(1, 4, 12, .9)),
+    linear-gradient(180deg, rgba(2, 6, 18, .08), rgba(1, 2, 8, .78)),
+    url("../../Assets/home/gilsys-normal-result-fullscreen-bg.png") center center / cover no-repeat !important;
+  padding: 0 !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+}
+
+html.gilsys-fixed-game #resultPanel {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #eaffff !important;
+}
+
+html.gilsys-fixed-game .gilsys-normal-result-frame {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  display: grid;
+  grid-template-columns: minmax(220px, .78fr) minmax(360px, 1.28fr) minmax(220px, .78fr);
+  grid-template-rows: minmax(70px, .48fr) auto auto minmax(100px, .7fr) auto;
+  gap: clamp(10px, 1.4vw, 18px);
+  align-content: stretch;
+  padding: clamp(16px, 2.2vw, 34px) clamp(18px, 3.2vw, 54px) clamp(18px, 2.3vw, 36px);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(0, 229, 255, .16), transparent 28%),
+    linear-gradient(90deg, rgba(2, 6, 18, .68), transparent 24%, transparent 76%, rgba(2, 6, 18, .68)) !important;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+html.gilsys-fixed-game #resultTitle {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 0 !important;
+  color: #f4ffff !important;
+  font-family: "Segoe UI", "Yu Gothic", sans-serif !important;
+  font-size: clamp(48px, 9vw, 116px) !important;
+  line-height: .88 !important;
+  letter-spacing: .08em !important;
+  text-align: center !important;
+  text-shadow: 0 0 22px rgba(0, 229, 255, .54), 0 0 30px rgba(255, 46, 220, .24) !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-defeat #resultTitle {
+  color: #dce6ff !important;
+  text-shadow: 0 0 20px rgba(118, 154, 255, .42) !important;
+}
+
+html.gilsys-fixed-game #resultSub {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  margin: 0 !important;
+  color: rgba(120, 247, 255, .86) !important;
+  font-size: clamp(13px, 1.7vw, 20px) !important;
+  font-weight: 900 !important;
+  letter-spacing: .12em !important;
+  text-align: center !important;
+}
+
+html.gilsys-fixed-game .gilsys-result-summary {
+  grid-column: 1;
+  grid-row: 4;
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: center;
+  gap: 10px;
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-panel {
+  grid-column: 2;
+  grid-row: 4;
+  align-self: stretch;
+  display: grid;
+  align-content: center;
+}
+
+html.gilsys-fixed-game .gilsys-result-summary div,
+html.gilsys-fixed-game .gilsys-result-rate-panel {
+  min-width: 0;
+  border: 1px solid rgba(0, 229, 255, .24);
+  background: linear-gradient(180deg, rgba(5, 15, 34, .66), rgba(2, 5, 14, .76));
+  box-shadow: inset 0 0 18px rgba(0, 229, 255, .08);
+  padding: 12px 14px;
+}
+
+html.gilsys-fixed-game .gilsys-result-summary span,
+html.gilsys-fixed-game .gilsys-result-rate-label {
+  display: block;
+  color: rgba(190, 248, 255, .66);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+
+html.gilsys-fixed-game .gilsys-result-summary b {
+  display: block;
+  margin-top: 6px;
+  overflow: hidden;
+  color: #f4ffff;
+  font-size: clamp(14px, 1.6vw, 20px);
+  line-height: 1.1;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-panel {
+  text-align: center;
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: clamp(10px, 2vw, 24px);
+  margin-top: 10px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-main span,
+html.gilsys-fixed-game .gilsys-result-rate-main b {
+  font-size: clamp(30px, 5vw, 58px);
+  line-height: 1;
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-main span {
+  color: rgba(214, 250, 255, .62);
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-main b {
+  color: #f4ffff;
+  text-shadow: 0 0 16px rgba(0, 229, 255, .42);
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-main i {
+  color: #ff2edc;
+  font-style: normal;
+  font-size: clamp(22px, 3vw, 36px);
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-delta {
+  margin-top: 8px;
+  font-size: clamp(20px, 3vw, 34px);
+  font-weight: 900;
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-delta.is-plus { color: #4bffb1; }
+html.gilsys-fixed-game .gilsys-result-rate-delta.is-minus { color: #ff6b8f; }
+
+html.gilsys-fixed-game .gilsys-result-record,
+html.gilsys-fixed-game .gilsys-result-rate-none {
+  margin-top: 6px;
+  color: rgba(214, 250, 255, .74);
+  font-size: 13px;
+}
+
+html.gilsys-fixed-game .gilsys-result-actions {
+  grid-column: 1 / -1;
+  grid-row: 5;
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) minmax(220px, 360px);
+  justify-content: space-between;
+  gap: clamp(10px, 2vw, 24px);
+  margin-top: 2px;
+}
+
+html.gilsys-fixed-game .gilsys-result-actions button {
+  min-height: clamp(50px, 6vw, 72px) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    var(--gilsys-button-frame-v2, var(--gilsys-frame-neutral-wide)),
+    linear-gradient(90deg, rgba(0, 229, 255, .18), rgba(5, 10, 26, .56) 48%, rgba(255, 46, 220, .14)) !important;
+  background-position: center, center !important;
+  background-size: 100% 100%, calc(100% - 30px) calc(100% - 16px) !important;
+  background-repeat: no-repeat !important;
+  color: #eaffff !important;
+  font-size: clamp(16px, 2vw, 24px) !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #resultReconnectBtn { --gilsys-button-frame-v2: var(--gilsys-frame-attack-wide); }
+html.gilsys-fixed-game #resultHomeBtn { --gilsys-button-frame-v2: var(--gilsys-frame-neutral-wide); }
+
+html.gilsys-fixed-game body > #resultOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  z-index: 2147483000 !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay #resultPanel {
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-normal-result-frame {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(78px, .5fr) auto auto auto minmax(72px, .65fr);
+  align-content: center;
+  justify-items: center;
+  padding: clamp(18px, 2.6vw, 42px);
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial #resultTitle,
+html.gilsys-fixed-game #resultOverlay.is-tutorial #resultSub,
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary,
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-rate-panel,
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-actions {
+  grid-column: 1;
+  grid-row: auto;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary,
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-rate-panel {
+  width: min(760px, 86vw);
+  max-width: 100%;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-rate-panel {
+  min-height: 86px;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-actions {
+  width: min(780px, 88vw);
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  justify-content: center;
+}
+
+@media (max-width: 620px) {
+  html.gilsys-fixed-game .gilsys-normal-result-frame {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    align-content: center;
+    padding: 24px 14px;
+    overflow: auto;
+  }
+  html.gilsys-fixed-game #resultTitle,
+  html.gilsys-fixed-game #resultSub,
+  html.gilsys-fixed-game .gilsys-result-summary,
+  html.gilsys-fixed-game .gilsys-result-rate-panel,
+  html.gilsys-fixed-game .gilsys-result-actions {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  html.gilsys-fixed-game .gilsys-result-summary,
+  html.gilsys-fixed-game .gilsys-result-actions { grid-template-columns: 1fr; }
+  html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary,
+  html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-actions {
+    grid-template-columns: 1fr;
+  }
+}

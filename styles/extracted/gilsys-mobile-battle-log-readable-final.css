@@ -1,0 +1,75 @@
+@media (max-width: 1100px), (max-height: 660px), (hover: none) and (pointer: coarse) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui {
+    --gilsys-command-height: clamp(194px, 42dvh, 310px) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+    grid-template-columns: minmax(168px, 1.08fr) 76px minmax(140px, .92fr) minmax(190px, 1.05fr) !important;
+    gap: 5px !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked {
+    min-width: 168px !important;
+    padding: 5px !important;
+    overflow: hidden !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked h3 {
+    display: block !important;
+    height: 18px !important;
+    flex: 0 0 18px !important;
+    margin: 0 0 4px !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    font-size: 11px !important;
+    line-height: 18px !important;
+    letter-spacing: 0 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked .gilsys-visible-log {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked #battleBox {
+    display: block !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    padding: 6px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    font-size: 9px !important;
+    line-height: 1.32 !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked .log-title {
+    display: block !important;
+    white-space: nowrap !important;
+    writing-mode: horizontal-tb !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 3px !important;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
+    grid-template-columns: minmax(0, 1fr) 82px !important;
+    grid-template-rows: 118px minmax(0, .78fr) minmax(0, 1.12fr) !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock .gilsys-log-block.gilsys-log-docked {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+}

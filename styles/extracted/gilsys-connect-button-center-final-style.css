@@ -1,0 +1,19 @@
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnConnectPhase1,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  place-content: center !important;
+  justify-items: center !important;
+  text-align: center !important;
+  text-indent: 0 !important;
+  line-height: 1 !important;
+  padding: 0 42px !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnConnectPhase1::after,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1::after {
+  content: none !important;
+  display: none !important;
+}

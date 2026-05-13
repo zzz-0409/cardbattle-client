@@ -1,0 +1,10 @@
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-node,
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-node.is-major,
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-node.is-selected,
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-node.is-locked,
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-node.is-unlocked {
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 50% !important;
+  outline: none !important;
+}

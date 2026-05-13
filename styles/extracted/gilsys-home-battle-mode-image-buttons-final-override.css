@@ -1,0 +1,89 @@
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo {
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  min-height: 86px !important;
+  padding: 15px 14px 15px 94px !important;
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow: none !important;
+  color: #f9ead0 !important;
+  text-align: left !important;
+  text-shadow:
+    0 2px 2px rgba(0, 0, 0, .9),
+    0 0 7px rgba(52, 34, 16, .72) !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom {
+  background-image: url("../../Assets/home/gilsys-battle-mode-rank.png") !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom {
+  background-image: url("../../Assets/home/gilsys-battle-mode-room.png") !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU {
+  background-image: url("../../Assets/home/gilsys-battle-mode-cpu.png") !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo {
+  background-image: url("../../Assets/home/gilsys-battle-mode-dojo.png") !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom .phase0-menu-icon,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom .phase0-menu-icon,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU .phase0-menu-icon,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo .phase0-menu-icon {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom .phase0-menu-text,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom .phase0-menu-text,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU .phase0-menu-text,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo .phase0-menu-text {
+  display: block !important;
+  flex: 1 1 auto !important;
+  font-size: clamp(16px, 1.9vw, 22px) !important;
+  font-weight: 900 !important;
+  line-height: 1.05 !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom:hover,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom:hover,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU:hover,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo:hover {
+  filter: brightness(1.1) saturate(1.06) !important;
+  transform: translateY(-1px) !important;
+}
+
+@media (max-width: 520px) {
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom,
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom,
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU,
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo {
+    min-height: 72px !important;
+    padding: 11px 8px 11px 70px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom .phase0-menu-text,
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom .phase0-menu-text,
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU .phase0-menu-text,
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo .phase0-menu-text {
+    font-size: clamp(13px, 3.65vw, 18px) !important;
+  }
+}

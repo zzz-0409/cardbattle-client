@@ -1,0 +1,63 @@
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: auto !important;
+  align-items: start !important;
+  gap: 12px !important;
+  padding: 14px 14px 14px 16px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-card-main,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-card-main {
+  min-width: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-buy-area,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: auto !important;
+  min-width: 92px !important;
+  align-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  margin: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-price,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-price {
+  min-width: 0 !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-buy-area button,
+#phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area button {
+  width: 100% !important;
+  min-width: 86px !important;
+}
+
+@media (max-width: 760px), (max-height: 700px), (hover: none) and (pointer: coarse) {
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card,
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-buy-area,
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area {
+    min-width: 72px !important;
+    gap: 6px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list .shop-card.inventory-card .shop-buy-area button,
+  #phase2.gilsys-battle-ui .gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area button {
+    min-width: 68px !important;
+    padding-inline: 8px !important;
+  }
+}

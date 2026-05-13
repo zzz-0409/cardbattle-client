@@ -1,0 +1,15 @@
+#phase2.gilsys-battle-ui #battleStage .sprite.job-alchemist,
+  #phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist,
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.job-alchemist {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .28)) saturate(1.08) brightness(1.04) !important;
+    background-image:
+      url("../../Assets/kyara/rennkinnjyutusi.png"),
+      url("../../Assets/kyara/rennkinnjyutusi.png"),
+      url("../../Assets/kyara/rennkinnjyutusi.png"),
+      url("../../Assets/kyara/rennkinnjyutusi.png") !important;
+    background-position: center bottom, center bottom, center bottom, center bottom !important;
+    background-size: contain, contain, contain, contain !important;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
+  }

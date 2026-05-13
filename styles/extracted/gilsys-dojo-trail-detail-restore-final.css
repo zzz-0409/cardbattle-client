@@ -1,0 +1,42 @@
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-right {
+  display: block !important;
+  visibility: visible !important;
+}
+
+html.gilsys-fixed-game #dojoTrailScreen #dojoTrailDetail,
+html.gilsys-fixed-game #dojoTrailScreen #dojoTrailSelectedEffect,
+html.gilsys-fixed-game #dojoTrailScreen #dojoTrailDrawerBody {
+  visibility: visible !important;
+}
+
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-detail,
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-selected-effect {
+  min-height: 0 !important;
+}
+
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-unlock-row {
+  display: flex !important;
+  visibility: visible !important;
+}
+
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-unlock-row button {
+  display: block !important;
+  visibility: visible !important;
+  min-height: 46px !important;
+}
+
+@media (max-width: 760px), (max-height: 700px), (hover: none) and (pointer: coarse) {
+  html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-right,
+  html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-bonus {
+    display: none !important;
+  }
+
+  html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-drawer {
+    z-index: 100200 !important;
+    display: block !important;
+  }
+
+html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-drawer.is-open .dojo-trail-unlock-row {
+    display: grid !important;
+  }
+}

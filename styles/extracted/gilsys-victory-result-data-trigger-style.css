@@ -1,0 +1,68 @@
+html.gilsys-fixed-game body > #resultOverlay[data-result="win"] {
+  background:
+    radial-gradient(circle at 50% 16%, rgba(255, 244, 180, .34), rgba(255, 197, 75, .12) 18%, transparent 38%),
+    linear-gradient(90deg, rgba(5, 3, 3, .9), rgba(10, 6, 4, .16) 22%, rgba(10, 6, 4, .12) 78%, rgba(5, 3, 3, .9)),
+    linear-gradient(180deg, rgba(12, 7, 3, .03), rgba(5, 4, 4, .74)),
+    url("../../Assets/result/normal-victory-bg.png") center center / cover no-repeat !important;
+}
+
+html.gilsys-fixed-game #resultOverlay[data-result="win"] #resultTitle {
+  color: #fff1b8 !important;
+  font-family: Georgia, "Times New Roman", "Yu Mincho", serif !important;
+  text-shadow:
+    0 2px 0 rgba(95, 50, 10, .75),
+    0 0 14px rgba(255, 248, 190, .86),
+    0 0 38px rgba(255, 176, 45, .74),
+    0 0 72px rgba(178, 47, 20, .42) !important;
+}
+
+html.gilsys-fixed-game #resultOverlay[data-result="win"] .gilsys-result-actions button {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: clamp(58px, 5.1vw, 82px) !important;
+  min-height: 0 !important;
+  max-height: 82px !important;
+  aspect-ratio: auto !important;
+  padding: 0 14% !important;
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-position: center center !important;
+  background-size: 100% 100% !important;
+  background-repeat: no-repeat !important;
+  color: #fff4d1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: clamp(18px, 2vw, 28px) !important;
+  line-height: 1.05 !important;
+}
+
+html.gilsys-fixed-game #resultOverlay[data-result="win"] .gilsys-result-actions {
+  grid-template-columns: repeat(2, clamp(300px, 26vw, 420px)) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: clamp(22px, 4vw, 64px) !important;
+}
+
+html.gilsys-fixed-game #resultOverlay[data-result="win"] #resultHomeBtn {
+  background-image: url("../../Assets/result/result-button-home.png") !important;
+}
+
+html.gilsys-fixed-game #resultOverlay[data-result="win"] #resultReconnectBtn {
+  background-image: url("../../Assets/result/result-button-job.png") !important;
+}
+
+@media (max-width: 620px) {
+  html.gilsys-fixed-game #resultOverlay[data-result="win"] .gilsys-result-actions {
+    grid-template-columns: minmax(260px, 86vw) !important;
+    gap: 10px !important;
+  }
+
+  html.gilsys-fixed-game #resultOverlay[data-result="win"] .gilsys-result-actions button {
+    height: clamp(50px, 17vw, 68px) !important;
+    max-height: 68px !important;
+    font-size: clamp(16px, 5vw, 21px) !important;
+  }
+}

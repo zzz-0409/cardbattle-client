@@ -1,0 +1,231 @@
+html.gilsys-fixed-game {
+  --gilsys-button-frame-v2: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-neutral: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-neutral-slim: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-neutral-wide: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-attack: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-attack-slim: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-attack-wide: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-level: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-level-slim: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-level-wide: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-item: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-item-slim: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-item-wide: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-shop: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-shop-slim: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-shop-wide: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-auto: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-auto-slim: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-auto-wide: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-special: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-special-slim: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-frame-special-wide: url("../../Assets/home/gilsys-home-button-plate.png") !important;
+  --gilsys-button-fill-main: linear-gradient(180deg, rgba(79, 64, 43, .88), rgba(24, 21, 18, .94)) !important;
+  --gilsys-button-fill-soft: linear-gradient(180deg, rgba(103, 82, 50, .34), rgba(12, 11, 10, .18)) !important;
+  --gilsys-button-shadow: 0 9px 18px rgba(0, 0, 0, .36), inset 0 0 0 1px rgba(255, 226, 166, .1) !important;
+}
+
+html.gilsys-fixed-game #phase0,
+html.gilsys-fixed-game #gilsysStartScreen,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui {
+  background:
+    linear-gradient(90deg, rgba(9, 8, 7, .78), rgba(20, 17, 13, .28) 46%, rgba(9, 8, 7, .82)),
+    linear-gradient(180deg, rgba(18, 15, 12, .22), rgba(8, 7, 7, .78)),
+    url("../../Assets/fe-zu0and1haikei.png") center center / cover no-repeat !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui,
+html.gilsys-fixed-game #phaseDojoWait.gilsys-dojo-screen,
+html.gilsys-fixed-game .dojo-result-screen,
+html.gilsys-fixed-game #resultOverlay {
+  background:
+    linear-gradient(90deg, rgba(7, 7, 8, .84), rgba(15, 13, 11, .18) 50%, rgba(7, 7, 8, .84)),
+    linear-gradient(180deg, rgba(24, 18, 12, .14), rgba(6, 6, 8, .82)),
+    url("../../Assets/Battlehaikei.png") center center / cover no-repeat !important;
+}
+
+html.gilsys-fixed-game #phase0HomeLayout,
+html.gilsys-fixed-game #gilsysHomeActionDock,
+html.gilsys-fixed-game .gilsys-normal-result-frame {
+  background: transparent !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-user-card,
+html.gilsys-fixed-game .gilsys-home-event-card,
+html.gilsys-fixed-game #gilsysHomeRankingSlot #titleRankingPanel,
+html.gilsys-fixed-game .gilsys-home-drawer,
+html.gilsys-fixed-game #phaseDojoWait .dojo-frame,
+html.gilsys-fixed-game .dojo-result-panel,
+html.gilsys-fixed-game .gilsys-result-summary div,
+html.gilsys-fixed-game .gilsys-result-rate-panel,
+html.gilsys-fixed-game .gilsys-command-panel,
+html.gilsys-fixed-game .gilsys-side-panel,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-left,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .job-card,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-card {
+  border-color: rgba(181, 136, 70, .46) !important;
+  background:
+    linear-gradient(rgba(31, 28, 24, .86), rgba(12, 11, 10, .9)),
+    url("../../Assets/home/gilsys-home-panel-frame.png") center center / 100% 100% no-repeat !important;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .34), inset 0 0 0 1px rgba(255, 231, 177, .08) !important;
+}
+
+html.gilsys-fixed-game button,
+html.gilsys-fixed-game .phase0-menu-btn,
+html.gilsys-fixed-game .gilsys-action-btn,
+html.gilsys-fixed-game .gilsys-confirm-btn,
+html.gilsys-fixed-game .gilsys-home-currency,
+html.gilsys-fixed-game .gilsys-home-hud-btn,
+html.gilsys-fixed-game .gilsys-home-nav-btn,
+html.gilsys-fixed-game .gilsys-home-panel-btn,
+html.gilsys-fixed-game .gilsys-home-event-btn,
+html.gilsys-fixed-game #btnConnectPhase1,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-dojo-actions button,
+html.gilsys-fixed-game .dojo-result-actions button,
+html.gilsys-fixed-game .gilsys-result-actions button,
+html.gilsys-fixed-game .dojo-trail-head button,
+html.gilsys-fixed-game .dojo-trail-right button,
+html.gilsys-fixed-game .dojo-trail-unlock-row button {
+  border-color: rgba(179, 132, 62, .48) !important;
+  background-color: transparent !important;
+  background-image:
+    url("../../Assets/home/gilsys-home-button-plate.png"),
+    linear-gradient(180deg, rgba(88, 69, 40, .82), rgba(23, 21, 19, .9)) !important;
+  background-position: center, center !important;
+  background-size: 100% 100%, calc(100% - 22px) calc(100% - 12px) !important;
+  background-repeat: no-repeat !important;
+  color: #ead8b2 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .82) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, .28), inset 0 0 0 1px rgba(255, 234, 181, .08) !important;
+  filter: none !important;
+}
+
+html.gilsys-fixed-game .gilsys-action-btn.action-attack,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-dojo-actions #btnDojoNextStage,
+html.gilsys-fixed-game .dojo-result-actions button.primary,
+html.gilsys-fixed-game #resultReconnectBtn {
+  background-image:
+    url("../../Assets/home/gilsys-home-button-plate.png"),
+    linear-gradient(180deg, rgba(112, 52, 40, .82), rgba(38, 17, 15, .94)) !important;
+  color: #fff0d0 !important;
+}
+
+html.gilsys-fixed-game .gilsys-action-btn.action-level,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-dojo-actions #btnDojoPrepLevelUp,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-dojo-actions #btnDojoTrail {
+  background-image:
+    url("../../Assets/home/gilsys-home-button-plate.png"),
+    linear-gradient(180deg, rgba(75, 83, 64, .78), rgba(22, 29, 24, .92)) !important;
+}
+
+html.gilsys-fixed-game .gilsys-action-btn.action-item,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-dojo-actions #btnDojoPrepInventory {
+  background-image:
+    url("../../Assets/home/gilsys-home-button-plate.png"),
+    linear-gradient(180deg, rgba(58, 83, 64, .76), rgba(17, 31, 24, .92)) !important;
+}
+
+html.gilsys-fixed-game .gilsys-action-btn.action-shop,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-dojo-actions #btnDojoPrepShop {
+  background-image:
+    url("../../Assets/home/gilsys-home-button-plate.png"),
+    linear-gradient(180deg, rgba(105, 80, 41, .78), rgba(36, 27, 14, .94)) !important;
+}
+
+html.gilsys-fixed-game .gilsys-action-btn.action-auto,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-dojo-actions #btnDojoEndRun {
+  background-image:
+    url("../../Assets/home/gilsys-home-button-plate.png"),
+    linear-gradient(180deg, rgba(73, 61, 69, .76), rgba(24, 20, 27, .94)) !important;
+}
+
+html.gilsys-fixed-game h1,
+html.gilsys-fixed-game h2,
+html.gilsys-fixed-game h3,
+html.gilsys-fixed-game #phase0Title,
+html.gilsys-fixed-game #resultTitle,
+html.gilsys-fixed-game .dojo-result-head h1,
+html.gilsys-fixed-game #phaseDojoWait #dojoWaitTitle,
+html.gilsys-fixed-game .gilsys-job-title {
+  color: #f0d39b !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .82), 0 0 10px rgba(190, 134, 58, .18) !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-event-card h3,
+html.gilsys-fixed-game .gilsys-home-drawer h2,
+html.gilsys-fixed-game .dojo-frame h3,
+html.gilsys-fixed-game .dojo-result-panel h2,
+html.gilsys-fixed-game .gilsys-result-rate-label,
+html.gilsys-fixed-game .gilsys-result-summary span,
+html.gilsys-fixed-game .gilsys-job-class-name,
+html.gilsys-fixed-game .job-card-name-top,
+html.gilsys-fixed-game .job-card-name-bottom {
+  color: #d6b274 !important;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, .72) !important;
+}
+
+html.gilsys-fixed-game #resultSub,
+html.gilsys-fixed-game .dojo-result-stage,
+html.gilsys-fixed-game .dojo-result-reward-label,
+html.gilsys-fixed-game #phaseDojoWait .dojo-path-label,
+html.gilsys-fixed-game #phaseDojoWait .dojo-current-stage,
+html.gilsys-fixed-game .gilsys-home-user-text span {
+  color: rgba(232, 208, 166, .82) !important;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, .72) !important;
+}
+
+html.gilsys-fixed-game .gilsys-result-rate-main i,
+html.gilsys-fixed-game .gilsys-result-rate-delta.is-plus,
+html.gilsys-fixed-game .gilsys-result-rate-delta.is-minus,
+html.gilsys-fixed-game .cyber-accent {
+  color: #e1b15d !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-avatar,
+html.gilsys-fixed-game .dojo-stage-node,
+html.gilsys-fixed-game .dojo-result-detail-icon,
+html.gilsys-fixed-game .gilsys-shop-icon-btn,
+html.gilsys-fixed-game .dojo-result-drop {
+  border-color: rgba(181, 136, 70, .48) !important;
+  background:
+    radial-gradient(circle at 50% 32%, rgba(179, 132, 62, .18), rgba(18, 16, 14, .86) 66%) !important;
+  box-shadow: inset 0 0 14px rgba(209, 161, 82, .08), 0 0 10px rgba(0, 0, 0, .24) !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-avatar {
+  background:
+    var(--gilsys-home-avatar-image) center 10% / 190% auto no-repeat,
+    radial-gradient(circle at 50% 32%, rgba(179, 132, 62, .18), rgba(18, 16, 14, .86) 66%) !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-avatar.has-profile-frame::after {
+  content: "";
+  position: absolute;
+  inset: -24%;
+  z-index: 3;
+  background: var(--gilsys-profile-frame-image) center center / contain no-repeat;
+  pointer-events: none;
+}
+
+html.gilsys-fixed-game .dojo-stage-node.is-current,
+html.gilsys-fixed-game .gilsys-shop-icon-btn.is-selected,
+html.gilsys-fixed-game .dojo-result-drop.is-selected {
+  border-color: rgba(226, 182, 109, .88) !important;
+  outline-color: rgba(226, 182, 109, .72) !important;
+  box-shadow: 0 0 14px rgba(216, 161, 74, .18), inset 0 0 14px rgba(255, 226, 153, .1) !important;
+}
+
+html.gilsys-fixed-game .hp-fill,
+html.gilsys-fixed-game #phaseDojoWait .dojo-player-stats i,
+html.gilsys-fixed-game .dojo-result-exp-bar i {
+  background: linear-gradient(90deg, #7e1f1d, #c56b42, #dfb15e) !important;
+  box-shadow: 0 0 10px rgba(197, 107, 66, .22) !important;
+}
+
+html.gilsys-fixed-game .gilsys-portrait,
+html.gilsys-fixed-game .dojo-player-portrait,
+html.gilsys-fixed-game .dojo-result-portrait,
+html.gilsys-fixed-game #phase0Hero::before {
+  filter: saturate(.86) brightness(.92) drop-shadow(0 22px 30px rgba(0, 0, 0, .62)) !important;
+}

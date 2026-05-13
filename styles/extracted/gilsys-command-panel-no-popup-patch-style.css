@@ -1,0 +1,68 @@
+.gilsys-vs-emblem{display:none!important}.gilsys-command-list-panel.is-inventory-mode,.gilsys-command-list-panel.is-shop-mode{overflow:hidden}.gilsys-command-list-panel.is-inventory-mode .gilsys-command-list,.gilsys-command-list-panel.is-shop-mode .gilsys-command-list{align-content:start;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));overflow-y:auto;padding-right:6px}.gilsys-category-grid{display:grid;gap:10px;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}.gilsys-category-card{align-items:center;background:linear-gradient(180deg,rgba(55,47,35,.96),rgba(16,18,24,.98));border:1px solid rgba(231,178,86,.72);border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,245,200,.18),0 0 14px rgba(232,166,67,.18);color:#f7e8c6;cursor:pointer;display:grid;grid-template-columns:46px 1fr;min-height:76px;padding:12px;text-align:left}.gilsys-category-card:hover{transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,245,200,.28),0 0 20px rgba(255,205,95,.35)}.gilsys-category-icon{align-items:center;background:rgba(0,0,0,.28);border:1px solid rgba(255,220,132,.55);border-radius:12px;display:flex;font-size:24px;height:42px;justify-content:center;width:42px}.gilsys-category-name{display:block;font-size:17px;font-weight:800;letter-spacing:.06em}.gilsys-category-desc{color:rgba(245,232,200,.72);display:block;font-size:12px;margin-top:4px}.gilsys-inline-empty{border:1px dashed rgba(255,218,132,.45);border-radius:14px;color:rgba(245,232,200,.72);grid-column:1/-1;padding:18px;text-align:center}.gilsys-command-list .shop-card.inventory-card,.gilsys-command-list .shop-card{margin:0;min-width:0}.gilsys-command-list .shop-card .shop-buy-area button,.gilsys-command-list .inventory-card button{min-height:34px}.gilsys-command-list .shop-card .shop-item-desc{max-height:3.2em;overflow:hidden}.gilsys-panel-subtools{display:flex;flex-wrap:wrap;gap:8px;grid-column:1/-1;margin-bottom:2px}.gilsys-panel-subtools button{background:rgba(10,14,22,.86);border:1px solid rgba(231,178,86,.65);border-radius:10px;color:#f7e8c6;cursor:pointer;font-weight:700;padding:7px 12px}@media(max-width:1100px){.gilsys-category-grid{grid-template-columns:1fr}.gilsys-command-list-panel.is-inventory-mode .gilsys-command-list,.gilsys-command-list-panel.is-shop-mode .gilsys-command-list{grid-template-columns:1fr}}
+
+/* =========================================================
+   ★ 修正 2026-04-28
+   ヘッダー説明文を消し、その分バトル画面全体を上に詰める
+========================================================= */
+#phase2.gilsys-battle-ui .gilsys-battle-header {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-side-panel {
+  top: auto !important;
+  bottom: var(--gilsys-command-bottom) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-side-panel .gilsys-info-block:not(:first-child),
+#phase2.gilsys-battle-ui .gilsys-side-panel .gilsys-info-block:first-child h3 {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-info-block p,
+#phase2.gilsys-battle-ui .gilsys-command-caption,
+#phase2.gilsys-battle-ui .gilsys-list-caption,
+#phase2.gilsys-battle-ui .gilsys-right-detail,
+#phase2.gilsys-battle-ui .gilsys-side-right .gilsys-info-block:nth-of-type(3),
+#phase2.gilsys-battle-ui .gilsys-side-right .gilsys-info-block:nth-of-type(5) {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+  top: var(--gilsys-stage-top) !important;
+  bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + var(--gilsys-stage-gap)) !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list {
+  overflow-y: auto;
+}
+
+#phase2.gilsys-battle-ui .gilsys-command-list .shop-card {
+  margin-bottom: 10px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inline-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inline-toolbar button,
+#phase2.gilsys-battle-ui .gilsys-category-row {
+  border: 1px solid rgba(245,200,116,0.72) !important;
+  background: linear-gradient(180deg, rgba(65,44,20,0.94), rgba(17,16,20,0.96)) !important;
+  color: #ffe7b3 !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  font-weight: 900;
+}
+
+#phase2.gilsys-battle-ui .gilsys-empty-row {
+  padding: 18px;
+  border: 1px dashed rgba(245,200,116,0.45);
+  color: rgba(244,230,199,0.82);
+  border-radius: 8px;
+  text-align: center;
+}

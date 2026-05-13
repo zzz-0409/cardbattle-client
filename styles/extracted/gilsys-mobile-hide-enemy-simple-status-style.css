@@ -1,0 +1,16 @@
+@media (max-width: 1100px), (max-height: 700px), (hover: none) and (pointer: coarse) {
+  #phase2.gilsys-battle-ui #enemy-status-simple,
+  #phase2.gilsys-battle-ui .gilsys-info-block:has(#enemy-status-simple) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+  }
+}

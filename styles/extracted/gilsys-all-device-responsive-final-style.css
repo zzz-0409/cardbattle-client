@@ -1,0 +1,1173 @@
+/* Final responsive pass: keep every major screen inside the viewport on phones, tablets, and narrow desktops. */
+html,
+body {
+  width: 100%;
+  min-width: 0 !important;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+canvas,
+svg,
+video {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+#gilsysOrientationGuard {
+  display: none !important;
+}
+
+#game-wrapper,
+#phase0,
+#phase1,
+#phase2,
+.gilsys-dojo-screen,
+.dojo-trail-screen,
+.dojo-result-screen {
+  width: 100vw !important;
+  max-width: 100vw !important;
+}
+
+#phase0,
+#phase1 {
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding-left: max(10px, env(safe-area-inset-left)) !important;
+  padding-right: max(10px, env(safe-area-inset-right)) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#phase0::before,
+#phase1.gilsys-job-select-ui::before {
+  inset: max(5px, env(safe-area-inset-top)) max(5px, env(safe-area-inset-right)) max(5px, env(safe-area-inset-bottom)) max(5px, env(safe-area-inset-left)) !important;
+}
+
+#phase0HomeLayout {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  min-height: 100dvh !important;
+  padding: max(54px, env(safe-area-inset-top) + 18px) clamp(8px, 2.5vw, 36px) max(18px, env(safe-area-inset-bottom)) !important;
+  grid-template-columns: minmax(250px, 440px) minmax(180px, 1fr) minmax(230px, 320px);
+}
+
+#titleModePanel,
+#titleRankingPanel {
+  min-width: 0;
+}
+
+#phase1.gilsys-job-select-ui {
+  height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#phase1.gilsys-job-select-ui .gilsys-job-layout,
+#phase1.gilsys-job-select-ui .gilsys-job-main,
+#phase1.gilsys-job-select-ui .gilsys-job-card-frame {
+  min-width: 0 !important;
+}
+
+#phase1.gilsys-job-select-ui #jobSelectArea {
+  min-width: 0 !important;
+  scrollbar-width: thin;
+}
+
+#skillPopup,
+#itemCategoryPopup,
+#itemPopup,
+#shopPopup,
+#statusDetailPopup,
+#itemConfirmPopup,
+#arrowSlotPopup,
+#alchemistFusionPopup,
+#resultOverlay {
+  padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)) !important;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#skillBox,
+#itemBox,
+#shopPopup .popup-inner,
+#statusDetailPopup > div,
+#itemCategoryPopup > div,
+.gilsys-name-modal,
+#itemConfirmBox,
+#arrowSlotBox,
+#alchemistFusionBox,
+#resultPanel {
+  width: min(620px, calc(100vw - 20px)) !important;
+  max-width: calc(100vw - 20px) !important;
+  max-height: calc(100dvh - 20px) !important;
+  min-width: 0 !important;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#shopList,
+#itemList,
+#skillList,
+#statusDetailBody {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+#phase2.gilsys-battle-ui {
+  height: 100dvh !important;
+  min-height: 0 !important;
+}
+
+#phase2.gilsys-battle-ui::before {
+  inset: max(4px, env(safe-area-inset-top)) max(4px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-left)) !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage,
+#phase2.gilsys-battle-ui .gilsys-command-panel,
+#phase2.gilsys-battle-ui .gilsys-side-panel,
+#phase2.gilsys-battle-ui .gilsys-top-status {
+  min-width: 0 !important;
+}
+
+@media (max-width: 1020px) {
+  #phase0HomeLayout {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  #titleModePanel {
+    order: 2;
+    max-width: none !important;
+    padding-top: 0 !important;
+  }
+
+  #phase0Hero {
+    order: 1;
+    padding-top: 0 !important;
+  }
+
+  #titleRankingPanel {
+    order: 3;
+    max-width: none !important;
+  }
+
+  #phase0Title {
+    font-size: clamp(44px, 13vw, 76px) !important;
+  }
+
+  #phase0TitleSub {
+    font-size: clamp(14px, 4vw, 22px) !important;
+    letter-spacing: .18em !important;
+  }
+}
+
+@media (max-width: 640px) {
+  #titleModePanel {
+    grid-template-columns: 1fr !important;
+  }
+
+  .phase0-menu-btn {
+    min-height: 54px !important;
+    grid-template-columns: 34px minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding-inline: 12px !important;
+  }
+
+  .phase0-menu-icon {
+    width: 34px !important;
+    font-size: 22px !important;
+  }
+
+  .phase0-menu-text {
+    font-size: 16px !important;
+  }
+
+  .phase0-menu-note {
+    font-size: 11px !important;
+    white-space: normal !important;
+  }
+}
+
+@media (max-width: 900px), (max-height: 620px), (hover: none) and (pointer: coarse) {
+  #phase2.gilsys-battle-ui {
+    --gilsys-edge: max(5px, env(safe-area-inset-left));
+    --gilsys-side-width: 0px;
+    --gilsys-center-inset: max(5px, env(safe-area-inset-left));
+    --gilsys-stage-top: max(4px, env(safe-area-inset-top));
+    --gilsys-command-bottom: max(4px, env(safe-area-inset-bottom));
+    --gilsys-command-height: clamp(174px, 39dvh, 274px);
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-side-panel {
+    display: none !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage {
+    left: max(5px, env(safe-area-inset-left)) !important;
+    right: max(5px, env(safe-area-inset-right)) !important;
+    top: max(4px, env(safe-area-inset-top)) !important;
+    bottom: calc(var(--gilsys-command-bottom) + var(--gilsys-command-height) + 6px) !important;
+    border: 1px solid rgba(181,129,62,.65) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    left: max(5px, env(safe-area-inset-left)) !important;
+    right: max(5px, env(safe-area-inset-right)) !important;
+    bottom: var(--gilsys-command-bottom) !important;
+    height: var(--gilsys-command-height) !important;
+    display: grid !important;
+    grid-template-columns: minmax(86px, .46fr) minmax(0, .82fr) minmax(0, 1.18fr) !important;
+    gap: 6px !important;
+    padding: 6px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-column {
+    gap: 5px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-btn {
+    min-height: 0 !important;
+    height: 34px !important;
+    grid-template-columns: 18px minmax(0, 1fr) !important;
+    gap: 5px !important;
+    padding: 0 6px !important;
+    font-size: 11px !important;
+    letter-spacing: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-btn span {
+    font-size: 14px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel,
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel {
+    padding: 6px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-panel-title {
+    font-size: 11px !important;
+    margin-bottom: 4px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list {
+    max-height: calc(var(--gilsys-command-height) - 48px) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-list-row {
+    min-height: 32px !important;
+    grid-template-columns: 24px minmax(0, 1fr) auto !important;
+    gap: 4px !important;
+    padding-inline: 5px !important;
+    font-size: 11px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-list-row b {
+    max-width: 58px !important;
+    font-size: 10px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) 32px !important;
+    gap: 5px !important;
+    padding: 7px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-detail-icon {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 18px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-detail-head {
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-detail-body {
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    max-height: 74px !important;
+    overflow: auto !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-confirm-btn {
+    min-height: 30px !important;
+    font-size: 11px !important;
+    padding: 3px 8px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status {
+    top: max(5px, env(safe-area-inset-top)) !important;
+    width: calc(50% - 10px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    gap: 5px !important;
+    padding: 3px 4px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status-self {
+    left: max(7px, env(safe-area-inset-left)) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy {
+    right: max(7px, env(safe-area-inset-right)) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-portrait {
+    flex-basis: 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-width: 1px !important;
+    box-shadow: none !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-portrait::before {
+    font-size: 19px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-status-main {
+    padding-top: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-status-name {
+    font-size: 11px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-status-rank,
+  #phase2.gilsys-battle-ui .gilsys-exp-row,
+  #phase2.gilsys-battle-ui .gilsys-coin-row {
+    display: none !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-hp-text {
+    margin-top: 2px !important;
+    font-size: 10px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-bar.gilsys-hp {
+    width: 100% !important;
+    height: 7px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-param-row {
+    margin-top: 4px !important;
+    padding-top: 3px !important;
+    gap: 6px !important;
+    font-size: 9px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-param-row b {
+    font-size: 9px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-status-buff-strip {
+    min-height: 18px !important;
+    margin-top: 3px !important;
+    gap: 3px !important;
+  }
+
+  #phase2.gilsys-battle-ui .buff-slot {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 10px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-vs-center {
+    top: max(4px, env(safe-area-inset-top)) !important;
+    min-width: 58px !important;
+    padding: 3px 5px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-vs-round,
+  #phase2.gilsys-battle-ui .gilsys-vs-turn {
+    font-size: 9px !important;
+    letter-spacing: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side {
+    top: clamp(60px, 18dvh, 104px) !important;
+    bottom: 0 !important;
+    width: 48% !important;
+    gap: 4px !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-self {
+    left: 1% !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-enemy {
+    right: 1% !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite {
+    width: clamp(76px, 22vw, 142px) !important;
+    height: clamp(104px, 31dvh, 188px) !important;
+    min-height: 0 !important;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+  #phase2.gilsys-battle-ui {
+    --gilsys-command-height: min(45dvh, 330px);
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(0, .82fr) minmax(0, 1.18fr) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-column {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-btn {
+    height: 34px !important;
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    text-align: center !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-btn span {
+    display: none !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status {
+    width: calc(50% - 8px) !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-portrait {
+    display: none !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .sprite {
+    width: clamp(72px, 26vw, 126px) !important;
+    height: clamp(104px, 29dvh, 172px) !important;
+  }
+}
+
+/* Dojo trail screen: the previous desktop grid was fixed-height. This version scrolls and stacks on smaller devices. */
+.dojo-trail-screen {
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dojo-trail-shell {
+  max-width: 100vw !important;
+  min-width: 0 !important;
+}
+
+.dojo-trail-left,
+.dojo-trail-right,
+.dojo-trail-board {
+  min-width: 0 !important;
+}
+
+.dojo-trail-board {
+  overscroll-behavior: contain;
+}
+
+.dojo-trail-canvas {
+  transform-origin: 0 0;
+}
+
+@media (max-width: 1180px), (max-height: 760px), (hover: none) and (pointer: coarse) {
+  .dojo-trail-screen {
+    height: 100dvh !important;
+  }
+
+  .dojo-trail-shell {
+    width: 100vw !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)) !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto !important;
+    gap: 8px !important;
+  }
+
+  .dojo-trail-head {
+    grid-column: 1 !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+  }
+
+  .dojo-trail-head h1 {
+    font-size: clamp(24px, 7vw, 42px) !important;
+    letter-spacing: .04em !important;
+  }
+
+  .dojo-trail-head span {
+    font-size: 11px !important;
+  }
+
+  .dojo-trail-head button,
+  .dojo-trail-right button,
+  .dojo-trail-unlock-row button {
+    min-height: 38px !important;
+    padding: 6px 10px !important;
+    font-size: clamp(12px, 3.6vw, 16px) !important;
+    border-width: 1px !important;
+  }
+
+  .dojo-trail-board {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    height: clamp(360px, 58dvh, 640px) !important;
+    min-height: 0 !important;
+    border-width: 1px !important;
+  }
+
+  .dojo-trail-canvas {
+    width: max(1180px, 170vw) !important;
+    height: max(880px, 122dvh) !important;
+  }
+
+  .dojo-trail-zoom,
+  .dojo-trail-legend {
+    top: 6px !important;
+    margin-top: 6px !important;
+    margin-bottom: -46px !important;
+    padding: 5px 6px !important;
+    gap: 5px !important;
+  }
+
+  .dojo-trail-zoom {
+    margin-left: 6px !important;
+  }
+
+  .dojo-trail-legend {
+    max-width: calc(100% - 12px) !important;
+    margin-right: 6px !important;
+    font-size: 10px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+  }
+
+  .dojo-trail-legend::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dojo-trail-zoom button {
+    width: 34px !important;
+    min-height: 28px !important;
+    font-size: 12px !important;
+  }
+
+  .dojo-trail-zoom button:last-child {
+    width: 48px !important;
+  }
+
+  .dojo-trail-zoom span {
+    min-width: 42px !important;
+    font-size: 11px !important;
+  }
+
+  .dojo-trail-left,
+  .dojo-trail-right {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    transform: none !important;
+    border-width: 1px !important;
+    padding: 10px !important;
+  }
+
+  .dojo-trail-left {
+    display: grid !important;
+    grid-template-columns: minmax(108px, .34fr) minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .dojo-trail-points {
+    padding: 9px !important;
+  }
+
+  .dojo-trail-points b {
+    font-size: clamp(28px, 8vw, 42px) !important;
+  }
+
+  .dojo-trail-count {
+    margin-top: 7px !important;
+    padding: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .dojo-trail-bonus {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+    line-height: 1.5 !important;
+    font-size: 12px !important;
+  }
+
+  .dojo-trail-selected-head {
+    grid-template-columns: 52px minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .dojo-trail-selected-head .dojo-trail-detail-icon {
+    width: 50px !important;
+    font-size: 22px !important;
+  }
+
+  .dojo-trail-selected-head h3 {
+    font-size: 16px !important;
+    gap: 6px !important;
+  }
+
+  .dojo-trail-selected-head p span {
+    max-height: 62px !important;
+  }
+
+  .dojo-trail-unlock-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .dojo-trail-cost {
+    min-width: 0 !important;
+    min-height: 34px !important;
+  }
+
+  .dojo-trail-detail-icon {
+    width: 74px !important;
+    margin: 6px auto 10px !important;
+    font-size: 32px !important;
+  }
+
+  .dojo-trail-detail h3 {
+    font-size: 20px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .dojo-trail-detail p,
+  .dojo-trail-effect-box {
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .dojo-trail-shell {
+    gap: 6px !important;
+  }
+
+  .dojo-trail-head {
+    grid-template-columns: 1fr !important;
+    text-align: center !important;
+  }
+
+  .dojo-trail-head button {
+    width: 100% !important;
+  }
+
+  .dojo-trail-board {
+    height: clamp(320px, 54dvh, 520px) !important;
+  }
+
+  .dojo-trail-canvas {
+    width: 1040px !important;
+    height: 820px !important;
+  }
+
+  .dojo-trail-left {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dojo-trail-bonus {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+}
+
+/* Dojo waiting and result screens. */
+#phaseDojoTop.gilsys-dojo-screen,
+#phaseDojoWait.gilsys-dojo-screen,
+.dojo-result-screen {
+  height: 100dvh !important;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#phaseDojoTop .gilsys-dojo-panel {
+  max-height: calc(100dvh - 22px) !important;
+  overflow: auto !important;
+}
+
+@media (max-width: 980px), (max-height: 700px), (hover: none) and (pointer: coarse) {
+  #phaseDojoWait .gilsys-dojo-wait-panel {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+  }
+
+  #phaseDojoWait .gilsys-dojo-wait-summary {
+    overflow: visible !important;
+  }
+
+  #phaseDojoWait .dojo-wait-grid {
+    height: auto !important;
+    max-height: none !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto !important;
+  }
+
+  #phaseDojoWait .dojo-player-frame,
+  #phaseDojoWait .dojo-loadout-frame,
+  #phaseDojoWait .dojo-drop-frame {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  #phaseDojoWait .dojo-player-body {
+    height: auto !important;
+    grid-template-columns: 74px minmax(0, 1fr) !important;
+  }
+
+  #phaseDojoWait .dojo-player-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-content: start !important;
+  }
+
+  #phaseDojoWait .dojo-trail-buff-list {
+    grid-column: 1 / -1;
+  }
+
+  #phaseDojoWait .gilsys-dojo-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: linear-gradient(180deg, transparent, rgba(4,7,10,.92) 18%);
+  }
+
+  .dojo-result-screen {
+    overflow: auto !important;
+  }
+
+  .dojo-result-shell {
+    width: 100vw !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto auto !important;
+    padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)) !important;
+    overflow: visible !important;
+  }
+
+  .dojo-result-head,
+  .dojo-result-left,
+  .dojo-result-center,
+  .dojo-result-right,
+  .dojo-result-actions {
+    grid-column: 1 !important;
+  }
+
+  .dojo-result-right {
+    display: block !important;
+  }
+
+  .dojo-result-panel {
+    overflow: visible !important;
+  }
+
+  .dojo-result-head h1 {
+    font-size: clamp(38px, 14vw, 72px) !important;
+  }
+
+  .dojo-result-reward-label {
+    width: min(100%, 620px) !important;
+  }
+
+  .dojo-result-drops {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .dojo-result-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    grid-template-columns: 1fr !important;
+    padding: 8px 0 env(safe-area-inset-bottom) !important;
+    background: linear-gradient(180deg, transparent, rgba(3,7,12,.94) 22%);
+  }
+}
+
+@media (max-width: 520px) {
+  #phaseDojoWait .dojo-player-body {
+    grid-template-columns: 1fr !important;
+  }
+
+  #phaseDojoWait .dojo-player-card {
+    display: none !important;
+  }
+
+  #phaseDojoWait .dojo-player-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  #phaseDojoWait .gilsys-dojo-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .dojo-result-drops {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Control text should fit inside its own box; long descriptions keep their own scroll areas. */
+button,
+.phase0-menu-text,
+.phase0-menu-note,
+.gilsys-action-btn,
+.gilsys-action-btn *,
+.gilsys-list-row > span:not(.gilsys-row-icon),
+.gilsys-list-row > b,
+.gilsys-panel-title,
+.gilsys-status-name,
+.gilsys-status-rank,
+.gilsys-category-name,
+.gilsys-category-desc,
+.job-card-name-top,
+.job-card-name-bottom,
+.gilsys-job-class-name,
+.gilsys-job-passive-name,
+.dojo-path-label,
+.dojo-result-reward-label,
+.dojo-trail-legend,
+.dojo-trail-cost,
+.dojo-trail-count,
+.dojo-trail-head button,
+.dojo-trail-right button,
+.dojo-trail-unlock-row button,
+.dojo-trail-zoom button,
+.dojo-trail-node,
+.dojo-trail-node *,
+.gilsys-confirm-btn,
+.gilsys-mini-btn,
+.gilsys-dojo-actions button,
+.dojo-result-actions button,
+.shop-buy-area button,
+.gilsys-detail-inventory-tools button,
+#btnConnectPhase1,
+#btnCancelRandom {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  text-overflow: clip !important;
+  line-height: 1.14 !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+button::-webkit-scrollbar,
+.phase0-menu-text::-webkit-scrollbar,
+.phase0-menu-note::-webkit-scrollbar,
+.gilsys-action-btn::-webkit-scrollbar,
+.gilsys-action-btn *::-webkit-scrollbar,
+.gilsys-list-row > span:not(.gilsys-row-icon)::-webkit-scrollbar,
+.gilsys-list-row > b::-webkit-scrollbar,
+.gilsys-panel-title::-webkit-scrollbar,
+.gilsys-status-name::-webkit-scrollbar,
+.gilsys-category-name::-webkit-scrollbar,
+.job-card-name-top::-webkit-scrollbar,
+.job-card-name-bottom::-webkit-scrollbar,
+.gilsys-job-class-name::-webkit-scrollbar,
+.dojo-path-label::-webkit-scrollbar,
+.dojo-result-reward-label::-webkit-scrollbar {
+  display: none !important;
+}
+
+.gilsys-detail-body,
+.gilsys-detail-text,
+.gilsys-detail-text p,
+.shop-item-desc,
+.dojo-shop-detail-card .shop-item-desc,
+.dojo-trail-detail p,
+.dojo-trail-effect-box,
+.gilsys-job-detail-text,
+.gilsys-job-passive-tooltip,
+.log-box,
+#battleBox {
+  overflow-wrap: anywhere !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-action-btn {
+  min-height: 34px !important;
+  height: auto !important;
+  align-content: center !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-list-row {
+  min-height: 32px !important;
+  height: auto !important;
+  align-items: center !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-list-row b {
+  max-width: 100% !important;
+}
+
+#phaseDojoWait .gilsys-dojo-actions button,
+.dojo-result-actions button,
+.dojo-trail-head button,
+.dojo-trail-right button,
+.dojo-trail-unlock-row button {
+  min-height: 42px !important;
+  height: auto !important;
+  padding-block: 7px !important;
+}
+
+.dojo-trail-legend {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  height: auto !important;
+}
+
+.dojo-trail-drawer {
+  display: none;
+}
+
+@media (max-width: 760px), (max-height: 700px), (hover: none) and (pointer: coarse) {
+  .dojo-trail-right {
+    display: none !important;
+  }
+
+  .dojo-trail-bonus {
+    display: none !important;
+  }
+
+  .dojo-trail-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: block;
+    pointer-events: none;
+  }
+
+  .dojo-trail-drawer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .48);
+    opacity: 0;
+    transition: opacity .2s ease;
+  }
+
+  .dojo-trail-drawer.is-open {
+    pointer-events: auto;
+  }
+
+  .dojo-trail-drawer.is-open::before {
+    opacity: 1;
+  }
+
+  .dojo-trail-drawer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(92vw, 420px);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+    padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) 12px;
+    border-left: 2px solid rgba(225, 166, 70, .72);
+    background: linear-gradient(180deg, rgba(12, 24, 32, .98), rgba(4, 9, 13, .99));
+    box-shadow: -22px 0 42px rgba(0, 0, 0, .48), inset 0 0 0 1px rgba(255, 226, 142, .12);
+    transform: translateX(105%);
+    transition: transform .24s ease;
+  }
+
+  .dojo-trail-drawer.is-open .dojo-trail-drawer-panel {
+    transform: translateX(0);
+  }
+
+  .dojo-trail-drawer-close {
+    justify-self: end;
+    min-height: 38px !important;
+    width: min(132px, 100%) !important;
+    padding: 7px 12px !important;
+    border: 1px solid rgba(225, 166, 70, .78) !important;
+    background: linear-gradient(180deg, rgba(31, 47, 51, .96), rgba(6, 13, 16, .98)) !important;
+    color: #ffe6ac !important;
+    font-weight: 900;
+  }
+
+  .dojo-trail-drawer-body {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 2px 2px 80px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dojo-trail-drawer-body .dojo-trail-selected-head {
+    grid-template-columns: 58px minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .dojo-trail-drawer-body .dojo-trail-selected-head .dojo-trail-detail-icon {
+    width: 56px !important;
+    font-size: 24px !important;
+  }
+
+  .dojo-trail-drawer-body .dojo-trail-selected-head h3 {
+    font-size: clamp(17px, 5vw, 22px) !important;
+    line-height: 1.18 !important;
+  }
+
+  .dojo-trail-drawer-body .dojo-trail-selected-head p span {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .dojo-trail-drawer-body .dojo-trail-unlock-row {
+    position: sticky;
+    bottom: 0;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 10px 0 0 !important;
+    margin-top: 12px !important;
+    background: linear-gradient(180deg, transparent, rgba(4, 9, 13, .98) 18%);
+  }
+
+  .dojo-trail-drawer-body .dojo-trail-cost {
+    min-width: 0 !important;
+    min-height: 38px !important;
+    padding: 7px 10px !important;
+  }
+
+  .dojo-trail-drawer-body .dojo-trail-unlock-row button {
+    min-height: 46px !important;
+  }
+}
+
+@media (max-width: 900px), (max-height: 620px), (hover: none) and (pointer: coarse) {
+  #phase2.gilsys-battle-ui {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    --gilsys-command-height: clamp(226px, 48dvh, 350px);
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    grid-template-columns: minmax(90px, .72fr) minmax(0, 1.28fr) !important;
+    grid-template-rows: minmax(74px, .78fr) minmax(110px, 1.22fr) !important;
+    align-items: stretch !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-column {
+    grid-column: 1 !important;
+    grid-row: 1 / 3 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    display: grid !important;
+    grid-auto-rows: minmax(28px, 1fr) !important;
+    gap: 5px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-btn {
+    height: auto !important;
+    min-height: 28px !important;
+    align-self: stretch !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list-panel {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-detail-panel {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    min-height: 0 !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-list {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-detail-body {
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 420px) {
+  #phase2.gilsys-battle-ui {
+    --gilsys-command-height: clamp(246px, 52dvh, 380px);
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-command-panel {
+    grid-template-columns: minmax(84px, .66fr) minmax(0, 1.34fr) !important;
+    gap: 5px !important;
+    padding: 5px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-action-btn {
+    grid-template-columns: 16px minmax(0, 1fr) !important;
+    gap: 4px !important;
+    padding-inline: 4px !important;
+  }
+}
+
+/* Buttons stay on one line; the fitter script shrinks text instead of wrapping it. */
+button,
+button *,
+.phase0-menu-btn,
+.phase0-menu-btn *,
+.gilsys-action-btn,
+.gilsys-action-btn *,
+.gilsys-confirm-btn,
+.gilsys-mini-btn,
+.shop-buy-area button,
+.shop-buy-area button *,
+.dojo-trail-head button,
+.dojo-trail-right button,
+.dojo-trail-unlock-row button,
+.dojo-trail-zoom button,
+.gilsys-dojo-actions button,
+.dojo-result-actions button,
+.gilsys-detail-inventory-tools button,
+#btnConnectPhase1,
+#btnCancelRandom {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  text-overflow: clip !important;
+}

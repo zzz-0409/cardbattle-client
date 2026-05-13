@@ -1,0 +1,768 @@
+html.gilsys-fixed-game #phase0 {
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phase0Settings {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #phase0HomeLayout {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #phase0HomeLayout::before {
+  content: none !important;
+  display: none !important;
+}
+
+html.gilsys-fixed-game #phase0Hero {
+  position: absolute !important;
+  left: clamp(300px, 24vw, 380px) !important;
+  right: clamp(300px, 25vw, 410px) !important;
+  top: 68px !important;
+  bottom: 92px !important;
+  z-index: 2 !important;
+  display: grid !important;
+  place-items: start center !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  pointer-events: auto !important;
+  cursor: grab !important;
+  touch-action: pan-y !important;
+  user-select: none !important;
+  --gilsys-home-drag-x: 0px;
+  --gilsys-home-portrait-image: url("../../Assets/shokugyousenntaku/sennsi1_facefix_transparent.png");
+}
+
+html.gilsys-fixed-game #phase0Hero::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: clamp(66px, 10dvh, 96px) !important;
+  bottom: auto !important;
+  width: min(56vw, 620px) !important;
+  height: min(78dvh, 760px) !important;
+  transform: translateX(calc(-50% + var(--gilsys-home-drag-x))) !important;
+  background: var(--gilsys-home-portrait-image) 50% 0% / auto 145% no-repeat !important;
+  opacity: .98 !important;
+  filter: drop-shadow(0 26px 34px rgba(0, 0, 0, .78)) !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  transition: transform .18s ease, opacity .18s ease, filter .18s ease !important;
+}
+
+html.gilsys-fixed-game #phase0Hero.has-home-character-img::before {
+  content: none !important;
+  display: none !important;
+}
+
+html.gilsys-fixed-game #phase0Hero .gilsys-home-character-img {
+  position: absolute !important;
+  left: 50% !important;
+  top: clamp(66px, 10dvh, 96px) !important;
+  width: auto !important;
+  height: min(113dvh, 1102px) !important;
+  max-width: none !important;
+  transform: translateX(calc(-50% + var(--gilsys-home-drag-x))) !important;
+  object-fit: contain !important;
+  object-position: 50% 0% !important;
+  opacity: .98 !important;
+  filter: drop-shadow(0 26px 34px rgba(0, 0, 0, .78)) !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  transition: transform .18s ease, opacity .18s ease, filter .18s ease !important;
+}
+
+html.gilsys-fixed-game #phase0Hero.is-dragging {
+  cursor: grabbing !important;
+}
+
+html.gilsys-fixed-game #phase0Hero.is-dragging::before,
+html.gilsys-fixed-game #phase0Hero.is-dragging .gilsys-home-character-img {
+  transition: none !important;
+}
+
+html.gilsys-fixed-game #phase0Hero.is-switching::before {
+  opacity: .38 !important;
+  filter: blur(2px) drop-shadow(0 26px 34px rgba(0, 0, 0, .78)) !important;
+}
+
+html.gilsys-fixed-game #phase0Hero.is-switching .gilsys-home-character-img {
+  opacity: .38 !important;
+  filter: blur(2px) drop-shadow(0 26px 34px rgba(0, 0, 0, .78)) !important;
+}
+
+html.gilsys-fixed-game #phase0Hero::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: clamp(70px, 11dvh, 104px) !important;
+  width: min(44vw, 520px) !important;
+  height: min(44vw, 520px) !important;
+  transform: translateX(-50%) !important;
+  border: 1px solid rgba(78, 246, 255, .16) !important;
+  border-radius: 50% !important;
+  background:
+    radial-gradient(circle, rgba(0, 229, 255, .22), rgba(255, 51, 220, .1) 42%, transparent 68%) !important;
+  box-shadow:
+    inset 0 0 32px rgba(0, 229, 255, .12),
+    0 0 48px rgba(0, 229, 255, .14),
+    0 0 72px rgba(255, 45, 220, .08) !important;
+  opacity: .76 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+html.gilsys-fixed-game #phase0LogoMark {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #phase0Title {
+  position: relative !important;
+  z-index: 3 !important;
+  margin: 16px 0 0 !important;
+  font-size: clamp(30px, 4.4dvh, 48px) !important;
+  line-height: .95 !important;
+  letter-spacing: .04em !important;
+  color: rgba(234, 255, 255, .86) !important;
+  text-shadow:
+    0 2px 0 rgba(2, 8, 15, .96),
+    0 0 14px rgba(0, 232, 255, .46),
+    0 0 24px rgba(255, 48, 217, .16) !important;
+}
+
+html.gilsys-fixed-game #phase0TitleSub {
+  position: relative !important;
+  z-index: 3 !important;
+  margin-top: 5px !important;
+  color: rgba(186, 252, 255, .78) !important;
+  font-size: clamp(10px, 1.6dvh, 15px) !important;
+  letter-spacing: .24em !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeCharacterLabel {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: clamp(18px, 4.5dvh, 42px) !important;
+  z-index: 5 !important;
+  width: min(360px, 74%) !important;
+  height: 54px !important;
+  transform: translateX(-50%) !important;
+  display: grid !important;
+  grid-template-columns: 48px minmax(0, 1fr) 48px !important;
+  align-items: center !important;
+  gap: 8px !important;
+  pointer-events: auto !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeCharacterLabelName {
+  min-width: 0 !important;
+  height: 42px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 18px !important;
+  box-sizing: border-box !important;
+  background:
+    var(--gilsys-frame-neutral-slim) center center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(0,229,255,.13), rgba(6,12,29,.42), rgba(255,46,220,.12)) center center / calc(100% - 28px) calc(100% - 14px) no-repeat !important;
+  color: #eaffff !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  text-shadow: 0 0 10px rgba(0, 234, 255, .5), 0 2px 8px rgba(0,0,0,.8) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-character-arrow {
+  --gilsys-button-frame-v2: var(--gilsys-frame-neutral);
+  width: 48px !important;
+  height: 42px !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background:
+    var(--gilsys-button-frame-v2) center center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(0,229,255,.14), rgba(6,12,29,.38), rgba(255,46,220,.12)) center center / calc(100% - 18px) calc(100% - 10px) no-repeat !important;
+  color: #eaffff !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 10px rgba(0,234,255,.54) !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeTopHud,
+html.gilsys-fixed-game #gilsysHomeLeftHud,
+html.gilsys-fixed-game #gilsysHomeBottomNav,
+html.gilsys-fixed-game #gilsysHomeActionDock {
+  position: absolute !important;
+  z-index: 10 !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeTopHud {
+  top: 18px !important;
+  right: 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-currency,
+html.gilsys-fixed-game .gilsys-home-hud-btn,
+html.gilsys-fixed-game .gilsys-home-nav-btn,
+html.gilsys-fixed-game .gilsys-home-panel-btn,
+html.gilsys-fixed-game .gilsys-home-event-btn {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    var(--gilsys-button-frame-v2, url("../../Assets/home/gilsys-button-frame-neutral.png")),
+    linear-gradient(90deg, rgba(0, 229, 255, .16), rgba(8, 12, 30, .34) 45%, rgba(255, 46, 220, .14)),
+    linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.1)) !important;
+  background-position: center, center, center !important;
+  background-size: 100% 100%, calc(100% - 28px) calc(100% - 14px), calc(100% - 28px) calc(100% - 14px) !important;
+  background-repeat: no-repeat !important;
+  box-shadow: 0 0 16px rgba(0, 229, 255, .12), 0 0 24px rgba(255, 51, 220, .07) !important;
+  color: #eaffff !important;
+  text-shadow: 0 1px 7px rgba(0,0,0,.74) !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-currency {
+  --gilsys-button-frame-v2: var(--gilsys-frame-level-slim);
+  min-width: 132px !important;
+  height: 42px !important;
+  display: grid !important;
+  grid-template-columns: 28px 1fr !important;
+  align-items: center !important;
+  padding: 0 18px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-currency span {
+  color: #6ff6ff !important;
+  font-size: 18px !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-currency b {
+  text-align: right !important;
+  font-size: 16px !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-hud-btn {
+  --gilsys-button-frame-v2: var(--gilsys-frame-neutral);
+  width: 48px !important;
+  height: 42px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-hud-btn span {
+  display: none !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-hud-btn:disabled,
+html.gilsys-fixed-game .gilsys-home-nav-btn:disabled,
+html.gilsys-fixed-game .gilsys-home-panel-btn:disabled,
+html.gilsys-fixed-game .gilsys-home-event-btn:disabled {
+  opacity: .56 !important;
+  filter: grayscale(.28) brightness(.78) !important;
+  cursor: default !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeLeftHud {
+  left: 20px !important;
+  top: 76px !important;
+  bottom: 104px !important;
+  width: clamp(248px, 23vw, 318px) !important;
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+  gap: 10px !important;
+  pointer-events: auto !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-user-card,
+html.gilsys-fixed-game .gilsys-home-event-card,
+html.gilsys-fixed-game #gilsysHomeRankingSlot {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 18px 20px !important;
+  box-sizing: border-box !important;
+  background:
+    linear-gradient(rgba(3, 10, 18, .76), rgba(2, 6, 12, .9)),
+    url("../../Assets/home/gilsys-cyber-panel-frame.png") center center / 100% 100% no-repeat !important;
+  color: #dffcff !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-user-card {
+  display: grid !important;
+  grid-template-columns: 58px minmax(0, 1fr) 78px !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-avatar {
+  position: relative !important;
+  width: 58px !important;
+  height: 58px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(91, 236, 255, .38) !important;
+  background:
+    var(--gilsys-home-avatar-image) center 10% / 190% auto no-repeat,
+    radial-gradient(circle at 50% 28%, rgba(0,229,255,.26), rgba(7,12,25,.86) 64%) !important;
+  box-shadow: inset 0 0 18px rgba(0,229,255,.16), 0 0 18px rgba(0,229,255,.12) !important;
+  color: #6ff6ff !important;
+  font-size: 25px !important;
+  font-weight: 900 !important;
+  overflow: visible !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-avatar-img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center 10% !important;
+  transform: scale(1.9) !important;
+  transform-origin: center 10% !important;
+  clip-path: circle(50% at 50% 50%) !important;
+  pointer-events: none !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-user-text {
+  min-width: 0 !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-user-text span {
+  display: block !important;
+  color: rgba(186, 252, 255, .58) !important;
+  font-size: 11px !important;
+  line-height: 1.2 !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-user-text b {
+  display: block !important;
+  margin-top: 4px !important;
+  color: #f3ffff !important;
+  font-size: 18px !important;
+  line-height: 1.08 !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-user-card #btnChangeName {
+  --gilsys-button-frame-v2: var(--gilsys-frame-neutral-slim);
+  align-self: center !important;
+  justify-self: end !important;
+  width: 78px !important;
+  min-width: 0 !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding: 0 9px !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-event-card h3,
+html.gilsys-fixed-game .gilsys-home-drawer h2 {
+  margin: 0 !important;
+  color: #72f7ff !important;
+  font-size: 13px !important;
+  line-height: 1.1 !important;
+  letter-spacing: .08em !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-event-card p {
+  margin: 8px 0 12px !important;
+  color: rgba(222, 250, 255, .7) !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-event-btn {
+  --gilsys-button-frame-v2: var(--gilsys-frame-special-slim);
+  width: 100% !important;
+  height: 42px !important;
+  padding: 0 18px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeRankingSlot {
+  padding: 0 !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeRankingSlot #titleRankingPanel {
+  position: relative !important;
+  inset: auto !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  padding: 20px 22px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeRankingSlot #titleRankingHeader {
+  gap: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeRankingSlot #titleAccountName {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeRankingSlot #titleRankingJobs {
+  max-height: 64px !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeRankingSlot #titleRankingList {
+  max-height: calc(100% - 116px) !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBottomNav {
+  left: 50% !important;
+  bottom: 12px !important;
+  width: min(720px, calc(100% - 40px)) !important;
+  height: 78px !important;
+  transform: translateX(-50%) !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  padding: 0 !important;
+  pointer-events: auto !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-nav-btn {
+  --gilsys-button-frame-v2: var(--gilsys-frame-neutral);
+  min-width: 0 !important;
+  height: 78px !important;
+  display: grid !important;
+  grid-template-rows: 26px 20px !important;
+  place-content: center !important;
+  justify-items: center !important;
+  gap: 3px !important;
+  padding: 0 8px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-nav-btn[data-home-tab="battle"] {
+  --gilsys-button-frame-v2: var(--gilsys-frame-attack);
+}
+
+html.gilsys-fixed-game .gilsys-home-nav-btn[data-home-tab="growth"] {
+  --gilsys-button-frame-v2: var(--gilsys-frame-level);
+}
+
+html.gilsys-fixed-game .gilsys-home-nav-btn[data-home-tab="gacha"] {
+  --gilsys-button-frame-v2: var(--gilsys-frame-special);
+}
+
+html.gilsys-fixed-game .gilsys-home-nav-btn[data-home-tab="shop"] {
+  --gilsys-button-frame-v2: var(--gilsys-frame-shop);
+}
+
+html.gilsys-fixed-game .gilsys-home-nav-btn.is-active {
+  filter: brightness(1.14) saturate(1.22) !important;
+  color: #ffffff !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-nav-btn i {
+  display: block !important;
+  font-style: normal !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-nav-btn b {
+  display: block !important;
+  min-width: 0 !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  letter-spacing: .04em !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeActionDock {
+  left: 50% !important;
+  bottom: 98px !important;
+  width: min(650px, calc(100% - 48px)) !important;
+  transform: translateX(-50%) translateY(12px) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity .18s ease, transform .18s ease !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeActionDock.is-open {
+  opacity: 1 !important;
+  transform: translateX(-50%) translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-drawer {
+  display: grid !important;
+  gap: 10px !important;
+  padding: 22px 26px 24px !important;
+  box-sizing: border-box !important;
+  background:
+    linear-gradient(rgba(3, 10, 18, .82), rgba(2, 6, 12, .94)),
+    url("../../Assets/home/gilsys-cyber-panel-frame.png") center center / 100% 100% no-repeat !important;
+  box-shadow: 0 18px 38px rgba(0,0,0,.42), 0 0 28px rgba(0,229,255,.1) !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-drawer[hidden] {
+  display: none !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-drawer-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-drawer-head span {
+  color: rgba(222, 250, 255, .62) !important;
+  font-size: 11px !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel,
+html.gilsys-fixed-game #gilsysHomeGrowthActions {
+  position: relative !important;
+  inset: auto !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: none !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-auto-rows: 58px !important;
+  align-content: start !important;
+  gap: 8px !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn,
+html.gilsys-fixed-game #gilsysHomeGrowthActions .phase0-menu-btn,
+html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
+  width: 100% !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  max-height: 58px !important;
+  display: grid !important;
+  padding: 0 20px !important;
+  grid-template-columns: 30px minmax(0, 1fr) !important;
+  gap: 8px !important;
+  align-items: center !important;
+  font-size: 13px !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-icon,
+html.gilsys-fixed-game #gilsysHomeGrowthActions .phase0-menu-icon {
+  width: 30px !important;
+  min-width: 30px !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-text,
+html.gilsys-fixed-game #gilsysHomeGrowthActions .phase0-menu-text,
+html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
+  font-size: 13px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
+  overflow: hidden !important;
+  justify-items: start !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-text {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  align-self: center !important;
+  display: block !important;
+  letter-spacing: 0 !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-note {
+  display: none !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-legacy-hidden {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn.gilsys-home-legacy-hidden,
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn:not(#btnRandom):not(#btnRoom):not(#btnCPU):not(#btnDojo):not(#btnTutorial) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 980px), (max-height: 620px) {
+  html.gilsys-fixed-game #gilsysHomeTopHud {
+    top: 10px !important;
+    right: 12px !important;
+    gap: 5px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-home-currency {
+    min-width: 102px !important;
+    height: 34px !important;
+    padding: 0 13px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-home-hud-btn {
+    width: 38px !important;
+    height: 34px !important;
+    font-size: 13px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeLeftHud {
+    left: 10px !important;
+    top: 54px !important;
+    bottom: 86px !important;
+    width: 230px !important;
+    gap: 6px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-home-user-card,
+  html.gilsys-fixed-game .gilsys-home-event-card {
+    padding: 12px 14px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeRankingSlot #titleRankingPanel {
+    padding: 14px !important;
+  }
+
+  html.gilsys-fixed-game #phase0Hero {
+    left: 242px !important;
+    right: 10px !important;
+    top: 52px !important;
+    bottom: 84px !important;
+  }
+
+  html.gilsys-fixed-game #phase0Hero::before {
+    width: min(68vw, 460px) !important;
+    height: min(70dvh, 560px) !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeBottomNav {
+    bottom: 8px !important;
+    width: calc(100% - 20px) !important;
+    height: 66px !important;
+    gap: 4px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-home-nav-btn {
+    height: 66px !important;
+    grid-template-rows: 20px 16px !important;
+    padding: 0 5px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-home-nav-btn i {
+    font-size: 17px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-home-nav-btn b {
+    font-size: 10px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeActionDock {
+    bottom: 78px !important;
+    width: calc(100% - 20px) !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-home-drawer {
+    padding: 14px 16px 16px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel,
+  html.gilsys-fixed-game #gilsysHomeGrowthActions {
+    grid-auto-rows: 48px !important;
+    gap: 5px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn,
+  html.gilsys-fixed-game #gilsysHomeGrowthActions .phase0-menu-btn,
+  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 0 12px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
+    grid-template-columns: 24px minmax(0, 1fr) !important;
+    gap: 5px !important;
+    padding: 0 9px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-icon {
+    width: 24px !important;
+    min-width: 24px !important;
+    font-size: 15px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-text {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
+    grid-template-columns: 20px minmax(0, 1fr) !important;
+    gap: 3px !important;
+    padding: 0 6px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-icon {
+    width: 20px !important;
+    min-width: 20px !important;
+    font-size: 13px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-text {
+    font-size: 11px !important;
+  }
+}

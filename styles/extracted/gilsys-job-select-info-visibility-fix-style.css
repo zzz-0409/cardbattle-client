@@ -1,0 +1,181 @@
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-title-area,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-title {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-title-area {
+  overflow: visible !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-title-area::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-main {
+  grid-template-rows: minmax(0, 1fr) 0 clamp(174px, 26dvh, 214px) !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-panel {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 10px !important;
+  min-height: clamp(174px, 26dvh, 214px) !important;
+  overflow: visible !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-block {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: clamp(12px, 1.8dvh, 22px) clamp(16px, 1.8vw, 26px) !important;
+  overflow: visible !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-block:nth-child(3) {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #gilsysJobActionDock {
+  grid-template-rows: 58px 20px !important;
+  min-height: 82px !important;
+}
+
+html.gilsys-fixed-game #gilsysJobActionDock:has(#roomCodeArea[style*="visible"]) {
+  grid-template-rows: 34px 58px 20px !important;
+  min-height: 118px !important;
+}
+
+html.gilsys-fixed-game #gilsysJobActionDock #roomCodeArea {
+  display: none !important;
+  width: 100% !important;
+  min-height: 34px !important;
+  pointer-events: auto !important;
+}
+
+html.gilsys-fixed-game #gilsysJobActionDock #roomCodeArea[style*="visible"] {
+  display: block !important;
+}
+
+html.gilsys-fixed-game #gilsysJobActionDock #roomCodeInput {
+  width: 100% !important;
+  height: 32px !important;
+  min-width: 0 !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-heading {
+  margin-bottom: clamp(5px, 1dvh, 10px) !important;
+  padding-bottom: clamp(4px, .8dvh, 7px) !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-status-list,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-list {
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+  scrollbar-width: none !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-status-list {
+  gap: clamp(4px, .8dvh, 7px) !important;
+  font-size: clamp(12px, 1.6dvh, 15px) !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-status-row {
+  grid-template-columns: 24px minmax(0, 1fr) auto !important;
+  gap: 6px !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-list {
+  align-content: start !important;
+  justify-items: stretch !important;
+  padding-top: 0 !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-item {
+  display: grid !important;
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  column-gap: 10px !important;
+  row-gap: 4px !important;
+  align-items: center !important;
+  justify-items: start !important;
+  width: 100% !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-icon {
+  grid-column: 1 !important;
+  grid-row: 1 / 3 !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-name {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-tooltip {
+  position: static !important;
+  display: block !important;
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  transform: none !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(222, 250, 255, .78) !important;
+  font-size: clamp(9px, 1.35dvh, 12px) !important;
+  line-height: 1.35 !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 900px), (max-height: 620px), (hover: none) and (pointer: coarse) {
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-main {
+    grid-template-rows: minmax(0, 1fr) 0 clamp(126px, 29dvh, 172px) !important;
+  }
+
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-panel {
+    min-height: clamp(126px, 29dvh, 172px) !important;
+    gap: 4px !important;
+  }
+
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-block {
+    padding: 6px 8px !important;
+  }
+
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-status-list {
+    gap: 3px !important;
+    font-size: clamp(9px, 2.25dvh, 12px) !important;
+  }
+
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-status-row {
+    grid-template-columns: 16px minmax(0, 1fr) auto !important;
+    gap: 3px !important;
+  }
+
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-item {
+    grid-template-columns: 32px minmax(0, 1fr) !important;
+    column-gap: 6px !important;
+  }
+
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-icon {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 16px !important;
+  }
+
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-name {
+    font-size: clamp(8px, 2.1dvh, 10px) !important;
+  }
+
+  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-tooltip {
+    font-size: clamp(7.5px, 1.85dvh, 9.5px) !important;
+    line-height: 1.22 !important;
+  }
+}

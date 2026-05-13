@@ -1,0 +1,98 @@
+html.gilsys-fixed-game {
+  --gilsys-button-frame-v2: url("../../Assets/home/gilsys-cyber-button-frame-v2.png");
+  --gilsys-button-glass-v2:
+    linear-gradient(90deg, rgba(0, 229, 255, .17), rgba(5, 10, 28, .32) 42%, rgba(255, 46, 220, .15)),
+    linear-gradient(180deg, rgba(255, 255, 255, .1), rgba(0, 0, 0, .08));
+}
+
+html.gilsys-fixed-game #gilsysStartButton,
+html.gilsys-fixed-game #phase0Settings,
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn,
+html.gilsys-fixed-game #btnChangeName,
+html.gilsys-fixed-game #titleRankingJobs button,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnConnectPhase1,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-confirm-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-mini-btn,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-card,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-detail-inventory-tools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-panel-subtools button,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background:
+    var(--gilsys-button-frame-v2) center center / 100% 100% no-repeat,
+    var(--gilsys-button-glass-v2) !important;
+  box-shadow:
+    0 0 16px rgba(0, 229, 255, .14),
+    0 0 26px rgba(255, 52, 220, .08) !important;
+  clip-path: none !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton::before,
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn::before,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom::before,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-confirm-btn::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-mini-btn::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-card::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-detail-inventory-tools button::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-panel-subtools button::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button::before {
+  content: none !important;
+  display: none !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton:hover,
+html.gilsys-fixed-game #phase0Settings:hover,
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn:hover:not(:disabled),
+html.gilsys-fixed-game #btnChangeName:hover,
+html.gilsys-fixed-game #titleRankingJobs button:hover,
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #btnCancelRandom:hover,
+html.gilsys-fixed-game #gilsysJobActionDock #btnConnectPhase1:hover:not(:disabled),
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn:hover:not(:disabled),
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-list-row.is-selected,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-confirm-btn:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-mini-btn:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-category-card:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-detail-inventory-tools button:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-panel-subtools button:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button:hover:not(:disabled) {
+  background:
+    var(--gilsys-button-frame-v2) center center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(0, 238, 255, .24), rgba(9, 14, 34, .36) 42%, rgba(255, 52, 224, .22)),
+    linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(0, 0, 0, .06)) !important;
+  box-shadow:
+    0 0 20px rgba(0, 234, 255, .26),
+    0 0 34px rgba(255, 55, 221, .14) !important;
+}
+
+html.gilsys-fixed-game #titleModePanel {
+  grid-auto-rows: 72px !important;
+}
+
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn,
+html.gilsys-fixed-game #titleModePanel #btnDojo {
+  height: 72px !important;
+  min-height: 72px !important;
+  max-height: 72px !important;
+  padding: 0 30px !important;
+}
+
+html.gilsys-fixed-game #gilsysStartButton {
+  height: 88px !important;
+  padding: 0 54px !important;
+}
+
+html.gilsys-fixed-game #titleModePanel .phase0-menu-btn:disabled,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-action-btn:disabled,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .shop-buy-area button:disabled {
+  opacity: .52 !important;
+  filter: grayscale(.45) brightness(.78) !important;
+}

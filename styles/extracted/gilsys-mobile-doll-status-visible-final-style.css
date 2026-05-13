@@ -1,0 +1,85 @@
+#phase2.gilsys-battle-ui .gilsys-bottom-bar,
+#phase2.gilsys-battle-ui #gilsysCoinHud,
+#phase2.gilsys-battle-ui .gilsys-bottom-bar .gilsys-mini-btn {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-bar.gilsys-hp {
+  width: 50% !important;
+  min-width: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-bar.gilsys-hp {
+  margin-left: auto !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-doll-charge-meter,
+#phase2.gilsys-battle-ui .gilsys-mage-mana-meter {
+  width: min(120px, 50%) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-charge-meter,
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-mage-mana-meter {
+  margin-left: auto !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage .sprite.doll .hp-bar.doll-bar {
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-doll-durability-meter {
+  width: min(120px, 50%) !important;
+  min-width: 0 !important;
+  max-width: 50% !important;
+  margin-top: 3px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-durability-meter {
+  margin-left: auto !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-doll-durability-head,
+#phase2.gilsys-battle-ui .gilsys-doll-charge-head,
+#phase2.gilsys-battle-ui .gilsys-mage-mana-head {
+  font-size: 10px !important;
+  line-height: 1 !important;
+  margin-bottom: 2px !important;
+}
+
+@media (orientation: landscape) and (max-width: 1200px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui #battleStage .sprite.doll .hp-bar.doll-bar {
+    display: none !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-doll-charge-meter,
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-mage-mana-meter {
+    margin-left: auto !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-charge-meter,
+  #phase2.gilsys-battle-ui .gilsys-mage-mana-meter {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-doll-durability-meter {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-param-row b {
+    font-size: 8px !important;
+    line-height: 1 !important;
+  }
+}

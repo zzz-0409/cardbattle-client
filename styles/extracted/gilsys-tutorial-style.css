@@ -1,0 +1,175 @@
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 86px !important;
+  min-height: 86px !important;
+  max-height: 86px !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  padding: 0 16px !important;
+  border: 1px solid rgba(141, 226, 125, .74) !important;
+  border-radius: 12px !important;
+  background:
+    linear-gradient(135deg, rgba(24, 68, 45, .92), rgba(11, 31, 38, .95) 52%, rgba(56, 74, 21, .88)) !important;
+  color: #f6ffe8 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .24),
+    0 0 18px rgba(93, 218, 99, .24) !important;
+  text-align: left !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  font-size: 27px !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-text {
+  display: block !important;
+  flex: 1 1 auto !important;
+  font-size: clamp(15px, 1.75vw, 20px) !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial:hover {
+  filter: brightness(1.1) saturate(1.06) !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .job-card.is-tutorial-locked {
+  opacity: .42 !important;
+  filter: grayscale(.55) brightness(.72) !important;
+  cursor: not-allowed !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui .job-card.is-tutorial-locked:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.gilsys-tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2600;
+  pointer-events: none;
+}
+
+.gilsys-tutorial-card {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  left: 50%;
+  width: min(680px, calc(100vw - 24px));
+  transform: translateX(-50%);
+  pointer-events: auto;
+  border: 1px solid rgba(255, 228, 145, .84);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(47, 36, 21, .98), rgba(13, 17, 25, .98));
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, .55),
+    inset 0 1px 0 rgba(255, 255, 255, .16);
+  color: #fff4d5;
+  padding: 15px 17px 14px;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, .55);
+}
+
+.gilsys-tutorial-title {
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.gilsys-tutorial-text {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.58;
+}
+
+.gilsys-tutorial-hint {
+  margin-top: 12px;
+  color: rgba(255, 232, 176, .76);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.gilsys-tutorial-target {
+  position: relative !important;
+  z-index: 2603 !important;
+  outline: 3px solid rgba(126, 255, 112, .95) !important;
+  outline-offset: 3px !important;
+  box-shadow:
+    0 0 0 7px rgba(34, 194, 70, .28),
+    0 0 24px rgba(128, 255, 100, .68) !important;
+  animation: gilsysTutorialPulse 1.25s ease-in-out infinite;
+}
+
+@keyframes gilsysTutorialPulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.22); }
+}
+
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-card::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-icon,
+#phase2.gilsys-battle-ui .gilsys-shop-detail-card .shop-icon * {
+  animation: none !important;
+  transform: none !important;
+}
+
+body.gilsys-tutorial-battle #phase2.gilsys-battle-ui .gilsys-command-list-panel.is-shop-mode .gilsys-inline-toolbar {
+  display: none !important;
+}
+
+@media (max-width: 520px) {
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial {
+    height: 72px !important;
+    min-height: 72px !important;
+    max-height: 72px !important;
+    padding: 0 10px !important;
+    gap: 9px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-icon {
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    font-size: 23px !important;
+  }
+
+  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-text {
+    font-size: clamp(12px, 3.35vw, 16px) !important;
+  }
+
+  .gilsys-tutorial-card {
+    padding: 15px 15px 13px;
+  }
+
+  .gilsys-tutorial-title {
+    font-size: 20px;
+  }
+
+  .gilsys-tutorial-text {
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .gilsys-tutorial-hint {
+    font-size: 13px;
+  }
+}

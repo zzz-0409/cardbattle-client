@@ -1,0 +1,51 @@
+#phase2.gilsys-battle-ui #coins {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-exp-row {
+  margin-top: 5px !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+  color: #f7e2c0 !important;
+  white-space: nowrap !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-exp-row.enemy {
+  text-align: right !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-coin-row {
+  margin-top: 3px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-hp-text {
+  width: 50% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-hp-text {
+  margin-left: auto !important;
+  text-align: right !important;
+}
+
+@media (max-width: 760px) {
+  #phase2.gilsys-battle-ui .gilsys-exp-row {
+    font-size: 9px !important;
+    margin-top: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-coin-row {
+    font-size: 9px !important;
+    margin-top: 2px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-hp-text {
+    font-size: 10px !important;
+    line-height: 1.05 !important;
+    margin-top: 2px !important;
+  }
+}
