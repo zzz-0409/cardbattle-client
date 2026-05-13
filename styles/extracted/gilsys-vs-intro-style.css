@@ -49,7 +49,7 @@
 
 .gilsys-vs-intro-icon {
   position: relative;
-  width: clamp(124px, 18vw, 220px);
+  width: clamp(108px, 15.5vw, 190px);
   aspect-ratio: 1;
   border-radius: 50%;
   border: 2px solid rgba(255, 222, 132, .78);
@@ -64,9 +64,9 @@
 
 .gilsys-vs-intro-icon-img {
   position: absolute;
-  inset: 4%;
-  width: 92%;
-  height: 92%;
+  inset: 6%;
+  width: 88%;
+  height: 88%;
   display: block;
   object-fit: cover;
   object-position: center 10%;
@@ -93,8 +93,8 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 148%;
-  height: 148%;
+  width: 154%;
+  height: 154%;
   transform: translate(-50%, -50%);
   background: var(--gilsys-profile-frame-image) center center / contain no-repeat;
   pointer-events: none;
@@ -188,6 +188,6 @@
   }
 
   .gilsys-vs-intro-icon {
-    width: clamp(92px, 24vw, 136px);
+    width: clamp(80px, 21vw, 118px);
   }
 }
