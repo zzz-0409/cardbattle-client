@@ -1,4 +1,4 @@
-const CACHE_NAME = "gilsys-pwa-v23";
+const CACHE_NAME = "gilsys-pwa-v27";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -25,6 +25,8 @@ const CORE_ASSETS = [
   "./Assets/home/gilsys-battle-mode-room.png",
   "./Assets/home/gilsys-battle-mode-cpu.png",
   "./Assets/home/gilsys-battle-mode-dojo.png",
+  "./Assets/dojo/trail-icons/durandal-special.png",
+  "./Assets/dojo/trail-icons/muramasa-special.png",
   "./Assets/result/normal-victory-bg.png",
   "./Assets/result/result-button-home.png",
   "./Assets/result/result-button-job.png",

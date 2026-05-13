@@ -64,15 +64,15 @@
 
 .gilsys-vs-intro-icon-img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: 4%;
+  width: 92%;
+  height: 92%;
   display: block;
   object-fit: cover;
   object-position: center 10%;
   transform: none;
   border-radius: 50%;
-  clip-path: circle(49% at 50% 50%);
+  clip-path: circle(50% at 50% 50%);
   pointer-events: none;
   z-index: 1;
 }
@@ -91,7 +91,11 @@
 .gilsys-vs-intro-icon.has-profile-frame::after {
   content: "";
   position: absolute;
-  inset: -22%;
+  left: 50%;
+  top: 50%;
+  width: 148%;
+  height: 148%;
+  transform: translate(-50%, -50%);
   background: var(--gilsys-profile-frame-image) center center / contain no-repeat;
   pointer-events: none;
   z-index: 2;

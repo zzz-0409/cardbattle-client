@@ -9602,16 +9602,18 @@ function renderDojoWaiting(run, drops = [], cleared = false, titleOverride = "")
   };
   const renderLockedIcon = () => `<button class="gilsys-shop-icon-btn dojo-locked-icon" type="button" disabled><span class="shop-icon">🔒</span></button>`;
   const renderLoadoutSlots = (selected, slotCount, maxSlots, kind, fallbackName, icon) => {
-    const openCount = Math.max(1, Number(slotCount ?? 1));
-    const lockedCount = Math.max(0, maxSlots - openCount);
-    const selectedIcons = selected.map((it) => renderDojoIcon(makeEntry(it, kind, fallbackName, "持込中"), icon)).join("");
-    const emptyOpenIcons = Array.from({ length: Math.max(0, openCount - selected.length) }, () => renderDojoIcon(null, "－")).join("");
+    const displayMaxSlots = Math.max(1, Number(maxSlots ?? slotCount ?? 1));
+    const openCount = Math.min(displayMaxSlots, Math.max(1, Number(slotCount ?? 1)));
+    const lockedCount = Math.max(0, displayMaxSlots - openCount);
+    const visibleSelected = selected.slice(0, openCount);
+    const selectedIcons = visibleSelected.map((it) => renderDojoIcon(makeEntry(it, kind, fallbackName, "持込中"), icon)).join("");
+    const emptyOpenIcons = Array.from({ length: Math.max(0, openCount - visibleSelected.length) }, () => renderDojoIcon(null, "－")).join("");
     const lockedIcons = Array.from({ length: lockedCount }, renderLockedIcon).join("");
     return selectedIcons + emptyOpenIcons + lockedIcons;
   };
-  const itemIcons = renderLoadoutSlots(items, Number(slots.items ?? 1), 6, "item", "アイテム", "🧪");
-  const equipIcons = renderLoadoutSlots(equipment, Number(slots.equipment ?? 1), 6, "equip", "装備", "⚔");
-  const specialIcons = renderLoadoutSlots(special, Number(slots.special ?? 1), 6, "special", "特殊装備", "🔮");
+  const itemIcons = renderLoadoutSlots(items, Number(slots.items ?? 1), 5, "item", "アイテム", "🧪");
+  const equipIcons = renderLoadoutSlots(equipment, Number(slots.equipment ?? 1), 5, "equip", "装備", "⚔");
+  const specialIcons = renderLoadoutSlots(special, Number(slots.special ?? 1), 5, "special", "特殊装備", "🔮");
   const equipSlotCards = `
     <div class="dojo-equip-slot-summary">
       <div class="dojo-equip-slot-card">
@@ -10352,6 +10354,8 @@ function renderDojoPrepInventory() {
   const safe = (v) => typeof escapeHtml === "function" ? escapeHtml(String(v ?? "")) : String(v ?? "");
   const renderGroup = (title, category, items, selectedUids, slotCount, iconFallback) => {
     const selected = new Set((selectedUids || []).map(String));
+    const displaySlotCount = Math.min(5, Math.max(1, Number(slotCount ?? 1)));
+    const selectedDisplayCount = Math.min(selected.size, displaySlotCount);
     const rows = Array.isArray(items) && items.length
       ? items.map((it) => {
           const uid = String(it?.uid ?? "");
@@ -10387,7 +10391,7 @@ function renderDojoPrepInventory() {
                 </div>
               </div>
               <div class="shop-buy-area">
-                <div class="shop-price">${selectedForCombine ? "合成選択中" : active ? "持込中" : `枠 ${selected.size}/${slotCount}`}</div>
+                <div class="shop-price">${selectedForCombine ? "合成選択中" : active ? "持込中" : `枠 ${selectedDisplayCount}/${displaySlotCount}`}</div>
                 <button onclick="event.stopPropagation(); ${combineActive ? `toggleDojoEquipCombineSelect('${safe(uid)}')` : `toggleDojoLoadout('${safe(category)}','${safe(uid)}')`}">${combineActive ? (selectedForCombine ? "選択解除" : "合成選択") : active ? "外す" : "持ち込む"}</button>
               </div>
             </div>
@@ -10402,7 +10406,7 @@ function renderDojoPrepInventory() {
           ${dojoEquipCombineMode ? `<span>同じ星・同じ効果の通常装備を2つ選択してください（${dojoEquipCombineSelection.length}/2）</span>` : ""}
         </div>`
       : "";
-    return `<div class="gilsys-category-row">${safe(title)}　${selected.size}/${slotCount}</div>${combineTools}${rows}`;
+    return `<div class="gilsys-category-row">${safe(title)}　${selectedDisplayCount}/${displaySlotCount}</div>${combineTools}${rows}`;
   };
   list.innerHTML = [
     renderGroup("アイテム", "items", run.items || [], loadout.items || [], Number(slots.items ?? 1), "🧪"),
@@ -12028,7 +12032,8 @@ function onEquipButton(item) {
   // 以下は今まで通り
   if (
     item.equip_type === "mage_equip" ||
-    item.equip_type === "alchemist_unique"
+    item.equip_type === "alchemist_unique" ||
+    item.equip_type === "dojo_special"
   ) {
     useItem(item.uid, "special");
   } else {

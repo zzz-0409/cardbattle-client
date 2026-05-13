@@ -336,16 +336,16 @@ html.gilsys-fixed-game .gilsys-home-avatar {
 
 html.gilsys-fixed-game .gilsys-home-avatar-img {
   position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
+  inset: 4% !important;
+  width: 92% !important;
+  height: 92% !important;
   display: block !important;
   object-fit: cover !important;
   object-position: center 10% !important;
-  transform: scale(1.9) !important;
-  transform-origin: center 10% !important;
   clip-path: circle(50% at 50% 50%) !important;
+  border-radius: 50% !important;
   pointer-events: none !important;
+  z-index: 1 !important;
 }
 
 html.gilsys-fixed-game .gilsys-home-user-text {
