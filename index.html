@@ -1619,6 +1619,17 @@ body.debug #battleStage {
   background: linear-gradient(90deg, #4caf50, #81c784);
   transition: width 0.25s ease;
 }
+.hp-damage-fill {
+  position: absolute;
+  z-index: 0;
+  inset: 0 auto 0 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #8d111b, #ff334d 62%, #ff7a65);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.24), 0 0 10px rgba(255,38,64,0.35);
+  pointer-events: none;
+  transition: width 0.52s cubic-bezier(.22,.74,.18,1);
+}
 .hp-overfill {
   position: absolute;
   z-index: 2;
@@ -2500,6 +2511,17 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   width: 100%;
   background: linear-gradient(90deg, #3eda45, #9cff63);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 0 14px rgba(88,255,85,0.30);
+}
+.gilsys-bar > .gilsys-hp-damage-fill {
+  position: absolute;
+  z-index: 0;
+  inset: 0 auto 0 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #8d111b, #ff334d 62%, #ff7a65);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.24), 0 0 14px rgba(255,38,64,0.35);
+  pointer-events: none;
+  transition: width 0.58s cubic-bezier(.22,.74,.18,1);
 }
 .gilsys-bar > .gilsys-hp-overfill {
   position: absolute;
@@ -7396,6 +7418,74 @@ function openItemConfirm(message, onConfirm, options = {}){
   }
 }
 
+function getCurrentBarRate(el, bar) {
+  if (!el || !bar) return null;
+  const barWidth = Number(bar.getBoundingClientRect?.().width ?? 0);
+  const elWidth = Number(el.getBoundingClientRect?.().width ?? 0);
+  if (barWidth > 0 && elWidth >= 0) return Math.max(0, Math.min(100, elWidth / barWidth * 100));
+  const styleRate = Number.parseFloat(String(el.style?.width ?? "").replace("%", ""));
+  return Number.isFinite(styleRate) ? Math.max(0, Math.min(100, styleRate)) : null;
+}
+
+function updateDelayedHpDamageBar(fill, bar, nextRate, damageClassName) {
+  if (!fill || !bar) return;
+  const safeNext = Math.max(0, Math.min(100, Number(nextRate ?? 0)));
+  let damageFill = bar.querySelector(`.${damageClassName}`);
+  if (!damageFill) {
+    damageFill = document.createElement("div");
+    damageFill.className = damageClassName;
+    bar.insertBefore(damageFill, fill);
+  }
+
+  const wasInitialized = fill.dataset.hpBarReady === "1";
+  const previousRate = Number.isFinite(Number(fill.dataset.hpRate))
+    ? Number(fill.dataset.hpRate)
+    : getCurrentBarRate(fill, bar);
+  const visualDamageRate = getCurrentBarRate(damageFill, bar);
+  const startRate = Math.max(
+    safeNext,
+    Number.isFinite(Number(visualDamageRate)) ? Number(visualDamageRate) : safeNext,
+    Number.isFinite(Number(previousRate)) ? Number(previousRate) : safeNext
+  );
+
+  if (damageFill.dataset.hpLagTimer) {
+    clearTimeout(Number(damageFill.dataset.hpLagTimer));
+    delete damageFill.dataset.hpLagTimer;
+  }
+
+  if (!wasInitialized) {
+    damageFill.style.transition = "none";
+    damageFill.style.width = `${safeNext}%`;
+    fill.dataset.hpBarReady = "1";
+    fill.dataset.hpRate = String(safeNext);
+    requestAnimationFrame(() => {
+      damageFill.style.transition = "";
+    });
+    return;
+  }
+
+  const isDamage = Number(previousRate ?? safeNext) > safeNext + 0.15;
+  if (isDamage) {
+    damageFill.style.transition = "none";
+    damageFill.style.width = `${startRate}%`;
+    damageFill.offsetWidth;
+    const timer = window.setTimeout(() => {
+      damageFill.style.transition = "";
+      damageFill.style.width = `${safeNext}%`;
+      delete damageFill.dataset.hpLagTimer;
+    }, 190);
+    damageFill.dataset.hpLagTimer = String(timer);
+  } else {
+    damageFill.style.transition = "none";
+    damageFill.style.width = `${safeNext}%`;
+    requestAnimationFrame(() => {
+      damageFill.style.transition = "";
+    });
+  }
+
+  fill.dataset.hpRate = String(safeNext);
+}
+
 function updateSpriteHpBar(fillId, hp, maxHp, overhealMaxHp) {
   const fill = document.getElementById(fillId);
   if (!fill) return;
@@ -7404,10 +7494,13 @@ function updateSpriteHpBar(fillId, hp, maxHp, overhealMaxHp) {
   const currentHp = Math.max(0, Number(hp ?? 0));
   const normalRate = Math.max(0, Math.min(100, Math.min(currentHp, baseMax) / baseMax * 100));
   const overRate = Math.max(0, Math.min(100, (currentHp - baseMax) / baseMax * 100));
-  fill.style.width = `${normalRate}%`;
-
   const bar = fill.closest?.(".hp-bar");
-  if (!bar) return;
+  if (!bar) {
+    fill.style.width = `${normalRate}%`;
+    return;
+  }
+  updateDelayedHpDamageBar(fill, bar, normalRate, "hp-damage-fill");
+  fill.style.width = `${normalRate}%`;
   let overFill = bar.querySelector(".hp-overfill");
   if (!overFill) {
     overFill = document.createElement("div");
@@ -10681,9 +10774,10 @@ function updateGilsysBattleHud(data) {
 
   const fill = document.getElementById(`gilsys${prefix}HpFill`);
   if (fill) {
-    fill.style.width = `${hpRate}%`;
     const bar = fill.closest?.(".gilsys-hp");
     if (bar) {
+      updateDelayedHpDamageBar(fill, bar, hpRate, "gilsys-hp-damage-fill");
+      fill.style.width = `${hpRate}%`;
       let overFill = bar.querySelector(".gilsys-hp-overfill");
       if (!overFill) {
         overFill = document.createElement("div");
@@ -10692,6 +10786,8 @@ function updateGilsysBattleHud(data) {
       }
       overFill.style.width = `${overHpRate}%`;
       overFill.style.display = overHpRate > 0 ? "block" : "none";
+    } else {
+      fill.style.width = `${hpRate}%`;
     }
   }
 
