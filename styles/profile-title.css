@@ -206,11 +206,13 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     left: 50%;
     top: 50%;
     z-index: 4;
-    width: 162%;
-    height: 162%;
-    transform: translate(-50%, -50%);
-    object-fit: contain;
-    pointer-events: none;
+    width: 190% !important;
+    height: 190% !important;
+    max-width: none !important;
+    max-height: none !important;
+    transform: translate(-50%, -50%) !important;
+    object-fit: contain !important;
+    pointer-events: none !important;
   }
   #phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon[data-profile-icon-job-id="4"] .gilsys-battle-portrait-img {
     object-position: center 0%;
@@ -256,7 +258,9 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     height: 38px !important;
   }
   #phase2.gilsys-battle-ui .gilsys-battle-portrait-frame-img {
-    width: 158%;
-    height: 158%;
+    width: 184% !important;
+    height: 184% !important;
+    max-width: none !important;
+    max-height: none !important;
   }
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "gilsys-pwa-v28";
+const CACHE_NAME = "gilsys-pwa-v29";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ const CORE_ASSETS = [
   "./styles/boot-loader.css",
   "./styles/title-mission.css",
   "./styles/close-buttons.css",
+  "./styles/profile-title.css",
   "./Assets/Battlehaikei.png",
   "./Assets/fe-zu0and1haikei.png",
   "./Assets/haikei/7cc56fd2-92f8-44c9-a2b9-b8e605d1affd.png",
