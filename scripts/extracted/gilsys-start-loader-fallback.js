@@ -2,6 +2,7 @@
   function finishBootLoader() {
     document.body.classList.remove("gilsys-assets-loading");
     document.body.classList.add("gilsys-assets-ready");
+    requestAnimationFrame(() => window.gilsysApplyFixedGameViewport?.());
     const loader = document.getElementById("gilsysBootLoader");
     if (!loader) return;
     loader.classList.add("is-hidden");

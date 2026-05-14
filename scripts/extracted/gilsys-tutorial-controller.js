@@ -26,7 +26,8 @@
   };
   const shopButtonForKind = (kind) => {
     const items = Array.isArray(window.gilsysLatestShopItems) ? window.gilsysLatestShopItems : [];
-    const idx = items.findIndex(item => {
+    const targetIdx = items.findIndex(item => item?.tutorial_shop_target === kind && !isTutorialShopSold(item));
+    const idx = targetIdx >= 0 ? targetIdx : items.findIndex(item => {
       if (!item || isTutorialShopSold(item)) return false;
       if (kind === "item") return !item.is_equip && item.equip_type !== "normal";
       if (kind === "equip") return !!item.is_equip && item.equip_type === "normal";
@@ -35,7 +36,10 @@
     const icons = shopIconButtons();
     return idx >= 0 ? (icons[idx] || null) : (shopButtons()[0] || null);
   };
-  const inventoryButtons = () => [...document.querySelectorAll([
+  const inventoryIconButtons = () => [...document.querySelectorAll([
+    "#gilsysCommandList .gilsys-inventory-icon-btn"
+  ].join(","))].filter(isVisibleElement);
+  const inventoryActionButtons = () => [...document.querySelectorAll([
     "#gilsysCommandList .shop-card.inventory-card .shop-buy-area button:not(:disabled)",
     ".gilsys-detail-inventory-list .shop-card.inventory-card .shop-buy-area button:not(:disabled)",
     "#gilsysSideCommandDetail .shop-card.inventory-card .shop-buy-area button:not(:disabled)"
@@ -154,15 +158,22 @@
     {
       kind: "click",
       title: "アイテムカテゴリ",
-      text: "アイテムカテゴリを開いて、さっき買った回復アイテムを使ってみます。",
+      text: "アイテムカテゴリを開きます。持ち物は左にアイコン一覧、右に選択中の詳細が表示されます。",
       target: () => categoryButtons()[0] || null,
       nextAfterClick: true
     },
     {
       kind: "click",
+      title: "アイテム選択",
+      text: "左の持ち物一覧から、さっき買った回復アイテムのアイコンを押してください。右側に詳細が表示されます。",
+      target: () => inventoryIconButtons()[0] || null,
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
       title: "アイテム使用",
-      text: "アイテムは所持数を消費して効果を発動します。使うボタンを押してください。",
-      target: () => inventoryButtons()[0] || null,
+      text: "右側の詳細パネルにある使用ボタンを押してください。アイテムは所持数を消費して効果を発動します。",
+      target: () => inventoryActionButtons()[0] || null,
       nextAfterClick: true
     },
     {
@@ -175,15 +186,22 @@
     {
       kind: "click",
       title: "装備カテゴリ",
-      text: "装備カテゴリを開きます。装備は外したり付け替えたりできます。",
+      text: "装備カテゴリを開きます。装備も左の一覧から選ぶと、右に詳細と操作ボタンが出ます。",
       target: () => categoryButtons()[1] || null,
       nextAfterClick: true
     },
     {
       kind: "click",
+      title: "装備選択",
+      text: "左の装備一覧から、購入した装備のアイコンを押してください。",
+      target: () => inventoryIconButtons()[0] || null,
+      nextAfterClick: true
+    },
+    {
+      kind: "click",
       title: "装備する",
-      text: "購入した装備を装備してください。",
-      target: () => inventoryButtons()[0] || null,
+      text: "右側の詳細パネルにある装備ボタンを押してください。",
+      target: () => inventoryActionButtons()[0] || null,
       nextAfterClick: true
     },
     {
@@ -215,7 +233,11 @@
 
   function ensureOverlay() {
     let root = byId("gilsysTutorialOverlay");
-    if (root) return root;
+    const host = byId("game-wrapper") || document.body;
+    if (root) {
+      if (root.parentElement !== host) host.appendChild(root);
+      return root;
+    }
     root = document.createElement("div");
     root.id = "gilsysTutorialOverlay";
     root.className = "gilsys-tutorial-overlay";
@@ -227,7 +249,7 @@
         <div class="gilsys-tutorial-hint" id="gilsysTutorialHint"></div>
       </div>
     `;
-    document.body.appendChild(root);
+    host.appendChild(root);
     return root;
   }
 
@@ -247,22 +269,121 @@
     state.refreshTimers = [];
   }
 
+  function getScrollableAncestor(el) {
+    let node = el?.parentElement || null;
+    while (node && node !== document.body && node !== document.documentElement) {
+      const style = getComputedStyle(node);
+      const scrollY = /(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight + 2;
+      const scrollX = /(auto|scroll)/.test(style.overflowX) && node.scrollWidth > node.clientWidth + 2;
+      if (scrollY || scrollX) return { node, scrollY, scrollX };
+      node = node.parentElement;
+    }
+    return null;
+  }
+
+  function scrollTargetIntoLocalView(el) {
+    const scrollable = getScrollableAncestor(el);
+    if (!scrollable) {
+      window.gilsysResetOuterScroll?.();
+      return;
+    }
+    const { node, scrollY, scrollX } = scrollable;
+    const pad = 12;
+    const targetRect = el.getBoundingClientRect();
+    const boxRect = node.getBoundingClientRect();
+    if (scrollY) {
+      if (targetRect.top < boxRect.top + pad) {
+        node.scrollTop -= (boxRect.top + pad) - targetRect.top;
+      } else if (targetRect.bottom > boxRect.bottom - pad) {
+        node.scrollTop += targetRect.bottom - (boxRect.bottom - pad);
+      }
+    }
+    if (scrollX) {
+      if (targetRect.left < boxRect.left + pad) {
+        node.scrollLeft -= (boxRect.left + pad) - targetRect.left;
+      } else if (targetRect.right > boxRect.right - pad) {
+        node.scrollLeft += targetRect.right - (boxRect.right - pad);
+      }
+    }
+    window.gilsysResetOuterScroll?.();
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function rectsOverlap(a, b, pad = 0) {
+    return !(
+      a.right <= b.left - pad ||
+      a.left >= b.right + pad ||
+      a.bottom <= b.top - pad ||
+      a.top >= b.bottom + pad
+    );
+  }
+
+  function overlapArea(a, b) {
+    const x = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+    const y = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+    return x * y;
+  }
+
+  function getOverlayMetrics(root) {
+    const rect = root.getBoundingClientRect();
+    return {
+      rect,
+      width: root.clientWidth || 1280,
+      height: root.clientHeight || 720,
+      scaleX: rect.width ? (root.clientWidth || rect.width) / rect.width : 1,
+      scaleY: rect.height ? (root.clientHeight || rect.height) / rect.height : 1
+    };
+  }
+
+  function toLocalRect(el, metrics) {
+    const rect = el.getBoundingClientRect();
+    const left = (rect.left - metrics.rect.left) * metrics.scaleX;
+    const top = (rect.top - metrics.rect.top) * metrics.scaleY;
+    const width = rect.width * metrics.scaleX;
+    const height = rect.height * metrics.scaleY;
+    return {
+      left,
+      top,
+      width,
+      height,
+      right: left + width,
+      bottom: top + height
+    };
+  }
+
+  function placeTutorialCard(targetEl = null) {
+    const root = ensureOverlay();
+    const card = root.querySelector(".gilsys-tutorial-card");
+    if (!card) return;
+    card.classList.toggle("is-near-target", !!(targetEl && isVisibleElement(targetEl)));
+    card.style.left = "";
+    card.style.top = "";
+    card.style.bottom = "";
+    card.style.transform = "";
+  }
+
   function refreshTarget() {
     if (!state.active) return;
     const step = currentStep();
     if (step?.kind !== "click") {
       clearTarget();
+      placeTutorialCard(null);
       return;
     }
     const nextTarget = resolveTarget(step);
     if (state.targetEl && state.targetEl !== nextTarget) {
       state.targetEl.classList.remove("gilsys-tutorial-target");
     }
+    const changed = state.targetEl !== nextTarget;
     state.targetEl = nextTarget || null;
     if (state.targetEl) {
       state.targetEl.classList.add("gilsys-tutorial-target");
-      state.targetEl.scrollIntoView?.({ block: "center", inline: "center", behavior: "smooth" });
+      if (changed) scrollTargetIntoLocalView(state.targetEl);
     }
+    placeTutorialCard(state.targetEl);
   }
 
   function scheduleTargetRefresh() {
@@ -290,6 +411,7 @@
         : state.waiting
           ? "処理が終わるまで待ってください"
           : "光っている場所を押してください";
+    placeTutorialCard(null);
     scheduleTargetRefresh();
   }
 
@@ -339,8 +461,6 @@
     if (!state.active) return;
     const step = currentStep();
     if (!step) return;
-    const card = byId("gilsysTutorialOverlay")?.querySelector(".gilsys-tutorial-card");
-
     if (step.kind === "message") {
       event.preventDefault();
       event.stopImmediatePropagation();

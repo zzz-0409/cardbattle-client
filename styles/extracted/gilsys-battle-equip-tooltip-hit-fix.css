@@ -40,6 +40,21 @@
     z-index: 80 !important;
   }
 
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.doll {
+    z-index: 150 !important;
+    overflow: visible !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.doll .special-equip-area.doll {
+    z-index: 190 !important;
+    pointer-events: auto !important;
+  }
+
+  #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.doll .special-equip-slot {
+    z-index: 191 !important;
+    pointer-events: auto !important;
+  }
+
   #gilsysFloatingTooltip {
     z-index: 2147483647 !important;
     pointer-events: auto !important;

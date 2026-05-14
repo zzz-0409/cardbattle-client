@@ -1,4 +1,4 @@
-const CACHE_NAME = "gilsys-pwa-v32";
+const CACHE_NAME = "gilsys-pwa-v61";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -26,6 +26,14 @@ const CORE_ASSETS = [
   "./Assets/home/gilsys-battle-mode-room.png",
   "./Assets/home/gilsys-battle-mode-cpu.png",
   "./Assets/home/gilsys-battle-mode-dojo.png",
+  "./Assets/kyara/rennkinnjyutusi_solid.png",
+  "./Assets/kyara/rennkinnjyutusi_solid_flipped.png",
+  "./Assets/kyara/rennkinnjyutusi_battle_v2.png",
+  "./Assets/kyara/rennkinnjyutusi_battle_v2_flipped.png",
+  "./Assets/kyara/rennkinnjyutusi_side_solid.png",
+  "./Assets/kyara/rennkinnjyutusi_side_solid_flipped.png",
+  "./Assets/kyara/rennkinnjyutusi_battle_generated_self.png",
+  "./Assets/kyara/rennkinnjyutusi_battle_generated_enemy.png",
   "./Assets/profile/icons/warrior-face.png",
   "./Assets/profile/icons/knight-face.png",
   "./Assets/profile/icons/priest-face.png",
@@ -40,6 +48,7 @@ const CORE_ASSETS = [
   "./Assets/dojo/trail-icons/durandal-special.png",
   "./Assets/dojo/trail-icons/muramasa-special.png",
   "./Assets/result/normal-victory-bg.png",
+  "./Assets/result/normal-defeat-bg.png",
   "./Assets/result/result-button-home.png",
   "./Assets/result/result-button-job.png",
   "./styles/extracted/gilsys-command-panel-no-popup-patch-style.css",
@@ -103,8 +112,12 @@ const CORE_ASSETS = [
   "./scripts/extracted/gilsys-tutorial-controller.js",
   "./styles/extracted/gilsys-victory-result-generated-assets-style.css",
   "./styles/extracted/gilsys-victory-result-data-trigger-style.css",
+  "./styles/extracted/gilsys-result-rate-compact-final.css",
+  "./styles/extracted/gilsys-defeat-result-generated-assets-style.css",
   "./styles/extracted/gilsys-home-control-fallback-style.css",
-  "./styles/extracted/gilsys-profile-icon-face-final.css"
+  "./styles/extracted/gilsys-profile-icon-face-final.css",
+  "./styles/extracted/gilsys-inventory-icon-detail-final.css",
+  "./styles/extracted/gilsys-title-job-scroll-lock-and-alchemist-final.css"
 ];
 
 self.addEventListener("install", (event) => {

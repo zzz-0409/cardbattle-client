@@ -7,10 +7,10 @@ html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) {
 }
 
 html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-normal-result-frame {
-  grid-template-columns: minmax(220px, .72fr) minmax(380px, 1.16fr) minmax(220px, .72fr) !important;
-  grid-template-rows: minmax(52px, .34fr) auto auto minmax(144px, .76fr) auto !important;
-  gap: clamp(10px, 1.15vw, 16px) !important;
-  padding: clamp(14px, 2vw, 30px) clamp(18px, 3vw, 52px) clamp(16px, 2.15vw, 34px) !important;
+  grid-template-columns: minmax(190px, .72fr) minmax(300px, 1.06fr) minmax(190px, .72fr) !important;
+  grid-template-rows: minmax(30px, .2fr) auto auto minmax(104px, .56fr) auto !important;
+  gap: clamp(6px, .9vw, 12px) !important;
+  padding: clamp(10px, 1.35vw, 22px) clamp(14px, 2.25vw, 38px) clamp(10px, 1.45vw, 24px) !important;
   background:
     radial-gradient(ellipse at 50% 27%, rgba(255, 212, 92, .22), transparent 32%),
     radial-gradient(ellipse at 50% 88%, rgba(226, 86, 48, .16), transparent 34%),
@@ -20,8 +20,9 @@ html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-norma
 html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) #resultTitle {
   color: #fff1b8 !important;
   font-family: Georgia, "Times New Roman", "Yu Mincho", serif !important;
-  font-size: clamp(58px, 10.4vw, 142px) !important;
-  letter-spacing: .1em !important;
+  font-size: clamp(44px, 8.2vw, 108px) !important;
+  line-height: .86 !important;
+  letter-spacing: .07em !important;
   text-shadow:
     0 2px 0 rgba(95, 50, 10, .75),
     0 0 14px rgba(255, 248, 190, .86),
@@ -31,12 +32,15 @@ html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) #resultTitle 
 
 html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) #resultSub {
   color: rgba(255, 232, 170, .95) !important;
+  font-size: clamp(12px, 1.25vw, 17px) !important;
   text-shadow: 0 0 12px rgba(225, 119, 38, .46), 0 2px 5px rgba(0, 0, 0, .78) !important;
 }
 
 html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-summary {
   grid-column: 1 !important;
   grid-row: 4 !important;
+  gap: clamp(5px, .62vw, 8px) !important;
+  align-content: center !important;
 }
 
 html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-panel {
@@ -55,6 +59,43 @@ html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-resul
     0 14px 34px rgba(0, 0, 0, .42),
     inset 0 0 0 1px rgba(255, 236, 179, .1),
     inset 0 0 28px rgba(255, 178, 57, .08) !important;
+  padding: clamp(7px, .82vw, 11px) clamp(9px, 1vw, 13px) !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-summary span,
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-label {
+  font-size: clamp(9px, .8vw, 11px) !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-summary b {
+  margin-top: 3px !important;
+  font-size: clamp(12px, 1.15vw, 16px) !important;
+  line-height: 1.05 !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main {
+  gap: clamp(7px, 1.2vw, 16px) !important;
+  margin-top: 6px !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main span,
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main b {
+  font-size: clamp(22px, 3.45vw, 44px) !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main i {
+  font-size: clamp(16px, 2.1vw, 28px) !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-delta {
+  margin-top: 5px !important;
+  font-size: clamp(16px, 2.2vw, 27px) !important;
+}
+
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-record,
+html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-none {
+  margin-top: 4px !important;
+  font-size: clamp(11px, 1vw, 13px) !important;
 }
 
 html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main b,
@@ -76,17 +117,18 @@ html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-resul
 }
 
 html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-actions {
-  grid-template-columns: repeat(2, clamp(300px, 27vw, 430px)) !important;
+  grid-template-columns: repeat(2, clamp(240px, 22vw, 350px)) !important;
   justify-content: center !important;
   align-items: center !important;
-  gap: clamp(22px, 4vw, 66px) !important;
+  gap: clamp(12px, 2.3vw, 34px) !important;
+  margin-top: 0 !important;
 }
 
 html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-actions button {
   width: 100% !important;
   aspect-ratio: auto !important;
   min-height: 0 !important;
-  height: clamp(64px, 5.6vw, 94px) !important;
+  height: clamp(50px, 4.6vw, 72px) !important;
   padding: 0 15% !important;
   border: 0 !important;
   border-image: none !important;
@@ -100,7 +142,7 @@ html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-resul
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: clamp(18px, 2.1vw, 30px) !important;
+  font-size: clamp(15px, 1.55vw, 23px) !important;
   letter-spacing: .08em !important;
   line-height: 1.1 !important;
   text-shadow: 0 2px 3px rgba(0, 0, 0, .85), 0 0 12px rgba(255, 218, 129, .42) !important;

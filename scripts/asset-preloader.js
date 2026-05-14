@@ -229,15 +229,18 @@
     topicEl.querySelector("span").textContent = topic[1];
   }
 
-  function showLoadingOverlay(text = "LOADING...") {
+  function showLoadingOverlay(text = "LOADING...", scope = "transition") {
     const loader = ensureLoader();
     const label = loader.querySelector(".gilsys-boot-loader-text");
     if (label) label.textContent = text;
+    loader.dataset.loadingScope = "transition";
     setRandomTopic();
     document.body.classList.add("gilsys-screen-loading");
     loader.classList.remove("is-hidden");
     loader.hidden = false;
     loader.style.display = "grid";
+    window.gilsysLockOuterViewport?.();
+    requestAnimationFrame(() => window.gilsysLockOuterViewport?.());
   }
 
   function hideLoadingOverlay() {
@@ -246,13 +249,17 @@
     if (!loader || document.body.classList.contains("gilsys-assets-loading")) return;
     loader.classList.add("is-hidden");
     setTimeout(() => {
-      if (loader.classList.contains("is-hidden")) loader.style.display = "none";
+      if (loader.classList.contains("is-hidden")) {
+        loader.style.display = "none";
+        delete loader.dataset.loadingScope;
+      }
     }, 420);
   }
 
   function finishLoading() {
     document.body.classList.remove("gilsys-assets-loading");
     document.body.classList.add("gilsys-assets-ready");
+    requestAnimationFrame(() => window.gilsysApplyFixedGameViewport?.());
     hideLoadingOverlay();
   }
 
@@ -261,7 +268,7 @@
   }
 
   async function startPreload() {
-    showLoadingOverlay("LOADING...");
+    showLoadingOverlay("LOADING...", "boot");
     const assets = collectImageAssets();
     await preloadAssets(assets, BOOT_TIMEOUT_MS);
     finishLoading();
@@ -271,7 +278,7 @@
   window.gilsysHideLoadingOverlay = hideLoadingOverlay;
   window.gilsysBeginScreenTransition = function beginScreenTransition() {
     transitionToken += 1;
-    showLoadingOverlay("LOADING...");
+    showLoadingOverlay("LOADING...", "transition");
     return transitionToken;
   };
   window.gilsysFinishScreenTransition = async function finishScreenTransition(root, token = transitionToken) {

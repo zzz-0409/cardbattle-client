@@ -20,6 +20,18 @@
   pointer-events: none;
 }
 
+html.gilsys-fixed-game body > #gilsysVsIntro,
+html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr) !important;
+  gap: 28px !important;
+  padding: 38px 54px !important;
+  overflow: hidden !important;
+}
+
 .gilsys-vs-intro.is-open {
   opacity: 1;
   animation: gilsysVsIntroIn .34s ease-out both;
@@ -31,6 +43,7 @@
 
 .gilsys-vs-intro-card {
   min-width: 0;
+  max-width: 430px;
   display: grid;
   justify-items: center;
   gap: 8px;
@@ -60,6 +73,11 @@
     inset 0 0 18px rgba(255, 242, 190, .12),
     0 0 24px rgba(255, 205, 95, .22),
     0 18px 38px rgba(0, 0, 0, .48);
+}
+
+html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-icon,
+html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-icon {
+  width: 112px !important;
 }
 
 .gilsys-vs-intro-icon-img {
@@ -107,6 +125,12 @@
     radial-gradient(circle at 50% 34%, rgba(255, 218, 128, .18), rgba(8, 10, 16, .92) 68%);
 }
 
+html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-icon.has-profile-frame::after,
+html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-icon.has-profile-frame::after {
+  width: 132% !important;
+  height: 132% !important;
+}
+
 .gilsys-vs-intro-icon[data-profile-icon-job-id="4"] .gilsys-vs-intro-icon-img {
   object-position: center center;
 }
@@ -117,6 +141,11 @@
   font-size: clamp(12px, 1.8vw, 18px);
   font-weight: 900;
   text-shadow: 0 2px 8px rgba(0,0,0,.8);
+}
+
+html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-title,
+html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-title {
+  font-size: 14px !important;
 }
 
 .gilsys-vs-intro-name {
@@ -131,10 +160,20 @@
   text-shadow: 0 4px 16px rgba(0,0,0,.78), 0 0 18px rgba(255, 203, 90, .25);
 }
 
+html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-name,
+html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-name {
+  font-size: 34px !important;
+}
+
 .gilsys-vs-intro-job {
   color: rgba(234, 252, 255, .84);
   font-size: clamp(13px, 2.2vw, 24px);
   font-weight: 800;
+}
+
+html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-job,
+html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-job {
+  font-size: 18px !important;
 }
 
 .gilsys-vs-intro-mark {
@@ -153,6 +192,12 @@
     0 0 18px rgba(255, 50, 45, .52),
     0 0 34px rgba(255, 218, 122, .26);
   animation: gilsysVsMarkPulse 1.2s ease-in-out infinite;
+}
+
+html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-mark,
+html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-mark {
+  width: 104px !important;
+  font-size: 56px !important;
 }
 
 @keyframes gilsysVsIntroIn {
@@ -190,4 +235,45 @@
   .gilsys-vs-intro-icon {
     width: clamp(70px, 18vw, 102px);
   }
+}
+
+@media (max-width: 760px), (max-height: 560px) {
+  html.gilsys-fixed-game body > #gilsysVsIntro,
+  html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro {
+    grid-template-columns: minmax(0, 1fr) 84px minmax(0, 1fr) !important;
+    gap: 14px !important;
+    padding: 22px 28px !important;
+  }
+
+  html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-icon,
+  html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-icon {
+    width: 86px !important;
+  }
+
+  html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-name,
+  html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-name {
+    font-size: 24px !important;
+  }
+
+  html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-job,
+  html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-job {
+    font-size: 14px !important;
+  }
+
+  html.gilsys-fixed-game body > #gilsysVsIntro .gilsys-vs-intro-mark,
+  html.gilsys-fixed-game #game-wrapper .gilsys-vs-intro-mark {
+    width: 76px !important;
+    font-size: 42px !important;
+  }
+}
+
+html.gilsys-fixed-game body > #gilsysVsIntro {
+  position: fixed !important;
+  inset: auto !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: var(--gilsys-game-width, 1280px) !important;
+  height: var(--gilsys-game-height, 720px) !important;
+  transform-origin: 0 0 !important;
+  transform: translate(var(--gilsys-game-left, 0px), var(--gilsys-game-top, 0px)) scale(var(--gilsys-game-scale, 1)) !important;
 }

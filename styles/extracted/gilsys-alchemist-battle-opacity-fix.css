@@ -1,15 +1,67 @@
 #phase2.gilsys-battle-ui #battleStage .sprite.job-alchemist,
-  #phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist,
-  #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.job-alchemist {
-    opacity: 1 !important;
-    mix-blend-mode: normal !important;
-    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .28)) saturate(1.08) brightness(1.04) !important;
-    background-image:
-      url("../../Assets/kyara/rennkinnjyutusi.png"),
-      url("../../Assets/kyara/rennkinnjyutusi.png"),
-      url("../../Assets/kyara/rennkinnjyutusi.png"),
-      url("../../Assets/kyara/rennkinnjyutusi.png") !important;
-    background-position: center bottom, center bottom, center bottom, center bottom !important;
-    background-size: contain, contain, contain, contain !important;
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
-  }
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.job-alchemist {
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  background: url("../../Assets/kyara/rennkinnjyutusi_battle_generated_self.png") center bottom / contain no-repeat !important;
+  filter:
+    drop-shadow(0 24px 18px rgba(0, 0, 0, .78))
+    drop-shadow(0 0 4px rgba(0, 0, 0, .72))
+    drop-shadow(0 0 11px rgba(244, 202, 113, .24))
+    saturate(1.2)
+    contrast(1.18)
+    brightness(1.08) !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist,
+#phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.job-alchemist,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .side-enemy .sprite.job-alchemist {
+  opacity: 1 !important;
+  visibility: visible !important;
+  mix-blend-mode: normal !important;
+  isolation: isolate !important;
+  background: url("../../Assets/kyara/rennkinnjyutusi_battle_generated_enemy.png") center bottom / contain no-repeat !important;
+  transform: none;
+  filter:
+    drop-shadow(0 24px 18px rgba(0, 0, 0, .8))
+    drop-shadow(0 0 4px rgba(0, 0, 0, .74))
+    drop-shadow(0 0 11px rgba(242, 207, 128, .26))
+    saturate(1.22)
+    contrast(1.2)
+    brightness(1.1) !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist::before {
+  content: none !important;
+  display: none !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist::after,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist::after {
+  content: none !important;
+  display: none !important;
+}
+
+@keyframes gilsysAlchemistEnemyAttackMove {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-22px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes gilsysAlchemistEnemyHitShake {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(-4px); }
+  60% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+#phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist.attack,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist.attack {
+  animation: gilsysAlchemistEnemyAttackMove .26s ease-in-out !important;
+}
+
+#phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist.hit,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.job-alchemist.hit {
+  animation: gilsysAlchemistEnemyHitShake .26s ease-in-out !important;
+}

@@ -1,0 +1,92 @@
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-normal-result-frame,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-normal-result-frame,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-normal-result-frame {
+  grid-template-rows: auto auto auto auto auto !important;
+  align-content: center !important;
+  gap: clamp(5px, .72vw, 10px) !important;
+  padding-top: clamp(10px, 1.25vw, 20px) !important;
+  padding-bottom: clamp(10px, 1.35vw, 22px) !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-summary {
+  align-self: center !important;
+  gap: clamp(3px, .48vw, 6px) !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-summary div {
+  padding-top: clamp(5px, .55vw, 8px) !important;
+  padding-bottom: clamp(5px, .55vw, 8px) !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-rate-panel,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-panel,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-rate-panel {
+  align-self: center !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  padding: clamp(5px, .6vw, 8px) clamp(8px, .9vw, 12px) !important;
+  display: grid !important;
+  align-content: center !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-rate-label,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-label,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-rate-label {
+  font-size: clamp(8px, .72vw, 10px) !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-rate-main,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-rate-main {
+  gap: clamp(5px, .78vw, 10px) !important;
+  margin-top: 3px !important;
+  line-height: .92 !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-rate-main span,
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-rate-main b,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main span,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main b,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-rate-main span,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-rate-main b {
+  font-size: clamp(20px, 2.75vw, 36px) !important;
+  line-height: .92 !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-rate-main i,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-main i,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-rate-main i {
+  font-size: clamp(13px, 1.55vw, 21px) !important;
+  line-height: .9 !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-rate-delta,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-delta,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-rate-delta {
+  margin-top: 2px !important;
+  font-size: clamp(14px, 1.85vw, 24px) !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-record,
+html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-result-rate-none,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-record,
+html.gilsys-fixed-game body > #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-none,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-record,
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys-result-rate-none {
+  margin-top: 2px !important;
+  font-size: clamp(9px, .86vw, 11px) !important;
+  line-height: 1.08 !important;
+}
+
+@media (max-width: 620px) {
+  html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-normal-result-frame {
+    align-content: start !important;
+    gap: 7px !important;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+  }
+}

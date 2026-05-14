@@ -1,0 +1,8 @@
+html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial),
+html.gilsys-fixed-game body > #resultOverlay[data-result="lose"]:not(.is-tutorial) {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(159, 184, 255, .22), rgba(63, 64, 112, .08) 24%, transparent 42%),
+    linear-gradient(90deg, rgba(3, 5, 14, .92), rgba(6, 8, 18, .18) 24%, rgba(6, 8, 18, .18) 76%, rgba(3, 5, 14, .92)),
+    linear-gradient(180deg, rgba(4, 8, 18, .08), rgba(1, 2, 8, .76)),
+    url("../../Assets/result/normal-defeat-bg.png") center center / cover no-repeat !important;
+}

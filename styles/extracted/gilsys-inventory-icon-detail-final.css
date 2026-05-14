@@ -1,0 +1,106 @@
+#phase2.gilsys-battle-ui .gilsys-command-list-panel.is-inventory-mode .gilsys-command-list[data-manual^="inventory:"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  overflow: hidden !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-list-tools {
+  flex: 0 0 auto !important;
+  align-items: center !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-list-tools span {
+  color: rgba(247, 232, 198, .78);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-icon-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  grid-auto-flow: row !important;
+  grid-auto-rows: minmax(48px, auto) !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  align-content: start !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 0 4px 0 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-icon-btn.is-equipped {
+  box-shadow:
+    inset 0 0 0 1px rgba(125, 236, 255, .42),
+    0 0 14px rgba(125, 236, 255, .22) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-icon-btn.is-combine-selected {
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 217, 124, .86),
+    0 0 16px rgba(255, 195, 82, .38) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-icon-count,
+#phase2.gilsys-battle-ui .gilsys-inventory-equipped-dot,
+#phase2.gilsys-battle-ui .gilsys-inventory-combine-dot {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border: 1px solid rgba(255, 224, 150, .72);
+  border-radius: 999px;
+  background: rgba(13, 16, 22, .9);
+  color: #ffe29b;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-icon-count {
+  right: 3px;
+  bottom: 3px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-equipped-dot {
+  left: 3px;
+  top: 3px;
+  border-color: rgba(125, 236, 255, .72);
+  color: #d9fbff;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-combine-dot {
+  right: 3px;
+  top: 3px;
+  border-color: rgba(255, 217, 124, .82);
+  color: #fff3c8;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-detail-card {
+  min-height: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-detail-card .shop-card.inventory-card {
+  height: 100% !important;
+  min-height: 0 !important;
+  grid-template-columns: minmax(0, 1fr) minmax(88px, auto) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-inventory-detail-card .shop-item-desc {
+  max-height: none !important;
+  white-space: normal !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
