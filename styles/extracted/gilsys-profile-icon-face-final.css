@@ -1,0 +1,130 @@
+/* Final profile icon pass: face-only assets, tighter frames, and no text overlap. */
+html.gilsys-fixed-game .gilsys-profile-icon-btn img,
+html.gilsys-fixed-game .gilsys-profile-icon-btn[data-job-name] img {
+  object-position: center center !important;
+  transform: none !important;
+  transform-origin: 50% 50% !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-avatar {
+  background:
+    var(--gilsys-home-avatar-image) center center / cover no-repeat,
+    radial-gradient(circle at 50% 32%, rgba(179, 132, 62, .18), rgba(18, 16, 14, .86) 66%) !important;
+}
+
+html.gilsys-fixed-game .gilsys-home-avatar-img {
+  object-position: center center !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-self {
+  gap: 12px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy {
+  gap: 12px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon {
+  flex: 0 0 40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  overflow: visible !important;
+  background:
+    var(--battle-profile-icon-image) center center / cover no-repeat,
+    radial-gradient(circle at 50% 32%, rgba(179, 132, 62, .18), rgba(18, 16, 14, .86) 66%) !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-self .gilsys-portrait.has-profile-icon {
+  margin-right: 8px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-portrait.has-profile-icon {
+  margin-left: 8px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-battle-portrait-img {
+  inset: 5% !important;
+  width: 90% !important;
+  height: 90% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  transform: none !important;
+  transform-origin: 50% 50% !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-battle-portrait-frame-img {
+  width: 148% !important;
+  height: 148% !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-status-main {
+  min-width: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-status-name-row > div {
+  min-width: 0 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-status-name {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.gilsys-vs-intro-card {
+  gap: clamp(16px, 2vw, 24px) !important;
+}
+
+.gilsys-vs-intro-icon {
+  width: clamp(88px, 12vw, 148px) !important;
+  background:
+    var(--gilsys-vs-icon-image) center center / cover no-repeat,
+    radial-gradient(circle at 50% 34%, rgba(255, 218, 128, .18), rgba(8, 10, 16, .92) 68%) !important;
+}
+
+.gilsys-vs-intro-icon-img {
+  inset: 5% !important;
+  width: 90% !important;
+  height: 90% !important;
+  object-position: center center !important;
+}
+
+.gilsys-vs-intro-icon.has-profile-frame::after {
+  width: 148% !important;
+  height: 148% !important;
+}
+
+@media (max-width: 1100px), (max-height: 660px), (hover: none) and (pointer: coarse) {
+  #phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon {
+    flex-basis: 32px !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-battle-portrait-frame-img {
+    width: 144% !important;
+    height: 144% !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status-self .gilsys-portrait.has-profile-icon {
+    margin-right: 5px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-top-status-enemy .gilsys-portrait.has-profile-icon {
+    margin-left: 5px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .gilsys-vs-intro-icon {
+    width: clamp(70px, 18vw, 102px) !important;
+  }
+
+  .gilsys-vs-intro-icon.has-profile-frame::after {
+    width: 142% !important;
+    height: 142% !important;
+  }
+}

@@ -4700,8 +4700,14 @@ function buildDojoEnemyIconProfile(data) {
 function normalizeVsProfile(profile, fallbackJobName = "") {
   if (profile && typeof profile === "object") {
     const frameId = profile.frameId || PROFILE_ICON_FRAME_NONE;
+    const iconJobId = profile.iconJobId || getJobIdByNameForProfile(fallbackJobName);
+    const resolvedIconSrc = iconJobId && !profile.dojoEnemyIcon
+      ? getProfileIconPortrait(iconJobId)
+      : "";
     return {
       ...profile,
+      iconJobId: iconJobId || profile.iconJobId || "",
+      iconSrc: profile.dojoEnemyIcon ? (profile.iconSrc || resolvedIconSrc) : (resolvedIconSrc || profile.iconSrc || ""),
       frameId,
       frameSrc: profile.frameSrc || getProfileFrameSrc(frameId),
     };
@@ -5402,8 +5408,25 @@ function getProfileTitleOptions() {
   return [...base, ...claimed];
 }
 
+const PROFILE_ICON_PORTRAITS_BY_JOB_ID = Object.freeze({
+  1: "Assets/profile/icons/warrior-face.png",
+  2: "Assets/profile/icons/knight-face.png",
+  3: "Assets/profile/icons/priest-face.png",
+  4: "Assets/profile/icons/thief-face.png",
+  5: "Assets/profile/icons/mage-face.png",
+  6: "Assets/profile/icons/onmyoji-face.png",
+  7: "Assets/profile/icons/alchemist-face.png",
+  8: "Assets/profile/icons/archer-face.png",
+  9: "Assets/profile/icons/dollmaster-face.png",
+  10: "Assets/profile/icons/madman-face.png",
+});
+
 function getProfileIconPortrait(jobId = getProfileJobId(LS_PROFILE_ICON_JOB_ID)) {
-  const job = getProfileJobById(jobId);
+  const directIcon = PROFILE_ICON_PORTRAITS_BY_JOB_ID[String(jobId || "")];
+  if (directIcon) return directIcon;
+  const job = getProfileJobs().find(entry => String(entry.id) === String(jobId)) || null;
+  const jobIcon = PROFILE_ICON_PORTRAITS_BY_JOB_ID[String(job?.id || "")];
+  if (jobIcon) return jobIcon;
   const meta = job && typeof getJobSelectMeta === "function" ? getJobSelectMeta(job) : null;
   return meta?.portrait || "Assets/shokugyousenntaku/sennsi1_facefix_transparent.png";
 }
@@ -10568,10 +10591,13 @@ function resolveBattleProfile(data, isSelf) {
   if (incoming) {
     const fallbackJobId = incoming.iconJobId || getJobIdByNameForProfile(jobName);
     const frameId = incoming.frameId || PROFILE_ICON_FRAME_NONE;
+    const resolvedIconSrc = fallbackJobId && !incoming.dojoEnemyIcon
+      ? getProfileIconPortrait(fallbackJobId)
+      : "";
     return {
       ...incoming,
       iconJobId: fallbackJobId || incoming.iconJobId || "",
-      iconSrc: incoming.iconSrc || (fallbackJobId ? getProfileIconPortrait(fallbackJobId) : ""),
+      iconSrc: incoming.dojoEnemyIcon ? (incoming.iconSrc || resolvedIconSrc) : (resolvedIconSrc || incoming.iconSrc || ""),
       frameId,
       frameSrc: incoming.frameSrc || getProfileFrameSrc(frameId),
     };
@@ -12606,5 +12632,6 @@ try {
 <link id="gilsys-victory-result-generated-assets-style" rel="stylesheet" href="styles/extracted/gilsys-victory-result-generated-assets-style.css">
 <link id="gilsys-victory-result-data-trigger-style" rel="stylesheet" href="styles/extracted/gilsys-victory-result-data-trigger-style.css">
 <link id="gilsys-home-control-fallback-style" rel="stylesheet" href="styles/extracted/gilsys-home-control-fallback-style.css">
+<link id="gilsys-profile-icon-face-final" rel="stylesheet" href="styles/extracted/gilsys-profile-icon-face-final.css">
 </body>
 </html>

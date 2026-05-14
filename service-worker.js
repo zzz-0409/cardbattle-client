@@ -1,4 +1,4 @@
-const CACHE_NAME = "gilsys-pwa-v31";
+const CACHE_NAME = "gilsys-pwa-v32";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -26,6 +26,17 @@ const CORE_ASSETS = [
   "./Assets/home/gilsys-battle-mode-room.png",
   "./Assets/home/gilsys-battle-mode-cpu.png",
   "./Assets/home/gilsys-battle-mode-dojo.png",
+  "./Assets/profile/icons/warrior-face.png",
+  "./Assets/profile/icons/knight-face.png",
+  "./Assets/profile/icons/priest-face.png",
+  "./Assets/profile/icons/thief-face.png",
+  "./Assets/profile/icons/mage-face.png",
+  "./Assets/profile/icons/onmyoji-face.png",
+  "./Assets/profile/icons/alchemist-face.png",
+  "./Assets/profile/icons/archer-face.png",
+  "./Assets/profile/icons/dollmaster-face.png",
+  "./Assets/profile/icons/madman-face.png",
+  "./Assets/profile/frames/warrior_dojo_master_frame.png",
   "./Assets/dojo/trail-icons/durandal-special.png",
   "./Assets/dojo/trail-icons/muramasa-special.png",
   "./Assets/result/normal-victory-bg.png",
@@ -92,7 +103,8 @@ const CORE_ASSETS = [
   "./scripts/extracted/gilsys-tutorial-controller.js",
   "./styles/extracted/gilsys-victory-result-generated-assets-style.css",
   "./styles/extracted/gilsys-victory-result-data-trigger-style.css",
-  "./styles/extracted/gilsys-home-control-fallback-style.css"
+  "./styles/extracted/gilsys-home-control-fallback-style.css",
+  "./styles/extracted/gilsys-profile-icon-face-final.css"
 ];
 
 self.addEventListener("install", (event) => {

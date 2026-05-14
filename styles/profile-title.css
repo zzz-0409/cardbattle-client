@@ -51,9 +51,9 @@ html.gilsys-fixed-game .gilsys-profile-icon-btn img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
-  transform: scale(2.18);
-  transform-origin: 50% 18%;
+  object-position: center center;
+  transform: none;
+  transform-origin: 50% 50%;
   pointer-events: none;
   border-radius: 50%;
 }
@@ -122,8 +122,8 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
   }
 
   html.gilsys-fixed-game .gilsys-profile-icon-btn img {
-    transform: scale(2.32);
-    transform-origin: 50% 18%;
+    transform: none;
+    transform-origin: 50% 50%;
   }
 
   html.gilsys-fixed-game .gilsys-profile-icon-btn[data-job-name="盗賊"] img,
@@ -150,12 +150,12 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     height: 46px !important;
     overflow: hidden !important;
     background:
-      var(--battle-profile-icon-image) center 10% / 190% auto no-repeat,
+      var(--battle-profile-icon-image) center center / cover no-repeat,
       radial-gradient(circle at 50% 32%, rgba(179, 132, 62, .18), rgba(18, 16, 14, .86) 66%) !important;
   }
   html.gilsys-fixed-game .gilsys-home-avatar[data-profile-icon-job-id="4"] {
     background:
-      var(--gilsys-home-avatar-image) center 0% / 190% auto no-repeat,
+      var(--gilsys-home-avatar-image) center center / cover no-repeat,
       radial-gradient(circle at 50% 35%, rgba(0, 229, 255, .2), rgba(6, 12, 28, .88) 64%) !important;
   }
   html.gilsys-fixed-game .gilsys-home-avatar {
@@ -177,7 +177,7 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
   }
   #phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon[data-profile-icon-job-id="4"] {
     background:
-      var(--battle-profile-icon-image) center 0% / 190% auto no-repeat,
+      var(--battle-profile-icon-image) center center / cover no-repeat,
       radial-gradient(circle at 50% 32%, rgba(179, 132, 62, .18), rgba(18, 16, 14, .86) 66%) !important;
   }
   #phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon::before,
@@ -192,9 +192,9 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     height: 88%;
     border-radius: 50%;
     object-fit: cover;
-    object-position: center 10%;
+    object-position: center center;
     transform: none;
-    transform-origin: 50% 18%;
+    transform-origin: 50% 50%;
     clip-path: circle(50% at 50% 50%);
     pointer-events: none;
   }
@@ -206,8 +206,8 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     left: 50%;
     top: 50%;
     z-index: 4;
-    width: 166% !important;
-    height: 166% !important;
+    width: 154% !important;
+    height: 154% !important;
     max-width: none !important;
     max-height: none !important;
     transform: translate(-50%, -50%) !important;
@@ -215,7 +215,7 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     pointer-events: none !important;
   }
   #phase2.gilsys-battle-ui .gilsys-portrait.has-profile-icon[data-profile-icon-job-id="4"] .gilsys-battle-portrait-img {
-    object-position: center 0%;
+    object-position: center center;
   }
   #phase2.gilsys-battle-ui .gilsys-rank-medal {
     display: none !important;
@@ -228,7 +228,7 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     border-radius: 50%;
     border: 1px solid rgba(255,220,132,.62);
     background:
-      var(--battle-profile-icon-image) center 10% / 190% auto no-repeat,
+      var(--battle-profile-icon-image) center center / cover no-repeat,
       rgba(22,18,14,.92);
     box-shadow: 0 0 10px rgba(255,205,95,.22);
   }
@@ -258,8 +258,8 @@ html.gilsys-fixed-game #nameChangeTitleSelect option {
     height: 32px !important;
   }
   #phase2.gilsys-battle-ui .gilsys-battle-portrait-frame-img {
-    width: 164% !important;
-    height: 164% !important;
+    width: 150% !important;
+    height: 150% !important;
     max-width: none !important;
     max-height: none !important;
   }
