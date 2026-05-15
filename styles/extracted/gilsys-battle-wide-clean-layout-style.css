@@ -52,8 +52,8 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .side-enemy {
 }
 
 html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite {
-  width: clamp(150px, 17vw, 250px) !important;
-  height: clamp(220px, 36vh, 330px) !important;
+  width: 218px !important;
+  height: 259px !important;
 }
 
 @media (max-width: 900px), (max-height: 620px), (hover: none) and (pointer: coarse) {
@@ -62,7 +62,7 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite {
     --gilsys-center-inset: max(5px, env(safe-area-inset-left)) !important;
     --gilsys-stage-top: max(4px, env(safe-area-inset-top)) !important;
     --gilsys-command-bottom: max(4px, env(safe-area-inset-bottom)) !important;
-    --gilsys-command-height: clamp(174px, 38dvh, 286px) !important;
+    --gilsys-command-height: 274px !important;
   }
 
   html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage.gilsys-battle-stage,
@@ -87,7 +87,7 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite {
 
 @media (orientation: portrait) and (max-width: 760px) {
   html.gilsys-fixed-game #phase2.gilsys-battle-ui {
-    --gilsys-command-height: min(44dvh, 330px) !important;
+    --gilsys-command-height: 317px !important;
   }
 
   html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel {

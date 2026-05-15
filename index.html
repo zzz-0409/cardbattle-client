@@ -5049,6 +5049,7 @@ function setPhase(p) {
 
 let currentItemCategory = null;
 let isItemUIOpen = false; // ★ 追加
+const EQUIP_COMBINE_MAX_STAR = 5;
 let equipmentCombineMode = false;
 let equipmentCombineSelection = [];
 let ws;
@@ -10692,6 +10693,7 @@ function renderDojoPrepInventory() {
       ? `<div class="gilsys-panel-subtools dojo-inventory-tools">
           <button onclick="toggleDojoEquipCombineMode()">${dojoEquipCombineMode ? "合成をやめる" : "装備を合成"}</button>
           <button class="dojo-auto-combine-toggle ${dojoAutoCombineEnabled ? "is-on" : ""}" onclick="toggleDojoAutoCombine()">${dojoAutoCombineEnabled ? "自動合成ON" : "自動合成OFF"}</button>
+          <span class="gilsys-combine-max-note">最大Lv${EQUIP_COMBINE_MAX_STAR}</span>
           ${dojoEquipCombineMode ? `<button onclick="submitDojoEquipCombine()" ${dojoEquipCombineSelection.length === 2 ? "" : "disabled"}>選択した2つを合成</button>` : ""}
           ${dojoEquipCombineMode ? `<span>同じ星・同じ効果の通常装備を2つ選択してください（${dojoEquipCombineSelection.length}/2）</span>` : ""}
         </div>`
@@ -10716,7 +10718,9 @@ function hasDojoAutoCombineCandidate(equipment = []) {
   const seen = new Set();
   for (const item of equipment ?? []) {
     if (!item?.is_equip || item.equip_type !== "normal") continue;
-    const key = `${Number(item.star ?? 1)}::${String(item.equip_category ?? item.effect_type ?? "")}`;
+    const star = Number(item.star ?? 1);
+    if (star >= EQUIP_COMBINE_MAX_STAR) continue;
+    const key = `${star}::${String(item.equip_category ?? item.effect_type ?? "")}`;
     if (seen.has(key)) return true;
     seen.add(key);
   }
@@ -10769,6 +10773,12 @@ function toggleDojoEquipCombineSelect(uid) {
   if (dojoEquipCombineSelection.includes(id)) {
     dojoEquipCombineSelection = dojoEquipCombineSelection.filter(x => x !== id);
   } else {
+    const equipment = window.gilsysDojoRunView?.equipment || [];
+    const target = equipment.find(it => String(it?.uid ?? "") === id);
+    if (Number(target?.star ?? 1) >= EQUIP_COMBINE_MAX_STAR) {
+      showCenterToast(`装備合成の最大レベルは${EQUIP_COMBINE_MAX_STAR}です`, 2200);
+      return;
+    }
     if (dojoEquipCombineSelection.length >= 2) {
       showCenterToast("合成に選べる装備は2つまでです", 2200);
       return;
@@ -10794,6 +10804,10 @@ function submitDojoEquipCombine() {
   const sameCategory = String(eq1?.equip_category ?? eq1?.effect_type ?? "") === String(eq2?.equip_category ?? eq2?.effect_type ?? "");
   if (!sameStar || !sameCategory) {
     showCenterToast("違う装備は合成できない", 2500);
+    return;
+  }
+  if (Number(eq1?.star ?? 1) >= EQUIP_COMBINE_MAX_STAR) {
+    showCenterToast(`装備合成の最大レベルは${EQUIP_COMBINE_MAX_STAR}です`, 2200);
     return;
   }
   openItemConfirm("選択した2つの通常装備を合成しますか？", () => {
@@ -11730,6 +11744,11 @@ function toggleEquipCombineSelect(uid){
   if (equipmentCombineSelection.includes(id)) {
     equipmentCombineSelection = equipmentCombineSelection.filter(x => x !== id);
   } else {
+    const target = (window.itemList || []).find(it => String(it?.uid ?? "") === id);
+    if (Number(target?.star ?? 1) >= EQUIP_COMBINE_MAX_STAR) {
+      showCenterToast(`装備合成の最大レベルは${EQUIP_COMBINE_MAX_STAR}です`, 2200);
+      return;
+    }
     if (equipmentCombineSelection.length >= 2) {
       showCenterToast("合成に選べる装備は2つまでです", 2200);
       return;
@@ -11772,6 +11791,11 @@ function submitEquipCombine(){
     return;
   }
 
+  if (star1 >= EQUIP_COMBINE_MAX_STAR) {
+    showCenterToast(`装備合成の最大レベルは${EQUIP_COMBINE_MAX_STAR}です`, 2200);
+    return;
+  }
+
   openItemConfirm("選択した2つの通常装備を合成しますか？", () => {
     ws.send(JSON.stringify({
       type: "combine_equips",
@@ -11806,8 +11830,8 @@ function renderEquipCombineActions(category){
     <button onclick="toggleEquipCombineMode()">${equipmentCombineMode ? "合成をやめる" : "合成"}</button>
     <div style="font-size:12px; color:#cfcfcf;">
       ${equipmentCombineMode
-        ? `同じ星・同じ効果の通常装備を2つ選択してください（${selectedCount}/2）`
-        : "同じ星・同じ効果の通常装備2つを合成して、星を1つ上げられます"}
+        ? `最大Lv${EQUIP_COMBINE_MAX_STAR} / 同じ星・同じ効果の通常装備を2つ選択してください（${selectedCount}/2）`
+        : `最大Lv${EQUIP_COMBINE_MAX_STAR} / 同じ星・同じ効果の通常装備2つを合成して、星を1つ上げられます`}
     </div>
     ${equipmentCombineMode
       ? `<button onclick="submitEquipCombine()" ${selectedCount === 2 ? "" : "disabled"}>選択した2つを合成</button>`
@@ -12120,7 +12144,12 @@ function isNoStarSpecialShopItem(it){
   );
 }
 
+function isNormalEquipmentRarityTarget(it){
+  return Boolean(it?.is_equip && it?.equip_type === "normal");
+}
+
 function getShopRarityTheme(it, star, hasStar){
+  if (star >= EQUIP_COMBINE_MAX_STAR && isNormalEquipmentRarityTarget(it)) return "theme-redblack";
   if (star >= 4) return "theme-rainbow";
   if (!hasStar && isNoStarSpecialShopItem(it)) return "theme-rainbow";
   if (star >= 3) return "theme-gold";
@@ -12260,7 +12289,9 @@ function getShopVisualMeta(it){
     badges.push({ label: "通常アイテム", kind: "normal" });
   }
 
-  if (star >= 4 || noStarSpecial) {
+  if (star >= EQUIP_COMBINE_MAX_STAR && isNormalEquipmentRarityTarget(it)) {
+    theme = "theme-redblack";
+  } else if (star >= 4 || noStarSpecial) {
     theme = "theme-rainbow";
   }
 
@@ -13008,7 +13039,7 @@ try {
 <link id="gilsys-alchemist-battle-opacity-fix" rel="stylesheet" href="styles/extracted/gilsys-alchemist-battle-opacity-fix.css">
 <link id="gilsys-title-job-scroll-lock-and-alchemist-final" rel="stylesheet" href="styles/extracted/gilsys-title-job-scroll-lock-and-alchemist-final.css">
 <link id="gilsys-battle-generated-button-bg" rel="stylesheet" href="styles/extracted/gilsys-battle-generated-button-bg.css">
-<link id="gilsys-item-card-generated-backgrounds" rel="stylesheet" href="styles/extracted/gilsys-item-card-generated-backgrounds.css?v=5">
+<link id="gilsys-item-card-generated-backgrounds" rel="stylesheet" href="styles/extracted/gilsys-item-card-generated-backgrounds.css?v=6">
 <link id="gilsys-dojo-prep-two-panel-style" rel="stylesheet" href="styles/extracted/gilsys-dojo-prep-two-panel.css">
 <link id="gilsys-enemy-turn-command-panel" rel="stylesheet" href="styles/extracted/gilsys-enemy-turn-command-panel.css">
 <script id="gilsys-dojo-prep-two-panel" src="scripts/extracted/gilsys-dojo-prep-two-panel.js"></script>

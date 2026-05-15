@@ -221,7 +221,7 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-
 
 @media (max-width: 1100px), (max-height: 660px), (hover: none) and (pointer: coarse) {
   html.gilsys-fixed-game #phase2.gilsys-battle-ui {
-    --gilsys-command-height: clamp(176px, 38dvh, 292px) !important;
+    --gilsys-command-height: 274px !important;
   }
 
   html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
@@ -255,7 +255,7 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite.enemy.dojo-
 
 @media (orientation: portrait) and (max-width: 760px) {
   html.gilsys-fixed-game #phase2.gilsys-battle-ui {
-    --gilsys-command-height: min(46dvh, 350px) !important;
+    --gilsys-command-height: 331px !important;
   }
 
   html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {

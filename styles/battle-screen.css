@@ -246,8 +246,8 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .side-enemy {
 }
 
 html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .sprite {
-  width: clamp(124px, 14vw, 190px) !important;
-  height: clamp(190px, 31vh, 270px) !important;
+  width: 180px !important;
+  height: 250px !important;
   min-height: 0 !important;
   filter: drop-shadow(0 24px 20px rgba(0,0,0,.62)) !important;
 }

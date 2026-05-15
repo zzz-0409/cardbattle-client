@@ -1,4 +1,4 @@
-const CACHE_NAME = "gilsys-pwa-v81";
+const CACHE_NAME = "gilsys-pwa-v83";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -20,6 +20,7 @@ const CORE_ASSETS = [
   "./Assets/item_cards/item-card-silver.png",
   "./Assets/item_cards/item-card-gold.png",
   "./Assets/item_cards/item-card-rainbow.png",
+  "./Assets/item_cards/item-card-redblack.png",
   "./Assets/haikei/7cc56fd2-92f8-44c9-a2b9-b8e605d1affd.png",
   "./Assets/home/gilsys-home-button-plate.png",
   "./Assets/home/gilsys-home-panel-frame.png",
@@ -121,7 +122,7 @@ const CORE_ASSETS = [
   "./styles/extracted/gilsys-result-rate-compact-final.css",
   "./styles/extracted/gilsys-defeat-result-generated-assets-style.css",
   "./styles/extracted/gilsys-battle-generated-button-bg.css",
-  "./styles/extracted/gilsys-item-card-generated-backgrounds.css?v=5",
+  "./styles/extracted/gilsys-item-card-generated-backgrounds.css?v=6",
   "./styles/extracted/gilsys-dojo-prep-two-panel.css",
   "./styles/extracted/gilsys-enemy-turn-command-panel.css",
   "./scripts/extracted/gilsys-dojo-prep-two-panel.js",
