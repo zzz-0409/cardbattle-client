@@ -4036,22 +4036,7 @@ body.gilsys-assets-loading {
 body.gilsys-assets-loading #game-wrapper {
   visibility: hidden !important;
 }
-html.gilsys-fixed-game body > #gilsysBootLoader[data-loading-scope="transition"] {
-  position: fixed !important;
-  inset: auto !important;
-  left: 0 !important;
-  top: 0 !important;
-  width: var(--gilsys-game-width, 1280px) !important;
-  height: var(--gilsys-game-height, 720px) !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  max-width: none !important;
-  max-height: none !important;
-  margin: 0 !important;
-  transform-origin: 0 0 !important;
-  transform: translate(var(--gilsys-game-left, 0px), var(--gilsys-game-top, 0px)) scale(var(--gilsys-game-scale, 1)) !important;
-}
-#gilsysBootLoader {
+#gilsysInitialBootLoader {
   position: fixed;
   inset: 0;
   left: 0 !important;
@@ -4075,79 +4060,66 @@ html.gilsys-fixed-game body > #gilsysBootLoader[data-loading-scope="transition"]
   background: #050403;
   color: #fff2c8;
 }
+#gilsysInitialBootLoader .gilsys-boot-loader-box {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(560px, calc(100vw - 32px));
+  padding: 0 16px;
+}
+#gilsysInitialBootLoader .gilsys-boot-loader-ring {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 226, 154, .18);
+  border-top-color: #ffdf86;
+  border-right-color: #d73a2e;
+  animation: gilsysBootSpin 1.05s linear infinite;
+}
+#gilsysInitialBootLoader .gilsys-boot-loader-text {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  color: #fff1c2;
+}
+#gilsysInitialBootLoader .gilsys-boot-loader-topic {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  max-width: 520px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 216, 139, .26);
+  border-radius: 8px;
+  background: rgba(12, 9, 7, .84);
+  box-sizing: border-box;
+}
+#gilsysInitialBootLoader .gilsys-boot-loader-topic b {
+  color: #ffd979;
+  font-size: 12px;
+  letter-spacing: .16em;
+}
+#gilsysInitialBootLoader .gilsys-boot-loader-topic span {
+  color: rgba(255, 241, 205, .9);
+  font-size: 13px;
+  line-height: 1.55;
+}
+#gilsysInitialBootLoader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+@keyframes gilsysBootSpin {
+  to { transform: rotate(360deg); }
+}
 </style>
-<script id="gilsys-boot-viewport-prime">
-(() => {
-  const GAME_W = 1280;
-  const GAME_H = 720;
-  const root = document.documentElement;
-  function resetScroll() {
-    if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
-    root.scrollLeft = 0;
-    root.scrollTop = 0;
-    if (document.body) {
-      document.body.scrollLeft = 0;
-      document.body.scrollTop = 0;
-    }
-  }
-  function applyBootViewport() {
-    const width = Math.max(1, window.innerWidth || root.clientWidth || GAME_W);
-    const height = Math.max(1, window.innerHeight || root.clientHeight || GAME_H);
-    const scale = Math.min(width / GAME_W, height / GAME_H);
-    root.classList.add("gilsys-fixed-game");
-    root.style.setProperty("--gilsys-game-width", `${GAME_W}px`);
-    root.style.setProperty("--gilsys-game-height", `${GAME_H}px`);
-    root.style.setProperty("--gilsys-game-scale", String(scale));
-    root.style.setProperty("--gilsys-game-left", `${Math.max(0, (width - GAME_W * scale) / 2)}px`);
-    root.style.setProperty("--gilsys-game-top", `${Math.max(0, (height - GAME_H * scale) / 2)}px`);
-    const loader = document.getElementById("gilsysBootLoader");
-    if (loader) loader.dataset.loadingScope = "transition";
-    resetScroll();
-  }
-  applyBootViewport();
-  window.addEventListener("pageshow", applyBootViewport, { once: true });
-})();
-</script>
 </head>
 <body class="gilsys-assets-loading">
 <div id="gilsysOrientationGuard" aria-hidden="true">横画面でプレイしてください</div>
-<script id="gilsys-boot-viewport-prime-body">
-(() => {
-  const GAME_W = 1280;
-  const GAME_H = 720;
-  const root = document.documentElement;
-  function resetScroll() {
-    if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
-    root.scrollLeft = 0;
-    root.scrollTop = 0;
-    if (document.body) {
-      document.body.scrollLeft = 0;
-      document.body.scrollTop = 0;
-    }
-  }
-  function applyBootViewport() {
-    const width = Math.max(1, window.innerWidth || root.clientWidth || GAME_W);
-    const height = Math.max(1, window.innerHeight || root.clientHeight || GAME_H);
-    const scale = Math.min(width / GAME_W, height / GAME_H);
-    root.classList.add("gilsys-fixed-game");
-    root.style.setProperty("--gilsys-game-width", `${GAME_W}px`);
-    root.style.setProperty("--gilsys-game-height", `${GAME_H}px`);
-    root.style.setProperty("--gilsys-game-scale", String(scale));
-    root.style.setProperty("--gilsys-game-left", `${Math.max(0, (width - GAME_W * scale) / 2)}px`);
-    root.style.setProperty("--gilsys-game-top", `${Math.max(0, (height - GAME_H * scale) / 2)}px`);
-    const loader = document.getElementById("gilsysBootLoader");
-    if (loader) loader.dataset.loadingScope = "transition";
-    resetScroll();
-  }
-  applyBootViewport();
-  window.addEventListener("pageshow", applyBootViewport, { once: true });
-})();
-</script>
-<div id="gilsysBootLoader" data-loading-scope="transition" role="status" aria-live="polite">
+<div id="gilsysInitialBootLoader" role="status" aria-live="polite">
   <div class="gilsys-boot-loader-box">
     <div class="gilsys-boot-loader-ring" aria-hidden="true"></div>
     <div class="gilsys-boot-loader-text">LOADING...</div>
-    <div class="gilsys-boot-loader-topic" id="gilsysBootLoaderTopic">
+    <div class="gilsys-boot-loader-topic" id="gilsysInitialBootLoaderTopic">
       <b>TIPS</b>
       <span>読み込み中...</span>
     </div>

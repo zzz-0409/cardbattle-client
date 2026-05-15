@@ -221,12 +221,35 @@
     return loader;
   }
 
-  function setRandomTopic() {
+  function setRandomTopic(loader = ensureLoader()) {
     const topic = LOADING_TOPICS[Math.floor(Math.random() * LOADING_TOPICS.length)] || LOADING_TOPICS[0];
-    const topicEl = ensureLoader().querySelector(".gilsys-boot-loader-topic");
+    const topicEl = loader?.querySelector(".gilsys-boot-loader-topic");
     if (!topicEl) return;
     topicEl.querySelector("b").textContent = topic[0];
     topicEl.querySelector("span").textContent = topic[1];
+  }
+
+  function showInitialLoadingOverlay(text = "LOADING...") {
+    const loader = document.getElementById("gilsysInitialBootLoader");
+    if (!loader) return;
+    const label = loader.querySelector(".gilsys-boot-loader-text");
+    if (label) label.textContent = text;
+    setRandomTopic(loader);
+    document.body.classList.add("gilsys-screen-loading");
+    loader.classList.remove("is-hidden");
+    loader.hidden = false;
+    loader.style.display = "grid";
+    window.gilsysResetOuterScroll?.();
+    requestAnimationFrame(() => window.gilsysResetOuterScroll?.());
+  }
+
+  function hideInitialLoadingOverlay() {
+    const loader = document.getElementById("gilsysInitialBootLoader");
+    if (!loader) return;
+    loader.classList.add("is-hidden");
+    setTimeout(() => {
+      if (loader.classList.contains("is-hidden")) loader.remove();
+    }, 420);
   }
 
   function showLoadingOverlay(text = "LOADING...", scope = "transition") {
@@ -234,7 +257,7 @@
     const label = loader.querySelector(".gilsys-boot-loader-text");
     if (label) label.textContent = text;
     loader.dataset.loadingScope = "transition";
-    setRandomTopic();
+    setRandomTopic(loader);
     document.body.classList.add("gilsys-screen-loading");
     loader.classList.remove("is-hidden");
     loader.hidden = false;
@@ -260,6 +283,7 @@
     document.body.classList.remove("gilsys-assets-loading");
     document.body.classList.add("gilsys-assets-ready");
     requestAnimationFrame(() => window.gilsysApplyFixedGameViewport?.());
+    hideInitialLoadingOverlay();
     hideLoadingOverlay();
   }
 
@@ -268,7 +292,7 @@
   }
 
   async function startPreload() {
-    showLoadingOverlay("LOADING...", "boot");
+    showInitialLoadingOverlay("LOADING...");
     const assets = collectImageAssets();
     await preloadAssets(assets, BOOT_TIMEOUT_MS);
     finishLoading();

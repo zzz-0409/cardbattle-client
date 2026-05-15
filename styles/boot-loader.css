@@ -38,7 +38,8 @@ body.gilsys-assets-loading #game-wrapper {
   visibility: hidden !important;
 }
 
-#gilsysBootLoader {
+#gilsysBootLoader,
+#gilsysInitialBootLoader {
   position: fixed;
   inset: 0;
   left: 0 !important;
@@ -65,7 +66,8 @@ body.gilsys-assets-loading #game-wrapper {
   transition: opacity .36s ease, visibility .36s ease;
 }
 
-body.gilsys-assets-loading #gilsysBootLoader {
+body.gilsys-assets-loading #gilsysBootLoader,
+body.gilsys-assets-loading #gilsysInitialBootLoader {
   position: fixed !important;
   inset: 0 !important;
   left: 0 !important;
@@ -100,13 +102,15 @@ html.gilsys-fixed-game body.gilsys-assets-loading > #gilsysBootLoader[data-loadi
   transform: translate(var(--gilsys-game-left, 0px), var(--gilsys-game-top, 0px)) scale(var(--gilsys-game-scale, 1)) !important;
 }
 
-#gilsysBootLoader:not(.is-hidden) {
+#gilsysBootLoader:not(.is-hidden),
+#gilsysInitialBootLoader:not(.is-hidden) {
   display: grid !important;
   visibility: visible;
   pointer-events: auto;
 }
 
-#gilsysBootLoader.is-hidden {
+#gilsysBootLoader.is-hidden,
+#gilsysInitialBootLoader.is-hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;

@@ -97,6 +97,11 @@
     return "職業専用装備・矢・人形衣装などを装備できます。";
   };
 
+  const getInventoryDetailMetaText = (category) => {
+    if (category === "item") return getInventoryMetaText(category);
+    return "持ち物詳細";
+  };
+
   const renderCategoryButtons = () => `
     <div class="gilsys-category-grid">
       <button class="gilsys-category-card" onclick="openItemCategory('item')">
@@ -296,7 +301,7 @@
 
     renderGilsysDetailInventoryPanel(
       meta.title,
-      "持ち物詳細",
+      getInventoryDetailMetaText(category),
       "",
       buildInventoryDetailBody(item, category)
     );
