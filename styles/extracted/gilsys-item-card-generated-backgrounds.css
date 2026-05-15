@@ -330,3 +330,10 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot
   z-index: 1;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .68));
 }
+
+html.gilsys-fixed-game #shopList[data-dojo-prep-panel="inventory"] .shop-card.inventory-card[class*="theme-"] {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background-position: center center !important;
+  background-size: 116% 100% !important;
+}

@@ -7224,18 +7224,6 @@ function getBattleEquipEffectLines(item) {
     push(item.effect_text ?? item.desc ?? item.description ?? item.effect ?? "");
   }
 
-  const category = item.equip_category ?? item.effect_type ?? item.category ?? "";
-  const power = item.equip_power ?? item.power ?? null;
-  if (category && power != null && power !== "") {
-    const sign = Number(power) >= 0 ? "+" : "";
-    push(`${category} ${sign}${power}`);
-  }
-
-  if (item.attack_bonus != null) push(`ATK +${item.attack_bonus}`);
-  if (item.defense_bonus != null) push(`DEF +${item.defense_bonus}`);
-  if (item.special_defense_bonus != null) push(`SP DEF +${item.special_defense_bonus}`);
-  if (item.coin != null) push(`Coin +${item.coin}`);
-
   return lines;
 }
 
@@ -13020,8 +13008,10 @@ try {
 <link id="gilsys-alchemist-battle-opacity-fix" rel="stylesheet" href="styles/extracted/gilsys-alchemist-battle-opacity-fix.css">
 <link id="gilsys-title-job-scroll-lock-and-alchemist-final" rel="stylesheet" href="styles/extracted/gilsys-title-job-scroll-lock-and-alchemist-final.css">
 <link id="gilsys-battle-generated-button-bg" rel="stylesheet" href="styles/extracted/gilsys-battle-generated-button-bg.css">
-<link id="gilsys-item-card-generated-backgrounds" rel="stylesheet" href="styles/extracted/gilsys-item-card-generated-backgrounds.css?v=4">
+<link id="gilsys-item-card-generated-backgrounds" rel="stylesheet" href="styles/extracted/gilsys-item-card-generated-backgrounds.css?v=5">
+<link id="gilsys-dojo-prep-two-panel-style" rel="stylesheet" href="styles/extracted/gilsys-dojo-prep-two-panel.css">
 <link id="gilsys-enemy-turn-command-panel" rel="stylesheet" href="styles/extracted/gilsys-enemy-turn-command-panel.css">
+<script id="gilsys-dojo-prep-two-panel" src="scripts/extracted/gilsys-dojo-prep-two-panel.js"></script>
 <script id="gilsys-command-action-selection-state" src="scripts/extracted/gilsys-command-action-selection-state.js"></script>
 </body>
 </html>
