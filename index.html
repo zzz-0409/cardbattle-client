@@ -5131,6 +5131,38 @@ function updateRoundTurnUI() {
   updateGilsysCenterTurn?.();
 }
 
+function showGilsysEnemyTurnCommandPanel(message = "") {
+  const phase = document.getElementById("phase2");
+  const panel = document.querySelector(".gilsys-command-list-panel");
+  const title = document.getElementById("gilsysCommandListTitle");
+  const list = document.getElementById("gilsysCommandList");
+  if (phase) phase.classList.add("is-enemy-turn-command");
+  if (panel) {
+    panel.classList.remove("is-inventory-mode", "is-shop-mode");
+    panel.classList.add("is-enemy-turn-waiting");
+  }
+  if (title) title.textContent = "\u76f8\u624b\u30bf\u30fc\u30f3\u4e2d";
+  if (list) {
+    const safeMessage = escapeHtml(
+      message || "\u76f8\u624b\u306e\u884c\u52d5\u3092\u5f85\u3063\u3066\u3044\u307e\u3059\u3002"
+    );
+    list.dataset.manual = "enemyTurn";
+    list.innerHTML = `
+      <div class="gilsys-enemy-turn-wait-card" aria-live="polite">
+        <div class="gilsys-enemy-turn-kicker">\u76f8\u624b\u30bf\u30fc\u30f3</div>
+        <div class="gilsys-enemy-turn-title">\u5f85\u6a5f\u4e2d</div>
+        <div class="gilsys-enemy-turn-desc">${safeMessage}</div>
+        <div class="gilsys-enemy-turn-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+      </div>
+    `;
+  }
+}
+
+function clearGilsysEnemyTurnCommandPanel() {
+  document.getElementById("phase2")?.classList.remove("is-enemy-turn-command");
+  document.querySelector(".gilsys-command-list-panel")?.classList.remove("is-enemy-turn-waiting");
+}
+
 
 // ==================== 環境自動判定 ====================
 // ローカル（file://, localhost）かどうか
@@ -7223,6 +7255,29 @@ function attachBattleEquipTooltip(slot, name, effectLines, tooltipClass = "equip
   slot.appendChild(tip);
 }
 
+function getBattleEquipRarityTheme(item, options = {}) {
+  let theme = "theme-bronze";
+  if (typeof getShopVisualMeta === "function") {
+    try {
+      theme = getShopVisualMeta(item)?.theme || theme;
+    } catch (_) {}
+  }
+
+  const hasStar = typeof hasShopItemStar === "function"
+    ? hasShopItemStar(item)
+    : Number.isFinite(Number(item?.star));
+  if (options.special && !hasStar) {
+    theme = "theme-rainbow";
+  }
+
+  return String(theme).replace(/[^\w-]/g, "") || "theme-bronze";
+}
+
+function applyBattleEquipRarityClass(slot, item, options = {}) {
+  if (!slot || !item) return;
+  slot.classList.add("gilsys-battle-equipment-card", getBattleEquipRarityTheme(item, options));
+}
+
 function updateNormalEquipUI(side, equipment, slotCount = 1) {
   const area = document.querySelector(
     side === "self"
@@ -7250,6 +7305,7 @@ function updateNormalEquipUI(side, equipment, slotCount = 1) {
     const name = typeof eq === "string" ? eq : (eq.name ?? "不明な装備");
     const effect = typeof eq === "string" ? "" : (eq.effect_text ?? eq.effect ?? "");
     div.classList.add("filled");
+    applyBattleEquipRarityClass(div, eq);
     const iconMarkup = getBattleEquipIconMarkup(eq, "equip-slot-icon");
     div.innerHTML = `
       ${iconMarkup}
@@ -7311,9 +7367,10 @@ function buildDollSpecialEquipHTML(doll) {
       const safeTapTitle = getBattleEquipEscapedText(tapTitle);
       const safeTooltipHtml = getBattleEquipEscapedText(tooltipHtml);
       const iconMarkup = getBattleEquipIconMarkup(c, "special-equip-slot-icon");
+      const themeClass = getBattleEquipRarityTheme(c, { special: true });
 
       html += `
-        <div class="special-equip-slot filled active ${c.condition === "boroboro" ? "boroboro" : ""}"
+        <div class="special-equip-slot filled active gilsys-battle-equipment-card ${themeClass} ${c.condition === "boroboro" ? "boroboro" : ""}"
              title="${safeTapTitle}"
              aria-label="${safeTapTitle}"
              data-tap-title="${safeTapTitle}"
@@ -7441,6 +7498,7 @@ function updateSpecialEquipUI(side, specialEquip) {
     // 装備あり
     div.classList.add("filled");
     div.classList.add("active"); // ★ ここで点灯
+    applyBattleEquipRarityClass(div, slot.item, { special: true });
     if (slot.item?.condition === "boroboro") {
       div.classList.add("boroboro");
     }
@@ -8098,6 +8156,7 @@ function resetBattleStateForResultAction() {
   dojoAutoSending = false;
   clearTimeout(dojoAutoTimer);
   updateDojoBattleButtons();
+  clearGilsysEnemyTurnCommandPanel();
   window.itemList = [];
   window.arrowSlots = 1;
   ["battleBox", "systemBox", "debugBox"].forEach(id => {
@@ -8539,6 +8598,7 @@ function attachWsHandlers() {
       battleEnded = false;
       dojoAutoSending = false;
       clearTimeout(dojoAutoTimer);
+      clearGilsysEnemyTurnCommandPanel();
       if ((data.mode === "dojo" || data.dojo || window.matchMode === "dojo") && typeof dojoAutoCombineBusy !== "undefined") {
         dojoAutoCombineBusy = false;
       }
@@ -9056,6 +9116,7 @@ function attachWsHandlers() {
     /* --- 自分のターン --- */
     if(data.type==="your_turn"){
       myTurn = true;
+      clearGilsysEnemyTurnCommandPanel();
       appendLog("systemBox","system-log", data.msg);
 
       // ★ 自分のターン開始：自分側だけ加算
@@ -9080,7 +9141,8 @@ function attachWsHandlers() {
       }
       dojoAutoSending = false;
       updateDojoBattleButtons();
-      refreshAttackSkillPanelIfOpen(true);
+      if (typeof openAttackSkillPanel === "function") openAttackSkillPanel(false);
+      else refreshAttackSkillPanelIfOpen(true);
       if (typeof refreshGilsysDollChargeUI === "function") refreshGilsysDollChargeUI();
       requestDojoAutoAction();
 
@@ -9129,6 +9191,7 @@ function attachWsHandlers() {
       if (typeof setGilsysCommandDetail === "function") {
         setGilsysCommandDetail("攻撃/スキル", "相手ターン", "自分のターンまで待機中です。", "⚔", null);
       }
+      showGilsysEnemyTurnCommandPanel(data.msg);
 
       return;
     }
@@ -9140,6 +9203,7 @@ function attachWsHandlers() {
     // ============================
     if (data.type === "battle_end") {
       battleEnded = true;
+      clearGilsysEnemyTurnCommandPanel();
       const battleEndDetail = (data.rating || data.matchType || data.selfName || data.enemyName)
         ? {
             type: "battle_result_detail",
@@ -9177,6 +9241,7 @@ function attachWsHandlers() {
 
     if (data.type === "dojo_stage_clear") {
       battleEnded = true;
+      clearGilsysEnemyTurnCommandPanel();
       stopDojoBattleAuto();
       stopBattleBgm();
       syncLocalDojoProgressFromRun(data.run, false);
@@ -12028,11 +12093,51 @@ function getBattleEquipIconMarkup(item, className){
 }
 
 function getShopItemStar(it){
-  if (Number.isFinite(Number(it?.star))) return Number(it.star);
+  const directStar = Number(it?.star);
+  if (Number.isFinite(directStar)) return directStar;
   const name = String(it?.name ?? "");
-  const match = name.match(/★\s*(\d+)/);
+  const match = name.match(/\u2605\s*(\d+)/) || name.match(/\u7b18\u30fb\s*(\d+)/) || name.match(/\u7b18\u30fbs*(\d+)/);
   if (match) return Number(match[1]);
   return 1;
+}
+
+function hasShopItemStar(it){
+  if (Number.isFinite(Number(it?.star))) return true;
+  const name = String(it?.name ?? "");
+  return /\u2605\s*\d+/.test(name) || /\u7b18\u30fb\s*\d+/.test(name) || /\u7b18\u30fbs*\d+/.test(name);
+}
+
+function isNoStarSpecialShopItem(it){
+  const typeText = [
+    it?.category,
+    it?.type,
+    it?.kind,
+    it?.equip_type,
+    it?.equip_category
+  ].map((value) => String(value ?? "").toLowerCase()).join(" ");
+  return Boolean(
+    it?.is_dojo_special_item ||
+    it?.is_onmyoji_item ||
+    it?.is_mage_item ||
+    it?.is_doll_item ||
+    it?.is_doll_costume ||
+    it?.is_arrow ||
+    it?.is_priest_item ||
+    it?.is_mad_special_item ||
+    typeText.includes("special") ||
+    typeText.includes("unique") ||
+    typeText.includes("dojo_special") ||
+    typeText.includes("mage_equip") ||
+    typeText.includes("alchemist_unique")
+  );
+}
+
+function getShopRarityTheme(it, star, hasStar){
+  if (star >= 4) return "theme-rainbow";
+  if (!hasStar && isNoStarSpecialShopItem(it)) return "theme-rainbow";
+  if (star >= 3) return "theme-gold";
+  if (star === 2) return "theme-silver";
+  return "theme-bronze";
 }
 
 const GILSYS_ITEM_ICON_BASE = "Assets/item_icons/";
@@ -12041,10 +12146,14 @@ function gilsysGeneratedIcon(file, alt = "") {
 }
 
 function getShopVisualMeta(it){
-  const star = Math.max(1, Math.min(3, getShopItemStar(it)));
+  const rawStar = Number(getShopItemStar(it));
+  const star = Math.max(1, Number.isFinite(rawStar) ? Math.floor(rawStar) : 1);
+  const iconStar = Math.max(1, Math.min(3, star));
+  const hasStar = hasShopItemStar(it);
+  const noStarSpecial = !hasStar && isNoStarSpecialShopItem(it);
   const badges = [];
   let icon = gilsysGeneratedIcon("coin", "アイテム");
-  let theme = "theme-bronze";
+  let theme = getShopRarityTheme(it, star, hasStar);
   let showStarBadge = false;
   let metaClass = "";
   const name = String(it?.name ?? "");
@@ -12058,12 +12167,6 @@ function getShopVisualMeta(it){
     "魔導士のローブ": gilsysGeneratedIcon("mage_robe", "魔導士のローブ"),
     "古代魔導書": gilsysGeneratedIcon("mage_book", "古代魔導書"),
   };
-
-  if (star === 2) {
-    theme = "theme-silver";
-  } else if (star >= 3) {
-    theme = "theme-gold";
-  }
 
   if (it?.is_dojo_special_item) {
     icon = it?.icon_src ? { type: "image", src: String(it.icon_src), alt: name || "特殊アイテム" } : icon;
@@ -12139,38 +12242,42 @@ function getShopVisualMeta(it){
     badges.push({ label: "専用アイテム", kind: "special" });
   } else if (it?.is_mad_special_item) {
     icon = gilsysGeneratedIcon("mad_elixir", name || "狂気の秘薬");
-    theme = star >= 3 ? "theme-rainbow" : star === 2 ? "theme-silver" : "theme-bronze";
+    theme = getShopRarityTheme(it, star, hasStar);
     showStarBadge = true;
     badges.push({ label: "狂人", kind: "job" });
     badges.push({ label: "特殊アイテム", kind: "special" });
   } else if (it?.is_equip) {
     showStarBadge = true;
     if (it?.effect_type === "coin_per_turn" || it?.equip_category === "coin") {
-      icon = gilsysGeneratedIcon(`equip_coin_${star}`, name || "コイン装備");
+      icon = gilsysGeneratedIcon(`equip_coin_${iconStar}`, name || "コイン装備");
     } else if (String(it?.effect_type ?? it?.equip_category ?? "").includes("攻撃")) {
-      icon = gilsysGeneratedIcon(`equip_atk_${star}`, name || "攻撃装備");
+      icon = gilsysGeneratedIcon(`equip_atk_${iconStar}`, name || "攻撃装備");
     } else if (String(it?.effect_type ?? it?.equip_category ?? "").includes("防御")) {
-      icon = gilsysGeneratedIcon(`equip_def_${star}`, name || "防御装備");
+      icon = gilsysGeneratedIcon(`equip_def_${iconStar}`, name || "防御装備");
     } else {
-      icon = gilsysGeneratedIcon(`equip_def_${star}`, name || "装備");
+      icon = gilsysGeneratedIcon(`equip_def_${iconStar}`, name || "装備");
     }
     badges.push({ label: "通常装備", kind: "normal" });
   } else {
     showStarBadge = true;
     if (String(it?.effect_type ?? "").includes("HP")) {
-      icon = gilsysGeneratedIcon(`item_hp_${star}`, name || "HP回復");
+      icon = gilsysGeneratedIcon(`item_hp_${iconStar}`, name || "HP回復");
     } else if (String(it?.effect_type ?? "").includes("攻撃")) {
-      icon = gilsysGeneratedIcon(`item_atk_${star}`, name || "攻撃力UP");
+      icon = gilsysGeneratedIcon(`item_atk_${iconStar}`, name || "攻撃力UP");
     } else if (String(it?.effect_type ?? "").includes("防御")) {
-      icon = gilsysGeneratedIcon(`item_def_${star}`, name || "防御力UP");
+      icon = gilsysGeneratedIcon(`item_def_${iconStar}`, name || "防御力UP");
     } else {
-      icon = gilsysGeneratedIcon(`item_hp_${star}`, name || "アイテム");
+      icon = gilsysGeneratedIcon(`item_hp_${iconStar}`, name || "アイテム");
     }
     badges.push({ label: "通常アイテム", kind: "normal" });
   }
 
-  if (showStarBadge) {
-    badges.push({ label: `★${star}`, kind: "rank" });
+  if (star >= 4 || noStarSpecial) {
+    theme = "theme-rainbow";
+  }
+
+  if (showStarBadge && !noStarSpecial) {
+    badges.push({ label: `\u2605${star}`, kind: "rank" });
   }
 
   return { icon, badges, theme, metaClass };
@@ -12912,5 +13019,9 @@ try {
 <link id="gilsys-inventory-icon-detail-final" rel="stylesheet" href="styles/extracted/gilsys-inventory-icon-detail-final.css">
 <link id="gilsys-alchemist-battle-opacity-fix" rel="stylesheet" href="styles/extracted/gilsys-alchemist-battle-opacity-fix.css">
 <link id="gilsys-title-job-scroll-lock-and-alchemist-final" rel="stylesheet" href="styles/extracted/gilsys-title-job-scroll-lock-and-alchemist-final.css">
+<link id="gilsys-battle-generated-button-bg" rel="stylesheet" href="styles/extracted/gilsys-battle-generated-button-bg.css">
+<link id="gilsys-item-card-generated-backgrounds" rel="stylesheet" href="styles/extracted/gilsys-item-card-generated-backgrounds.css?v=4">
+<link id="gilsys-enemy-turn-command-panel" rel="stylesheet" href="styles/extracted/gilsys-enemy-turn-command-panel.css">
+<script id="gilsys-command-action-selection-state" src="scripts/extracted/gilsys-command-action-selection-state.js"></script>
 </body>
 </html>

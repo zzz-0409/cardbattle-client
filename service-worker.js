@@ -1,4 +1,4 @@
-const CACHE_NAME = "gilsys-pwa-v63";
+const CACHE_NAME = "gilsys-pwa-v73";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -7,6 +7,7 @@ const CORE_ASSETS = [
   "./scripts/pwa-register.js",
   "./scripts/asset-preloader.js",
   "./scripts/title-mission-system.js",
+  "./scripts/extracted/gilsys-command-action-selection-state.js",
   "./styles/title-screen.css",
   "./styles/boot-loader.css",
   "./styles/title-mission.css",
@@ -14,6 +15,11 @@ const CORE_ASSETS = [
   "./styles/profile-title.css",
   "./Assets/Battlehaikei.png",
   "./Assets/fe-zu0and1haikei.png",
+  "./Assets/battle/gilsys-battle-button-bg.png",
+  "./Assets/item_cards/item-card-bronze.png",
+  "./Assets/item_cards/item-card-silver.png",
+  "./Assets/item_cards/item-card-gold.png",
+  "./Assets/item_cards/item-card-rainbow.png",
   "./Assets/haikei/7cc56fd2-92f8-44c9-a2b9-b8e605d1affd.png",
   "./Assets/home/gilsys-home-button-plate.png",
   "./Assets/home/gilsys-home-panel-frame.png",
@@ -114,6 +120,9 @@ const CORE_ASSETS = [
   "./styles/extracted/gilsys-victory-result-data-trigger-style.css",
   "./styles/extracted/gilsys-result-rate-compact-final.css",
   "./styles/extracted/gilsys-defeat-result-generated-assets-style.css",
+  "./styles/extracted/gilsys-battle-generated-button-bg.css",
+  "./styles/extracted/gilsys-item-card-generated-backgrounds.css?v=4",
+  "./styles/extracted/gilsys-enemy-turn-command-panel.css",
   "./styles/extracted/gilsys-home-control-fallback-style.css",
   "./styles/extracted/gilsys-profile-icon-face-final.css",
   "./styles/extracted/gilsys-inventory-icon-detail-final.css",

@@ -1,0 +1,332 @@
+html.gilsys-fixed-game {
+  --gilsys-item-card-bronze-bg: url("../../Assets/item_cards/item-card-bronze.png");
+  --gilsys-item-card-silver-bg: url("../../Assets/item_cards/item-card-silver.png");
+  --gilsys-item-card-gold-bg: url("../../Assets/item_cards/item-card-gold.png");
+  --gilsys-item-card-rainbow-bg: url("../../Assets/item_cards/item-card-rainbow.png");
+}
+
+html.gilsys-fixed-game .shop-card.theme-bronze,
+html.gilsys-fixed-game #phaseDojoWait .dojo-shop-detail-card .shop-card.theme-bronze {
+  --gilsys-item-card-panel-tint:
+    radial-gradient(circle at 50% 52%, rgba(176, 88, 34, .42), rgba(105, 42, 16, .24) 46%, rgba(35, 13, 6, .10) 76%),
+    linear-gradient(90deg, rgba(97, 42, 16, .38), rgba(224, 129, 56, .18) 45%, rgba(82, 31, 12, .34));
+  border-color: rgba(212, 128, 58, .72) !important;
+  background-color: #3b1a0c !important;
+  background-image:
+    var(--gilsys-item-card-panel-tint),
+    var(--gilsys-item-card-bronze-bg) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, .34),
+    0 0 18px rgba(195, 93, 42, .20),
+    inset 0 0 0 1px rgba(255, 208, 142, .12) !important;
+}
+
+html.gilsys-fixed-game .shop-card.theme-silver,
+html.gilsys-fixed-game #phaseDojoWait .dojo-shop-detail-card .shop-card.theme-silver {
+  --gilsys-item-card-panel-tint:
+    radial-gradient(circle at 50% 52%, rgba(160, 183, 210, .38), rgba(78, 101, 129, .26) 48%, rgba(13, 25, 40, .10) 76%),
+    linear-gradient(90deg, rgba(44, 62, 82, .36), rgba(196, 220, 244, .16) 46%, rgba(30, 45, 64, .32));
+  border-color: rgba(201, 217, 235, .70) !important;
+  background-color: #26384d !important;
+  background-image:
+    var(--gilsys-item-card-panel-tint),
+    var(--gilsys-item-card-silver-bg) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, .34),
+    0 0 18px rgba(185, 216, 255, .18),
+    inset 0 0 0 1px rgba(235, 249, 255, .12) !important;
+}
+
+html.gilsys-fixed-game .shop-card.theme-gold,
+html.gilsys-fixed-game #phaseDojoWait .dojo-shop-detail-card .shop-card.theme-gold {
+  --gilsys-item-card-panel-tint:
+    radial-gradient(circle at 50% 52%, rgba(245, 179, 45, .44), rgba(151, 83, 12, .28) 48%, rgba(54, 29, 4, .12) 76%),
+    linear-gradient(90deg, rgba(117, 63, 8, .36), rgba(255, 214, 88, .20) 46%, rgba(87, 43, 4, .34));
+  border-color: rgba(255, 222, 93, .86) !important;
+  background-color: #5a3508 !important;
+  background-image:
+    var(--gilsys-item-card-panel-tint),
+    var(--gilsys-item-card-gold-bg) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, .34),
+    0 0 24px rgba(255, 197, 62, .28),
+    inset 0 0 0 1px rgba(255, 239, 160, .16) !important;
+}
+
+html.gilsys-fixed-game .shop-card.theme-rainbow,
+html.gilsys-fixed-game .shop-card.theme-rainbow-blue,
+html.gilsys-fixed-game #phaseDojoWait .dojo-shop-detail-card .shop-card.theme-rainbow,
+html.gilsys-fixed-game #phaseDojoWait .dojo-shop-detail-card .shop-card.theme-rainbow-blue {
+  --gilsys-item-card-panel-tint:
+    radial-gradient(circle at 36% 42%, rgba(58, 219, 255, .28), transparent 42%),
+    radial-gradient(circle at 66% 56%, rgba(255, 82, 201, .24), transparent 44%),
+    radial-gradient(circle at 52% 76%, rgba(255, 213, 81, .18), transparent 40%),
+    linear-gradient(90deg, rgba(11, 50, 75, .36), rgba(80, 42, 112, .20) 50%, rgba(18, 55, 82, .34));
+  border-color: rgba(146, 235, 255, .76) !important;
+  background-color: #102c47 !important;
+  background-image:
+    var(--gilsys-item-card-panel-tint),
+    var(--gilsys-item-card-rainbow-bg) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, .36),
+    0 0 22px rgba(92, 226, 255, .24),
+    0 0 28px rgba(255, 94, 211, .16),
+    inset 0 0 0 1px rgba(255, 255, 255, .12) !important;
+}
+
+html.gilsys-fixed-game .shop-card.theme-bronze::before,
+html.gilsys-fixed-game .shop-card.theme-silver::before,
+html.gilsys-fixed-game .shop-card.theme-gold::before,
+html.gilsys-fixed-game .shop-card.theme-rainbow::before,
+html.gilsys-fixed-game .shop-card.theme-rainbow-blue::before {
+  opacity: .24 !important;
+  background:
+    radial-gradient(circle at 14% 20%, rgba(255, 245, 210, .22), transparent 12%),
+    radial-gradient(circle at 84% 20%, rgba(255, 255, 255, .16), transparent 12%),
+    linear-gradient(135deg, rgba(255, 255, 255, .05), transparent 48%) !important;
+}
+
+html.gilsys-fixed-game .shop-card.theme-bronze::after,
+html.gilsys-fixed-game .shop-card.theme-silver::after,
+html.gilsys-fixed-game .shop-card.theme-gold::after,
+html.gilsys-fixed-game .shop-card.theme-rainbow::after,
+html.gilsys-fixed-game .shop-card.theme-rainbow-blue::after {
+  opacity: .12 !important;
+}
+
+html.gilsys-fixed-game .shop-card.theme-bronze.is-selected,
+html.gilsys-fixed-game .shop-card.theme-silver.is-selected,
+html.gilsys-fixed-game .shop-card.theme-gold.is-selected,
+html.gilsys-fixed-game .shop-card.theme-rainbow.is-selected,
+html.gilsys-fixed-game .shop-card.theme-rainbow-blue.is-selected,
+html.gilsys-fixed-game .shop-card.theme-bronze.is-equip-combine-selected,
+html.gilsys-fixed-game .shop-card.theme-silver.is-equip-combine-selected,
+html.gilsys-fixed-game .shop-card.theme-gold.is-equip-combine-selected,
+html.gilsys-fixed-game .shop-card.theme-rainbow.is-equip-combine-selected,
+html.gilsys-fixed-game .shop-card.theme-rainbow-blue.is-equip-combine-selected {
+  outline: 2px solid rgba(104, 226, 255, .92) !important;
+  outline-offset: -4px !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 235, 162, .82),
+    inset 0 0 18px rgba(72, 190, 255, .24),
+    0 0 18px rgba(64, 184, 255, .34),
+    0 0 24px rgba(255, 204, 92, .22) !important;
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn.theme-bronze {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-bronze-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at center, rgba(196, 96, 38, .56), rgba(93, 36, 13, .28) 54%, rgba(24, 8, 4, .08) 82%),
+    linear-gradient(135deg, rgba(124, 55, 18, .44), rgba(235, 139, 62, .18));
+  --gilsys-item-card-icon-glow: rgba(195, 93, 42, .28);
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn.theme-silver {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-silver-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at center, rgba(170, 197, 224, .48), rgba(62, 86, 115, .30) 54%, rgba(8, 17, 29, .08) 82%),
+    linear-gradient(135deg, rgba(54, 76, 100, .44), rgba(219, 239, 255, .16));
+  --gilsys-item-card-icon-glow: rgba(185, 216, 255, .24);
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn.theme-gold {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-gold-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at center, rgba(255, 187, 47, .58), rgba(133, 75, 10, .32) 54%, rgba(39, 20, 3, .08) 82%),
+    linear-gradient(135deg, rgba(142, 75, 5, .44), rgba(255, 226, 94, .18));
+  --gilsys-item-card-icon-glow: rgba(255, 197, 62, .34);
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn.theme-rainbow,
+html.gilsys-fixed-game .gilsys-shop-icon-btn.theme-rainbow-blue {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-rainbow-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at 36% 42%, rgba(54, 219, 255, .42), transparent 46%),
+    radial-gradient(circle at 66% 58%, rgba(255, 70, 201, .36), transparent 48%),
+    linear-gradient(135deg, rgba(12, 74, 105, .34), rgba(100, 44, 140, .24), rgba(162, 105, 24, .16));
+  --gilsys-item-card-icon-glow: rgba(92, 226, 255, .30);
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn[class*="theme-"],
+html.gilsys-fixed-game #phaseDojoWait .gilsys-shop-icon-btn[class*="theme-"],
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-shop-icon-grid .gilsys-shop-icon-btn[class*="theme-"],
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn[class*="theme-"] {
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    var(--gilsys-item-card-icon-tint),
+    var(--gilsys-item-card-icon-bg) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow:
+    0 0 10px var(--gilsys-item-card-icon-glow),
+    inset 0 0 0 1px rgba(255, 241, 184, .12) !important;
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn[class*="theme-"]:hover:not(:disabled),
+html.gilsys-fixed-game .gilsys-shop-icon-btn[class*="theme-"].is-selected,
+html.gilsys-fixed-game .gilsys-shop-icon-btn[class*="theme-"].is-equipped,
+html.gilsys-fixed-game .gilsys-shop-icon-btn[class*="theme-"].is-combine-selected,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-shop-icon-btn[class*="theme-"]:hover:not(:disabled),
+html.gilsys-fixed-game #phaseDojoWait .gilsys-shop-icon-btn[class*="theme-"].is-selected,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-shop-icon-grid .gilsys-shop-icon-btn[class*="theme-"]:hover:not(:disabled),
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-shop-icon-grid .gilsys-shop-icon-btn[class*="theme-"].is-selected,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn[class*="theme-"]:hover:not(:disabled),
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn[class*="theme-"].is-selected,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn[class*="theme-"].is-equipped,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn[class*="theme-"].is-combine-selected {
+  background-image:
+    radial-gradient(circle at center, rgba(83, 206, 255, .28), rgba(255, 214, 120, .16) 42%, transparent 74%),
+    var(--gilsys-item-card-icon-tint),
+    var(--gilsys-item-card-icon-bg) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow:
+    0 0 14px var(--gilsys-item-card-icon-glow),
+    0 0 14px rgba(103, 225, 255, .24),
+    inset 0 0 0 1px rgba(255, 241, 184, .24) !important;
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn[class*="theme-"].is-selected,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-shop-icon-btn[class*="theme-"].is-selected,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-shop-icon-grid .gilsys-shop-icon-btn[class*="theme-"].is-selected,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn[class*="theme-"].is-selected {
+  outline: 2px solid rgba(104, 226, 255, .98) !important;
+  outline-offset: 1px !important;
+  transform: translateY(-2px) scale(1.07) !important;
+  filter: brightness(1.16) saturate(1.18) !important;
+  box-shadow:
+    0 0 0 2px rgba(255, 235, 162, .72),
+    0 0 16px rgba(104, 226, 255, .64),
+    0 0 24px var(--gilsys-item-card-icon-glow),
+    inset 0 0 0 2px rgba(255, 250, 214, .28),
+    inset 0 0 18px rgba(104, 226, 255, .22) !important;
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn[class*="theme-"].is-selected::before,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-shop-icon-btn[class*="theme-"].is-selected::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-shop-icon-grid .gilsys-shop-icon-btn[class*="theme-"].is-selected::before,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn[class*="theme-"].is-selected::before {
+  content: "";
+  position: absolute;
+  inset: -4px !important;
+  border: 1px solid rgba(255, 231, 142, .86) !important;
+  box-shadow:
+    0 0 10px rgba(255, 231, 142, .42),
+    inset 0 0 10px rgba(104, 226, 255, .22) !important;
+  pointer-events: none;
+}
+
+html.gilsys-fixed-game .gilsys-shop-icon-btn[class*="theme-"].is-selected::after,
+html.gilsys-fixed-game #phaseDojoWait .gilsys-shop-icon-btn[class*="theme-"].is-selected::after,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-shop-icon-grid .gilsys-shop-icon-btn[class*="theme-"].is-selected::after,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-list .gilsys-inventory-icon-grid .gilsys-inventory-icon-btn[class*="theme-"].is-selected::after {
+  content: "";
+  display: block !important;
+  position: absolute;
+  right: 3px !important;
+  top: 3px !important;
+  width: 12px !important;
+  height: 12px !important;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%) !important;
+  background: #76e9ff !important;
+  box-shadow:
+    0 0 8px rgba(118, 233, 255, .92),
+    0 0 14px rgba(255, 219, 116, .62) !important;
+  pointer-events: none !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card.theme-bronze,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card.theme-bronze {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-bronze-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at center, rgba(196, 96, 38, .56), rgba(93, 36, 13, .28) 54%, rgba(24, 8, 4, .08) 82%),
+    linear-gradient(135deg, rgba(124, 55, 18, .44), rgba(235, 139, 62, .18));
+  --gilsys-item-card-icon-glow: rgba(195, 93, 42, .28);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card.theme-silver,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card.theme-silver {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-silver-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at center, rgba(170, 197, 224, .48), rgba(62, 86, 115, .30) 54%, rgba(8, 17, 29, .08) 82%),
+    linear-gradient(135deg, rgba(54, 76, 100, .44), rgba(219, 239, 255, .16));
+  --gilsys-item-card-icon-glow: rgba(185, 216, 255, .24);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card.theme-gold,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card.theme-gold {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-gold-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at center, rgba(255, 187, 47, .58), rgba(133, 75, 10, .32) 54%, rgba(39, 20, 3, .08) 82%),
+    linear-gradient(135deg, rgba(142, 75, 5, .44), rgba(255, 226, 94, .18));
+  --gilsys-item-card-icon-glow: rgba(255, 197, 62, .34);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card.theme-rainbow,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card.theme-rainbow-blue,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card.theme-rainbow,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card.theme-rainbow-blue {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-rainbow-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at 36% 42%, rgba(54, 219, 255, .42), transparent 46%),
+    radial-gradient(circle at 66% 58%, rgba(255, 70, 201, .36), transparent 48%),
+    linear-gradient(135deg, rgba(12, 74, 105, .34), rgba(100, 44, 140, .24), rgba(162, 105, 24, .16));
+  --gilsys-item-card-icon-glow: rgba(92, 226, 255, .30);
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card[class*="theme-"],
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card[class*="theme-"] {
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    var(--gilsys-item-card-icon-tint),
+    var(--gilsys-item-card-icon-bg) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow:
+    0 0 10px var(--gilsys-item-card-icon-glow),
+    inset 0 0 0 1px rgba(255, 241, 184, .12) !important;
+  overflow: visible !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card[class*="theme-"]:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card[class*="theme-"].tooltip-open,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card[class*="theme-"]:hover,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card[class*="theme-"].tooltip-open {
+  background-image:
+    radial-gradient(circle at center, rgba(83, 206, 255, .28), rgba(255, 214, 120, .16) 42%, transparent 74%),
+    var(--gilsys-item-card-icon-tint),
+    var(--gilsys-item-card-icon-bg) !important;
+  filter: brightness(1.12) saturate(1.14) !important;
+  box-shadow:
+    0 0 14px var(--gilsys-item-card-icon-glow),
+    0 0 14px rgba(103, 225, 255, .24),
+    inset 0 0 0 1px rgba(255, 241, 184, .24) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot.gilsys-battle-equipment-card .equip-slot-icon,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot.gilsys-battle-equipment-card .special-equip-slot-icon {
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .68));
+}
