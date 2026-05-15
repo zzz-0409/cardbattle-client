@@ -144,14 +144,19 @@
   }
 
   function setHomeTab(tab = "home") {
+    const layout = document.getElementById("phase0HomeLayout");
     const dock = document.getElementById("gilsysHomeActionDock");
     const battle = document.getElementById("gilsysHomeBattlePanel");
     const growth = document.getElementById("gilsysHomeGrowthPanel");
     document.querySelectorAll("#gilsysHomeBottomNav .gilsys-home-nav-btn").forEach(btn => {
       btn.classList.toggle("is-active", btn.dataset.homeTab === tab);
     });
-    if (!dock || !battle || !growth) return;
+    if (!dock || !battle || !growth) {
+      layout?.classList.remove("is-home-action-open");
+      return;
+    }
     const open = tab === "battle" || tab === "growth";
+    layout?.classList.toggle("is-home-action-open", open);
     dock.classList.toggle("is-open", open);
     dock.setAttribute("aria-hidden", open ? "false" : "true");
     battle.hidden = tab !== "battle";

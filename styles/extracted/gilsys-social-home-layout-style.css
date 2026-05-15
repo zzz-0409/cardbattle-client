@@ -520,6 +520,8 @@ html.gilsys-fixed-game #gilsysHomeActionDock {
   left: 50% !important;
   bottom: 98px !important;
   width: min(650px, calc(100% - 48px)) !important;
+  z-index: 80 !important;
+  isolation: isolate !important;
   transform: translateX(-50%) translateY(12px) !important;
   opacity: 0 !important;
   pointer-events: none !important;
@@ -527,9 +529,19 @@ html.gilsys-fixed-game #gilsysHomeActionDock {
 }
 
 html.gilsys-fixed-game #gilsysHomeActionDock.is-open {
+  z-index: 80 !important;
   opacity: 1 !important;
   transform: translateX(-50%) translateY(0) !important;
   pointer-events: auto !important;
+}
+
+html.gilsys-fixed-game #phase0HomeLayout.is-home-action-open #gilsysHomeLeftHud {
+  z-index: 6 !important;
+}
+
+html.gilsys-fixed-game #phase0HomeLayout.is-home-action-open #gilsysHomeRankingSlot,
+html.gilsys-fixed-game #phase0HomeLayout.is-home-action-open #gilsysHomeRankingSlot #titleRankingPanel {
+  pointer-events: none !important;
 }
 
 html.gilsys-fixed-game .gilsys-home-drawer {

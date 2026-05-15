@@ -365,3 +365,60 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #action-area.gilsys-action-colum
     font-size: 9px !important;
   }
 }
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked #battleBox {
+  font-size: 12px !important;
+  line-height: 1.34 !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked #battleBox > :not(.log-title) {
+  font-size: 12px !important;
+  line-height: 1.34 !important;
+  margin-bottom: 4px !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked .log-title,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-log-block.gilsys-log-docked h3 {
+  font-size: 12px !important;
+}
+
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-top-status {
+    min-height: 122px !important;
+    overflow: visible !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-exp-row,
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-coin-row {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-top: 2px !important;
+    font-size: 9px !important;
+    line-height: 1.08 !important;
+    white-space: nowrap !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-coin-row {
+    color: #ffd98a !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-status-buff-strip {
+    min-height: 26px !important;
+    max-height: 56px !important;
+    gap: 4px !important;
+    margin-top: 4px !important;
+    transform: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  html.gilsys-fixed-game #phase2.gilsys-battle-ui .buff-slot {
+    width: 24px !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+  }
+}
