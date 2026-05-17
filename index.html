@@ -5667,6 +5667,22 @@ function clearGilsysEnemyTurnCommandPanel() {
   document.querySelector(".gilsys-command-list-panel")?.classList.remove("is-enemy-turn-waiting");
 }
 
+function setGilsysBattleActionButtonsDisabled(disabled) {
+  ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn","dollBuffBtn"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = !!disabled;
+  });
+}
+
+function beginGilsysActionResolving() {
+  document.getElementById("phase2")?.classList.add("is-action-resolving");
+  setGilsysBattleActionButtonsDisabled(true);
+}
+
+function endGilsysActionResolving() {
+  document.getElementById("phase2")?.classList.remove("is-action-resolving");
+}
+
 
 // ==================== 環境自動判定 ====================
 // ローカル（file://, localhost）かどうか
@@ -9418,6 +9434,7 @@ function attachWsHandlers() {
       battleEnded = false;
       dojoAutoSending = false;
       clearTimeout(dojoAutoTimer);
+      endGilsysActionResolving();
       clearGilsysEnemyTurnCommandPanel();
       if ((data.mode === "dojo" || data.dojo || window.matchMode === "dojo") && typeof dojoAutoCombineBusy !== "undefined") {
         dojoAutoCombineBusy = false;
@@ -9936,6 +9953,7 @@ function attachWsHandlers() {
     /* --- 自分のターン --- */
     if(data.type==="your_turn"){
       myTurn = true;
+      endGilsysActionResolving();
       clearGilsysEnemyTurnCommandPanel();
       appendLog("systemBox","system-log", data.msg);
 
@@ -9991,7 +10009,7 @@ function attachWsHandlers() {
 // ★ 相手ターンになったらショップ/持ち物を強制的に閉じる
       closeShopUI();
       closeItemUI();
-      if (typeof openAttackSkillPanel === "function") openAttackSkillPanel(false);
+      endGilsysActionResolving();
 
       ["atkBtn","skillBtn","lvupBtn","itemBtn","shopBtn","dollBuffBtn"].forEach(id => {
         const el = document.getElementById(id);
@@ -10023,6 +10041,7 @@ function attachWsHandlers() {
     // ============================
     if (data.type === "battle_end") {
       battleEnded = true;
+      endGilsysActionResolving();
       clearGilsysEnemyTurnCommandPanel();
       const battleEndDetail = (data.rating || data.matchType || data.selfName || data.enemyName)
         ? {
@@ -11707,6 +11726,7 @@ function attack(){
   if(!myTurn) return;
   confirmTurnConsume(() => {
     confirmArcherArrowBeforeAction(() => {
+    beginGilsysActionResolving();
     ws.send(JSON.stringify({type:"action", action:"攻撃"}));
     });
   });
@@ -12392,6 +12412,7 @@ function hasClientUsableArrow(){
 }
 
 function sendArcherNoArrowTurnEnd(){
+  beginGilsysActionResolving();
   ws.send(JSON.stringify({ type: "action", action: "矢なしターン終了" }));
   if (typeof closeSkillUI === "function") closeSkillUI();
 }
@@ -12427,6 +12448,7 @@ function useSkill(num){
       ws.send(JSON.stringify({ type:"request_alchemist_skill3_select" }));
       return;
     }
+    beginGilsysActionResolving();
     ws.send(JSON.stringify({type:"action", action:"スキル"+num}));
     closeSkillUI();
     });
@@ -12441,6 +12463,7 @@ function useDollSkill1(){
   if (guardClientSkillSealed()) return;
 
   confirmTurnConsume(() => {
+    beginGilsysActionResolving();
     ws.send(JSON.stringify({
       type: "use_doll_skill1"
     }));
@@ -12457,6 +12480,7 @@ function useDollSkill2Prompt(){
   if (guardClientSkillSealed()) return;
 
   confirmTurnConsume(() => {
+    beginGilsysActionResolving();
     ws.send(JSON.stringify({
       type: "use_doll_skill2",
       hpCost: 0
@@ -12474,6 +12498,7 @@ function useDollSkill3(){
   if (guardClientSkillSealed()) return;
 
   confirmTurnConsume(() => {
+    beginGilsysActionResolving();
     ws.send(JSON.stringify({
       type: "request_doll_skill3"
     }));
@@ -13295,6 +13320,7 @@ function submitAlchemistFusion() {
     showCenterToast("合成する装備を3つ選んでください", 2200);
     return;
   }
+  beginGilsysActionResolving();
   ws.send(JSON.stringify({
     type: "use_alchemist_skill3",
     uids: alchemistFusionSelection,
@@ -13917,7 +13943,7 @@ try {
 <link id="gilsys-battle-generated-button-bg" rel="stylesheet" href="styles/extracted/gilsys-battle-generated-button-bg.css">
 <link id="gilsys-item-card-generated-backgrounds" rel="stylesheet" href="styles/extracted/gilsys-item-card-generated-backgrounds.css?v=6">
 <link id="gilsys-dojo-prep-two-panel-style" rel="stylesheet" href="styles/extracted/gilsys-dojo-prep-two-panel.css">
-<link id="gilsys-enemy-turn-command-panel" rel="stylesheet" href="styles/extracted/gilsys-enemy-turn-command-panel.css">
+<link id="gilsys-enemy-turn-command-panel" rel="stylesheet" href="styles/extracted/gilsys-enemy-turn-command-panel.css?v=517-action-panel2">
 <link id="gilsys-battle-status-inline-stats" rel="stylesheet" href="styles/extracted/gilsys-battle-status-inline-stats.css">
 <link id="gilsys-generated-skill-effects-style" rel="stylesheet" href="styles/extracted/gilsys-generated-skill-effects.css">
 <script id="gilsys-dojo-prep-two-panel" src="scripts/extracted/gilsys-dojo-prep-two-panel.js"></script>

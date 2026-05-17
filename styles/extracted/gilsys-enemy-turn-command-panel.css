@@ -1,3 +1,17 @@
+#phase2.gilsys-battle-ui.is-action-resolving:not(.is-enemy-turn-command) #action-area > *,
+#phase2.gilsys-battle-ui.is-action-resolving:not(.is-enemy-turn-command) .gilsys-command-list-panel > *,
+#phase2.gilsys-battle-ui.is-action-resolving:not(.is-enemy-turn-command) .gilsys-command-detail-panel > * {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#phase2.gilsys-battle-ui.is-action-resolving:not(.is-enemy-turn-command) #action-area,
+#phase2.gilsys-battle-ui.is-action-resolving:not(.is-enemy-turn-command) .gilsys-command-list-panel,
+#phase2.gilsys-battle-ui.is-action-resolving:not(.is-enemy-turn-command) .gilsys-command-detail-panel {
+  pointer-events: none !important;
+}
+
 #phase2.gilsys-battle-ui.is-enemy-turn-command .gilsys-command-panel {
   grid-template-columns: minmax(0, 1fr) !important;
 }
