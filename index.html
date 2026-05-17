@@ -1812,6 +1812,13 @@ body.debug #battleStage {
 
 .damage-popup{ color:#ffb3b3; }
 .heal-popup  { color:#b7ffb7; }
+.gilsys-popup-text{
+  display:inline-block;
+  transform-origin:center;
+}
+.gilsys-popup-text.is-counter-flipped{
+  transform:scaleX(-1);
+}
 .skill-effect-image{
   position:absolute;
   left:50%;
@@ -2101,19 +2108,28 @@ body.debug #battleStage {
   mix-blend-mode: screen;
   overflow: visible;
 }
+.gilsys-archer-arrow-rain.is-counter-parent-flip {
+  transform: translate(-50%, -50%) scaleX(-1);
+}
 .gilsys-archer-arrow-projectile {
   position: absolute;
   left: 50%;
   top: 4%;
   width: var(--arrow-w, 34px);
+  opacity: 0;
+  transform-origin: 50% 50%;
+  animation: gilsysArcherArrowFall var(--dur, 780ms) cubic-bezier(.13,.78,.14,1) var(--delay, 0ms) forwards;
+}
+.gilsys-archer-arrow-image {
+  display: block;
+  width: 100%;
   height: auto;
   object-fit: contain;
-  opacity: 0;
   transform-origin: 50% 88%;
+  transform: scaleX(var(--arrow-flip-x, 1)) rotate(var(--rot, -22deg));
   filter:
     drop-shadow(0 0 7px rgba(185, 241, 255, .74))
     drop-shadow(0 0 13px rgba(52, 153, 255, .42));
-  animation: gilsysArcherArrowFall var(--dur, 780ms) cubic-bezier(.13,.78,.14,1) var(--delay, 0ms) forwards;
 }
 .gilsys-archer-arrow-impact {
   position: absolute;
@@ -2169,18 +2185,18 @@ body.debug #battleStage {
 @keyframes gilsysArcherArrowFall {
   0% {
     opacity: 0;
-    transform: translate(var(--start-x, calc(var(--hit-x, 0px) - 54px)), -165px) scale(var(--scale, 1)) scaleX(var(--arrow-flip-x, 1)) rotate(var(--rot, -22deg));
+    transform: translate(var(--start-x, calc(var(--hit-x, 0px) - 54px)), -165px) scale(var(--scale, 1));
   }
   12% {
     opacity: .95;
   }
   72% {
     opacity: 1;
-    transform: translate(var(--hit-x, 0px), 120px) scale(var(--scale, 1)) scaleX(var(--arrow-flip-x, 1)) rotate(var(--rot, -22deg));
+    transform: translate(var(--hit-x, 0px), 120px) scale(var(--scale, 1));
   }
   100% {
     opacity: 0;
-    transform: translate(var(--end-x, calc(var(--hit-x, 0px) + 6px)), 134px) scale(var(--scale, 1)) scaleX(var(--arrow-flip-x, 1)) rotate(var(--rot, -22deg));
+    transform: translate(var(--end-x, calc(var(--hit-x, 0px) + 6px)), 134px) scale(var(--scale, 1));
   }
 }
 @keyframes gilsysArcherArrowImpact {
@@ -7445,12 +7461,39 @@ function bumpStack(targetKey) {
   return offsetPx;
 }
 
+function isElementHorizontallyMirrored(el) {
+  if (!el || !window.getComputedStyle) return false;
+  const transform = getComputedStyle(el).transform;
+  if (!transform || transform === "none") return false;
+  try {
+    const MatrixCtor = window.DOMMatrixReadOnly || window.DOMMatrix || window.WebKitCSSMatrix;
+    if (MatrixCtor) {
+      const matrix = new MatrixCtor(transform);
+      return (matrix.a * matrix.d - matrix.b * matrix.c) < 0;
+    }
+  } catch (err) {
+    // Fall through to the simple string check for older browser engines.
+  }
+  return /^matrix\(\s*-/.test(transform) || /^matrix3d\(\s*-/.test(transform);
+}
+
+function shouldCounterFlipPopup(sprite) {
+  return isElementHorizontallyMirrored(sprite);
+}
+
 function spawnPopup(sprite, className, text, offsetPx) {
   if (!sprite) return;
 
   const el = document.createElement("div");
   el.className = className;
-  el.textContent = text;
+  const textEl = document.createElement("span");
+  textEl.className = "gilsys-popup-text";
+  if (shouldCounterFlipPopup(sprite)) {
+    textEl.classList.add("is-counter-flipped");
+  }
+  textEl.textContent = text;
+  el.appendChild(textEl);
+
   const baseTop = sprite.classList.contains("doll") ? "28%" : "40%";
   el.style.top = `calc(${baseTop} + ${offsetPx}px)`;
 
@@ -7751,11 +7794,18 @@ function showArcherArrowRainEffect(targetSprite, data = {}) {
 
   const rain = document.createElement("div");
   const targetSide = String(data?.target ?? "").startsWith("enemy") ? "enemy" : "self";
-  const arrowSourceSide = data?.arrow_source_side || data?.source_side || (targetSide === "enemy" ? "self" : "enemy");
+  const rawSourceSide = String(data?.arrow_source_side || data?.source_side || "").toLowerCase();
+  const arrowSourceSide = rawSourceSide === "self" || rawSourceSide === "enemy"
+    ? rawSourceSide
+    : (targetSide === "enemy" ? "self" : "enemy");
+  const fromSelf = arrowSourceSide === "self";
   rain.className = `gilsys-archer-arrow-rain is-${targetSide} from-${arrowSourceSide}`;
+  if (isElementHorizontallyMirrored(targetSprite)) {
+    rain.classList.add("is-counter-parent-flip");
+  }
   const reverseArrowImage = true;
-  const direction = 1;
-  const arrowFlipX = 1;
+  const direction = fromSelf ? -1 : 1;
+  const arrowFlipX = fromSelf ? -1 : 1;
   const impactFlip = targetSide === "self" ? -1 : 1;
 
   for (let i = 0; i < total; i += 1) {
@@ -7766,11 +7816,15 @@ function showArcherArrowRainEffect(targetSprite, data = {}) {
     const hitY = p.y + row * 6;
     const effectKey = getArcherArrowEffectKey(effectSequence[i] ?? data.arrow_effect ?? "normal");
 
-    const arrow = document.createElement("img");
+    const arrow = document.createElement("span");
     arrow.className = "gilsys-archer-arrow-projectile";
-    arrow.src = getArcherArrowRainSrc(effectKey, reverseArrowImage);
-    arrow.alt = "";
-    arrow.draggable = false;
+    arrow.setAttribute("aria-hidden", "true");
+    const arrowImage = document.createElement("img");
+    arrowImage.className = "gilsys-archer-arrow-image";
+    arrowImage.src = getArcherArrowRainSrc(effectKey, reverseArrowImage);
+    arrowImage.alt = "";
+    arrowImage.draggable = false;
+    arrow.appendChild(arrowImage);
     arrow.style.setProperty("--hit-x", `${hitX}px`);
     arrow.style.setProperty("--hit-y", `${hitY}px`);
     arrow.style.setProperty("--start-x", `${hitX + direction * p.drift}px`);
@@ -13775,7 +13829,7 @@ try {
 
 <script id="gilsys-damage-preview-patch" src="scripts/extracted/gilsys-damage-preview-patch.js"></script>
 
-<link rel="stylesheet" href="styles/battle-mobile.css">
+<link rel="stylesheet" href="styles/battle-mobile.css?v=517-popup3">
 <script id="gilsys-doll-charge-command-patch" src="scripts/extracted/gilsys-doll-charge-command-patch.js"></script>
 <link rel="stylesheet" href="styles/inventory-shop.css">
 <link id="gilsys-priest-blessing-count-style" rel="stylesheet" href="styles/extracted/gilsys-priest-blessing-count-style.css">
@@ -13846,7 +13900,7 @@ try {
 <script id="gilsys-battle-equip-tooltip-hit-fix-script" src="scripts/extracted/gilsys-battle-equip-tooltip-hit-fix-script.js"></script>
 <link rel="stylesheet" href="styles/dojo-result.css">
 <link rel="stylesheet" href="styles/dojo-prep.css">
-<link rel="stylesheet" href="styles/battle-visibility-fix.css">
+<link rel="stylesheet" href="styles/battle-visibility-fix.css?v=517-popup3">
 <script id="gilsys-battle-log-final-dock" src="scripts/extracted/gilsys-battle-log-final-dock.js"></script>
 <link id="gilsys-tutorial-style" rel="stylesheet" href="styles/extracted/gilsys-tutorial-style.css">
 <script id="gilsys-tutorial-controller" src="scripts/extracted/gilsys-tutorial-controller.js"></script>

@@ -47,6 +47,15 @@ html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .heal-popup {
   text-shadow: 0 2px 6px rgba(0,0,0,.72), 0 0 12px rgba(110,255,149,.38) !important;
 }
 
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .gilsys-popup-text {
+  display: inline-block !important;
+  transform-origin: center !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .gilsys-popup-text.is-counter-flipped {
+  transform: scaleX(-1) !important;
+}
+
 html.gilsys-fixed-game #phase2.gilsys-battle-ui .gilsys-command-panel.has-battle-log-dock {
   grid-template-columns: minmax(180px, 250px) 148px minmax(260px, .92fr) minmax(340px, 1.08fr) !important;
   grid-template-rows: minmax(0, 1fr) !important;

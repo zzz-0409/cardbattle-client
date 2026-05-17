@@ -185,19 +185,6 @@
   #phase2.gilsys-battle-ui #battleStage .side-enemy { right:4%; }
 }
 
-/* Extracted from <style id="gilsys-popup-unflip-style"> */
-@keyframes gilsysPopupFloatUpUnflip {
-  0% { opacity: 1; transform: translate(-50%, -50%) translateY(0) scaleX(-1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-34px) scaleX(-1); }
-}
-
-#battleStage .sprite.enemy.job-image:not(.dojo-monster-image) .damage-popup,
-#battleStage .sprite.enemy.job-image:not(.dojo-monster-image) .heal-popup,
-#battleStage .sprite.enemy.job-image:not(.dojo-monster-image) .summon-popup,
-#battleStage .sprite.enemy.job-image:not(.dojo-monster-image) .shikigami-special-popup {
-  animation-name: gilsysPopupFloatUpUnflip !important;
-}
-
 /* Extracted from <style id="gilsys-battle-log-top-left-style"> */
 #phase2.gilsys-battle-ui .gilsys-side-left .gilsys-log-block {
   display: block !important;
