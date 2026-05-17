@@ -6843,6 +6843,7 @@ let matchSeconds = 0;
 let autoCpuTriggered = false;
 let roomTimeoutTriggered = false;
 let cpuConnectFailTimerId = null;
+const AUTO_CPU_MATCH_SECONDS = 15;
 
 window.matchMode = "random"; // "random" | "room" | "cpu"
 
@@ -6893,8 +6894,8 @@ function startMatchTimer() {
   matchTimerId = setInterval(() => {
     matchSeconds += 1;
 
-    // ランダム対戦のみ：30秒経過でCPUへ自動切替
-    if (window.matchMode === "random" && !autoCpuTriggered && matchSeconds >= 30) {
+    // ランダム対戦のみ：一定時間経過でCPUへ自動切替
+    if (window.matchMode === "random" && !autoCpuTriggered && matchSeconds >= AUTO_CPU_MATCH_SECONDS) {
       autoCpuTriggered = true;
       triggerAutoCpuMatch();
       // 以降も秒数は数え続ける（表示は match_start で消える）
@@ -6954,7 +6955,7 @@ function backToTitleWithError(message) {
 }
 
 function triggerAutoCpuMatch() {
-  // 30秒経過 → CPU戦へ
+  // 一定時間経過 → CPU戦へ
   cleanupSocket();
 
   window.isCpuMode = true;
@@ -6975,7 +6976,7 @@ function triggerAutoCpuMatch() {
   if (title) title.textContent = "CPU戦（自動）";
 
   const status = document.getElementById("connectStatus");
-  if (status) status.textContent = "30秒経過：CPUとマッチングします...";
+  if (status) status.textContent = `${AUTO_CPU_MATCH_SECONDS}秒経過：CPUとマッチングします...`;
 
   // CPU接続が成立しない場合は通信エラーにする
   clearCpuFailTimer();
