@@ -6776,7 +6776,7 @@ const JOB_DESCRIPTIONS = {
 `,
     arrows: [
       "普通の矢：攻撃力依存の通常矢",
-      "毒の矢：15ダメ+毒付与(各ターン終了時3ダメージ×2T)",
+      "毒の矢：15ダメ+毒付与(各ターン終了時2ダメージ×2T)",
       "氷結の矢： 15ダメージの追撃+氷結付与(相手の攻撃力-2、累積効果)",
       "反撃の矢：10+前のターンの被ダメの半分ダメージ増加の追撃",
       "防御低下の矢：10ダメ+相手の防御力-1（3T・重複あり）"
@@ -12828,6 +12828,22 @@ function isGilsysArrowItem(item) {
   return !!item && (item.is_arrow || item.equip_type === "arrow" || String(item.name ?? "").includes("矢"));
 }
 
+function getGilsysArrowStackKey(item) {
+  if (!isGilsysArrowItem(item)) return "";
+  return String(item?.effect ?? item?.arrow_effect ?? item?.name ?? item?.icon_src ?? "").trim().toLowerCase();
+}
+
+function getMatchingEquippedArrowSlot(item) {
+  const key = getGilsysArrowStackKey(item);
+  if (!key) return null;
+  const slots = Array.isArray(window.gilsysLatestSelfStatus?.special_equip?.slots)
+    ? window.gilsysLatestSelfStatus.special_equip.slots
+    : [];
+  const match = slots.find(slot => getGilsysArrowStackKey(slot?.item) === key);
+  if (!match) return null;
+  return String(match.key ?? "").includes("2") ? 2 : 1;
+}
+
 function getGilsysArrowCount(item) {
   if (!isGilsysArrowItem(item)) return 0;
   const count = Number(item?.arrows_remaining ?? item?.arrow_count ?? 0);
@@ -12855,6 +12871,7 @@ function shouldPromptEquipAfterPurchase(item) {
   if (!item) return false;
   if (window.matchMode === "tutorial" || window.gilsysTutorialBattleActive) return false;
   if (item?.tutorial_no_equip_prompt) return false;
+  if (item?.is_equipped_special || item?.purchased_merge_target === "equipped") return false;
   if (item?.is_arrow || item?.equip_type === "arrow") return true;
   if (item?.is_doll_costume) return true;
   if (item?.equip_type === "mage_equip") return true;
@@ -12919,13 +12936,7 @@ function getInventoryActionMeta(it, category){
 }
 
 function getInventorySecondaryActionMeta(it, category){
-  if (category !== "special" || !isGilsysArrowItem(it) || !it?.is_equipped_special) return null;
-  if (Number(window.arrowSlots ?? 1) < 2) return null;
-  return {
-    label: "装備",
-    onclick: `onEquipButtonByUid('${escapeHtml(it?.uid)}')`,
-    disabled: getGilsysArrowCount(it) <= 0
-  };
+  return null;
 }
 
 function renderInventoryCard(it, category){
@@ -13330,6 +13341,11 @@ function submitAlchemistFusion() {
 }
 
 function openArrowSlotSelect(item) {
+  const matchingSlot = getMatchingEquippedArrowSlot(item);
+  if (matchingSlot) {
+    useItem(item.uid, "arrow", matchingSlot);
+    return;
+  }
   if (Number(window.arrowSlots ?? 1) >= 2) {
     openArrowSlotPopup(item);
   } else {
