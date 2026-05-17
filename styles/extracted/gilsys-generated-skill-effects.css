@@ -1,0 +1,435 @@
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 172%;
+  max-width: 330px;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  z-index: 90;
+  mix-blend-mode: screen;
+  overflow: visible;
+  filter:
+    drop-shadow(0 0 12px rgba(255, 248, 184, .56))
+    drop-shadow(0 0 22px rgba(255, 92, 38, .32));
+  animation: gilsysGeneratedSkillFrame 1.45s ease-out forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transform-origin: center;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  width: 76px;
+  height: 42px;
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.3);
+  background:
+    radial-gradient(ellipse, rgba(255,255,255,.95) 0 17%, rgba(255,226,122,.84) 18% 34%, rgba(255,86,38,.36) 35% 58%, transparent 70%);
+  filter: drop-shadow(0 0 14px rgba(255, 104, 48, .48));
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-self {
+  top: 45%;
+  width: 162%;
+  max-width: 300px;
+  z-index: 82;
+  filter:
+    drop-shadow(0 0 12px rgba(172, 236, 255, .38))
+    drop-shadow(0 0 20px rgba(255, 229, 145, .22));
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-self::after {
+  display: none;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-self img {
+  animation: gilsysGeneratedSelfAura 1.22s ease-out forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_self,
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_self {
+  top: 46%;
+  width: 170%;
+  max-width: 318px;
+  filter:
+    drop-shadow(0 0 12px rgba(172, 236, 255, .48))
+    drop-shadow(0 0 22px rgba(83, 169, 255, .28))
+    drop-shadow(0 0 28px rgba(255, 231, 146, .18));
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_self::before,
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_self::after,
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_self::before,
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_self::after {
+  display: none;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_self .knight-layer-core,
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_self .knight-layer-core {
+  inset: 18%;
+  width: 64%;
+  height: 64%;
+  z-index: 1;
+  animation: gilsysKnightShieldHold 1.5s ease-out forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_self .knight-layer-wave {
+  z-index: 0;
+  transform-origin: center 66%;
+  filter:
+    drop-shadow(0 0 9px rgba(128, 221, 255, .68))
+    drop-shadow(0 0 16px rgba(255, 235, 164, .36));
+  animation: gilsysKnight1ImageWave 1.48s cubic-bezier(.16,.74,.2,1) .08s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_self .knight-layer-sphere {
+  z-index: 0;
+  transform-origin: center 64%;
+  filter:
+    drop-shadow(0 0 12px rgba(174, 238, 255, .62))
+    drop-shadow(0 0 22px rgba(83, 169, 255, .34));
+  animation: gilsysKnight2ImageSphere 1.58s cubic-bezier(.16,.74,.2,1) .04s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-target img {
+  animation: gilsysGeneratedTargetBurst 1.18s cubic-bezier(.16,.74,.2,1) .08s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-target::after {
+  animation: gilsysGeneratedHitFlash .52s ease-out .54s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-pass img {
+  animation: gilsysGeneratedSkillPass 1.18s cubic-bezier(.18,.72,.22,1) .08s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-pass.is-enemy img {
+  animation-name: gilsysGeneratedSkillPassEnemy;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-pass::after {
+  animation: gilsysGeneratedHitFlash .5s ease-out .5s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-drop {
+  top: 42%;
+  width: 184%;
+  max-width: 360px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-drop img {
+  animation: gilsysGeneratedSkillDrop 1.22s cubic-bezier(.12,.74,.16,1) .08s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-drop::after {
+  top: 76%;
+  width: 96px;
+  height: 54px;
+  animation: gilsysGeneratedHitFlash .56s ease-out .58s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_target,
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_target,
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_3_target {
+  filter:
+    drop-shadow(0 0 12px rgba(182, 234, 255, .44))
+    drop-shadow(0 0 24px rgba(83, 169, 255, .30))
+    drop-shadow(0 0 30px rgba(255, 226, 132, .20));
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_target {
+  top: 43%;
+  width: 166%;
+  max-width: 326px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_target {
+  top: 43%;
+  width: 178%;
+  max-width: 346px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_3_target {
+  top: 43%;
+  width: 188%;
+  max-width: 372px;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect img.knight-target-glow {
+  z-index: 0;
+  filter:
+    blur(4px)
+    brightness(1.46)
+    saturate(1.18)
+    drop-shadow(0 0 18px rgba(120, 221, 255, .44))
+    drop-shadow(0 0 24px rgba(255, 225, 124, .26));
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect img.knight-target-core {
+  z-index: 1;
+  filter:
+    drop-shadow(0 0 8px rgba(255, 255, 255, .36))
+    drop-shadow(0 0 14px rgba(75, 171, 255, .30));
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_target img.knight-1-target-core {
+  transform-origin: center 58%;
+  animation: gilsysKnight1CoreStrike 1.18s cubic-bezier(.16,.74,.2,1) .04s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_target img.knight-1-target-glow {
+  transform-origin: center 58%;
+  animation: gilsysKnight1ImpactBloom 1.28s ease-out .02s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_target::after {
+  top: 58%;
+  width: 92px;
+  height: 52px;
+  animation: gilsysGeneratedHitFlash .54s ease-out .30s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_target img.knight-2-target-core {
+  transform-origin: center 56%;
+  animation: gilsysKnight2CoreThrustEnemy 1.16s cubic-bezier(.12,.74,.16,1) .04s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_target img.knight-2-target-glow {
+  transform-origin: center 56%;
+  animation: gilsysKnight2TrailEnemy 1.26s ease-out 0s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_target.is-enemy img.knight-2-target-core {
+  animation-name: gilsysKnight2CoreThrustSelf;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_target.is-enemy img.knight-2-target-glow {
+  animation-name: gilsysKnight2TrailSelf;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_2_target::after {
+  top: 61%;
+  width: 88px;
+  height: 46px;
+  animation: gilsysGeneratedHitFlash .5s ease-out .34s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_3_target img.knight-3-omen {
+  z-index: 0;
+  transform-origin: center 80%;
+  filter:
+    blur(.2px)
+    brightness(1.24)
+    saturate(1.16)
+    drop-shadow(0 0 12px rgba(119, 223, 255, .38))
+    drop-shadow(0 0 22px rgba(255, 226, 125, .20));
+  animation: gilsysKnight3OmenCharge 1.58s ease-out forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_3_target img.knight-3-burst {
+  z-index: 1;
+  transform-origin: center 84%;
+  filter:
+    blur(.4px)
+    brightness(1.35)
+    saturate(1.12)
+    drop-shadow(0 0 16px rgba(255, 247, 196, .52))
+    drop-shadow(0 0 28px rgba(105, 211, 255, .32));
+  animation: gilsysKnight3BurstBloom 1.32s ease-out .48s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_3_target img.knight-3-target-core {
+  z-index: 2;
+  transform-origin: center 84%;
+  filter:
+    drop-shadow(0 0 10px rgba(255, 255, 255, .36))
+    drop-shadow(0 0 18px rgba(82, 181, 255, .32))
+    drop-shadow(0 0 22px rgba(255, 223, 128, .20));
+  animation: gilsysKnight3CoreSlam 1.42s cubic-bezier(.12,.74,.16,1) .18s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_3_target img.knight-3-particles {
+  z-index: 3;
+  transform-origin: center 82%;
+  filter:
+    brightness(1.18)
+    saturate(1.14)
+    drop-shadow(0 0 8px rgba(120, 221, 255, .30))
+    drop-shadow(0 0 10px rgba(255, 224, 128, .22));
+  animation: gilsysKnight3ParticleScatter 1.48s ease-out .54s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_3_target::after {
+  top: 79%;
+  width: 126px;
+  height: 62px;
+  animation: gilsysGeneratedHitFlash .62s ease-out .68s forwards;
+}
+
+@keyframes gilsysGeneratedSkillFrame {
+  0% { opacity: 0; }
+  8% { opacity: 1; }
+  82% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes gilsysGeneratedSelfAura {
+  0% { opacity: 0; transform: translateY(24%) scale(.72) rotate(-2deg); }
+  18% { opacity: .95; }
+  62% { opacity: .92; transform: translateY(-4%) scale(1.03) rotate(1deg); }
+  100% { opacity: 0; transform: translateY(-26%) scale(1.08) rotate(2deg); }
+}
+
+@keyframes gilsysKnightShieldHold {
+  0% { opacity: 0; transform: translateY(4%) scale(.94); }
+  16% { opacity: 1; transform: translateY(0) scale(1); }
+  72% { opacity: 1; transform: translateY(0) scale(1.01); }
+  100% { opacity: 0; transform: translateY(-2%) scale(1); }
+}
+
+@keyframes gilsysKnight1ImageWave {
+  0% { opacity: 0; transform: translateY(4%) scaleX(.38) scaleY(.74); }
+  18% { opacity: .96; }
+  56% { opacity: .9; transform: translateY(0) scaleX(1.02) scaleY(.96); }
+  100% { opacity: 0; transform: translateY(-3%) scaleX(1.28) scaleY(1.06); }
+}
+
+@keyframes gilsysKnight2ImageSphere {
+  0% { opacity: 0; transform: translateY(10%) scale(.56); }
+  14% { opacity: .92; }
+  58% { opacity: .9; transform: translateY(0) scale(1.02); }
+  100% { opacity: 0; transform: translateY(-2%) scale(1.1); }
+}
+
+@keyframes gilsysGeneratedTargetBurst {
+  0% { opacity: 0; transform: translateY(16%) scale(.56) rotate(-4deg); }
+  18% { opacity: 1; }
+  58% { opacity: 1; transform: translateY(0) scale(1.08) rotate(1deg); }
+  100% { opacity: 0; transform: translateY(-8%) scale(1.18) rotate(0deg); }
+}
+
+@keyframes gilsysGeneratedSkillPass {
+  0% { opacity: 0; transform: translate(-32%, -24%) scale(.62) rotate(-8deg); }
+  18% { opacity: 1; }
+  56% { opacity: 1; transform: translate(0, 0) scale(1.06) rotate(0deg); }
+  100% { opacity: 0; transform: translate(28%, 20%) scale(.94) rotate(7deg); }
+}
+
+@keyframes gilsysGeneratedSkillPassEnemy {
+  0% { opacity: 0; transform: translate(32%, -24%) scale(.62) scaleX(-1) rotate(8deg); }
+  18% { opacity: 1; }
+  56% { opacity: 1; transform: translate(0, 0) scale(1.06) scaleX(-1) rotate(0deg); }
+  100% { opacity: 0; transform: translate(-28%, 20%) scale(.94) scaleX(-1) rotate(-7deg); }
+}
+
+@keyframes gilsysGeneratedSkillDrop {
+  0% { opacity: 0; transform: translateY(-48%) scale(.66); }
+  16% { opacity: 1; }
+  52% { opacity: 1; transform: translateY(2%) scale(1.08); }
+  100% { opacity: 0; transform: translateY(22%) scale(.98); }
+}
+
+@keyframes gilsysGeneratedHitFlash {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.26); }
+  32% { opacity: 1; transform: translate(-50%, -50%) scale(1.14); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.8); }
+}
+
+@keyframes gilsysKnight1CoreStrike {
+  0% { opacity: 0; transform: translateY(8%) scale(.66) rotate(-3deg); }
+  16% { opacity: 1; transform: translateY(2%) scale(.88) rotate(-1deg); }
+  38% { opacity: 1; transform: translateY(0) scale(1.05) rotate(.5deg); }
+  68% { opacity: .96; transform: translateY(-1%) scale(.98) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(-4%) scale(1.03) rotate(1deg); }
+}
+
+@keyframes gilsysKnight1ImpactBloom {
+  0% { opacity: 0; transform: translateY(4%) scale(.46) rotate(-2deg); }
+  22% { opacity: .82; transform: translateY(0) scale(.92) rotate(0deg); }
+  58% { opacity: .56; transform: translateY(-1%) scale(1.20) rotate(.5deg); }
+  100% { opacity: 0; transform: translateY(-3%) scale(1.38) rotate(1deg); }
+}
+
+@keyframes gilsysKnight2CoreThrustSelf {
+  0% { opacity: 0; transform: translate(42%, -8%) scale(.78) rotate(2deg); }
+  16% { opacity: 1; transform: translate(18%, -4%) scale(.94) rotate(1deg); }
+  44% { opacity: 1; transform: translate(-4%, 0) scale(1.06) rotate(0deg); }
+  70% { opacity: .96; transform: translate(-10%, 2%) scale(.98) rotate(-1deg); }
+  100% { opacity: 0; transform: translate(-18%, 5%) scale(.94) rotate(-2deg); }
+}
+
+@keyframes gilsysKnight2CoreThrustEnemy {
+  0% { opacity: 0; transform: translate(-42%, -8%) scale(.78) scaleX(-1) rotate(-2deg); }
+  16% { opacity: 1; transform: translate(-18%, -4%) scale(.94) scaleX(-1) rotate(-1deg); }
+  44% { opacity: 1; transform: translate(4%, 0) scale(1.06) scaleX(-1) rotate(0deg); }
+  70% { opacity: .96; transform: translate(10%, 2%) scale(.98) scaleX(-1) rotate(1deg); }
+  100% { opacity: 0; transform: translate(18%, 5%) scale(.94) scaleX(-1) rotate(2deg); }
+}
+
+@keyframes gilsysKnight2TrailSelf {
+  0% { opacity: 0; transform: translate(54%, -11%) scale(.82) rotate(3deg); }
+  18% { opacity: .74; transform: translate(26%, -5%) scale(1.02) rotate(1deg); }
+  52% { opacity: .52; transform: translate(-8%, 1%) scale(1.20) rotate(0deg); }
+  100% { opacity: 0; transform: translate(-26%, 7%) scale(1.16) rotate(-2deg); }
+}
+
+@keyframes gilsysKnight2TrailEnemy {
+  0% { opacity: 0; transform: translate(-54%, -11%) scale(.82) scaleX(-1) rotate(-3deg); }
+  18% { opacity: .74; transform: translate(-26%, -5%) scale(1.02) scaleX(-1) rotate(-1deg); }
+  52% { opacity: .52; transform: translate(8%, 1%) scale(1.20) scaleX(-1) rotate(0deg); }
+  100% { opacity: 0; transform: translate(26%, 7%) scale(1.16) scaleX(-1) rotate(2deg); }
+}
+
+@keyframes gilsysKnight3CoreSlam {
+  0% { opacity: 0; transform: translateY(-58%) scale(.66); }
+  20% { opacity: 1; transform: translateY(-28%) scale(.86); }
+  42% { opacity: 1; transform: translateY(0) scale(1.08); }
+  58% { opacity: .98; transform: translateY(3%) scale(.99); }
+  82% { opacity: .92; transform: translateY(1%) scale(1.02); }
+  100% { opacity: 0; transform: translateY(-2%) scale(1.08); }
+}
+
+@keyframes gilsysKnight3OmenCharge {
+  0% { opacity: 0; transform: translateY(10%) scale(.58) rotate(0deg); }
+  22% { opacity: .52; transform: translateY(4%) scale(.86) rotate(9deg); }
+  46% { opacity: .86; transform: translateY(0) scale(1.02) rotate(20deg); }
+  68% { opacity: .62; transform: translateY(1%) scale(1.10) rotate(28deg); }
+  100% { opacity: 0; transform: translateY(6%) scale(1.28) rotate(42deg); }
+}
+
+@keyframes gilsysKnight3BurstBloom {
+  0% { opacity: 0; transform: translateY(9%) scale(.42); }
+  18% { opacity: .96; transform: translateY(2%) scale(1.02); }
+  44% { opacity: .78; transform: translateY(-2%) scale(1.14); }
+  72% { opacity: .42; transform: translateY(-8%) scale(1.28); }
+  100% { opacity: 0; transform: translateY(-16%) scale(1.42); }
+}
+
+@keyframes gilsysKnight3ParticleScatter {
+  0% { opacity: 0; transform: translateY(7%) scale(.72) rotate(-4deg); }
+  18% { opacity: .95; transform: translateY(0) scale(1.02) rotate(0deg); }
+  54% { opacity: .78; transform: translateY(-8%) scale(1.12) rotate(5deg); }
+  100% { opacity: 0; transform: translateY(-24%) scale(1.24) rotate(12deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #phase2.gilsys-battle-ui .gilsys-generated-skill-effect,
+  #phase2.gilsys-battle-ui .gilsys-generated-skill-effect img,
+  #phase2.gilsys-battle-ui .gilsys-generated-skill-effect::after {
+    animation-duration: .2s !important;
+  }
+}

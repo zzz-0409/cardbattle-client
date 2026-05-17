@@ -1824,14 +1824,497 @@ body.debug #battleStage {
   user-select:none;
   z-index:80;
   background:transparent;
+  transform-origin:center;
   filter:drop-shadow(0 0 14px rgba(255,235,150,0.35));
   animation:skillEffectBurst 1.75s ease-out forwards;
+}
+.warrior-skill1-effect{
+  position:absolute;
+  left:50%;
+  top:36%;
+  width:150%;
+  max-width:280px;
+  aspect-ratio:1 / 1;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  user-select:none;
+  z-index:82;
+  background:transparent;
+  filter:drop-shadow(0 0 16px rgba(255,235,150,0.42));
+  animation:warriorSkill1Frame 1.25s ease-out forwards;
+  overflow:visible;
+}
+.warrior-skill1-effect img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.warrior-skill1-blade{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  transform:translateY(-34%) scale(.98);
+  opacity:0;
+  mix-blend-mode:screen;
+  z-index:1;
+  filter:
+    drop-shadow(0 0 10px rgba(255,250,190,.78))
+    drop-shadow(0 0 18px rgba(255,156,48,.58))
+    drop-shadow(0 0 26px rgba(255,72,32,.32));
+  animation:warriorSkill1BladeDrop 1.02s cubic-bezier(.16,.74,.2,1) .08s forwards;
+}
+.warrior-skill1-hit{
+  position:absolute;
+  left:50%;
+  top:78%;
+  width:64px;
+  height:32px;
+  border-radius:50%;
+  transform:translate(-50%,-50%) scale(.35);
+  opacity:0;
+  z-index:0;
+  background:
+    radial-gradient(ellipse, rgba(255,255,255,.95) 0 18%, rgba(255,226,120,.86) 19% 34%, rgba(255,86,35,.38) 35% 58%, transparent 68%);
+  filter:
+    drop-shadow(0 0 10px rgba(255,244,168,.78))
+    drop-shadow(0 0 18px rgba(255,92,38,.5));
+  animation:warriorSkill1HitFlash .52s ease-out .48s forwards;
+}
+.warrior-skill2-self-effect,
+.warrior-skill2-target-effect{
+  position:absolute;
+  left:50%;
+  aspect-ratio:1 / 1;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  user-select:none;
+  background:transparent;
+  overflow:visible;
+}
+.warrior-skill2-self-effect{
+  top:44%;
+  width:165%;
+  max-width:300px;
+  z-index:79;
+  mix-blend-mode:screen;
+  filter:
+    drop-shadow(0 0 12px rgba(255,238,154,.36))
+    drop-shadow(0 0 22px rgba(255,76,30,.22));
+  animation:warriorSkill2SelfFrame 1.28s ease-out forwards;
+}
+.warrior-skill2-target-effect{
+  top:43%;
+  width:172%;
+  max-width:330px;
+  z-index:88;
+  mix-blend-mode:screen;
+  opacity:0;
+  filter:
+    drop-shadow(0 0 12px rgba(255,245,176,.58))
+    drop-shadow(0 0 22px rgba(255,74,28,.36));
+  animation:warriorSkill2TargetFrame 1.14s ease-out .22s forwards;
+}
+.warrior-skill2-self-effect img,
+.warrior-skill2-target-effect img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.warrior-skill2-aura{
+  z-index:0;
+  opacity:0;
+  transform:scale(.82) rotate(-2deg);
+  transform-origin:center 66%;
+  animation:warriorSkill2Aura 1.22s ease-out forwards;
+}
+.warrior-skill2-rise{
+  z-index:1;
+  opacity:0;
+  transform:translateY(32%) scale(.78);
+  transform-origin:center 72%;
+  animation:warriorSkill2Rise .92s cubic-bezier(.16,.74,.2,1) .08s forwards;
+}
+.warrior-skill2-slash{
+  z-index:1;
+  opacity:0;
+  transform-origin:48% 72%;
+  transform:translate(-28%,22%) rotate(-15deg) scale(.66);
+  filter:
+    drop-shadow(0 0 10px rgba(255,250,190,.72))
+    drop-shadow(0 0 20px rgba(255,94,34,.5))
+    drop-shadow(0 0 30px rgba(255,36,18,.25));
+  animation:warriorSkill2SlashSweep .84s cubic-bezier(.16,.74,.2,1) .26s forwards;
+}
+.warrior-skill2-target-effect.is-enemy .warrior-skill2-slash{
+  animation-name:warriorSkill2SlashSweepEnemy;
+}
+.warrior-skill2-hit{
+  position:absolute;
+  left:44%;
+  top:76%;
+  width:78px;
+  height:38px;
+  border-radius:50%;
+  transform:translate(-50%,-50%) scale(.35);
+  opacity:0;
+  z-index:0;
+  background:
+    radial-gradient(ellipse, rgba(255,255,255,.98) 0 16%, rgba(255,226,118,.86) 17% 32%, rgba(255,84,34,.42) 33% 58%, transparent 68%);
+  filter:
+    drop-shadow(0 0 12px rgba(255,238,148,.72))
+    drop-shadow(0 0 20px rgba(255,88,35,.48));
+  animation:warriorSkill2HitFlash .52s ease-out .62s forwards;
+}
+.warrior-skill2-target-effect.is-enemy .warrior-skill2-hit{
+  left:56%;
+}
+.warrior-skill3-effect{
+  position:absolute;
+  left:50%;
+  top:43%;
+  width:192%;
+  max-width:380px;
+  aspect-ratio:1 / 1;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  user-select:none;
+  z-index:92;
+  mix-blend-mode:screen;
+  background:transparent;
+  overflow:visible;
+  filter:
+    drop-shadow(0 0 14px rgba(255,248,184,.66))
+    drop-shadow(0 0 26px rgba(255,78,32,.42))
+    drop-shadow(0 0 42px rgba(255,24,18,.22));
+  animation:warriorSkill3Frame 1.62s ease-out forwards;
+}
+.warrior-skill3-effect img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.warrior-skill3-omen{
+  z-index:0;
+  opacity:0;
+  transform-origin:center 72%;
+  transform:translateY(22%) scale(.48) rotate(-3deg);
+  animation:warriorSkill3Omen 1.12s ease-out forwards;
+}
+.warrior-skill3-blade{
+  z-index:2;
+  opacity:0;
+  transform-origin:center 88%;
+  transform:translateY(-66%) scale(.66);
+  filter:
+    drop-shadow(0 0 12px rgba(255,255,230,.9))
+    drop-shadow(0 0 22px rgba(255,178,54,.72))
+    drop-shadow(0 0 34px rgba(255,42,24,.38));
+  animation:warriorSkill3BladeDrop 1.04s cubic-bezier(.12,.74,.16,1) .18s forwards;
+}
+.warrior-skill3-burst{
+  z-index:1;
+  opacity:0;
+  transform-origin:center 80%;
+  transform:translateY(24%) scale(.5);
+  filter:
+    drop-shadow(0 0 12px rgba(255,236,132,.72))
+    drop-shadow(0 0 24px rgba(255,86,30,.52));
+  animation:warriorSkill3Burst .96s cubic-bezier(.16,.74,.2,1) .54s forwards;
+}
+.warrior-skill3-hit{
+  position:absolute;
+  left:50%;
+  top:76%;
+  width:118px;
+  height:64px;
+  border-radius:50%;
+  transform:translate(-50%,-50%) scale(.25);
+  opacity:0;
+  z-index:3;
+  background:
+    radial-gradient(ellipse, rgba(255,255,255,1) 0 18%, rgba(255,230,118,.9) 19% 32%, rgba(255,80,28,.42) 33% 58%, transparent 70%);
+  filter:
+    drop-shadow(0 0 14px rgba(255,248,176,.82))
+    drop-shadow(0 0 28px rgba(255,76,30,.5));
+  animation:warriorSkill3HitFlash .58s ease-out .63s forwards;
+}
+.gilsys-normal-attack-slash {
+  position: absolute;
+  left: 50%;
+  top: 39%;
+  width: min(250px, 180%);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  z-index: 88;
+  mix-blend-mode: screen;
+  overflow: visible;
+}
+.gilsys-normal-attack-slash img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  filter:
+    drop-shadow(0 0 8px rgba(255, 245, 178, .50))
+    drop-shadow(0 0 12px rgba(255, 68, 32, .32));
+  animation: gilsysNormalSlashPass 1.15s cubic-bezier(.18,.72,.22,1) forwards;
+}
+.gilsys-normal-attack-slash.is-self img {
+  animation-name: gilsysNormalSlashPassReverse;
+}
+.gilsys-normal-attack-spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255,255,255,.95) 0 13%, rgba(255,210,105,.82) 14% 24%, rgba(255,78,38,.35) 25% 46%, transparent 58%);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.35);
+  filter: drop-shadow(0 0 10px rgba(255, 94, 43, .56));
+  animation: gilsysNormalSlashSpark .68s ease-out .34s forwards;
+}
+.gilsys-archer-arrow-rain {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: min(320px, 205%);
+  height: min(340px, 220%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  z-index: 89;
+  mix-blend-mode: screen;
+  overflow: visible;
+}
+.gilsys-archer-arrow-projectile {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  width: var(--arrow-w, 34px);
+  height: auto;
+  object-fit: contain;
+  opacity: 0;
+  transform-origin: 50% 88%;
+  filter:
+    drop-shadow(0 0 7px rgba(185, 241, 255, .74))
+    drop-shadow(0 0 13px rgba(52, 153, 255, .42));
+  animation: gilsysArcherArrowFall var(--dur, 780ms) cubic-bezier(.13,.78,.14,1) var(--delay, 0ms) forwards;
+}
+.gilsys-archer-arrow-impact {
+  position: absolute;
+  left: calc(50% + var(--hit-x, 0px));
+  top: calc(65% + var(--hit-y, 0px));
+  width: var(--impact-size, 92px);
+  height: var(--impact-size, 92px);
+  opacity: 0;
+  object-fit: contain;
+  transform: translate(-50%, -50%) scale(.62);
+  transform-origin: 50% 70%;
+  animation: gilsysArcherArrowImpact .46s ease-out var(--impact-delay, 520ms) forwards;
+}
+@keyframes gilsysNormalSlashPass {
+  0% {
+    opacity: 0;
+    transform: translate(-104px, -104px) scale(.68);
+  }
+  18% {
+    opacity: .95;
+  }
+  54% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.03);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(104px, 104px) scale(.9);
+  }
+}
+@keyframes gilsysNormalSlashPassReverse {
+  0% {
+    opacity: 0;
+    transform: translate(104px, -104px) scale(.68) scaleX(-1);
+  }
+  18% {
+    opacity: .95;
+  }
+  54% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.03) scaleX(-1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-104px, 104px) scale(.9) scaleX(-1);
+  }
+}
+@keyframes gilsysNormalSlashSpark {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.25); }
+  30% { opacity: .95; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.35); }
+}
+@keyframes gilsysArcherArrowFall {
+  0% {
+    opacity: 0;
+    transform: translate(var(--start-x, calc(var(--hit-x, 0px) - 54px)), -165px) scale(var(--scale, 1)) scaleX(var(--arrow-flip-x, 1)) rotate(var(--rot, -22deg));
+  }
+  12% {
+    opacity: .95;
+  }
+  72% {
+    opacity: 1;
+    transform: translate(var(--hit-x, 0px), 120px) scale(var(--scale, 1)) scaleX(var(--arrow-flip-x, 1)) rotate(var(--rot, -22deg));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--end-x, calc(var(--hit-x, 0px) + 6px)), 134px) scale(var(--scale, 1)) scaleX(var(--arrow-flip-x, 1)) rotate(var(--rot, -22deg));
+  }
+}
+@keyframes gilsysArcherArrowImpact {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.22) scaleX(var(--impact-flip, 1)); }
+  28% { opacity: .96; transform: translate(-50%, -50%) scale(1.04) scaleX(var(--impact-flip, 1)); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.52) scaleX(var(--impact-flip, 1)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-effect-image,
+  .warrior-skill1-effect,
+  .warrior-skill1-blade,
+  .warrior-skill2-self-effect,
+  .warrior-skill2-aura,
+  .warrior-skill2-rise,
+  .warrior-skill2-target-effect,
+  .warrior-skill2-slash,
+  .warrior-skill2-hit,
+  .warrior-skill3-effect,
+  .warrior-skill3-omen,
+  .warrior-skill3-blade,
+  .warrior-skill3-burst,
+  .warrior-skill3-hit,
+  .gilsys-normal-attack-slash img,
+  .gilsys-normal-attack-spark,
+  .gilsys-archer-arrow-projectile,
+  .gilsys-archer-arrow-impact {
+    animation-duration: .2s !important;
+  }
 }
 .sprite.doll .skill-effect-image{
   top:30%;
   width:150%;
   max-width:190px;
   z-index:90;
+}
+@keyframes skillEffectPass{
+  0%{opacity:0;transform:translate(calc(-50% - 96px),calc(-50% - 96px)) scale(.72) rotate(-2deg);}
+  18%{opacity:1;}
+  56%{opacity:1;transform:translate(-50%,-50%) scale(1.04) rotate(.5deg);}
+  100%{opacity:0;transform:translate(calc(-50% + 96px),calc(-50% + 96px)) scale(.94) rotate(1deg);}
+}
+@keyframes skillEffectPassReverse{
+  0%{opacity:0;transform:translate(calc(-50% + 96px),calc(-50% - 96px)) scale(.72) scaleX(-1) rotate(2deg);}
+  18%{opacity:1;}
+  56%{opacity:1;transform:translate(-50%,-50%) scale(1.04) scaleX(-1) rotate(-.5deg);}
+  100%{opacity:0;transform:translate(calc(-50% - 96px),calc(-50% + 96px)) scale(.94) scaleX(-1) rotate(-1deg);}
+}
+@keyframes warriorSkill1Frame{
+  0%{opacity:0;}
+  10%{opacity:1;}
+  76%{opacity:1;}
+  100%{opacity:0;}
+}
+@keyframes warriorSkill1BladeDrop{
+  0%{opacity:0;transform:translateY(-38%) scale(.96);}
+  12%{opacity:1;}
+  50%{opacity:1;transform:translateY(0) scale(1.12);}
+  100%{opacity:0;transform:translateY(34%) scale(.98);}
+}
+@keyframes warriorSkill1HitFlash{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.3);}
+  34%{opacity:1;transform:translate(-50%,-50%) scale(1.18);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.75);}
+}
+@keyframes warriorSkill2SelfFrame{
+  0%{opacity:0;}
+  8%{opacity:1;}
+  76%{opacity:1;}
+  100%{opacity:0;}
+}
+@keyframes warriorSkill2Aura{
+  0%{opacity:0;transform:scale(.78) rotate(-3deg);}
+  18%{opacity:.76;}
+  68%{opacity:.7;transform:scale(1.03) rotate(1deg);}
+  100%{opacity:0;transform:scale(1.1) rotate(2deg);}
+}
+@keyframes warriorSkill2Rise{
+  0%{opacity:0;transform:translateY(34%) scale(.76);}
+  18%{opacity:1;}
+  58%{opacity:.92;transform:translateY(-8%) scale(1.02);}
+  100%{opacity:0;transform:translateY(-40%) scale(.9);}
+}
+@keyframes warriorSkill2TargetFrame{
+  0%{opacity:0;}
+  16%{opacity:1;}
+  74%{opacity:1;}
+  100%{opacity:0;}
+}
+@keyframes warriorSkill2SlashSweep{
+  0%{opacity:0;transform:translate(-34%,28%) rotate(-18deg) scale(.62);}
+  18%{opacity:1;}
+  56%{opacity:1;transform:translate(0,0) rotate(0deg) scale(1.08);}
+  100%{opacity:0;transform:translate(22%,-13%) rotate(8deg) scale(.96);}
+}
+@keyframes warriorSkill2SlashSweepEnemy{
+  0%{opacity:0;transform:translate(34%,28%) rotate(18deg) scale(.62) scaleX(-1);}
+  18%{opacity:1;}
+  56%{opacity:1;transform:translate(0,0) rotate(0deg) scale(1.08) scaleX(-1);}
+  100%{opacity:0;transform:translate(-22%,-13%) rotate(-8deg) scale(.96) scaleX(-1);}
+}
+@keyframes warriorSkill2HitFlash{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.28);}
+  32%{opacity:1;transform:translate(-50%,-50%) scale(1.12);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.75);}
+}
+@keyframes warriorSkill3Frame{
+  0%{opacity:0;}
+  8%{opacity:1;}
+  82%{opacity:1;}
+  100%{opacity:0;}
+}
+@keyframes warriorSkill3Omen{
+  0%{opacity:0;transform:translateY(26%) scale(.44) rotate(-4deg);}
+  16%{opacity:.88;}
+  50%{opacity:.82;transform:translateY(18%) scale(.92) rotate(1deg);}
+  100%{opacity:0;transform:translateY(17%) scale(1.12) rotate(2deg);}
+}
+@keyframes warriorSkill3BladeDrop{
+  0%{opacity:0;transform:translateY(-68%) scale(.62);}
+  14%{opacity:1;}
+  48%{opacity:1;transform:translateY(3%) scale(1.08);}
+  66%{opacity:.82;transform:translateY(9%) scale(1.02);}
+  100%{opacity:0;transform:translateY(24%) scale(.94);}
+}
+@keyframes warriorSkill3Burst{
+  0%{opacity:0;transform:translateY(28%) scale(.42);}
+  14%{opacity:1;}
+  58%{opacity:1;transform:translateY(9%) scale(1.08);}
+  100%{opacity:0;transform:translateY(2%) scale(1.24);}
+}
+@keyframes warriorSkill3HitFlash{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.22);}
+  26%{opacity:1;transform:translate(-50%,-50%) scale(1.16);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.2);}
 }
 @keyframes skillEffectBurst{
   0%{opacity:0;transform:translate(-50%,-50%) scale(0.68) rotate(-3deg);}
@@ -4409,10 +4892,10 @@ body.gilsys-assets-loading #game-wrapper {
         <div class="gilsys-param-row">
           <span>⚔ 攻撃力 <b id="gilsysSelfAtk">0</b></span>
           <span>🛡 防御力 <b id="gilsysSelfDef">0</b></span>
-          <span class="gilsys-special-defense-row" id="gilsysSelfSpecialDefWrap" style="display:none;">◆ 特殊防御 <b id="gilsysSelfSpecialDef">0</b></span>
+          <span class="gilsys-coin-row">🪙 コイン <b id="gilsysSelfCoins">0</b></span>
+          <span class="gilsys-exp-row" id="gilsysSelfExpText">Lv1 EXP0/30</span>
         </div>
-        <div class="gilsys-exp-row" id="gilsysSelfExpText">レベル1　EXP0/30</div>
-        <div class="gilsys-coin-row">🪙 コイン <b id="gilsysSelfCoins">0</b></div>
+        <div class="gilsys-special-defense-row" id="gilsysSelfSpecialDefWrap" style="display:none;">◆ 特殊防御 <b id="gilsysSelfSpecialDef">0</b></div>
         <div class="buff-strip gilsys-status-buff-strip" data-side="self" id="gilsysBuffStripSelf"></div>
       </div>
     </section>
@@ -4430,10 +4913,10 @@ body.gilsys-assets-loading #game-wrapper {
         <div class="gilsys-param-row enemy">
           <span>⚔ 攻撃力 <b id="gilsysEnemyAtk">0</b></span>
           <span>🛡 防御力 <b id="gilsysEnemyDef">0</b></span>
-          <span class="gilsys-special-defense-row" id="gilsysEnemySpecialDefWrap" style="display:none;">◆ 特殊防御 <b id="gilsysEnemySpecialDef">0</b></span>
+          <span class="gilsys-coin-row enemy">🪙 コイン <b id="gilsysEnemyCoins">0</b></span>
+          <span class="gilsys-exp-row enemy" id="gilsysEnemyExpText">Lv1 EXP0/30</span>
         </div>
-        <div class="gilsys-exp-row enemy" id="gilsysEnemyExpText">レベル1　EXP0/30</div>
-        <div class="gilsys-coin-row enemy">🪙 コイン <b id="gilsysEnemyCoins">0</b></div>
+        <div class="gilsys-special-defense-row enemy" id="gilsysEnemySpecialDefWrap" style="display:none;">◆ 特殊防御 <b id="gilsysEnemySpecialDef">0</b></div>
         <div class="buff-strip gilsys-status-buff-strip enemy" data-side="enemy" id="gilsysBuffStripEnemy"></div>
       </div>
       <div class="gilsys-portrait gilsys-portrait-enemy"></div>
@@ -4971,8 +5454,12 @@ function setPhase(p) {
     if (phase === PHASE.DOJO_WAIT) return document.getElementById("phaseDojoWait");
     return null;
   };
+  const previousPhaseRoot = getPhaseRoot(currentPhase);
   const phaseRoot = getPhaseRoot(p);
-  const loadingToken = phaseRoot ? window.gilsysBeginScreenTransition?.(p) : null;
+  const loadingToken =
+    phaseRoot && previousPhaseRoot !== phaseRoot
+      ? window.gilsysBeginScreenTransition?.(p)
+      : null;
   let phaseReady = Promise.resolve();
 
   function triggerHitEffect() {
@@ -7017,6 +7504,70 @@ Object.values(SKILL_EFFECT_ASSETS).forEach(src => {
   img.src = src;
 });
 
+const WARRIOR_SKILL1_VERTICAL_SLASH_SRC = "Assets/effect/warrior_1_vertical_slash.png";
+{
+  const img = new Image();
+  img.src = WARRIOR_SKILL1_VERTICAL_SLASH_SRC;
+}
+
+const WARRIOR_SKILL2_EFFECT_ASSETS = {
+  aura: "Assets/effect/warrior_2_aura_bg.png",
+  rise: "Assets/effect/warrior_2_attack_up_rise.png",
+  slash: "Assets/effect/warrior_2_crescent_slash.png",
+};
+Object.values(WARRIOR_SKILL2_EFFECT_ASSETS).forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
+
+const WARRIOR_SKILL3_EFFECT_ASSETS = {
+  omen: "Assets/effect/warrior_3_omen_circle.png",
+  blade: "Assets/effect/warrior_3_final_blade.png",
+  burst: "Assets/effect/warrior_3_impact_burst.png",
+};
+Object.values(WARRIOR_SKILL3_EFFECT_ASSETS).forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
+
+const NORMAL_ATTACK_SLASH_SRC = "Assets/effect/normal_attack_slash_pass.png";
+{
+  const img = new Image();
+  img.src = NORMAL_ATTACK_SLASH_SRC;
+}
+
+const ARCHER_ARROW_RAIN_ARROW_ASSETS = {
+  normal: "Assets/effect/generated/archer_arrow_rain_normal.png",
+  poison: "Assets/effect/generated/archer_arrow_rain_poison.png",
+  freeze: "Assets/effect/generated/archer_arrow_rain_freeze.png",
+  counter: "Assets/effect/generated/archer_arrow_rain_counter.png",
+  def_down: "Assets/effect/generated/archer_arrow_rain_def_down.png",
+};
+const ARCHER_ARROW_RAIN_ARROW_REVERSE_ASSETS = {
+  normal: "Assets/effect/generated/archer_arrow_rain_normal_reverse.png",
+  poison: "Assets/effect/generated/archer_arrow_rain_poison_reverse.png",
+  freeze: "Assets/effect/generated/archer_arrow_rain_freeze_reverse.png",
+  counter: "Assets/effect/generated/archer_arrow_rain_counter_reverse.png",
+  def_down: "Assets/effect/generated/archer_arrow_rain_def_down_reverse.png",
+};
+const ARCHER_ARROW_IMPACT_ASSETS = {
+  normal: "Assets/effect/generated/archer_arrow_impact_normal.png",
+  poison: "Assets/effect/generated/archer_arrow_impact_poison.png",
+  freeze: "Assets/effect/generated/archer_arrow_impact_freeze.png",
+  counter: "Assets/effect/generated/archer_arrow_impact_counter.png",
+  def_down: "Assets/effect/generated/archer_arrow_impact_def_down.png",
+};
+const ARCHER_ARROW_RAIN_ARROW_SRC = ARCHER_ARROW_RAIN_ARROW_ASSETS.normal;
+const ARCHER_ARROW_IMPACT_SRC = ARCHER_ARROW_IMPACT_ASSETS.normal;
+[
+  ...Object.values(ARCHER_ARROW_RAIN_ARROW_ASSETS),
+  ...Object.values(ARCHER_ARROW_RAIN_ARROW_REVERSE_ASSETS),
+  ...Object.values(ARCHER_ARROW_IMPACT_ASSETS),
+].forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
+
 const skillEffectLastShown = {};
 
 function getFallbackWarriorEffectTarget() {
@@ -7048,13 +7599,207 @@ function showSkillEffectEvent(data) {
   if (now - Number(skillEffectLastShown[dedupeKey] ?? 0) < 450) return;
   skillEffectLastShown[dedupeKey] = now;
 
+  const targetSide = String(targetKey ?? "").startsWith("enemy") ? "enemy" : "self";
+  const effectName = String(data.effect ?? "");
+  if (
+    typeof window.renderGeneratedSkillEffect === "function" &&
+    window.renderGeneratedSkillEffect({ effectName, targetSprite, targetSide })
+  ) {
+    return;
+  }
+
+  if (effectName === "warrior_1_target") {
+    const el = document.createElement("div");
+    el.className = `warrior-skill1-effect job-skill-effect is-${targetSide} ${effectName}`;
+    el.innerHTML = `
+      <img class="warrior-skill1-blade" src="${WARRIOR_SKILL1_VERTICAL_SLASH_SRC}" alt="" draggable="false">
+      <span class="warrior-skill1-hit" aria-hidden="true"></span>
+    `;
+    targetSprite.appendChild(el);
+    setTimeout(() => el.remove(), 1300);
+    return;
+  }
+
+  if (effectName === "warrior_2_self") {
+    const el = document.createElement("div");
+    el.className = `warrior-skill2-self-effect job-skill-effect is-${targetSide} ${effectName}`;
+    el.innerHTML = `
+      <img class="warrior-skill2-aura" src="${WARRIOR_SKILL2_EFFECT_ASSETS.aura}" alt="" draggable="false">
+      <img class="warrior-skill2-rise" src="${WARRIOR_SKILL2_EFFECT_ASSETS.rise}" alt="" draggable="false">
+    `;
+    targetSprite.appendChild(el);
+    setTimeout(() => el.remove(), 1400);
+    return;
+  }
+
+  if (effectName === "warrior_2_target") {
+    const el = document.createElement("div");
+    el.className = `warrior-skill2-target-effect job-skill-effect is-${targetSide} ${effectName}`;
+    el.innerHTML = `
+      <img class="warrior-skill2-slash" src="${WARRIOR_SKILL2_EFFECT_ASSETS.slash}" alt="" draggable="false">
+      <span class="warrior-skill2-hit" aria-hidden="true"></span>
+    `;
+    targetSprite.appendChild(el);
+    setTimeout(() => el.remove(), 1550);
+    return;
+  }
+
+  if (effectName === "warrior_3_target") {
+    const el = document.createElement("div");
+    el.className = `warrior-skill3-effect job-skill-effect is-${targetSide} ${effectName}`;
+    el.innerHTML = `
+      <img class="warrior-skill3-omen" src="${WARRIOR_SKILL3_EFFECT_ASSETS.omen}" alt="" draggable="false">
+      <img class="warrior-skill3-blade" src="${WARRIOR_SKILL3_EFFECT_ASSETS.blade}" alt="" draggable="false">
+      <img class="warrior-skill3-burst" src="${WARRIOR_SKILL3_EFFECT_ASSETS.burst}" alt="" draggable="false">
+      <span class="warrior-skill3-hit" aria-hidden="true"></span>
+    `;
+    targetSprite.appendChild(el);
+    setTimeout(() => el.remove(), 1800);
+    return;
+  }
+
   const el = document.createElement("img");
-  el.className = `skill-effect-image job-skill-effect ${String(data.effect ?? "")}`;
+  el.className = `skill-effect-image job-skill-effect is-${targetSide} ${effectName}`;
   el.src = src;
   el.alt = "";
   el.draggable = false;
   targetSprite.appendChild(el);
   setTimeout(() => el.remove(), 1900);
+}
+
+function showNormalAttackSlash(targetSprite, data = {}) {
+  if (!targetSprite || data?.target === "self_doll" || data?.target === "enemy_doll") return;
+  const slash = document.createElement("div");
+  const targetSide = String(data?.target ?? "").startsWith("enemy") ? "enemy" : "self";
+  slash.className = `gilsys-normal-attack-slash is-${targetSide}`;
+  slash.innerHTML = `
+    <img src="${NORMAL_ATTACK_SLASH_SRC}" alt="" draggable="false">
+    <span class="gilsys-normal-attack-spark" aria-hidden="true"></span>
+  `;
+  targetSprite.appendChild(slash);
+  setTimeout(() => slash.remove(), 1300);
+}
+
+function clampArcherArrowTotal(value) {
+  const total = Math.floor(Number(value ?? 1));
+  if (!Number.isFinite(total)) return 1;
+  return Math.max(1, Math.min(18, total));
+}
+
+function getArcherArrowRainInterval(total) {
+  if (total >= 10) return 72;
+  if (total >= 7) return 84;
+  if (total >= 4) return 104;
+  return 132;
+}
+
+function getArcherArrowFallDuration(total) {
+  if (total >= 10) return 680;
+  if (total >= 6) return 720;
+  return 780;
+}
+
+function getArcherArrowEffectKey(value) {
+  const key = String(value ?? "normal").trim().toLowerCase().replace(/-/g, "_");
+  return Object.prototype.hasOwnProperty.call(ARCHER_ARROW_RAIN_ARROW_ASSETS, key) ? key : "normal";
+}
+
+function getArcherArrowRainSrc(effectKey, reverse = false) {
+  const key = getArcherArrowEffectKey(effectKey);
+  const assets = reverse ? ARCHER_ARROW_RAIN_ARROW_REVERSE_ASSETS : ARCHER_ARROW_RAIN_ARROW_ASSETS;
+  return assets[key] ?? ARCHER_ARROW_RAIN_ARROW_SRC;
+}
+
+function getArcherArrowImpactSrc(effectKey) {
+  return ARCHER_ARROW_IMPACT_ASSETS[getArcherArrowEffectKey(effectKey)] ?? ARCHER_ARROW_IMPACT_SRC;
+}
+
+function getArcherArrowEventIndex(data = {}) {
+  const index = Math.floor(Number(data.arrow_rain_index ?? data.sequence_index ?? 0));
+  return Number.isFinite(index) ? Math.max(0, index) : 0;
+}
+
+function getArcherArrowImpactDelay(data = {}) {
+  const total = clampArcherArrowTotal(data.arrow_rain_total ?? data.sequence_total ?? 1);
+  const index = Math.min(total - 1, getArcherArrowEventIndex(data));
+  const interval = getArcherArrowRainInterval(total);
+  const fallDuration = getArcherArrowFallDuration(total);
+  return Math.round(fallDuration * .72) + index * interval;
+}
+
+function showArcherArrowRainEffect(targetSprite, data = {}) {
+  if (!targetSprite || getArcherArrowEventIndex(data) > 0) return;
+
+  const total = clampArcherArrowTotal(data.arrow_rain_total ?? data.sequence_total ?? 1);
+  const interval = getArcherArrowRainInterval(total);
+  const fallDuration = getArcherArrowFallDuration(total);
+  const effectSequence = Array.isArray(data.arrow_effect_sequence) ? data.arrow_effect_sequence : [];
+  const arrowPattern = [
+    { x: -54, y: -6, rot: -2, scale: .94, drift: 58, w: 45 },
+    { x: 22, y: 5, rot: 3, scale: 1.06, drift: 50, w: 50 },
+    { x: 70, y: -1, rot: -5, scale: .9, drift: 64, w: 43 },
+    { x: -4, y: -15, rot: 1, scale: 1.12, drift: 54, w: 52 },
+    { x: -86, y: 12, rot: 5, scale: .86, drift: 46, w: 41 },
+    { x: 47, y: 18, rot: -3, scale: .98, drift: 60, w: 46 },
+    { x: -31, y: 20, rot: 4, scale: .92, drift: 52, w: 44 },
+    { x: 98, y: 13, rot: -7, scale: .84, drift: 68, w: 40 },
+    { x: -112, y: -2, rot: 6, scale: .82, drift: 48, w: 39 },
+    { x: 13, y: 28, rot: -1, scale: 1, drift: 56, w: 47 },
+    { x: 74, y: 29, rot: 4, scale: .88, drift: 50, w: 42 },
+    { x: -72, y: 32, rot: -5, scale: .9, drift: 62, w: 43 },
+  ];
+
+  const rain = document.createElement("div");
+  const targetSide = String(data?.target ?? "").startsWith("enemy") ? "enemy" : "self";
+  const arrowSourceSide = data?.arrow_source_side || data?.source_side || (targetSide === "enemy" ? "self" : "enemy");
+  rain.className = `gilsys-archer-arrow-rain is-${targetSide} from-${arrowSourceSide}`;
+  const reverseArrowImage = true;
+  const direction = 1;
+  const arrowFlipX = 1;
+  const impactFlip = targetSide === "self" ? -1 : 1;
+
+  for (let i = 0; i < total; i += 1) {
+    const p = arrowPattern[i % arrowPattern.length];
+    const row = Math.floor(i / arrowPattern.length);
+    const delay = i * interval;
+    const hitX = p.x + row * 8;
+    const hitY = p.y + row * 6;
+    const effectKey = getArcherArrowEffectKey(effectSequence[i] ?? data.arrow_effect ?? "normal");
+
+    const arrow = document.createElement("img");
+    arrow.className = "gilsys-archer-arrow-projectile";
+    arrow.src = getArcherArrowRainSrc(effectKey, reverseArrowImage);
+    arrow.alt = "";
+    arrow.draggable = false;
+    arrow.style.setProperty("--hit-x", `${hitX}px`);
+    arrow.style.setProperty("--hit-y", `${hitY}px`);
+    arrow.style.setProperty("--start-x", `${hitX + direction * p.drift}px`);
+    arrow.style.setProperty("--end-x", `${hitX - direction * 6}px`);
+    arrow.style.setProperty("--rot", `${direction * -p.rot}deg`);
+    arrow.style.setProperty("--arrow-flip-x", String(arrowFlipX));
+    arrow.style.setProperty("--scale", String(p.scale));
+    arrow.style.setProperty("--arrow-w", `${p.w}px`);
+    arrow.style.setProperty("--delay", `${delay}ms`);
+    arrow.style.setProperty("--dur", `${fallDuration}ms`);
+    rain.appendChild(arrow);
+
+    const impact = document.createElement("img");
+    impact.className = "gilsys-archer-arrow-impact";
+    impact.src = getArcherArrowImpactSrc(effectKey);
+    impact.alt = "";
+    impact.draggable = false;
+    impact.setAttribute("aria-hidden", "true");
+    impact.style.setProperty("--hit-x", `${hitX}px`);
+    impact.style.setProperty("--hit-y", `${hitY}px`);
+    impact.style.setProperty("--impact-delay", `${Math.round(fallDuration * .72) + delay}ms`);
+    impact.style.setProperty("--impact-size", `${Math.round(92 + p.scale * 16)}px`);
+    impact.style.setProperty("--impact-flip", String(impactFlip));
+    rain.appendChild(impact);
+  }
+
+  targetSprite.appendChild(rain);
+  const removeAfter = Math.round(fallDuration * .72) + (total - 1) * interval + 680;
+  setTimeout(() => rain.remove(), removeAfter);
 }
 
 function pulseClass(el, className, duration = 900) {
@@ -7771,6 +8516,10 @@ function getClientNextLevelInfo(level, exp){
 function playBellSfx() {
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   if (!AudioCtx) return;
+  const seVolume = typeof window.gilsysGetAudioSetting === "function"
+    ? Number(window.gilsysGetAudioSetting("seVolume", 1))
+    : 1;
+  if (seVolume <= 0) return;
 
   const ctx = new AudioCtx();
   ctx.resume?.();
@@ -7780,7 +8529,7 @@ function playBellSfx() {
   // きらっとした倍音（短め）
   const freqs = [1760, 2640, 3520]; // A6 + 倍音
   const master = ctx.createGain();
-  master.gain.value = 0.16;
+  master.gain.value = 0.16 * Math.max(0, Math.min(1, seVolume));
   master.connect(ctx.destination);
 
   freqs.forEach((f, i) => {
@@ -7812,15 +8561,21 @@ function playBellSfx() {
 
 const sfxTracks = {
   attack: "BGM/SE/Kougeki.wav",
+  arrow: "BGM/SE/se_arrow_hit01.mp3",
   defup: "BGM/SE/BougyoUp.wav",
+  heal: "BGM/SE/kaihuku.mp3",
   powerup: "BGM/SE/PowerUp23.wav",
+  warrior2: "BGM/SE/sensiskill2.mp3",
   boom: "BGM/SE/Boom14.wav",
 };
 
 const sfxVolumes = {
   attack: 1.0,
+  arrow: 0.92,
   defup: 0.82,
+  heal: 0.9,
   powerup: 0.82,
+  warrior2: 0.92,
   boom: 0.82,
 };
 
@@ -7828,6 +8583,10 @@ function playNamedSfx(name) {
   const key = String(name ?? "").toLowerCase();
   const src = sfxTracks[key];
   if (!src) return;
+  const seVolume = typeof window.gilsysGetAudioSetting === "function"
+    ? Number(window.gilsysGetAudioSetting("seVolume", 1))
+    : 1;
+  if (seVolume <= 0) return;
 
   if (key === "powerup") {
     window.lastPowerupSfxAt = Date.now();
@@ -7839,13 +8598,17 @@ function playNamedSfx(name) {
   try {
     const audio = new Audio(src);
     audio.preload = "auto";
-    audio.volume = Number(sfxVolumes[key] ?? 0.82);
+    audio.volume = Math.max(0, Math.min(1, Number(sfxVolumes[key] ?? 0.82) * seVolume));
     audio.play().catch((err) => {
       console.warn("sfx play failed", name, err);
     });
   } catch (err) {
     console.warn("sfx create failed", name, err);
   }
+}
+
+function playArcherArrowSfx() {
+  playNamedSfx("arrow");
 }
 
 function getAttackBuffScore(buffs) {
@@ -7968,6 +8731,19 @@ function stopBattleBgm() {
   } catch {}
 }
 
+function getGilsysBgmVolume() {
+  const volume = typeof window.gilsysGetAudioSetting === "function"
+    ? Number(window.gilsysGetAudioSetting("bgmVolume", 0.55))
+    : 0.55;
+  return Math.max(0, Math.min(1, volume));
+}
+
+window.addEventListener("gilsys-settings-changed", () => {
+  if (battleBgmAudio) {
+    battleBgmAudio.volume = getGilsysBgmVolume();
+  }
+});
+
 function playBattleBgm() {
   battleBgmWanted = true;
   if (battleBgmAudio && !battleBgmAudio.paused) return;
@@ -7982,7 +8758,7 @@ function playBattleBgm() {
   const track = getBattleBgmTrack();
   const audio = new Audio(track);
   audio.loop = true;
-  audio.volume = 0.55;
+  audio.volume = getGilsysBgmVolume();
   audio.preload = "auto";
 
   battleBgmAudio = audio;
@@ -8028,7 +8804,7 @@ function playResultBgm(type) {
   const now = ctx.currentTime + 0.02;
 
   const master = ctx.createGain();
-  master.gain.value = 0.1;
+  master.gain.value = 0.18 * getGilsysBgmVolume();
   master.connect(ctx.destination);
 
   const seq = (type === "win")
@@ -9331,8 +10107,11 @@ function attachWsHandlers() {
       div.textContent = data.msg;
       
       // ⚔️や💥が含まれる、またはダメージという言葉があれば演出実行
-      if (data.msg.includes("⚔️") || data.msg.includes("💥") || data.msg.includes("ダメージ")) {
-        triggerHitEffect();
+      const isDamageLog = data.msg.includes("⚔️") || data.msg.includes("💥") || data.msg.includes("ダメージ");
+      if (isDamageLog) {
+        if (data.action_source !== "arrow") {
+          triggerHitEffect();
+        }
         div.style.color = "#ff6666";
         div.style.fontWeight = "bold";
       }
@@ -9352,8 +10131,9 @@ function attachWsHandlers() {
     if (data.type === "damage_event") {
       console.log("★ damage_event 到達", data);
       const amount = Number(data.amount ?? 0);
+      const isArrowDamage = data.arrow_rain === true || data.action_source === "arrow";
       const hitSfx = data.hit_sfx || data.__gilsysAttachedSfx || (amount >= 50 ? "boom" : "attack");
-      if (hitSfx && !data.__gilsysSfxPlayed) {
+      if (!isArrowDamage && hitSfx && !data.__gilsysSfxPlayed) {
         data.__gilsysSfxPlayed = true;
         playNamedSfx(hitSfx);
       }
@@ -9372,24 +10152,49 @@ function attachWsHandlers() {
           ? sprites.enemy
           : sprites.self;
 
-      if (attackerSprite) attackerSprite.classList.add("attack");
-      targetSprite.classList.add("hit");
-
-      setTimeout(() => {
-        if (attackerSprite) attackerSprite.classList.remove("attack");
+      const runDamageImpact = () => {
+        if (attackerSprite) {
+          attackerSprite.classList.remove("attack");
+          void attackerSprite.offsetWidth;
+          attackerSprite.classList.add("attack");
+        }
         targetSprite.classList.remove("hit");
-      }, 280);
+        void targetSprite.offsetWidth;
+        targetSprite.classList.add("hit");
 
-      const offsetPx = bumpStack(data.target);
-      const kind = data.kind ?? "normal";
-      applyDamageEventToDisplayedHp(data);
+        if (isArrowDamage) {
+          if (!data.__gilsysSfxPlayed) {
+            data.__gilsysSfxPlayed = true;
+            playArcherArrowSfx();
+          }
+        } else if (data.normal_attack === true) {
+          showNormalAttackSlash(targetSprite, data);
+        }
 
-      spawnPopup(
-        targetSprite,
-        `damage-popup kind-${kind}`,
-        amount > 0 ? `-${amount}` : "0",
-        offsetPx
-      );
+        setTimeout(() => {
+          if (attackerSprite) attackerSprite.classList.remove("attack");
+          targetSprite.classList.remove("hit");
+        }, 280);
+
+        const offsetPx = bumpStack(data.target);
+        const kind = data.kind ?? "normal";
+        applyDamageEventToDisplayedHp(data);
+
+        spawnPopup(
+          targetSprite,
+          `damage-popup kind-${kind}`,
+          amount > 0 ? `-${amount}` : "0",
+          offsetPx
+        );
+      };
+
+      if (isArrowDamage) {
+        showArcherArrowRainEffect(targetSprite, data);
+        setTimeout(runDamageImpact, getArcherArrowImpactDelay(data));
+        return;
+      }
+
+      runDamageImpact();
       return;
     }
 
@@ -9408,6 +10213,8 @@ function attachWsHandlers() {
     // ★ 回復演出（heal_event）
     // ============================
     if (data.type === "heal_event") {
+      playNamedSfx(data.hit_sfx || data.heal_sfx || "heal");
+
       const sprites = getSprites();
       const targetSprite = sprites[data.target];
 
@@ -11049,7 +11856,7 @@ function updateGilsysBattleHud(data) {
   const level = Math.max(1, Number(data.level ?? 1));
   const exp = Math.max(0, Number(data.exp ?? 0));
   const nextExp = data.next_level_exp == null ? null : Number(data.next_level_exp);
-  const expText = nextExp == null ? "最大Lv" : `レベル${level}　EXP${exp}/${nextExp}`;
+  const expText = nextExp == null ? `Lv${level} EXP MAX` : `Lv${level} EXP${exp}/${nextExp}`;
 
   const displayName = isSelf
     ? (data.name || window.gilsysSelfMatchName || window.accountName || "あなた")
@@ -11497,6 +12304,11 @@ function closeSkillUI(){
 }
 
 function confirmTurnConsume(onConfirm){
+  const forceConfirmForTutorial = window.matchMode === "tutorial" || window.gilsysTutorialBattleActive === true;
+  if (!forceConfirmForTutorial && typeof window.gilsysShouldConfirmTurnConsume === "function" && !window.gilsysShouldConfirmTurnConsume()) {
+    if (typeof onConfirm === "function") onConfirm();
+    return;
+  }
   openItemConfirm(
     "ターンを消費する行動です。よろしいですか？",
     onConfirm,
@@ -11681,6 +12493,12 @@ function useItem(id, action, slot = 1){
 
   const item = (window.itemList || []).find(it => it.uid === id);
   if (itemConsumesTurn(item, action)) {
+    const forceConfirmForTutorial = window.matchMode === "tutorial" || window.gilsysTutorialBattleActive === true;
+    if (!forceConfirmForTutorial && typeof window.gilsysShouldConfirmTurnConsume === "function" && !window.gilsysShouldConfirmTurnConsume()) {
+      submitItemAction(id, action, slot);
+      refreshInventoryAfterLocalAction(id, action);
+      return;
+    }
     openItemConfirm("ターンを消費するアイテムです。使用しますか？", () => {
       submitItemAction(id, action, slot);
       refreshInventoryAfterLocalAction(id, action);
@@ -13013,8 +13831,10 @@ try {
 <script src="scripts/pwa-register.js"></script>
 <script src="scripts/asset-preloader.js"></script>
 <script src="scripts/title-mission-system.js"></script>
+<script id="gilsys-settings-panel" src="scripts/extracted/gilsys-settings-panel.js"></script>
 <script id="gilsys-start-loader-fallback" src="scripts/extracted/gilsys-start-loader-fallback.js"></script>
 <link rel="stylesheet" href="styles/title-mission.css">
+<link id="gilsys-settings-panel-style" rel="stylesheet" href="styles/extracted/gilsys-settings-panel.css">
 <link rel="stylesheet" href="styles/boot-loader.css">
 <link rel="stylesheet" href="styles/title-screen.css">
 <link rel="stylesheet" href="styles/close-buttons.css">
@@ -13022,6 +13842,7 @@ try {
 <link id="gilsys-mobile-battle-log-readable-final" rel="stylesheet" href="styles/extracted/gilsys-mobile-battle-log-readable-final.css">
 <link rel="stylesheet" href="styles/profile-title.css">
 <link id="gilsys-battle-equip-tooltip-hit-fix" rel="stylesheet" href="styles/extracted/gilsys-battle-equip-tooltip-hit-fix.css">
+<link id="gilsys-battle-equip-slot-stable" rel="stylesheet" href="styles/extracted/gilsys-battle-equip-slot-stable.css">
 <script id="gilsys-battle-equip-tooltip-hit-fix-script" src="scripts/extracted/gilsys-battle-equip-tooltip-hit-fix-script.js"></script>
 <link rel="stylesheet" href="styles/dojo-result.css">
 <link rel="stylesheet" href="styles/dojo-prep.css">
@@ -13042,7 +13863,10 @@ try {
 <link id="gilsys-item-card-generated-backgrounds" rel="stylesheet" href="styles/extracted/gilsys-item-card-generated-backgrounds.css?v=6">
 <link id="gilsys-dojo-prep-two-panel-style" rel="stylesheet" href="styles/extracted/gilsys-dojo-prep-two-panel.css">
 <link id="gilsys-enemy-turn-command-panel" rel="stylesheet" href="styles/extracted/gilsys-enemy-turn-command-panel.css">
+<link id="gilsys-battle-status-inline-stats" rel="stylesheet" href="styles/extracted/gilsys-battle-status-inline-stats.css">
+<link id="gilsys-generated-skill-effects-style" rel="stylesheet" href="styles/extracted/gilsys-generated-skill-effects.css">
 <script id="gilsys-dojo-prep-two-panel" src="scripts/extracted/gilsys-dojo-prep-two-panel.js"></script>
 <script id="gilsys-command-action-selection-state" src="scripts/extracted/gilsys-command-action-selection-state.js"></script>
+<script id="gilsys-generated-skill-effects" src="scripts/extracted/gilsys-generated-skill-effects.js"></script>
 </body>
 </html>

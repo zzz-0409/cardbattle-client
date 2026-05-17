@@ -1,0 +1,78 @@
+#phase2.gilsys-battle-ui .gilsys-param-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  font-size: 12px !important;
+  line-height: 1.08 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-param-row.enemy {
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-param-row > span {
+  display: inline-flex !important;
+  align-items: baseline !important;
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-param-row .gilsys-coin-row,
+#phase2.gilsys-battle-ui .gilsys-param-row .gilsys-exp-row {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin-top: 0 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  white-space: nowrap !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-param-row .gilsys-coin-row {
+  color: #ffd98a !important;
+  font-weight: 900 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-param-row .gilsys-exp-row {
+  color: #f7e2c0 !important;
+  font-weight: 800 !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-param-row b {
+  font-size: 1em !important;
+  margin-left: 3px !important;
+}
+
+#phase2.gilsys-battle-ui .gilsys-special-defense-row {
+  margin-top: 3px;
+  font-size: 10px;
+  line-height: 1.08;
+  color: #d8fbff;
+  white-space: nowrap;
+}
+
+#phase2.gilsys-battle-ui .gilsys-special-defense-row.enemy {
+  text-align: right;
+}
+
+#phase2.gilsys-battle-ui .gilsys-param-row .gilsys-blessing-count {
+  margin-left: 4px;
+}
+
+@media (max-width: 760px),
+       (orientation: landscape) and (max-height: 700px) {
+  #phase2.gilsys-battle-ui .gilsys-param-row {
+    gap: 4px !important;
+    font-size: 8px !important;
+  }
+
+  #phase2.gilsys-battle-ui .gilsys-param-row b {
+    margin-left: 1px !important;
+  }
+}

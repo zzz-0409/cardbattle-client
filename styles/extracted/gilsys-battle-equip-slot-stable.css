@@ -1,0 +1,42 @@
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-area,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-area {
+  inline-size: 46px !important;
+  min-inline-size: 46px !important;
+  max-inline-size: 46px !important;
+  flex: 0 0 46px !important;
+  flex-wrap: nowrap !important;
+  align-content: center !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .equip-slot,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .special-equip-slot {
+  inline-size: 42px !important;
+  block-size: 42px !important;
+  min-inline-size: 42px !important;
+  min-block-size: 42px !important;
+  max-inline-size: 42px !important;
+  max-block-size: 42px !important;
+  flex: 0 0 42px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui.is-dojo-mode #battleStage .gilsys-equip-wrapper {
+  inline-size: 98px !important;
+  min-inline-size: 98px !important;
+  max-inline-size: 98px !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui.is-dojo-mode #battleStage .gilsys-equip-wrapper .equip-area,
+html.gilsys-fixed-game #phase2.gilsys-battle-ui.is-dojo-mode #battleStage .gilsys-equip-wrapper .special-equip-area {
+  position: static !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+}

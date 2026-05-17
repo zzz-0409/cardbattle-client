@@ -81,10 +81,18 @@
     const arrows = getEquippedArrowItems(selfStatus);
     if (!arrows.length) return { damage: 0, hits: 0, note: "矢なし" };
 
-    const currentExtra = Number(selfStatus.archer_buff?.rounds ?? 0) > 0
-      ? Math.max(1, Number(selfStatus.archer_buff?.extra ?? 1))
+    const currentExtraFromList = Array.isArray(selfStatus.archer_buffs)
+      ? selfStatus.archer_buffs.reduce((sum, buff) => {
+          const rounds = Number(buff?.rounds ?? buff?.duration ?? 0);
+          return rounds > 0 ? sum + Math.max(0, Number(buff?.extra ?? buff?.power ?? 1)) : sum;
+        }, 0)
       : 0;
-    const extra = (skillNo === 1 || skillNo === 2) ? Math.max(currentExtra, 1) : currentExtra;
+    const currentExtra = currentExtraFromList > 0
+      ? currentExtraFromList
+      : (Number(selfStatus.archer_buff?.rounds ?? 0) > 0
+          ? Math.max(1, Number(selfStatus.archer_buff?.extra ?? 1))
+          : 0);
+    const extra = currentExtra + ((skillNo === 1 || skillNo === 2) ? 1 : 0);
     const repeat = 1 + extra;
     const forcePierce = Number(selfStatus.archer_pierce_rounds ?? 0) > 0;
     const pierceWeapon = hasDojoPierceWeapon(selfStatus);

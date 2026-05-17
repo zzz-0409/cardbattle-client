@@ -1,5 +1,6 @@
 html.gilsys-fixed-game .gilsys-mission-close,
-html.gilsys-fixed-game .gilsys-notice-close {
+html.gilsys-fixed-game .gilsys-notice-close,
+html.gilsys-fixed-game .gilsys-settings-close {
   position: relative !important;
   width: 48px !important;
   height: 48px !important;
@@ -21,7 +22,8 @@ html.gilsys-fixed-game .gilsys-notice-close {
 }
 
 html.gilsys-fixed-game .gilsys-mission-close::before,
-html.gilsys-fixed-game .gilsys-notice-close::before {
+html.gilsys-fixed-game .gilsys-notice-close::before,
+html.gilsys-fixed-game .gilsys-settings-close::before {
   content: "×" !important;
   display: block !important;
   color: #ff2424 !important;
@@ -38,7 +40,8 @@ html.gilsys-fixed-game .gilsys-notice-close::before {
 }
 
 html.gilsys-fixed-game .gilsys-mission-close:hover::before,
-html.gilsys-fixed-game .gilsys-notice-close:hover::before {
+html.gilsys-fixed-game .gilsys-notice-close:hover::before,
+html.gilsys-fixed-game .gilsys-settings-close:hover::before {
   color: #ff4747 !important;
   transform: scale(1.06);
 }
