@@ -2,6 +2,7 @@
   const slotSelector = [
     "#phase2.gilsys-battle-ui #battleStage .equip-slot",
     "#phase2.gilsys-battle-ui #battleStage .special-equip-slot",
+    "#phase2.gilsys-battle-ui #battleStage .gilsys-summoner-dragon-chip",
     "#phase2.gilsys-battle-ui .buff-slot",
     "#phaseDojoWait .dojo-trail-buff-icon"
   ].join(",");
@@ -108,10 +109,11 @@
     }
     if (!tooltipHtml(slot)) return;
     if (coarsePointer(event)) {
-      const allowScrollGesture = slot.classList?.contains("dojo-trail-buff-icon");
+      const allowDefaultAction = slot.classList?.contains("dojo-trail-buff-icon") ||
+        slot.classList?.contains("gilsys-summoner-dragon-chip");
       const shouldOpen = activeSlot !== slot;
       requestAnimationFrame(() => shouldOpen ? show(slot) : hide());
-      if (!allowScrollGesture) {
+      if (!allowDefaultAction) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -124,7 +126,11 @@
     const slot = slotFromEvent(event);
     if (slot && tooltipHtml(slot)) {
       show(slot);
-      if (touchLike() && !slot.classList?.contains("dojo-trail-buff-icon")) {
+      if (
+        touchLike() &&
+        !slot.classList?.contains("dojo-trail-buff-icon") &&
+        !slot.classList?.contains("gilsys-summoner-dragon-chip")
+      ) {
         event.preventDefault();
         event.stopPropagation();
       }

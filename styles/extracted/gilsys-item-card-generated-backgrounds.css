@@ -184,6 +184,36 @@ html.gilsys-fixed-game .gilsys-shop-icon-btn.theme-rainbow-blue {
   --gilsys-item-card-icon-glow: rgba(92, 226, 255, .30);
 }
 
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .gilsys-summoner-dragon-chip {
+  --gilsys-item-card-icon-bg: var(--gilsys-item-card-rainbow-bg);
+  --gilsys-item-card-icon-tint:
+    radial-gradient(circle at 36% 42%, rgba(54, 219, 255, .42), transparent 46%),
+    radial-gradient(circle at 66% 58%, rgba(255, 70, 201, .36), transparent 48%),
+    linear-gradient(135deg, rgba(12, 74, 105, .34), rgba(100, 44, 140, .24), rgba(162, 105, 24, .16));
+  --gilsys-item-card-icon-glow: rgba(92, 226, 255, .30);
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    var(--gilsys-item-card-icon-tint),
+    var(--gilsys-item-card-icon-bg) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  box-shadow:
+    0 0 10px var(--gilsys-item-card-icon-glow),
+    inset 0 0 0 1px rgba(255, 241, 184, .12) !important;
+}
+
+html.gilsys-fixed-game #phase2.gilsys-battle-ui #battleStage .gilsys-summoner-dragon-chip.is-front {
+  box-shadow:
+    0 0 0 1px rgba(255, 235, 162, .82),
+    0 0 12px rgba(64, 184, 255, .34),
+    0 0 16px rgba(255, 204, 92, .22),
+    inset 0 0 0 1px rgba(255, 241, 184, .14) !important;
+}
+
 html.gilsys-fixed-game .gilsys-shop-icon-btn.theme-redblack {
   --gilsys-item-card-icon-bg: var(--gilsys-item-card-redblack-bg);
   --gilsys-item-card-icon-tint:

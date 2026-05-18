@@ -63,20 +63,4 @@ html.gilsys-fixed-game #gilsysHomeBottomNav .gilsys-home-nav-btn:disabled {
   filter: grayscale(.18) brightness(.88) !important;
 }
 
-@media (max-width: 520px) {
-  html.gilsys-fixed-game #gilsysHomeBottomNav {
-    gap: 4px !important;
-    width: calc(100% - 12px) !important;
-    height: 70px !important;
-    bottom: 6px !important;
-  }
 
-  html.gilsys-fixed-game #gilsysHomeBottomNav .gilsys-home-nav-btn {
-    height: 70px !important;
-    padding: 41px 3px 7px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeBottomNav .gilsys-home-nav-btn b {
-    font-size: clamp(10px, 3vw, 12px) !important;
-  }
-}

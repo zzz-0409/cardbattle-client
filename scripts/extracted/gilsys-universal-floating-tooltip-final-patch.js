@@ -1,7 +1,7 @@
 (() => {
   window.__gilsysFloatingTooltipFinalActive = true;
 
-  const slotSelector = "#phase2.gilsys-battle-ui .equip-slot, #phase2.gilsys-battle-ui .special-equip-slot, #phase2.gilsys-battle-ui .buff-slot";
+  const slotSelector = "#phase2.gilsys-battle-ui .equip-slot, #phase2.gilsys-battle-ui .special-equip-slot, #phase2.gilsys-battle-ui .buff-slot, #phase2.gilsys-battle-ui #battleStage .gilsys-summoner-dragon-chip";
   const tooltipSelector = ".equip-tooltip, .buff-tooltip";
   let activeSlot = null;
 

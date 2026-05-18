@@ -1,4 +1,4 @@
-const CACHE_NAME = "gilsys-pwa-v96";
+const CACHE_NAME = "gilsys-pwa-v104-cpu-detail-width";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -64,15 +64,9 @@ const CORE_ASSETS = [
   "./scripts/extracted/gilsys-damage-preview-patch.js",
   "./scripts/extracted/gilsys-doll-charge-command-patch.js",
   "./styles/extracted/gilsys-priest-blessing-count-style.css",
-  "./styles/extracted/gilsys-mobile-hide-top-status-style.css",
-  "./scripts/extracted/gilsys-touch-tooltip-patch.js",
-  "./scripts/extracted/gilsys-mobile-floating-tooltip-patch.js",
   "./scripts/extracted/gilsys-universal-floating-tooltip-final-patch.js",
-  "./styles/extracted/gilsys-mobile-doll-status-visible-final-style.css",
   "./styles/extracted/gilsys-status-exp-hp-name-cleanup-final-style.css",
   "./styles/extracted/gilsys-inventory-card-match-shop-style.css",
-  "./styles/extracted/gilsys-mobile-hide-enemy-simple-status-style.css",
-  "./styles/extracted/gilsys-all-device-responsive-final-style.css",
   "./scripts/extracted/gilsys-fit-control-text.js",
   "./styles/extracted/gilsys-fixed-game-viewport-style.css",
   "./scripts/extracted/gilsys-fixed-game-viewport.js",
@@ -87,7 +81,6 @@ const CORE_ASSETS = [
   "./styles/extracted/gilsys-button-frame-transparent-outside-style.css",
   "./styles/extracted/gilsys-length-aware-button-frame-style.css",
   "./styles/extracted/gilsys-connect-button-center-final-style.css",
-  "./styles/extracted/gilsys-mobile-log-and-text-fit-final-style.css",
   "./styles/extracted/gilsys-job-select-info-visibility-fix-style.css",
   "./styles/extracted/gilsys-social-home-layout-style.css",
   "./scripts/extracted/gilsys-battle-log-command-dock.js",
@@ -110,7 +103,6 @@ const CORE_ASSETS = [
   "./styles/extracted/gilsys-dojo-trail-pc-drawer-final.css",
   "./scripts/extracted/gilsys-start-loader-fallback.js",
   "./styles/extracted/gilsys-vs-intro-style.css",
-  "./styles/extracted/gilsys-mobile-battle-log-readable-final.css",
   "./styles/extracted/gilsys-alchemist-battle-opacity-fix.css",
   "./styles/extracted/gilsys-battle-equip-tooltip-hit-fix.css",
   "./scripts/extracted/gilsys-battle-equip-tooltip-hit-fix-script.js",

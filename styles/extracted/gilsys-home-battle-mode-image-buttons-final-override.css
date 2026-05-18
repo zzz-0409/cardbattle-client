@@ -71,19 +71,4 @@ html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo:hover {
   transform: translateY(-1px) !important;
 }
 
-@media (max-width: 520px) {
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom,
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom,
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU,
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo {
-    min-height: 72px !important;
-    padding: 11px 8px 11px 70px !important;
-  }
 
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRandom .phase0-menu-text,
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnRoom .phase0-menu-text,
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnCPU .phase0-menu-text,
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnDojo .phase0-menu-text {
-    font-size: clamp(13px, 3.65vw, 18px) !important;
-  }
-}

@@ -17,6 +17,10 @@
   animation: gilsysGeneratedSkillFrame 1.45s ease-out forwards;
 }
 
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.summoner_fafnir_target {
+  z-index: 86;
+}
+
 #phase2.gilsys-battle-ui .gilsys-generated-skill-effect img {
   position: absolute;
   inset: 0;
@@ -58,6 +62,21 @@
 
 #phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-self img {
   animation: gilsysGeneratedSelfAura 1.22s ease-out forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-self img.summoner-layer-circle {
+  z-index: 1;
+  animation: gilsysSummonerPulse 1.48s cubic-bezier(.16,.74,.2,1) forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-self img.summoner-layer-particles {
+  z-index: 2;
+  animation: gilsysSummonerRise 1.48s cubic-bezier(.16,.74,.2,1) .04s forwards;
+}
+
+#phase2.gilsys-battle-ui .gilsys-generated-skill-effect.template-self img.summoner-layer-rays {
+  z-index: 0;
+  animation: gilsysSummonerSpin 1.72s cubic-bezier(.16,.74,.2,1) forwards;
 }
 
 #phase2.gilsys-battle-ui .gilsys-generated-skill-effect.knight_1_self,
@@ -292,6 +311,27 @@
   18% { opacity: .95; }
   62% { opacity: .92; transform: translateY(-4%) scale(1.03) rotate(1deg); }
   100% { opacity: 0; transform: translateY(-26%) scale(1.08) rotate(2deg); }
+}
+
+@keyframes gilsysSummonerPulse {
+  0% { opacity: 0; transform: translateY(18%) scale(.52) rotate(-8deg); }
+  18% { opacity: .96; transform: translateY(0) scale(.94) rotate(0deg); }
+  62% { opacity: .9; transform: translateY(-4%) scale(1.08) rotate(8deg); }
+  100% { opacity: 0; transform: translateY(-14%) scale(1.22) rotate(14deg); }
+}
+
+@keyframes gilsysSummonerRise {
+  0% { opacity: 0; transform: translateY(34%) scale(.66); }
+  24% { opacity: .95; }
+  70% { opacity: .86; transform: translateY(-12%) scale(1.02); }
+  100% { opacity: 0; transform: translateY(-32%) scale(1.12); }
+}
+
+@keyframes gilsysSummonerSpin {
+  0% { opacity: 0; transform: scale(.58) rotate(-24deg); }
+  18% { opacity: .9; }
+  68% { opacity: .72; transform: scale(1.05) rotate(42deg); }
+  100% { opacity: 0; transform: scale(1.28) rotate(78deg); }
 }
 
 @keyframes gilsysKnightShieldHold {

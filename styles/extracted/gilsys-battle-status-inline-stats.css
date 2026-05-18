@@ -65,14 +65,4 @@
   margin-left: 4px;
 }
 
-@media (max-width: 760px),
-       (orientation: landscape) and (max-height: 700px) {
-  #phase2.gilsys-battle-ui .gilsys-param-row {
-    gap: 4px !important;
-    font-size: 8px !important;
-  }
 
-  #phase2.gilsys-battle-ui .gilsys-param-row b {
-    margin-left: 1px !important;
-  }
-}

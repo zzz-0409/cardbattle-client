@@ -32,20 +32,4 @@
   text-align: right !important;
 }
 
-@media (max-width: 760px) {
-  #phase2.gilsys-battle-ui .gilsys-exp-row {
-    font-size: 9px !important;
-    margin-top: 2px !important;
-  }
 
-  #phase2.gilsys-battle-ui .gilsys-coin-row {
-    font-size: 9px !important;
-    margin-top: 2px !important;
-  }
-
-  #phase2.gilsys-battle-ui .gilsys-hp-text {
-    font-size: 10px !important;
-    line-height: 1.05 !important;
-    margin-top: 2px !important;
-  }
-}

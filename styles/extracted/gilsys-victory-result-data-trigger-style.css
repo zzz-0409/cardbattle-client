@@ -54,15 +54,4 @@ html.gilsys-fixed-game #resultOverlay[data-result="win"] #resultReconnectBtn {
   background-image: url("../../Assets/result/result-button-job.png") !important;
 }
 
-@media (max-width: 620px) {
-  html.gilsys-fixed-game #resultOverlay[data-result="win"] .gilsys-result-actions {
-    grid-template-columns: minmax(260px, 86vw) !important;
-    gap: 10px !important;
-  }
 
-  html.gilsys-fixed-game #resultOverlay[data-result="win"] .gilsys-result-actions button {
-    height: clamp(50px, 17vw, 68px) !important;
-    max-height: 68px !important;
-    font-size: clamp(16px, 5vw, 21px) !important;
-  }
-}

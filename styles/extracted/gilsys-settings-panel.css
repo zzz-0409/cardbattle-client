@@ -124,11 +124,4 @@ html.gilsys-fixed-game #gilsysHomeSettingsBtn:hover {
   accent-color: #72f7ff;
 }
 
-@media (max-width: 760px) {
-  html.gilsys-fixed-game #gilsysHomeSettingsBtn {
-    top: 196px;
-    right: 14px;
-    width: 48px;
-    height: 48px;
-  }
-}
+

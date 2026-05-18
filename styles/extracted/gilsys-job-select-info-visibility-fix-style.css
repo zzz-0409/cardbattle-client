@@ -39,6 +39,10 @@ html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-block:nth
   display: none !important;
 }
 
+html.gilsys-fixed-game #phase1.gilsys-job-select-ui #cpuJobArea {
+  width: 400px !important;
+}
+
 html.gilsys-fixed-game #gilsysJobActionDock {
   grid-template-rows: 58px 20px !important;
   min-height: 82px !important;
@@ -135,47 +139,3 @@ html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-tooltip 
   overflow: hidden !important;
 }
 
-@media (max-width: 900px), (max-height: 620px), (hover: none) and (pointer: coarse) {
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-main {
-    grid-template-rows: minmax(0, 1fr) 0 clamp(126px, 29dvh, 172px) !important;
-  }
-
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-panel {
-    min-height: clamp(126px, 29dvh, 172px) !important;
-    gap: 4px !important;
-  }
-
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-detail-block {
-    padding: 6px 8px !important;
-  }
-
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-status-list {
-    gap: 3px !important;
-    font-size: clamp(9px, 2.25dvh, 12px) !important;
-  }
-
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-status-row {
-    grid-template-columns: 16px minmax(0, 1fr) auto !important;
-    gap: 3px !important;
-  }
-
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-item {
-    grid-template-columns: 32px minmax(0, 1fr) !important;
-    column-gap: 6px !important;
-  }
-
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-icon {
-    width: 30px !important;
-    height: 30px !important;
-    font-size: 16px !important;
-  }
-
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-name {
-    font-size: clamp(8px, 2.1dvh, 10px) !important;
-  }
-
-  html.gilsys-fixed-game #phase1.gilsys-job-select-ui .gilsys-job-passive-tooltip {
-    font-size: clamp(7.5px, 1.85dvh, 9.5px) !important;
-    line-height: 1.22 !important;
-  }
-}

@@ -106,13 +106,4 @@ html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-drawer-body .dojo-trail-unlo
   background: linear-gradient(180deg, transparent, rgba(9, 8, 7, .98) 18%) !important;
 }
 
-@media (max-width: 620px) {
-  html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-head {
-    grid-template-columns: 1fr !important;
-  }
 
-  html.gilsys-fixed-game #dojoTrailScreen .dojo-trail-points.is-head-points {
-    grid-column: 1 !important;
-    min-height: 44px !important;
-  }
-}

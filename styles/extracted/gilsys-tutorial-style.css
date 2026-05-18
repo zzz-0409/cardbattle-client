@@ -155,40 +155,4 @@ body.gilsys-tutorial-battle #phase2.gilsys-battle-ui .gilsys-command-list-panel.
   display: none !important;
 }
 
-@media (max-width: 520px) {
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial {
-    height: 72px !important;
-    min-height: 72px !important;
-    max-height: 72px !important;
-    padding: 0 10px !important;
-    gap: 9px !important;
-  }
 
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-icon {
-    width: 32px !important;
-    min-width: 32px !important;
-    height: 32px !important;
-    font-size: 23px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel #btnTutorial .phase0-menu-text {
-    font-size: clamp(12px, 3.35vw, 16px) !important;
-  }
-
-  .gilsys-tutorial-card {
-    padding: 9px 10px 10px;
-  }
-
-  .gilsys-tutorial-title {
-    font-size: 15px;
-  }
-
-  .gilsys-tutorial-text {
-    font-size: 12.5px;
-    line-height: 1.45;
-  }
-
-  .gilsys-tutorial-hint {
-    font-size: 11px;
-  }
-}

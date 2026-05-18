@@ -219,7 +219,12 @@
 
   const skillHandler = (skillNo) => {
     const currentJob = String(window.myJob ?? (typeof myJob !== "undefined" ? myJob : ""));
-    if (currentJob === "人形使い" || currentJob === "9") {
+    const statusJob = String(window.gilsysLatestSelfStatus?.job ?? "");
+    if (currentJob === "召喚士" || statusJob === "召喚士") {
+      if (skillNo === 1 && typeof requestSummonerSkill1 === "function") return requestSummonerSkill1;
+      if (skillNo === 2 && typeof requestSummonerSkill2 === "function") return requestSummonerSkill2;
+    }
+    if (currentJob === "人形使い" || statusJob === "人形使い" || (currentJob === "9" && statusJob !== "召喚士")) {
       if (skillNo === 1 && typeof useDollSkill1 === "function") return useDollSkill1;
       if (skillNo === 2 && typeof useDollSkill2Prompt === "function") return useDollSkill2Prompt;
       if (skillNo === 3 && typeof useDollSkill3 === "function") return useDollSkill3;

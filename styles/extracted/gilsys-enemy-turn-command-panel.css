@@ -128,19 +128,4 @@
   }
 }
 
-@media (max-width: 900px), (max-height: 620px), (hover: none) and (pointer: coarse) {
-  #phase2.gilsys-battle-ui.is-enemy-turn-command .gilsys-command-panel {
-    grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-rows: minmax(0, 1fr) !important;
-  }
 
-  .gilsys-enemy-turn-wait-card {
-    width: min(460px, 94%) !important;
-    min-height: 96px !important;
-    padding: 14px 16px !important;
-  }
-
-  .gilsys-enemy-turn-title {
-    font-size: 22px !important;
-  }
-}

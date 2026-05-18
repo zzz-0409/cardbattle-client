@@ -82,11 +82,4 @@ html.gilsys-fixed-game body > #resultOverlay.is-defeat:not(.is-tutorial) .gilsys
   line-height: 1.08 !important;
 }
 
-@media (max-width: 620px) {
-  html.gilsys-fixed-game body > #resultOverlay:not(.is-tutorial) .gilsys-normal-result-frame {
-    align-content: start !important;
-    gap: 7px !important;
-    padding-top: 14px !important;
-    padding-bottom: 14px !important;
-  }
-}
+

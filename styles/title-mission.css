@@ -262,20 +262,4 @@
     background: rgba(148,94,26,.26);
     border-color: rgba(255,220,132,.82);
   }
-  @media (max-width: 760px) {
-    html.gilsys-fixed-game #gilsysHomeNoticeBtn {
-      top: 88px;
-      right: 14px;
-      width: 48px;
-      height: 48px;
-    }
-    html.gilsys-fixed-game #gilsysHomeMissionBtn {
-      top: 142px;
-      right: 14px;
-      width: 48px;
-      height: 48px;
-    }
-    .gilsys-mission-card {
-      grid-template-columns: 1fr;
-    }
-  }
+  

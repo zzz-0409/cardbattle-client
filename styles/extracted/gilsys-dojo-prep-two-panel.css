@@ -262,33 +262,4 @@ html.gilsys-fixed-game #shopList .gilsys-dojo-prep-empty-detail b {
   font-size: 18px;
 }
 
-@media (max-width: 760px) {
-  html.gilsys-fixed-game #shopPopup[data-dojo-prep-panel="shop"] .popup-inner,
-  html.gilsys-fixed-game #shopPopup[data-dojo-prep-panel="inventory"] .popup-inner {
-    min-height: 0 !important;
-  }
 
-  html.gilsys-fixed-game #shopList[data-dojo-prep-panel="shop"],
-  html.gilsys-fixed-game #shopList[data-dojo-prep-panel="inventory"] {
-    height: min(72vh, 680px) !important;
-    max-height: min(72vh, 680px) !important;
-  }
-
-  html.gilsys-fixed-game #shopList .gilsys-dojo-prep-split {
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(180px, .92fr) minmax(220px, 1fr);
-  }
-
-  html.gilsys-fixed-game #shopList .gilsys-dojo-prep-icon-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-    grid-auto-rows: 48px !important;
-  }
-
-  html.gilsys-fixed-game #shopList .gilsys-dojo-prep-icon-btn {
-    height: 48px !important;
-  }
-
-  html.gilsys-fixed-game #shopList .gilsys-dojo-prep-detail-card .shop-card {
-    grid-template-columns: 1fr;
-  }
-}

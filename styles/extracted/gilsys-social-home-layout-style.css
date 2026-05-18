@@ -23,8 +23,8 @@ html.gilsys-fixed-game #phase0HomeLayout::before {
 
 html.gilsys-fixed-game #phase0Hero {
   position: absolute !important;
-  left: clamp(300px, 24vw, 380px) !important;
-  right: clamp(300px, 25vw, 410px) !important;
+  left: 307px !important;
+  right: 320px !important;
   top: 68px !important;
   bottom: 92px !important;
   z-index: 2 !important;
@@ -44,10 +44,10 @@ html.gilsys-fixed-game #phase0Hero::before {
   content: "" !important;
   position: absolute !important;
   left: 50% !important;
-  top: clamp(66px, 10dvh, 96px) !important;
+  top: 66px !important;
   bottom: auto !important;
-  width: min(56vw, 620px) !important;
-  height: min(78dvh, 760px) !important;
+  width: 620px !important;
+  height: 760px !important;
   transform: translateX(calc(-50% + var(--gilsys-home-drag-x))) !important;
   background: var(--gilsys-home-portrait-image) 50% 0% / auto 145% no-repeat !important;
   opacity: .98 !important;
@@ -65,9 +65,9 @@ html.gilsys-fixed-game #phase0Hero.has-home-character-img::before {
 html.gilsys-fixed-game #phase0Hero .gilsys-home-character-img {
   position: absolute !important;
   left: 50% !important;
-  top: clamp(66px, 10dvh, 96px) !important;
+  top: 66px !important;
   width: auto !important;
-  height: min(113dvh, 1102px) !important;
+  height: 820px !important;
   max-width: none !important;
   transform: translateX(calc(-50% + var(--gilsys-home-drag-x))) !important;
   object-fit: contain !important;
@@ -102,9 +102,9 @@ html.gilsys-fixed-game #phase0Hero::after {
   content: "" !important;
   position: absolute !important;
   left: 50% !important;
-  top: clamp(70px, 11dvh, 104px) !important;
-  width: min(44vw, 520px) !important;
-  height: min(44vw, 520px) !important;
+  top: 78px !important;
+  width: 520px !important;
+  height: 520px !important;
   transform: translateX(-50%) !important;
   border: 1px solid rgba(78, 246, 255, .16) !important;
   border-radius: 50% !important;
@@ -127,7 +127,7 @@ html.gilsys-fixed-game #phase0Title {
   position: relative !important;
   z-index: 3 !important;
   margin: 16px 0 0 !important;
-  font-size: clamp(30px, 4.4dvh, 48px) !important;
+  font-size: 32px !important;
   line-height: .95 !important;
   letter-spacing: .04em !important;
   color: rgba(234, 255, 255, .86) !important;
@@ -142,14 +142,14 @@ html.gilsys-fixed-game #phase0TitleSub {
   z-index: 3 !important;
   margin-top: 5px !important;
   color: rgba(186, 252, 255, .78) !important;
-  font-size: clamp(10px, 1.6dvh, 15px) !important;
+  font-size: 12px !important;
   letter-spacing: .24em !important;
 }
 
 html.gilsys-fixed-game #gilsysHomeCharacterLabel {
   position: absolute !important;
   left: 50% !important;
-  bottom: clamp(18px, 4.5dvh, 42px) !important;
+  bottom: 32px !important;
   z-index: 5 !important;
   width: min(360px, 74%) !important;
   height: 54px !important;
@@ -651,130 +651,5 @@ html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn:no
   pointer-events: none !important;
 }
 
-@media (max-width: 980px), (max-height: 620px) {
-  html.gilsys-fixed-game #gilsysHomeTopHud {
-    top: 10px !important;
-    right: 12px !important;
-    gap: 5px !important;
-  }
 
-  html.gilsys-fixed-game .gilsys-home-currency {
-    min-width: 102px !important;
-    height: 34px !important;
-    padding: 0 13px !important;
-  }
 
-  html.gilsys-fixed-game .gilsys-home-hud-btn {
-    width: 38px !important;
-    height: 34px !important;
-    font-size: 13px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeLeftHud {
-    left: 10px !important;
-    top: 54px !important;
-    bottom: 86px !important;
-    width: 230px !important;
-    gap: 6px !important;
-  }
-
-  html.gilsys-fixed-game .gilsys-home-user-card,
-  html.gilsys-fixed-game .gilsys-home-event-card {
-    padding: 12px 14px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeRankingSlot #titleRankingPanel {
-    padding: 14px !important;
-  }
-
-  html.gilsys-fixed-game #phase0Hero {
-    left: 242px !important;
-    right: 10px !important;
-    top: 52px !important;
-    bottom: 84px !important;
-  }
-
-  html.gilsys-fixed-game #phase0Hero::before {
-    width: min(68vw, 460px) !important;
-    height: min(70dvh, 560px) !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeBottomNav {
-    bottom: 8px !important;
-    width: calc(100% - 20px) !important;
-    height: 66px !important;
-    gap: 4px !important;
-  }
-
-  html.gilsys-fixed-game .gilsys-home-nav-btn {
-    height: 66px !important;
-    grid-template-rows: 20px 16px !important;
-    padding: 0 5px !important;
-  }
-
-  html.gilsys-fixed-game .gilsys-home-nav-btn i {
-    font-size: 17px !important;
-  }
-
-  html.gilsys-fixed-game .gilsys-home-nav-btn b {
-    font-size: 10px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeActionDock {
-    bottom: 78px !important;
-    width: calc(100% - 20px) !important;
-  }
-
-  html.gilsys-fixed-game .gilsys-home-drawer {
-    padding: 14px 16px 16px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel,
-  html.gilsys-fixed-game #gilsysHomeGrowthActions {
-    grid-auto-rows: 48px !important;
-    gap: 5px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeBattleBody #titleModePanel .phase0-menu-btn,
-  html.gilsys-fixed-game #gilsysHomeGrowthActions .phase0-menu-btn,
-  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
-    height: 48px !important;
-    min-height: 48px !important;
-    max-height: 48px !important;
-    padding: 0 12px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
-    grid-template-columns: 24px minmax(0, 1fr) !important;
-    gap: 5px !important;
-    padding: 0 9px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-icon {
-    width: 24px !important;
-    min-width: 24px !important;
-    font-size: 15px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-text {
-    font-size: 12px !important;
-  }
-}
-
-@media (max-width: 420px) {
-  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn {
-    grid-template-columns: 20px minmax(0, 1fr) !important;
-    gap: 3px !important;
-    padding: 0 6px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-icon {
-    width: 20px !important;
-    min-width: 20px !important;
-    font-size: 13px !important;
-  }
-
-  html.gilsys-fixed-game #gilsysHomeGrowthActions .gilsys-home-panel-btn .phase0-menu-text {
-    font-size: 11px !important;
-  }
-}

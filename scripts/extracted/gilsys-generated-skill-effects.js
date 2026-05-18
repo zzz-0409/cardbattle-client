@@ -75,6 +75,35 @@
     archer_2_self: { src: `${BASE}/archer_2_self.png`, template: "self", duration: 1450 },
     archer_3_self: { src: `${BASE}/archer_3_self.png`, template: "self", duration: 1450 },
 
+    summoner_1_self: {
+      template: "self",
+      duration: 1500,
+      layers: [
+        { src: `${BASE}/summoner_1_self.png`, className: "summoner-layer-circle" },
+        { src: `${BASE}/summoner_1_particles.png`, className: "summoner-layer-particles" },
+      ],
+    },
+    summoner_2_self: {
+      template: "self",
+      duration: 1500,
+      layers: [
+        { src: `${BASE}/summoner_2_self.png`, className: "summoner-layer-circle" },
+        { src: `${BASE}/summoner_2_particles.png`, className: "summoner-layer-particles" },
+      ],
+    },
+    summoner_3_self: {
+      template: "self",
+      duration: 1750,
+      layers: [
+        { src: `${BASE}/summoner_3_self.png`, className: "summoner-layer-circle" },
+        { src: `${BASE}/summoner_3_rays.png`, className: "summoner-layer-rays" },
+      ],
+    },
+    summoner_3_target: { src: `${BASE}/summoner_3_target.png`, template: "target", duration: 1550 },
+    summoner_tiamat_target: { src: `${BASE}/summoner_tiamat_target.png`, template: "target", duration: 1350 },
+    summoner_nidhogg_target: { src: `${BASE}/summoner_nidhogg_target.png`, template: "target", duration: 1350 },
+    summoner_fafnir_target: { src: `${BASE}/summoner_fafnir_target.png`, template: "target", duration: 1350 },
+
     doll_1_self: { src: `${BASE}/doll_1_self.png`, template: "self", duration: 1450 },
     doll_2_self: { src: `${BASE}/doll_2_self.png`, template: "self", duration: 1450 },
     doll_3_self: { src: `${BASE}/doll_3_self.png`, template: "self", duration: 1500 },

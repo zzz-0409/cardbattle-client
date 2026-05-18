@@ -9,12 +9,12 @@
   const chargeNeed = (doll) => Math.max(1, Number(doll?.charge_need ?? NEED_FALLBACK));
 
   function updateDollDurabilityMeter(doll, side = "self") {
+    const meterId = side === "enemy" ? "gilsysEnemyDollDurabilityMeter" : "gilsysDollDurabilityMeter";
     const isEnemy = side === "enemy";
     const anchor = document.querySelector(isEnemy ? "#gilsysEnemyHpFill" : "#gilsysSelfHpFill")?.closest(".gilsys-bar")
       ?? document.getElementById(isEnemy ? "gilsysBuffStripEnemy" : "gilsysBuffStripSelf");
-    const meterId = isEnemy ? "gilsysEnemyDollDurabilityMeter" : "gilsysDollDurabilityMeter";
     let meter = document.getElementById(meterId);
-    if (!anchor || (!isEnemy && !isDollJob()) || !doll) {
+    if (!anchor || !doll) {
       if (meter) meter.remove();
       return;
     }
@@ -22,13 +22,15 @@
       meter = document.createElement("div");
       meter.id = meterId;
     }
-    meter.className = `gilsys-doll-durability-meter ${isEnemy ? "is-enemy" : "is-self"} ${doll?.is_broken ? "is-broken" : ""}`;
+    meter.className = `gilsys-doll-durability-meter ${isEnemy ? "is-enemy" : "is-self"} ${doll.is_broken ? "is-broken" : ""}`;
     if (meter.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", meter);
-    const durability = Math.max(0, Number(doll?.durability ?? 0));
-    const maxDurability = Math.max(1, Number(doll?.max_durability ?? doll?.durability ?? 1));
-    const rate = Math.max(0, Math.min(100, durability / maxDurability * 100));
+    const now = Math.max(0, Number(doll.durability ?? 0));
+    const max = Math.max(1, Number(doll.max_durability ?? now ?? 1));
+    const rate = Math.max(0, Math.min(100, now / max * 100));
+    const label = doll.is_rampage ? "\u8010\u4e45\uff08\u66b4\u8d70\u4e2d\uff09" : "\u8010\u4e45";
+    const broken = doll.is_broken ? "\uff08\u7834\u58ca\uff09" : "";
     meter.innerHTML = `
-      <div class="gilsys-doll-durability-head"><span>人形耐久</span><span>${safe(durability)} / ${safe(maxDurability)}${doll?.is_broken ? " 破壊" : ""}</span></div>
+      <div class="gilsys-doll-durability-head"><span>${label}</span><span>${safe(now)} / ${safe(max)}${broken}</span></div>
       <div class="gilsys-doll-durability-bar"><div class="gilsys-doll-durability-fill" style="width:${rate}%"></div></div>
     `;
   }

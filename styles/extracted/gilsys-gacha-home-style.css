@@ -437,15 +437,7 @@ html.gilsys-fixed-game .gilsys-name-modal {
   max-height: calc(100dvh - 24px) !important;
 }
 
-@media (max-width: 420px) {
-  html.gilsys-fixed-game .gilsys-name-modal {
-    padding: 44px 28px 34px !important;
-  }
 
-  html.gilsys-fixed-game .gilsys-profile-icon-grid {
-    gap: 5px !important;
-  }
-}
 
 html.gilsys-fixed-game .gilsys-detail-body,
 html.gilsys-fixed-game .gilsys-detail-text p,

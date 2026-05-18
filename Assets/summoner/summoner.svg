@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 420">
+  <defs>
+    <linearGradient id="robe" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2b5f7f"/>
+      <stop offset=".55" stop-color="#24324f"/>
+      <stop offset="1" stop-color="#171b2c"/>
+    </linearGradient>
+    <radialGradient id="aura" cx=".5" cy=".38" r=".55">
+      <stop offset="0" stop-color="#fff1a8" stop-opacity=".92"/>
+      <stop offset=".52" stop-color="#64d7ff" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#122033" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="160" cy="236" rx="132" ry="146" fill="url(#aura)"/>
+  <path d="M112 146c-12 31-30 77-55 214h207c-24-136-43-182-56-214-20 18-77 18-96 0z" fill="url(#robe)"/>
+  <path d="M98 186c23 30 100 30 124 0l24 180H74l24-180z" fill="#1b263d" opacity=".68"/>
+  <circle cx="160" cy="106" r="48" fill="#f0c99e"/>
+  <path d="M103 102c12-49 44-72 90-52 25 10 36 35 28 67-22-22-56-28-118-15z" fill="#25304b"/>
+  <path d="M90 149c42 37 97 40 141 0-5 32-28 57-71 57-42 0-66-25-70-57z" fill="#2b4d74"/>
+  <path d="M93 254c34-23 101-23 134 0" fill="none" stroke="#ffcf6f" stroke-width="7" stroke-linecap="round"/>
+  <path d="M160 198v128" stroke="#73e2ff" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="160" cy="232" r="16" fill="#ffe27c" stroke="#ffffff" stroke-width="5"/>
+  <path d="M56 298c26 28 48 45 77 55M264 298c-26 28-48 45-77 55" fill="none" stroke="#68c7ff" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="160" cy="384" rx="105" ry="18" fill="#050713" opacity=".38"/>
+</svg>

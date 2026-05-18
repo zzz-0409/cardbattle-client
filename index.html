@@ -108,6 +108,73 @@
       overflow:hidden;
     }
 
+    .gilsys-status-doll-durability-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 2px 0 4px;
+    }
+    .gilsys-status-doll-durability-text {
+      flex: 0 0 auto;
+    }
+    .gilsys-status-doll-durability-bar {
+      flex: 1 1 120px;
+      min-width: 96px;
+      max-width: 190px;
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(16,10,24,.88);
+      border: 1px solid rgba(224,170,255,.55);
+      box-shadow: inset 0 1px 5px rgba(0,0,0,.55);
+    }
+    .gilsys-status-doll-durability-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg,#a86dff,#f1c7ff);
+      box-shadow: 0 0 12px rgba(211,151,255,.48);
+    }
+    .gilsys-status-doll-durability-row.is-broken .gilsys-status-doll-durability-fill {
+      background: linear-gradient(90deg,#6d6875,#b8aebf);
+      box-shadow: none;
+    }
+    .gilsys-doll-durability-meter {
+      margin-top: 6px;
+      width: min(240px, 100%);
+    }
+    .gilsys-doll-durability-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: #f4c9ff;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .gilsys-doll-durability-bar {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(16,10,24,.88);
+      border: 1px solid rgba(224,170,255,.55);
+      box-shadow: inset 0 1px 5px rgba(0,0,0,.55);
+    }
+    .gilsys-doll-durability-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg,#a86dff,#f1c7ff);
+      box-shadow: 0 0 12px rgba(211,151,255,.48);
+      transition: width .25s ease;
+    }
+    .gilsys-doll-durability-meter.is-broken .gilsys-doll-durability-fill {
+      background: linear-gradient(90deg,#6d6875,#b8aebf);
+      box-shadow: none;
+    }
+
     .skillRow{ margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #555;}
     .skillName{ color:#81d4fa; font-size:16px; }
     .skillDesc{ white-space:pre-line; font-size:13px; color:#ddd; }
@@ -915,55 +982,11 @@
   border-bottom: 1px solid rgba(174, 131, 69, 0.16);
 }
 
-@media (max-width: 1100px) {
-  #phase0HomeLayout {
-    grid-template-columns: minmax(340px, 450px) minmax(160px, 1fr) 260px;
-    gap: 14px;
-    padding-left: 28px;
-    padding-right: 28px;
-  }
-}
 
-@media (max-width: 900px) {
-  #phase0HomeLayout {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding-top: 72px;
-  }
 
-  #titleModePanel,
-  #titleRankingPanel {
-    max-width: none;
-    justify-self: stretch;
-  }
 
-  #titleModePanel {
-    order: 2;
-  }
 
-  #phase0Hero {
-    order: 1;
-    padding-top: 0;
-  }
 
-  #titleRankingPanel {
-    order: 3;
-  }
-}
-
-@media (max-width: 768px) {
-  #phase0HomeLayout {
-    min-height: calc(100vh + 8px);
-  }
-
-  #phase0Title {
-    font-size: 58px;
-  }
-
-  #phase0TitleSub {
-    font-size: 18px;
-  }
-}
 
 /* ================= 職業カードUI ================= */
 
@@ -1081,24 +1104,7 @@
   margin: 0 0 10px;
 }
 
-@media (max-width: 680px) {
-  .job-header {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
 
-  .job-detail-btn {
-    grid-column: 2;
-    grid-row: 2;
-    justify-self: end;
-  }
-
-  .job-rank-progress {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    margin: 0;
-    text-align: left;
-  }
-}
 
 #phase1ControlRow{
   display:flex;
@@ -1727,9 +1733,16 @@ body.debug #battleStage {
 .buff-slot.karasu{ background:rgba(72,72,92,0.95); }
 .buff-slot.guts{ background:rgba(255,112,67,0.92); }
 .buff-slot.mad{ background:rgba(229,57,53,0.92); }
+.buff-slot.doll_rampage{ background:rgba(179,58,169,0.95); }
+.buff-slot.summoner_tiamat{ background:rgba(196,76,52,0.94); }
+.buff-slot.summoner_nidhogg{ background:rgba(42,150,84,0.94); }
+.buff-slot.summoner_fafnir{ background:rgba(196,154,44,0.94); }
+.buff-slot.summoner_resonance,
+.buff-slot[class^="summoner_resonance_"]{ background:rgba(92,96,190,0.94); }
 .buff-slot.other{ background:rgba(60,120,200,0.65); }
 
-.buff-slot .buff-tooltip{
+.buff-slot .buff-tooltip,
+#battleStage .gilsys-summoner-dragon-chip .buff-tooltip{
   display:none;
   position:absolute;
   bottom:32px;
@@ -1751,9 +1764,15 @@ body.debug #battleStage {
   pointer-events:none;
 }
 
-.buff-slot:hover .buff-tooltip{ display:block; }
+#battleStage .gilsys-summoner-dragon-chip .buff-tooltip{
+  bottom:46px;
+}
 
-.buff-slot.tooltip-open .buff-tooltip{ display:block; }
+.buff-slot:hover .buff-tooltip,
+#battleStage .gilsys-summoner-dragon-chip:hover .buff-tooltip{ display:block; }
+
+.buff-slot.tooltip-open .buff-tooltip,
+#battleStage .gilsys-summoner-dragon-chip.tooltip-open .buff-tooltip{ display:block; }
 
 @keyframes attackMove{
   0%   { transform: translateX(0); }
@@ -1989,7 +2008,7 @@ body.debug #battleStage {
     drop-shadow(0 0 30px rgba(255,36,18,.25));
   animation:warriorSkill2SlashSweep .84s cubic-bezier(.16,.74,.2,1) .26s forwards;
 }
-.warrior-skill2-target-effect.is-enemy .warrior-skill2-slash{
+.warrior-skill2-target-effect.is-self .warrior-skill2-slash{
   animation-name:warriorSkill2SlashSweepEnemy;
 }
 .warrior-skill2-hit{
@@ -2009,7 +2028,7 @@ body.debug #battleStage {
     drop-shadow(0 0 20px rgba(255,88,35,.48));
   animation:warriorSkill2HitFlash .52s ease-out .62s forwards;
 }
-.warrior-skill2-target-effect.is-enemy .warrior-skill2-hit{
+.warrior-skill2-target-effect.is-self .warrior-skill2-hit{
   left:56%;
 }
 .warrior-skill3-effect{
@@ -2671,41 +2690,7 @@ input:focus, select:focus{
    - レイアウト崩れ防止
    - ポップアップ幅を画面に収める
 ========================= */
-@media (max-width: 768px) {
-  #phase0 {
-    margin-top: -8px;
-  }
 
-  body { padding: 8px; }
-  #game-wrapper { max-width: 100%; }
-
-  #battleStage {
-    flex-direction: column;
-    gap: 10px;
-    min-height: 0;
-    padding: 10px;
-  }
-  .side {
-    width: 100%;
-    max-width: 520px;
-  }
-
-  .status-area {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .status-simple {
-    width: 100%;
-  }
-
-  /* ポップアップ類は画面幅に合わせる */
-  #skillBox, #itemBox, #shopBox, #statusDetailBox {
-    width: min(92vw, 420px);
-  }
-
-  /* ボタンのタップ性を少し上げる */
-  button { padding: 10px 14px; }
-}
 
 
 
@@ -3188,8 +3173,123 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
 #battleStage .sprite.job-onmyoji { background: url("Assets/kyara/onnmyouji.png") center bottom / contain no-repeat !important; }
 #battleStage .sprite.job-alchemist { background: url("Assets/kyara/rennkinnjyutusi_battle_generated_self.png") center bottom / contain no-repeat !important; }
 #battleStage .sprite.job-dollmaster { background: url("Assets/kyara/ninngyoutukai.png") center bottom / contain no-repeat !important; }
+#battleStage .sprite.job-summoner { background: url("Assets/summoner/summoner.png") center bottom / contain no-repeat !important; }
 #battleStage .sprite.job-madman { background: url("Assets/kyara/kyoujinn.png") center bottom / contain no-repeat !important; }
 #battleStage .sprite.job-archer { background: url("Assets/kyara/kyuuhei.png") center bottom / contain no-repeat !important; }
+#battleStage .gilsys-summoner-front-dragon {
+  position: absolute;
+  z-index: 7;
+  bottom: 0;
+  width: 84%;
+  height: 74%;
+  pointer-events: none;
+  background: var(--summoner-dragon-image) center bottom / contain no-repeat;
+  filter: drop-shadow(0 18px 14px rgba(0,0,0,0.48));
+  transform-origin: center bottom;
+}
+#battleStage .sprite.player .gilsys-summoner-front-dragon {
+  right: -58%;
+  transform: scaleX(-1);
+}
+#battleStage .sprite.enemy .gilsys-summoner-front-dragon {
+  right: -58%;
+  transform: scaleX(-1);
+}
+#battleStage .gilsys-summoner-front-dragon.is-juvenile {
+  width: 48%;
+  height: 42%;
+  bottom: 4%;
+}
+#battleStage .gilsys-summoner-bench {
+  position: absolute;
+  z-index: 14;
+  bottom: -34px;
+  left: 50%;
+  display: flex;
+  gap: 4px;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+#battleStage .gilsys-summoner-dragon-chip {
+  position: relative;
+  width: 32px;
+  height: 38px;
+  border-radius: 6px;
+  border: 1px solid rgba(205,225,230,0.58);
+  background: rgba(6,13,18,0.78);
+  display: grid;
+  place-items: center;
+  padding: 2px;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.26);
+}
+#battleStage .gilsys-summoner-dragon-chip img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  pointer-events: none;
+}
+#battleStage .gilsys-summoner-dragon-chip.is-front {
+  border-color: rgba(255,219,132,0.95);
+  box-shadow: 0 0 0 1px rgba(255,219,132,0.5), 0 8px 16px rgba(0,0,0,0.30);
+}
+#battleStage .gilsys-summoner-dragon-chip[aria-disabled="true"] {
+  cursor: default;
+}
+#battleStage .gilsys-summoner-dragon-chip.is-egg {
+  opacity: 0.95;
+  cursor: default;
+  border-color: rgba(146,235,255,0.76);
+  background-color: #102c47;
+  background-image:
+    radial-gradient(circle at 36% 42%, rgba(58,219,255,.28), transparent 42%),
+    radial-gradient(circle at 66% 56%, rgba(255,82,201,.24), transparent 44%),
+    radial-gradient(circle at 52% 76%, rgba(255,213,81,.18), transparent 40%),
+    var(--gilsys-item-card-rainbow-bg, linear-gradient(135deg, rgba(119,39,129,.94), rgba(22,80,118,.95), rgba(24,20,36,.98)));
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow:
+    0 0 10px rgba(92,226,255,.24),
+    inset 0 0 0 1px rgba(255,255,255,.10);
+}
+#battleStage .gilsys-summoner-dragon-chip.is-egg.is-tiamat {
+  background-image:
+    radial-gradient(circle at 44% 45%, rgba(235,80,62,.42), transparent 45%),
+    linear-gradient(135deg, rgba(124,55,18,.44), rgba(235,139,62,.18)),
+    var(--gilsys-item-card-bronze-bg, linear-gradient(135deg, rgba(81,55,29,.96), rgba(16,19,23,.98)));
+  border-color: rgba(210,124,62,.72);
+}
+#battleStage .gilsys-summoner-dragon-chip.is-egg.is-nidhogg {
+  background-image:
+    radial-gradient(circle at 42% 44%, rgba(82,225,126,.36), transparent 46%),
+    linear-gradient(135deg, rgba(12,74,48,.42), rgba(54,219,120,.16), rgba(14,22,18,.22)),
+    var(--gilsys-item-card-rainbow-bg, linear-gradient(135deg, rgba(24,72,60,.96), rgba(21,117,78,.94), rgba(12,18,31,.98)));
+  border-color: rgba(112,226,156,.78);
+}
+#battleStage .gilsys-summoner-dragon-chip.is-egg.is-fafnir {
+  background-image:
+    radial-gradient(circle at 46% 44%, rgba(255,215,76,.48), transparent 45%),
+    linear-gradient(135deg, rgba(142,75,5,.44), rgba(255,226,94,.18)),
+    var(--gilsys-item-card-gold-bg, linear-gradient(135deg, rgba(255,232,71,.98), rgba(213,145,18,.96), rgba(48,31,6,.98)));
+  border-color: rgba(255,238,112,.90);
+}
+#battleStage .gilsys-summoner-chip-gauge {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  overflow: hidden;
+}
+#battleStage .gilsys-summoner-chip-gauge span {
+  display: block;
+  height: 100%;
+  width: var(--summoner-progress, 0%);
+  background: linear-gradient(90deg, #8de2ff, #ffd56a);
+}
 #battleStage .sprite.enemy.job-image {
   transform: scaleX(-1);
 }
@@ -3579,6 +3679,12 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   gap: 8px;
   padding-right: 4px;
 }
+.gilsys-shop-icon-grid.is-shop-main-grid {
+  grid-template-columns: repeat(5, minmax(48px, 1fr));
+}
+#phase2.gilsys-battle-ui .gilsys-command-list .gilsys-shop-icon-grid {
+  grid-template-columns: repeat(5, minmax(48px, 1fr));
+}
 .gilsys-shop-icon-btn {
   min-height: 48px;
   border: 1px solid rgba(231,178,86,.62);
@@ -3764,25 +3870,7 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   box-shadow: 0 30px 60px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,226,164,0.05) !important;
 }
 
-@media (max-width: 1180px) {
-  #phase2.gilsys-battle-ui {
-    --gilsys-side-width: 210px;
-    --gilsys-center-inset: 260px;
-    min-width: 1060px;
-    overflow-x: auto;
-  }
-  .gilsys-battle-header { width: 1120px; right: auto; }
-  .gilsys-side-panel { width: var(--gilsys-side-width); min-width: var(--gilsys-side-width); }
-  #battleStage.gilsys-battle-stage, .gilsys-command-panel { left: var(--gilsys-center-inset); right: var(--gilsys-center-inset); }
-  .gilsys-command-panel {
-    grid-template-columns: 138px minmax(135px, 0.85fr) minmax(180px, 1fr);
-    gap: 8px;
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-  .gilsys-action-btn { font-size: 15px; }
-  .gilsys-bottom-bar { left: var(--gilsys-center-inset); right: 18px; }
-}
+
 
 
 /* =========================================================
@@ -4521,23 +4609,40 @@ body:has(#phase2.gilsys-battle-ui[style*="display:block"]) {
   color: #f1dfbc;
 }
 
-@media (max-width: 1100px), (max-height: 720px) {
-  #phase1.gilsys-job-select-ui {
-    min-width: 1180px;
-    overflow-x: auto;
-  }
-  .gilsys-job-layout {
-    width: 1160px;
-    max-width: none;
-    grid-template-columns: 320px 1fr;
-    grid-template-rows: 118px minmax(0, 1fr) 78px;
-  }
-  .gilsys-job-main { grid-template-rows: 330px 16px minmax(0, 1fr); }
-  .job-card { flex-basis: 102px; min-width: 102px; height: 278px; min-height: 278px; grid-template-rows: 32px 25px 128px 30px 1fr; }
-  .gilsys-job-hero-portrait { width: 250px; height: 430px; bottom: 96px; }
-  .gilsys-job-left-desc { bottom: 134px; font-size: 15px; }
-  .gilsys-job-star-list { font-size: 16px; }
+#phase1.gilsys-job-select-ui #cpuJobArea {
+  width: min(560px, 100%);
+  max-width: 560px;
+  box-sizing: border-box;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 8px;
+  align-items: end;
+  padding: 8px 10px;
+  border-radius: 10px;
 }
+#phase1.gilsys-job-select-ui #cpuJobArea .cpu-detail-field {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+#phase1.gilsys-job-select-ui #cpuJobArea label {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+#phase1.gilsys-job-select-ui #cpuJobArea select {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 3px 6px;
+  font-size: 12px;
+}
+#phase1.gilsys-job-select-ui #cpuAiRankArea,
+#phase1.gilsys-job-select-ui #cpuTurnOrderArea {
+  margin-top: 0 !important;
+}
+
+
 
 </style>
 <style id="gilsys-boot-loader-early-style">
@@ -4861,21 +4966,39 @@ body.gilsys-assets-loading #game-wrapper {
     <input id="name_phase1" placeholder="名前" style="display:none;" />
 
     <div id="cpuJobArea" style="display:none;">
-      <label for="cpuJob">CPUの職業：</label>
-      <select id="cpuJob">
-        <option value="">ランダム</option>
-        <option value="戦士">戦士</option>
-        <option value="騎士">騎士</option>
-        <option value="僧侶">僧侶</option>
-        <option value="盗賊">盗賊</option>
-        <option value="魔導士">魔導士</option>
-        <option value="弓兵">弓兵</option>
-        <option value="陰陽師">陰陽師</option>
-        <option value="錬金術師">錬金術師</option>
-        <option value="人形使い">人形使い</option>
-        <option value="狂人">狂人</option>
-      </select>
-      <div id="cpuTurnOrderArea" style="margin-top:8px;">
+      <div class="cpu-detail-field">
+        <label for="cpuJob">CPUの職業：</label>
+        <select id="cpuJob">
+          <option value="">ランダム</option>
+          <option value="戦士">戦士</option>
+          <option value="騎士">騎士</option>
+          <option value="僧侶">僧侶</option>
+          <option value="盗賊">盗賊</option>
+          <option value="魔導士">魔導士</option>
+          <option value="弓兵">弓兵</option>
+          <option value="陰陽師">陰陽師</option>
+          <option value="錬金術師">錬金術師</option>
+          <option value="召喚士">召喚士</option>
+          <option value="狂人">狂人</option>
+        </select>
+      </div>
+      <div id="cpuAiRankArea" class="cpu-detail-field" style="margin-top:8px;">
+        <label for="cpuAiRank">CPUランク：</label>
+        <select id="cpuAiRank">
+          <option value="random">ランダム</option>
+          <option value="1">1：見習い</option>
+          <option value="2">2：駆け出し</option>
+          <option value="3">3：修練生</option>
+          <option value="4">4：熟練</option>
+          <option value="5">5：達人</option>
+          <option value="6">6：名人</option>
+          <option value="7">7：英雄</option>
+          <option value="8">8：覇者</option>
+          <option value="9">9：伝説</option>
+          <option value="10">10：神域に到達せし</option>
+        </select>
+      </div>
+      <div id="cpuTurnOrderArea" class="cpu-detail-field" style="margin-top:8px;">
         <label>先攻・後攻：</label>
         <select id="cpuTurnOrder">
           <option value="random">ランダム</option>
@@ -4996,7 +5119,7 @@ body.gilsys-assets-loading #game-wrapper {
         <div class="gilsys-equip-wrapper" data-side="self">
           <div class="special-equip-area" data-side="self"></div>
           <div class="equip-area">
-            <div class="equip-slot empty" title="通常装備（未装備）">装備</div>
+            <div class="equip-slot empty" aria-label="通常装備（未装備）">装備</div>
           </div>
         </div>
       </div>
@@ -5024,7 +5147,7 @@ body.gilsys-assets-loading #game-wrapper {
         </div>
         <div class="gilsys-equip-wrapper" data-side="enemy">
           <div class="equip-area enemy">
-            <div class="equip-slot empty" title="通常装備（未装備）">装備</div>
+            <div class="equip-slot empty" aria-label="通常装備（未装備）">装備</div>
           </div>
           <div class="special-equip-area enemy" data-side="enemy"></div>
         </div>
@@ -6113,7 +6236,7 @@ const PROFILE_ICON_PORTRAITS_BY_JOB_ID = Object.freeze({
   6: "Assets/profile/icons/onmyoji-face.png",
   7: "Assets/profile/icons/alchemist-face.png",
   8: "Assets/profile/icons/archer-face.png",
-  9: "Assets/profile/icons/dollmaster-face.png",
+  9: "Assets/summoner/summoner-face.png",
   10: "Assets/profile/icons/madman-face.png",
 });
 
@@ -6636,8 +6759,8 @@ const JOB_LIST = [
     stats: { luck: 2, burst: 4, difficulty: 3, stability: 3 }
   },
   {
-    id: 9, name: "人形使い", atk: 1, def: 10, coin: 10,
-    stats: { luck: 4, burst: 5, difficulty: 5, stability: 1 }
+    id: 9, name: "召喚士", atk: 18, def: 10, coin: 10,
+    stats: { luck: 3, burst: 5, difficulty: 5, stability: 2 }
   },
   {
     id: 10, name: "狂人", atk: 20, def: 10, coin: 10,
@@ -6822,37 +6945,30 @@ const JOB_DESCRIPTIONS = {
     ]
   },
 
-  9: { // 人形使い
-    name: "人形使い",
+  9: { // 召喚士
+    name: "召喚士",
     skills: {
-      1: "修理キットを1つ入手する",
-      2: "装備している全ての部位の衣装の★を+1（最大★8）",
-      3: "人形を暴走状態にし、破壊されるまで衣装効果が2倍になる"
+      1: "未契約の竜の卵を1つ選んで入手する",
+      2: "卵なら幼体へ、幼体なら成体へ成長させる",
+      3: "2Tの間すべての竜が前衛効果を発揮し、その後通常攻撃"
     },
     playstyle: `
-ショップには修理キットと衣装しか並ばなくなる。
-人形使い本体は常に無敵。人形が壊れた時のみ本体が固定50ダメージを受け、人形は即座に耐久50で復活する。
+ショップに召喚士専用枠が追加され、竜の卵と竜の餌が並ぶ。
+卵は自分のターン終了時に孵化が進み、3Tで幼体になる。
+幼体は自分のターン終了時に成長し、成長値10で成体になる。
 
-【修理キット】
-人形の耐久力を20回復。
+【竜】
+ティアマト：行動後、防御無視の追撃ダメージ。
+ニーズヘッグ：行動後、毒や攻撃力低下を与える。
+ファフニール：防御/特殊防御を上げ、成体前衛時は受けたダメージの50%を反射する。
 
-【衣装】
-4部位に1つずつ装備可能。
-人形が壊れた時装備中の衣装はぼろぼろ状態になり効果が弱体化される。
-人形が壊れた時装備中のぼろぼろ状態の衣装は消失する。
-
-【暴走状態】
-この状態で人形が壊れると相手に防御貫通20ダメージを与える。自身への暴走反動ダメージは発生しない。
-3Tの間破壊されなかった場合自爆し、相手に防御貫通20ダメージを与える。自爆時も人形破壊扱いとなり、本体は固定50ダメージ、人形は耐久50で復活する。
-この状態では耐久力は回復しない。
+【前衛/後衛】
+大きく表示されている前衛竜は強い効果、後衛竜は弱い効果を発揮する。
+自分のターン中は竜アイコンから前衛を何度でも切り替えられる。
 `,
-    doll: `
-基礎攻撃力13/基礎防御力8/耐久力50
-対戦開始時4部位にランダムな★1衣装を装備してスタート。
-人形が壊れた時装備中の衣装はぼろぼろ状態になり効果が弱体化される。
-人形が壊れた時装備中のぼろぼろ状態の衣装は消失する。
-
-
+    summoner: `
+卵価格20、竜の餌10。
+竜の餌は幼体の成長値を2増やす。
 `
   }
 
@@ -7131,12 +7247,12 @@ const JOB_SELECT_META = {
     detail: "矢スロットを活かして戦う遠距離職。攻撃の選択肢が多く、相手に合わせた立ち回りが重要になる。",
     weapons: ["弓", "矢", "短剣"], stars: { attack: 4, defense: 2, magic: 1, support: 2, speed: 4, difficulty: 3 }
   },
-  "人形使い": {
-    en: "PUPPETEER", icon: "♟", glow: "rgba(156,112,190,0.34)", armor: "#3e3046", hair: "#202029",
-    portrait: "Assets/shokugyousenntaku/ninngyoutukai1_facefix_transparent.png",
-    lead: "人形を操り、本体とは別の耐久を使って戦う特殊職。人形管理が勝利の鍵となる。",
-    detail: "人形の耐久とパーツ管理を軸に戦う特殊職。うまく守れば強力だが、崩されると脆い。",
-    weapons: ["人形", "糸", "パーツ"], stars: { attack: 2, defense: 3, magic: 3, support: 4, speed: 2, difficulty: 5 }
+  "召喚士": {
+    en: "SUMMONER", icon: "◆", glow: "rgba(94,174,182,0.34)", armor: "#25484a", hair: "#1d2530",
+    portrait: "Assets/summoner/summoner.png",
+    lead: "竜の卵を育て、前衛と後衛を切り替えて戦う特殊職。時間を味方につけるほど強くなる。",
+    detail: "卵、幼体、成体の管理が勝敗を分ける職業。ティアマト、ニーズヘッグ、ファフニールの効果を状況で使い分ける。",
+    weapons: ["竜", "卵", "餌"], stars: { attack: 4, defense: 3, magic: 4, support: 4, speed: 2, difficulty: 5 }
   },
   "狂人": {
     en: "MADMAN", icon: "☸", glow: "rgba(198,198,204,0.34)", armor: "#27272c", hair: "#d5d0c7",
@@ -7151,7 +7267,7 @@ const JOB_SELECT_WEAPON_ICONS = {
   "剣": "⚔", "斧": "⚒", "盾": "⬟", "槍": "↟", "杖": "⚚", "聖印": "✣", "護符": "◇",
   "短剣": "†", "毒": "☠", "罠": "△", "魔導書": "▣", "指輪": "○", "札": "▱", "式神": "♢",
   "鬼火": "✦", "薬瓶": "♙", "爆弾": "●", "弓": "⌁", "矢": "➴", "人形": "♟", "糸": "⌇",
-  "パーツ": "⬡", "大剣": "⚔", "呪具": "☸", "鎖": "⛓"
+  "パーツ": "⬡", "竜": "◆", "卵": "◉", "餌": "✦", "大剣": "⚔", "呪具": "☸", "鎖": "⛓"
 };
 
 function getJobSelectMeta(job) {
@@ -7174,7 +7290,7 @@ function getJobPassiveText(jobName) {
     "陰陽師": "式神と鬼火を扱う。陰陽師専用装備がショップに出現",
     "錬金術師": "ショップ装備20%割引。装備合成と錬金術師専用装備を使用可能",
     "弓兵": "矢の効果を使い分けて攻撃。矢装備による追撃を使用可能",
-    "人形使い": "本体は常に無敵。毒・鬼火などのダメージは人形が受け、人形破壊時は本体に50ダメージ",
+    "召喚士": "卵を孵化・成長させ、前衛/後衛の竜効果で戦う。専用ショップに卵と竜の餌が出現",
     "狂人": "累積被ダメージ120以上で狂化。狂化中は能力が大きく変化"
   }[jobName] ?? "なし";
 }
@@ -7189,7 +7305,7 @@ function getJobPassiveIcon(jobName) {
     "陰陽師": "◇",
     "錬金術師": "♙",
     "弓兵": "➴",
-    "人形使い": "♟",
+    "召喚士": "◆",
     "狂人": "☸"
   }[jobName] ?? "◇";
 }
@@ -7408,6 +7524,7 @@ const JOB_ID_MAP = {
   "陰陽師": 6,
   "錬金術師": 7,
   "弓兵": 8,
+  "召喚士": 9,
   "人形使い": 9,
   "狂人": 10
 };
@@ -7442,16 +7559,16 @@ const SKILLS = {
       {name:"無尽射撃",desc:"以後、矢を消費せずに攻撃できる"} ],
   9:[
     {
-      name:"修理キット調達",
-      desc:"修理キットを1つ入手する"
+      name:"竜卵契約",
+      desc:"未契約の竜の卵を1つ選んで入手する"
     },
     {
-      name:"総仕立て直し",
-      desc:"装備している全ての部位の衣装の★を+1する（最大★8）"
+      name:"成長促進",
+      desc:"卵なら幼体へ、幼体なら成体へ成長させる"
     },
     {
-      name:"人形暴走",
-      desc:"人形を暴走状態にし、破壊されるまで衣装効果が2倍になる"
+      name:"竜脈解放",
+      desc:"2Tの間すべての竜が前衛効果を発揮し、その後通常攻撃"
     },
   ],
   10:[
@@ -7589,6 +7706,13 @@ const SKILL_EFFECT_ASSETS = {
   archer_1_self: "Assets/effect/archer_1_self_transparent.png",
   archer_2_self: "Assets/effect/archer_2_self_transparent.png",
   archer_3_self: "Assets/effect/archer_3_self_transparent.png",
+  summoner_1_self: "Assets/effect/generated/summoner_1_self.png",
+  summoner_2_self: "Assets/effect/generated/summoner_2_self.png",
+  summoner_3_self: "Assets/effect/generated/summoner_3_self.png",
+  summoner_3_target: "Assets/effect/generated/summoner_3_target.png",
+  summoner_tiamat_target: "Assets/effect/generated/summoner_tiamat_target.png",
+  summoner_nidhogg_target: "Assets/effect/generated/summoner_nidhogg_target.png",
+  summoner_fafnir_target: "Assets/effect/generated/summoner_fafnir_target.png",
   doll_1_self: "Assets/effect/doll_1_self_transparent.png",
   doll_2_self: "Assets/effect/doll_2_self_transparent.png",
   doll_3_self: "Assets/effect/doll_3_self_transparent.png",
@@ -7676,14 +7800,14 @@ function getFallbackWarriorEffectTarget() {
   const target = (typeof myTurn !== "undefined" && myTurn) ? "enemy" : "self";
   if (target === "self") {
     const selfJob = String(window.myJob ?? (typeof myJob !== "undefined" ? myJob : ""));
-    if ((selfJob === "人形使い" || selfJob === "9") && document.getElementById("dollSprite")?.style.display !== "none") {
+    if (selfJob === "人形使い" && document.getElementById("dollSprite")?.style.display !== "none") {
       return "self_doll";
     }
     return "self";
   }
 
   const enemyJob = String(window.enemyJob ?? window.gilsysLatestEnemyStatus?.job ?? "");
-  if ((enemyJob === "人形使い" || enemyJob === "9") && document.getElementById("dollSpriteEnemy")?.style.display !== "none") {
+  if (enemyJob === "人形使い" && document.getElementById("dollSpriteEnemy")?.style.display !== "none") {
     return "enemy_doll";
   }
   return "enemy";
@@ -7864,13 +7988,15 @@ function showArcherArrowRainEffect(targetSprite, data = {}) {
     : (targetSide === "enemy" ? "self" : "enemy");
   const fromSelf = arrowSourceSide === "self";
   rain.className = `gilsys-archer-arrow-rain is-${targetSide} from-${arrowSourceSide}`;
-  if (isElementHorizontallyMirrored(targetSprite)) {
+  const targetMirrored = isElementHorizontallyMirrored(targetSprite);
+  if (targetMirrored) {
     rain.classList.add("is-counter-parent-flip");
   }
   const reverseArrowImage = true;
   const direction = fromSelf ? -1 : 1;
   const arrowFlipX = fromSelf ? -1 : 1;
   const impactFlip = targetSide === "self" ? -1 : 1;
+  const selfShotImpactVisualOffsetX = fromSelf && targetSide === "enemy" ? 18 : 0;
 
   for (let i = 0; i < total; i += 1) {
     const p = arrowPattern[i % arrowPattern.length];
@@ -7907,7 +8033,7 @@ function showArcherArrowRainEffect(targetSprite, data = {}) {
     impact.alt = "";
     impact.draggable = false;
     impact.setAttribute("aria-hidden", "true");
-    impact.style.setProperty("--hit-x", `${hitX}px`);
+    impact.style.setProperty("--hit-x", `${hitX + selfShotImpactVisualOffsetX}px`);
     impact.style.setProperty("--hit-y", `${hitY}px`);
     impact.style.setProperty("--impact-delay", `${Math.round(fallDuration * .72) + delay}ms`);
     impact.style.setProperty("--impact-size", `${Math.round(92 + p.scale * 16)}px`);
@@ -8011,7 +8137,7 @@ function showShikigamiSpecialEvent(data) {
 // ============================
 function updateDollSprite(side, job, doll) {
   const isSelf = side === "self";
-  const isDollmaster = job === "人形使い" || job === "人形遣い" || String(job) === "9";
+  const isDollmaster = job === "人形使い" || job === "人形遣い";
 
   const dollBox = document.getElementById(
     isSelf ? "dollSprite" : "dollSpriteEnemy"
@@ -8045,7 +8171,12 @@ function updateDollSprite(side, job, doll) {
   const maxDurability = Math.max(1, Number(doll?.max_durability ?? doll?.durability ?? 1));
   const ratio = durability / maxDurability;
   const percent = Math.max(0, Math.min(100, ratio * 100));
-  dollBar.style.width = `${percent}%`;
+  const previousRate = Number(dollBar.dataset.hpRate);
+  const resetDamageLag =
+    (dollBar.dataset.dollRampage === "1" && !doll?.is_rampage) ||
+    (Number.isFinite(previousRate) && previousRate <= 0.15 && percent > 0);
+  updateSpriteHpBar(dollBar.id, durability, maxDurability, maxDurability, { resetDamageLag });
+  dollBar.dataset.dollRampage = doll?.is_rampage ? "1" : "0";
 
   // 破壊時の見た目
   if (doll?.is_broken) {
@@ -8098,7 +8229,7 @@ function attachBattleEquipTooltip(slot, name, effectLines, tooltipClass = "equip
   const html = `<b>${getBattleEquipEscapedText(name)}</b>${lines.length ? `<br>${lines.map(getBattleEquipEscapedText).join("<br>")}` : ""}`;
   slot.dataset.tapTitle = titleText;
   slot.dataset.tooltipHtml = html;
-  slot.setAttribute("title", titleText);
+  slot.removeAttribute("title");
   slot.setAttribute("aria-label", titleText);
   slot.tabIndex = 0;
   const tip = document.createElement("div");
@@ -8223,7 +8354,6 @@ function buildDollSpecialEquipHTML(doll) {
 
       html += `
         <div class="special-equip-slot filled active gilsys-battle-equipment-card ${themeClass} ${c.condition === "boroboro" ? "boroboro" : ""}"
-             title="${safeTapTitle}"
              aria-label="${safeTapTitle}"
              data-tap-title="${safeTapTitle}"
              data-tooltip-html="${safeTooltipHtml}"
@@ -8238,7 +8368,6 @@ function buildDollSpecialEquipHTML(doll) {
       const emptyTooltipHtml = getBattleEquipEscapedText(`<b>${safeEmptyText}</b>`);
       html += `
         <div class="special-equip-slot empty"
-             title="${safeEmptyText}"
              aria-label="${safeEmptyText}"
              data-tap-title="${safeEmptyText}"
              data-tooltip-html="${emptyTooltipHtml}"
@@ -8256,6 +8385,25 @@ function buildDollSpecialEquipHTML(doll) {
 // ============================
 // ★ 人形衣装（詳細表示用HTML）
 // ============================
+function buildDollDurabilityInlineBarHTML(doll) {
+  if (!doll) return "";
+
+  const durability = Math.max(0, Number(doll.durability ?? 0));
+  const maxDurability = Math.max(1, Number(doll.max_durability ?? durability ?? 1));
+  const rate = Math.max(0, Math.min(100, durability / maxDurability * 100));
+  const brokenText = doll.is_broken ? "（破壊）" : "";
+  const label = doll.is_rampage ? "耐久（暴走中）" : "耐久";
+
+  return `
+    <div class="gilsys-status-doll-durability-row ${doll.is_broken ? "is-broken" : ""}">
+      <span class="gilsys-status-doll-durability-text">${label}：${escapeHtml(durability)} / ${escapeHtml(maxDurability)}${brokenText}</span>
+      <span class="gilsys-status-doll-durability-bar" aria-hidden="true">
+        <span class="gilsys-status-doll-durability-fill" style="width:${rate}%"></span>
+      </span>
+    </div>
+  `;
+}
+
 function buildDollCostumeHTML(doll) {
   if (!doll) return "";
 
@@ -8402,10 +8550,16 @@ function buffIconForKind(kind) {
     case "passive_regen": return "✚";
     case "passive_coin": return "🪙";
     case "passive_discount": return "⚗️";
+    case "summoner_passive": return "◆";
+    case "summoner_resonance": return "◇";
+    case "summoner_tiamat": return "T";
+    case "summoner_nidhogg": return "N";
+    case "summoner_fafnir": return "⬟";
     case "repair_guard": return "🧰";
     case "karasu":   return "🐦";
     case "archer_extra_attack": return "🏹";
     case "archer_no_consume": return "🏹";
+    case "doll_rampage": return "\u66b4";
     case "doll_extra_attack": return "🪆";
     case "sudden_death": return "☠️";
     case "poison":   return "☣️";
@@ -8538,10 +8692,14 @@ function updateDelayedHpDamageBar(fill, bar, nextRate, damageClassName) {
     clearTimeout(Number(damageFill.dataset.hpLagTimer));
     delete damageFill.dataset.hpLagTimer;
   }
+  if (damageFill.dataset.hpLagClearTimer) {
+    clearTimeout(Number(damageFill.dataset.hpLagClearTimer));
+    delete damageFill.dataset.hpLagClearTimer;
+  }
 
   if (!wasInitialized) {
     damageFill.style.transition = "none";
-    damageFill.style.width = `${safeNext}%`;
+    damageFill.style.width = "0%";
     fill.dataset.hpBarReady = "1";
     fill.dataset.hpRate = String(safeNext);
     requestAnimationFrame(() => {
@@ -8558,12 +8716,23 @@ function updateDelayedHpDamageBar(fill, bar, nextRate, damageClassName) {
     const timer = window.setTimeout(() => {
       damageFill.style.transition = "";
       damageFill.style.width = `${safeNext}%`;
+      const clearTimer = window.setTimeout(() => {
+        if (Number(fill.dataset.hpRate) === safeNext) {
+          damageFill.style.transition = "none";
+          damageFill.style.width = "0%";
+          requestAnimationFrame(() => {
+            damageFill.style.transition = "";
+          });
+        }
+        delete damageFill.dataset.hpLagClearTimer;
+      }, 560);
+      damageFill.dataset.hpLagClearTimer = String(clearTimer);
       delete damageFill.dataset.hpLagTimer;
     }, 190);
     damageFill.dataset.hpLagTimer = String(timer);
   } else {
     damageFill.style.transition = "none";
-    damageFill.style.width = `${safeNext}%`;
+    damageFill.style.width = "0%";
     requestAnimationFrame(() => {
       damageFill.style.transition = "";
     });
@@ -8572,7 +8741,26 @@ function updateDelayedHpDamageBar(fill, bar, nextRate, damageClassName) {
   fill.dataset.hpRate = String(safeNext);
 }
 
-function updateSpriteHpBar(fillId, hp, maxHp, overhealMaxHp) {
+function clearDelayedHpDamageBar(fill, bar, damageClassName) {
+  if (!fill || !bar) return;
+  const damageFill = bar.querySelector(`.${damageClassName}`);
+  if (!damageFill) return;
+  if (damageFill.dataset.hpLagTimer) {
+    clearTimeout(Number(damageFill.dataset.hpLagTimer));
+    delete damageFill.dataset.hpLagTimer;
+  }
+  if (damageFill.dataset.hpLagClearTimer) {
+    clearTimeout(Number(damageFill.dataset.hpLagClearTimer));
+    delete damageFill.dataset.hpLagClearTimer;
+  }
+  damageFill.style.transition = "none";
+  damageFill.style.width = "0%";
+  requestAnimationFrame(() => {
+    damageFill.style.transition = "";
+  });
+}
+
+function updateSpriteHpBar(fillId, hp, maxHp, overhealMaxHp, options = {}) {
   const fill = document.getElementById(fillId);
   if (!fill) return;
   const baseMax = Math.max(1, Math.min(200, Number(maxHp ?? 200)));
@@ -8585,7 +8773,13 @@ function updateSpriteHpBar(fillId, hp, maxHp, overhealMaxHp) {
     fill.style.width = `${normalRate}%`;
     return;
   }
-  updateDelayedHpDamageBar(fill, bar, normalRate, "hp-damage-fill");
+  if (options?.resetDamageLag) {
+    clearDelayedHpDamageBar(fill, bar, "hp-damage-fill");
+    fill.dataset.hpBarReady = "1";
+    fill.dataset.hpRate = String(normalRate);
+  } else {
+    updateDelayedHpDamageBar(fill, bar, normalRate, "hp-damage-fill");
+  }
   fill.style.width = `${normalRate}%`;
   let overFill = bar.querySelector(".hp-overfill");
   if (!overFill) {
@@ -9009,7 +9203,7 @@ function applyMatchConfig(config = window.gilsysLastMatchConfig) {
   if (roomInput && config.roomCode) roomInput.value = config.roomCode;
 
   const cpuArea = document.getElementById("cpuJobArea");
-  if (cpuArea) cpuArea.style.display = window.matchMode === "cpu" ? "block" : "none";
+  if (cpuArea) cpuArea.style.display = window.matchMode === "cpu" ? "grid" : "none";
   const cpuJob = document.getElementById("cpuJob");
   if (cpuJob && config.cpuJob) cpuJob.value = config.cpuJob;
   const cpuTurnOrder = document.getElementById("cpuTurnOrder");
@@ -9309,6 +9503,42 @@ function cloneGilsysStatusForDamage(status) {
     ...status,
     doll: status.doll && typeof status.doll === "object" ? { ...status.doll } : status.doll,
   };
+}
+
+function getGilsysDamageTargetSide(target) {
+  return String(target ?? "").startsWith("enemy") ? "enemy" : "self";
+}
+
+function getPendingDamageTargetsForStatusSide(side) {
+  const pending = { player: false, doll: false };
+  for (const event of gilsysBattleEventQueue) {
+    if (event?.type === "status_simple") break;
+    if (event?.type !== "damage_event") continue;
+    if (getGilsysDamageTargetSide(event.target) !== side) continue;
+    if (String(event.target ?? "").includes("doll")) pending.doll = true;
+    else pending.player = true;
+  }
+  return pending.player || pending.doll ? pending : null;
+}
+
+function preserveDisplayedHpForPendingDamageStatus(data, pendingDamage) {
+  if (!data || !pendingDamage) return data;
+  const latest = data.side === "enemy" ? window.gilsysLatestEnemyStatus : window.gilsysLatestSelfStatus;
+  if (!latest || typeof latest !== "object") return data;
+  const next = {
+    ...data,
+    hp: pendingDamage.player ? latest.hp : data.hp,
+    max_hp: pendingDamage.player ? latest.max_hp : data.max_hp,
+    overheal_max_hp: pendingDamage.player ? latest.overheal_max_hp : data.overheal_max_hp,
+  };
+  if (pendingDamage.doll && data.doll && latest.doll) {
+    next.doll = {
+      ...data.doll,
+      durability: latest.doll.durability,
+      max_durability: latest.doll.max_durability,
+    };
+  }
+  return next;
 }
 
 function applyStatusPatchToBattleSide(side, patch) {
@@ -9647,6 +9877,16 @@ function attachWsHandlers() {
       return;
     }
 
+    if (data.type === "summoner_skill1_choices") {
+      openSummonerChoicePopup("契約する竜の卵を選んでください", data.choices ?? [], "skill1");
+      return;
+    }
+
+    if (data.type === "summoner_skill2_choices") {
+      openSummonerChoicePopup("成長させる卵/竜を選んでください", data.choices ?? [], "skill2");
+      return;
+    }
+
 
     if (data.type === "status_simple") {
       updateVsIntroFromStatus(data);
@@ -9704,18 +9944,21 @@ function attachWsHandlers() {
           </div>
 
           <!-- 右：人形 -->
-          <div class="gilsys-simple-doll ${data.doll ? "" : "gilsys-simple-empty"}">
+          <div class="gilsys-simple-doll ${(data.doll || data.summoner) ? "" : "gilsys-simple-empty"}">
             ${
               data.doll
                 ? `
                   <div style="color:#f6c;">🪆 人形</div>
-                  <div>耐久: ${data.doll.durability} / ${data.doll.max_durability}
-                    ${data.doll.is_broken ? "（破壊）" : ""}
-                  </div>
+                  ${buildDollDurabilityInlineBarHTML(data.doll)}
                   <div>チャージ: ${data.doll.charge ?? 0}</div>
                   <div>攻撃: ${data.doll.attack}</div>
                   <div>防御: ${data.doll.defense}</div>
                 `
+                : data.summoner
+                  ? `
+                    <div style="color:#8de2ff;">◆ 竜</div>
+                    ${(data.summoner.dragons ?? []).map(d => `${escapeHtml(d.name ?? "竜")}：${escapeHtml(d.stage_label ?? d.stage ?? "")}${d.is_front ? " / 前衛" : ""}`).join("<br>") || "（契約竜なし）"}
+                  `
                 : `<div style="color:#777;"></div>`
             }
           </div>
@@ -9724,7 +9967,9 @@ function attachWsHandlers() {
       `;
 
       box.innerHTML = html;
-      updateGilsysBattleHud(data);
+      const pendingDamageForStatus = getPendingDamageTargetsForStatusSide(data.side);
+      const visualStatusData = preserveDisplayedHpForPendingDamageStatus(data, pendingDamageForStatus);
+      updateGilsysBattleHud(visualStatusData);
       // ★ 通常装備UI反映
       updateNormalEquipUI(data.side, data.equipment, data.equip_slots?.equipment ?? 1);
       // ★ 特殊装備UI
@@ -9739,14 +9984,15 @@ function attachWsHandlers() {
       // ★ HPバー更新
       // ============================
       if (data.side === "self") {
-        updateSpriteHpBar("playerHpFill", data.hp, data.max_hp, data.overheal_max_hp);
+        if (!pendingDamageForStatus?.player) updateSpriteHpBar("playerHpFill", data.hp, data.max_hp, data.overheal_max_hp);
       } else {
-        updateSpriteHpBar("enemyHpFill", data.hp, data.max_hp, data.overheal_max_hp);
+        if (!pendingDamageForStatus?.player) updateSpriteHpBar("enemyHpFill", data.hp, data.max_hp, data.overheal_max_hp);
       }      
       // ============================
       // ★ 人形使い：人形スプライト更新（self / enemy）
       // ============================
-      updateDollSprite(data.side, data.job, data.doll);
+      updateDollSprite(visualStatusData.side, visualStatusData.job, visualStatusData.doll);
+      updateSummonerDragonUI(visualStatusData.side, visualStatusData.summoner, visualStatusData.job);
       maybeFinishVsIntroAfterStatus();
 
       return;
@@ -9795,11 +10041,7 @@ function attachWsHandlers() {
       if (data.doll && data.doll.costumes) {
 
         html += `<hr><b>🪆 人形</b><br>`;
-        html += `耐久：${data.doll.durability} / ${data.doll.max_durability}`;
-        if (data.doll.is_broken) {
-          html += `（破壊）`;
-        }
-        html += `<br>`;
+        html += buildDollDurabilityInlineBarHTML(data.doll);
         html += `チャージ：${data.doll.charge ?? 0}<br>`;
         html += `攻撃：${data.doll.attack}<br>`;
         html += `防御：${data.doll.defense}<br><br>`;
@@ -9808,6 +10050,21 @@ function attachWsHandlers() {
 
         html += buildDollCostumeHTML(data.doll);
 
+      }
+      if (data.summoner) {
+        const dragons = Array.isArray(data.summoner.dragons) ? data.summoner.dragons : [];
+        html += `<hr><b>◆ 召喚竜</b><br>`;
+        html += `竜脈解放：${Number(data.summoner.resonance_turns ?? 0)}T<br>`;
+        html += dragons.length
+          ? dragons.map(d => {
+              const progress = d.stage === "egg"
+                ? `孵化まで${Number(d.hatch_turns_remaining ?? 0)}T`
+                : d.stage === "juvenile"
+                  ? `成長値 ${Number(d.growth ?? 0)}/${Number(d.growth_max ?? 10)}`
+                  : "成体";
+              return `${escapeHtml(d.name ?? "竜")}：${escapeHtml(d.stage_label ?? d.stage ?? "")}${d.is_front ? " / 前衛" : ""} / ${escapeHtml(progress)}`;
+            }).join("<br>")
+          : "契約竜なし";
       }
 
 
@@ -9932,12 +10189,10 @@ function attachWsHandlers() {
       // ---------------------------
       let dollHTML = "";
       if (data.doll) {
-        const state = data.doll.is_broken ? "（破壊）" : "";
         dollHTML = `
           <hr>
-          <div style="margin-top:6px; color:#f6c;">
-            🪆 人形耐久：${data.doll.durability} / ${data.doll.max_durability} ${state}
-          </div>
+          <div style="margin-top:6px; color:#f6c;">🪆 人形</div>
+          ${buildDollDurabilityInlineBarHTML(data.doll)}
           <div style="color:#ffd28a;">
             ⚡ チャージ：${data.doll.charge ?? 0}
           </div>
@@ -10299,14 +10554,13 @@ function attachWsHandlers() {
 
         const offsetPx = bumpStack(data.target);
         const kind = data.kind ?? "normal";
-        applyDamageEventToDisplayedHp(data);
-
         spawnPopup(
           targetSprite,
           `damage-popup kind-${kind}`,
           amount > 0 ? `-${amount}` : "0",
           offsetPx
         );
+        applyDamageEventToDisplayedHp(data);
       };
 
       if (isArrowDamage) {
@@ -10540,6 +10794,7 @@ function joinCpu() {
 
   const cpuJobSelect = document.getElementById("cpuJob");
   const cpuJobValue = cpuJobSelect ? cpuJobSelect.value : null;
+  const cpuAiRankValue = document.getElementById("cpuAiRank")?.value || "random";
 
   ws = new WebSocket(WS_URL);
   attachWsHandlers();
@@ -10556,6 +10811,7 @@ function joinCpu() {
       job: myJob,
       profile: getBattleProfilePayload(),
       cpu_job: cpuJobValue || null,
+      cpu_ai_rank: cpuAiRankValue,
       turn_order: turnOrder
     }));
   };
@@ -11940,7 +12196,7 @@ function applyDojoEnemySprite(data = {}) {
 
   sprite.classList.remove(
     "job-warrior", "job-knight", "job-priest", "job-thief", "job-mage",
-    "job-onmyoji", "job-alchemist", "job-dollmaster", "job-madman", "job-archer"
+    "job-onmyoji", "job-alchemist", "job-dollmaster", "job-summoner", "job-madman", "job-archer"
   );
   sprite.classList.add("job-image", "dojo-monster-image");
   sprite.classList.toggle("dojo-boss-image", !!kind && kind !== "normal");
@@ -11963,6 +12219,118 @@ function applyDojoEnemySprite(data = {}) {
   img.alt = String(data.enemy_name ?? data.name ?? stored.name ?? "モンスター");
   img.draggable = false;
   return true;
+}
+
+const SUMMONER_DRAGON_CLIENT_META = {
+  tiamat: {
+    icon: "Assets/summoner/icon-tiamat.png",
+    egg: "Assets/summoner/egg-tiamat.png",
+    juvenile: "Assets/summoner/dragon-tiamat-juvenile.png",
+    adult: "Assets/summoner/dragon-tiamat-adult.png",
+  },
+  nidhogg: {
+    icon: "Assets/summoner/icon-nidhogg.png",
+    egg: "Assets/summoner/egg-nidhogg.png",
+    juvenile: "Assets/summoner/dragon-nidhogg-juvenile-clean.png",
+    adult: "Assets/summoner/dragon-nidhogg-adult-clean.png",
+  },
+  fafnir: {
+    icon: "Assets/summoner/icon-fafnir.png",
+    egg: "Assets/summoner/egg-fafnir.png",
+    juvenile: "Assets/summoner/dragon-fafnir-juvenile.png",
+    adult: "Assets/summoner/dragon-fafnir-adult.png",
+  },
+};
+
+function getSummonerDragonImage(dragon, kind = "icon") {
+  const meta = SUMMONER_DRAGON_CLIENT_META[String(dragon?.type ?? "")] ?? {};
+  if (kind === "egg") return dragon?.egg_icon_src || meta.egg || meta.icon || "";
+  if (String(dragon?.type ?? "") === "nidhogg" && (kind === "juvenile" || kind === "adult")) {
+    return meta[kind] || dragon?.[`${kind}_src`] || meta.icon || "";
+  }
+  if (kind === "juvenile") return dragon?.juvenile_src || meta.juvenile || meta.icon || "";
+  if (kind === "adult") return dragon?.adult_src || meta.adult || meta.icon || "";
+  return dragon?.icon_src || meta.icon || meta.egg || "";
+}
+
+function updateSummonerDragonUI(side, summoner, job) {
+  const sprite = document.getElementById(side === "self" ? "playerSprite" : "enemySprite");
+  if (!sprite) return;
+  let frontEl = sprite.querySelector(".gilsys-summoner-front-dragon");
+  let benchEl = sprite.querySelector(".gilsys-summoner-bench");
+  const shouldShow = String(job ?? "") === "召喚士" && summoner && Array.isArray(summoner.dragons);
+  if (!shouldShow) {
+    frontEl?.remove();
+    benchEl?.remove();
+    return;
+  }
+
+  if (!frontEl) {
+    frontEl = document.createElement("div");
+    frontEl.className = "gilsys-summoner-front-dragon";
+    sprite.appendChild(frontEl);
+  }
+  if (!benchEl) {
+    benchEl = document.createElement("div");
+    benchEl.className = "gilsys-summoner-bench";
+    sprite.appendChild(benchEl);
+  }
+
+  const dragons = summoner.dragons || [];
+  const front = dragons.find(d => d?.type === summoner.front && d.stage !== "egg") ||
+    dragons.find(d => d?.stage !== "egg") ||
+    null;
+  if (front) {
+    const stage = front.stage === "adult" ? "adult" : "juvenile";
+    frontEl.style.display = "";
+    frontEl.classList.toggle("is-juvenile", stage === "juvenile");
+    frontEl.style.setProperty("--summoner-dragon-image", gilsysCssUrl(getSummonerDragonImage(front, stage)));
+    frontEl.removeAttribute("title");
+    frontEl.setAttribute("aria-label", `${front.name ?? "竜"}（${front.stage_label ?? ""}）`);
+  } else {
+    frontEl.style.display = "none";
+  }
+
+  benchEl.innerHTML = "";
+  dragons.forEach(dragon => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "gilsys-summoner-dragon-chip";
+    chip.classList.toggle("is-front", !!dragon.is_front);
+    chip.classList.toggle("is-egg", dragon.stage === "egg");
+    const dragonClass = String(dragon.type ?? "").replace(/[^\w-]/g, "");
+    if (dragonClass) chip.classList.add(`is-${dragonClass}`);
+    const tooltipLines = [`${dragon.name ?? "竜"}（${dragon.stage_label ?? dragon.stage ?? ""}）`];
+    if (dragon.stage === "egg") {
+      tooltipLines.push(`孵化まであと${Math.max(0, Number(dragon.hatch_turns_remaining ?? 0))}T`);
+    } else if (dragon.stage === "juvenile") {
+      tooltipLines.push(`成長値 ${Math.max(0, Number(dragon.growth ?? 0))}/${Math.max(1, Number(dragon.growth_max ?? 10))}`);
+    } else {
+      tooltipLines.push("成体");
+    }
+    const tooltipText = tooltipLines.filter(Boolean).join("\n");
+    const tooltipHtml = tooltipLines.filter(Boolean).map(line => escapeHtml(line)).join("<br>");
+    chip.dataset.tapTitle = tooltipText;
+    chip.dataset.tooltipHtml = tooltipHtml;
+    chip.setAttribute("aria-label", tooltipText);
+    chip.removeAttribute("title");
+    const icon = dragon.stage === "egg"
+      ? getSummonerDragonImage(dragon, "egg")
+      : getSummonerDragonImage(dragon, "icon");
+    const progress = dragon.stage === "egg"
+      ? Math.max(0, Math.min(100, (1 - Number(dragon.hatch_turns_remaining ?? 0) / 3) * 100))
+      : dragon.stage === "juvenile"
+        ? Math.max(0, Math.min(100, Number(dragon.growth ?? 0) / Math.max(1, Number(dragon.growth_max ?? 10)) * 100))
+        : 100;
+    chip.style.setProperty("--summoner-progress", `${progress}%`);
+    chip.innerHTML = `<img src="${escapeHtml(icon)}" alt=""><span class="buff-tooltip">${tooltipHtml}</span>${dragon.stage !== "adult" ? `<span class="gilsys-summoner-chip-gauge"><span></span></span>` : ""}`;
+    if (side === "self" && dragon.stage !== "egg") {
+      chip.onclick = () => switchSummonerFront(dragon.type);
+    } else {
+      chip.setAttribute("aria-disabled", "true");
+    }
+    benchEl.appendChild(chip);
+  });
 }
 
 function updateGilsysBattleHud(data) {
@@ -12041,6 +12409,7 @@ function updateGilsysBattleHud(data) {
       "魔導士": "job-mage",
       "陰陽師": "job-onmyoji",
       "錬金術師": "job-alchemist",
+      "召喚士": "job-summoner",
       "人形使い": "job-dollmaster",
       "人形遣い": "job-dollmaster",
       "狂人": "job-madman",
@@ -12056,6 +12425,7 @@ function updateGilsysBattleHud(data) {
       if (cls) sprite.classList.add("job-image", cls);
     }
   }
+  updateSummonerDragonUI(data.side, data.summoner, data.job);
 
   if (isSelf) {
     setGilsysText("coins", Number(data.coins ?? 0).toLocaleString());
@@ -12242,7 +12612,10 @@ function guardClientSkillSealed() {
 }
 
 function getGilsysSkillUseHandler(skillNo){
-  const isDoll = (myJob === "人形使い" || myJob === 9);
+  const isDoll = (myJob === "人形使い");
+  const isSummoner = (myJob === "召喚士" || myJob === 9);
+  if (isSummoner && skillNo === 1) return requestSummonerSkill1;
+  if (isSummoner && skillNo === 2) return requestSummonerSkill2;
   if (isDoll && skillNo === 1) return useDollSkill1;
   if (isDoll && skillNo === 2) return useDollSkill2Prompt;
   if (isDoll && skillNo === 3) return useDollSkill3;
@@ -12361,10 +12734,13 @@ function openSkillUI(){
     const row = document.createElement("div");
     row.className = "skillRow";
 
-    const isDoll = (myJob === "人形使い" || myJob === 9);
+    const isDoll = (myJob === "人形使い");
+    const isSummoner = (myJob === "召喚士" || myJob === 9);
     const isDollSkill1 = isDoll && i === 0;
     const isDollSkill2 = isDoll && i === 1;
     const isDollSkill3 = isDoll && i === 2;
+    const isSummonerSkill1 = isSummoner && i === 0;
+    const isSummonerSkill2 = isSummoner && i === 1;
 
     // ← ここが差し替え部分
     const nameDiv = document.createElement("div");
@@ -12394,7 +12770,11 @@ function openSkillUI(){
 
     // ★ 使用回数が残っている場合のみ、実際の発動処理を紐付ける
     if (remain > 0) {
-      if (isDollSkill1) {
+      if (isSummonerSkill1) {
+        btn.addEventListener("click", requestSummonerSkill1);
+      } else if (isSummonerSkill2) {
+        btn.addEventListener("click", requestSummonerSkill2);
+      } else if (isDollSkill1) {
         btn.addEventListener("click", useDollSkill1);
       } else if (isDollSkill2) {
         btn.addEventListener("click", useDollSkill2Prompt);
@@ -12502,6 +12882,111 @@ function useSkill(num){
   });
 }
 
+function requestSummonerSkill1(){
+  if(!myTurn) return;
+  if (guardClientSkillSealed()) return;
+  ws.send(JSON.stringify({ type: "request_summoner_skill1" }));
+}
+
+function requestSummonerSkill2(){
+  if(!myTurn) return;
+  if (guardClientSkillSealed()) return;
+  ws.send(JSON.stringify({ type: "request_summoner_skill2" }));
+}
+
+function openSummonerChoicePopup(title, choices, mode, options = {}) {
+  const popup = document.getElementById("skillPopup");
+  const list = document.getElementById("skillList");
+  if (!popup || !list) return;
+  const safeChoices = Array.isArray(choices) ? choices : [];
+  list.innerHTML = "";
+  const root = document.createElement("div");
+  root.className = "gilsys-doll-part-select";
+  const heading = document.createElement("div");
+  heading.className = "gilsys-doll-part-title";
+  heading.textContent = title ?? "対象を選んでください";
+  root.appendChild(heading);
+
+  if (!safeChoices.length) {
+    const empty = document.createElement("div");
+    empty.className = "gilsys-empty-row";
+    empty.textContent = "選べる対象がありません";
+    root.appendChild(empty);
+  }
+  safeChoices.forEach(choice => {
+    const row = document.createElement("div");
+    row.className = "skillRow gilsys-doll-part-row";
+
+    const name = document.createElement("div");
+    name.className = "skillName";
+    if (choice.icon_src) {
+      const img = document.createElement("img");
+      img.src = String(choice.icon_src);
+      img.alt = "";
+      img.style.width = "28px";
+      img.style.height = "28px";
+      img.style.objectFit = "contain";
+      img.style.marginRight = "8px";
+      img.style.verticalAlign = "middle";
+      name.appendChild(img);
+    }
+    name.appendChild(document.createTextNode(choice.name ?? choice.type ?? "竜"));
+
+    const desc = document.createElement("div");
+    desc.className = "skillDesc";
+    desc.textContent = choice.desc ?? "";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "選択";
+    button.addEventListener("click", () => {
+      const selectedType = String(choice.type ?? "");
+      if (mode === "skill2") {
+        selectSummonerSkill2Target(selectedType);
+      } else if (mode === "feed") {
+        selectSummonerFeedTarget(options.itemUid, selectedType);
+      } else {
+        selectSummonerSkill1Egg(selectedType);
+      }
+    });
+
+    row.appendChild(name);
+    row.appendChild(desc);
+    row.appendChild(button);
+    root.appendChild(row);
+  });
+  list.appendChild(root);
+  list.classList.add("gilsys-doll-part-list");
+  popup.classList.add("gilsys-doll-part-popup");
+  popup.style.display = "flex";
+}
+
+function selectSummonerSkill1Egg(type){
+  if(!myTurn) return;
+  confirmTurnConsume(() => {
+    beginGilsysActionResolving();
+    ws.send(JSON.stringify({ type: "use_summoner_skill1", dragon_type: type }));
+    closeSkillUI();
+  });
+}
+
+function selectSummonerSkill2Target(type){
+  if(!myTurn) return;
+  confirmTurnConsume(() => {
+    beginGilsysActionResolving();
+    ws.send(JSON.stringify({ type: "use_summoner_skill2", dragon_type: type }));
+    closeSkillUI();
+  });
+}
+
+function switchSummonerFront(type){
+  if(!myTurn) return;
+  ws.send(JSON.stringify({ type: "switch_summoner_front", dragon_type: type }));
+}
+window.selectSummonerSkill1Egg = selectSummonerSkill1Egg;
+window.selectSummonerSkill2Target = selectSummonerSkill2Target;
+window.switchSummonerFront = switchSummonerFront;
+
 // ================================
 // 人形使い：スキル1
 // ================================
@@ -12604,6 +13089,108 @@ function itemConsumesTurn(item, action){
   return item?.consumes_turn === true;
 }
 
+function getDollRepairKitTargetParts() {
+  const doll = window.gilsysLatestSelfStatus?.doll ?? null;
+  const costumes = doll?.costumes ?? {};
+  const labels = {
+    head: "帽子",
+    body: "服",
+    leg: "ズボン",
+    foot: "靴"
+  };
+
+  return ["head", "body", "leg", "foot"]
+    .map(key => {
+      const costume = costumes[key];
+      if (!costume || costume.condition !== "boroboro") return null;
+      return {
+        key,
+        label: labels[key] ?? key,
+        name: costume.name ?? "衣装",
+        effect: costume.effect_text ?? costume.effect ?? "",
+        star: Number(costume.star ?? 1),
+      };
+    })
+    .filter(Boolean);
+}
+
+function openDollRepairKitTargetSelect(item) {
+  const popup = document.getElementById("skillPopup");
+  const list = document.getElementById("skillList");
+  if (!popup || !list || !item?.uid) return false;
+
+  const parts = getDollRepairKitTargetParts();
+  if (parts.length === 0) return false;
+
+  let html = `<div class="gilsys-doll-part-select"><div class="gilsys-doll-part-title">修復する衣装を選んでください</div>`;
+  for (const part of parts) {
+    const desc = [
+      part.name,
+      part.effect,
+      `★${part.star} / ボロボロ → 通常`
+    ].filter(Boolean).join("\n");
+    html += `
+      <div class="skillRow gilsys-doll-part-row">
+        <div class="skillName">${escapeHtml(part.label)}</div>
+        <div class="skillDesc">${escapeHtml(desc)}</div>
+        <button onclick="selectDollRepairKitTarget('${escapeHtml(item.uid)}','${escapeHtml(part.key)}')">選択</button>
+      </div>
+    `;
+  }
+  html += `</div>`;
+
+  list.innerHTML = html;
+  list.classList.add("gilsys-doll-part-list");
+  popup.classList.add("gilsys-doll-part-popup");
+  popup.style.display = "flex";
+  return true;
+}
+
+function selectDollRepairKitTarget(uid, part) {
+  closeSkillUI();
+  submitItemAction(uid, "use", part);
+  refreshInventoryAfterLocalAction(uid, "use");
+}
+window.selectDollRepairKitTarget = selectDollRepairKitTarget;
+
+function isDefaultSummonerFeedTarget(slot) {
+  const value = String(slot ?? "");
+  return value === "" || value === "1";
+}
+
+function getSummonerFeedTargetChoices() {
+  const dragons = Array.isArray(window.gilsysLatestSelfStatus?.summoner?.dragons)
+    ? window.gilsysLatestSelfStatus.summoner.dragons
+    : [];
+  return dragons
+    .filter(dragon => dragon && dragon.stage === "juvenile")
+    .map(dragon => {
+      const progress = `成長値 ${Math.max(0, Number(dragon.growth ?? 0))}/${Math.max(1, Number(dragon.growth_max ?? 10))}`;
+      return {
+        type: dragon.type,
+        name: dragon.name ?? "竜",
+        icon_src: getSummonerDragonImage(dragon, "icon"),
+        desc: `${dragon.stage_label ?? dragon.stage ?? ""} / ${progress}`,
+      };
+    });
+}
+
+function openSummonerFeedTargetSelect(item) {
+  const choices = getSummonerFeedTargetChoices();
+  if (!choices.length) {
+    showCenterToast("餌を与えられる幼体の竜がいません", 2200);
+    return true;
+  }
+  openSummonerChoicePopup("餌を与える幼体の竜を選んでください", choices, "feed", { itemUid: item?.uid });
+  return true;
+}
+
+function selectSummonerFeedTarget(uid, type) {
+  closeSkillUI();
+  useItem(uid, "use", type);
+}
+window.selectSummonerFeedTarget = selectSummonerFeedTarget;
+
 function submitItemAction(id, action, slot = 1){
   closeItemCategory();
 
@@ -12619,6 +13206,12 @@ function useItem(id, action, slot = 1){
   console.log("[CLIENT] useItem called", id, action, slot);
 
   const item = (window.itemList || []).find(it => it.uid === id);
+  if (action === "use" && item?.is_doll_item && openDollRepairKitTargetSelect(item)) {
+    return;
+  }
+  if (action === "use" && item?.is_summoner_feed && isDefaultSummonerFeedTarget(slot) && openSummonerFeedTargetSelect(item)) {
+    return;
+  }
   if (itemConsumesTurn(item, action)) {
     const forceConfirmForTutorial = window.matchMode === "tutorial" || window.gilsysTutorialBattleActive === true;
     if (!forceConfirmForTutorial && typeof window.gilsysShouldConfirmTurnConsume === "function" && !window.gilsysShouldConfirmTurnConsume()) {
@@ -13089,6 +13682,8 @@ function isNoStarSpecialShopItem(it){
     it?.is_mage_item ||
     it?.is_doll_item ||
     it?.is_doll_costume ||
+    it?.is_summoner_egg ||
+    it?.is_summoner_feed ||
     it?.is_arrow ||
     it?.is_priest_item ||
     it?.is_mad_special_item ||
@@ -13177,6 +13772,16 @@ function getShopVisualMeta(it){
     theme = "theme-rainbow";
     badges.push({ label: "魔導士", kind: "job" });
     badges.push({ label: "専用装備", kind: "special" });
+  } else if (it?.is_summoner_egg) {
+    icon = it?.icon_src ? { type: "image", src: String(it.icon_src), alt: name || "竜の卵" } : { type: "image", src: "Assets/summoner/egg-tiamat.png", alt: name || "竜の卵" };
+    theme = "theme-rainbow";
+    badges.push({ label: "召喚士", kind: "job" });
+    badges.push({ label: "竜の卵", kind: "special" });
+  } else if (it?.is_summoner_feed) {
+    icon = it?.icon_src ? { type: "image", src: String(it.icon_src), alt: name || "竜の餌" } : { type: "image", src: "Assets/summoner/feed.png", alt: name || "竜の餌" };
+    theme = "theme-rainbow";
+    badges.push({ label: "召喚士", kind: "job" });
+    badges.push({ label: "専用アイテム", kind: "special" });
   } else if (it?.is_doll_item) {
     icon = gilsysGeneratedIcon("repair_kit", name || "修理キット");
     theme = "theme-rainbow";
@@ -13743,7 +14348,7 @@ document.getElementById("btnCPU").onclick = () => {
   }
 
   // CPU職業選択を表示
-  document.getElementById("cpuJobArea").style.display = "block";
+  document.getElementById("cpuJobArea").style.display = "grid";
 
   document.getElementById("connectStatus").textContent =
     "CPUと対戦します（職業を選んで接続してください）";
@@ -13919,22 +14524,14 @@ try {
 
 <script id="gilsys-damage-preview-patch" src="scripts/extracted/gilsys-damage-preview-patch.js"></script>
 
-<link rel="stylesheet" href="styles/battle-mobile.css?v=517-popup3">
 <script id="gilsys-doll-charge-command-patch" src="scripts/extracted/gilsys-doll-charge-command-patch.js"></script>
 <link rel="stylesheet" href="styles/inventory-shop.css">
 <link id="gilsys-priest-blessing-count-style" rel="stylesheet" href="styles/extracted/gilsys-priest-blessing-count-style.css">
-<link id="gilsys-mobile-hide-top-status-style" rel="stylesheet" href="styles/extracted/gilsys-mobile-hide-top-status-style.css">
 <link rel="stylesheet" href="styles/tooltip-popups.css">
-<script id="gilsys-touch-tooltip-patch" src="scripts/extracted/gilsys-touch-tooltip-patch.js"></script>
-<script id="gilsys-mobile-floating-tooltip-patch" src="scripts/extracted/gilsys-mobile-floating-tooltip-patch.js"></script>
 <script id="gilsys-universal-floating-tooltip-final-patch" src="scripts/extracted/gilsys-universal-floating-tooltip-final-patch.js"></script>
-<link id="gilsys-mobile-doll-status-visible-final-style" rel="stylesheet" href="styles/extracted/gilsys-mobile-doll-status-visible-final-style.css">
 <link id="gilsys-status-exp-hp-name-cleanup-final-style" rel="stylesheet" href="styles/extracted/gilsys-status-exp-hp-name-cleanup-final-style.css">
 <link id="gilsys-inventory-card-match-shop-style" rel="stylesheet" href="styles/extracted/gilsys-inventory-card-match-shop-style.css">
 <link rel="stylesheet" href="styles/dojo.css">
-<link id="gilsys-mobile-hide-enemy-simple-status-style" rel="stylesheet" href="styles/extracted/gilsys-mobile-hide-enemy-simple-status-style.css">
-<link rel="stylesheet" href="styles/job-select-mobile.css">
-<link id="gilsys-all-device-responsive-final-style" rel="stylesheet" href="styles/extracted/gilsys-all-device-responsive-final-style.css">
 <script id="gilsys-fit-control-text" src="scripts/extracted/gilsys-fit-control-text.js"></script>
 <link id="gilsys-fixed-game-viewport-style" rel="stylesheet" href="styles/extracted/gilsys-fixed-game-viewport-style.css">
 <script id="gilsys-fixed-game-viewport" src="scripts/extracted/gilsys-fixed-game-viewport.js"></script>
@@ -13950,7 +14547,6 @@ try {
 <link id="gilsys-button-frame-transparent-outside-style" rel="stylesheet" href="styles/extracted/gilsys-button-frame-transparent-outside-style.css">
 <link id="gilsys-length-aware-button-frame-style" rel="stylesheet" href="styles/extracted/gilsys-length-aware-button-frame-style.css">
 <link id="gilsys-connect-button-center-final-style" rel="stylesheet" href="styles/extracted/gilsys-connect-button-center-final-style.css">
-<link id="gilsys-mobile-log-and-text-fit-final-style" rel="stylesheet" href="styles/extracted/gilsys-mobile-log-and-text-fit-final-style.css">
 <link id="gilsys-job-select-info-visibility-fix-style" rel="stylesheet" href="styles/extracted/gilsys-job-select-info-visibility-fix-style.css">
 <link id="gilsys-social-home-layout-style" rel="stylesheet" href="styles/extracted/gilsys-social-home-layout-style.css">
 <script id="gilsys-battle-log-command-dock" src="scripts/extracted/gilsys-battle-log-command-dock.js"></script>
@@ -13983,7 +14579,6 @@ try {
 <link rel="stylesheet" href="styles/title-screen.css">
 <link rel="stylesheet" href="styles/close-buttons.css">
 <link id="gilsys-vs-intro-style" rel="stylesheet" href="styles/extracted/gilsys-vs-intro-style.css">
-<link id="gilsys-mobile-battle-log-readable-final" rel="stylesheet" href="styles/extracted/gilsys-mobile-battle-log-readable-final.css">
 <link rel="stylesheet" href="styles/profile-title.css">
 <link id="gilsys-battle-equip-tooltip-hit-fix" rel="stylesheet" href="styles/extracted/gilsys-battle-equip-tooltip-hit-fix.css">
 <link id="gilsys-battle-equip-slot-stable" rel="stylesheet" href="styles/extracted/gilsys-battle-equip-slot-stable.css">

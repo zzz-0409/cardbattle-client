@@ -162,31 +162,4 @@ html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-resul
   transform: translateY(-1px);
 }
 
-@media (max-width: 620px) {
-  html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-normal-result-frame {
-    grid-template-columns: 1fr !important;
-    grid-template-rows: auto auto auto auto auto !important;
-    align-content: center !important;
-    padding: 22px 14px !important;
-    overflow: auto !important;
-  }
 
-  html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) #resultTitle,
-  html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) #resultSub,
-  html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-summary,
-  html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-rate-panel,
-  html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-actions {
-    grid-column: 1 !important;
-    grid-row: auto !important;
-  }
-
-  html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-actions {
-    grid-template-columns: minmax(260px, 86vw) !important;
-    gap: 10px !important;
-  }
-
-  html.gilsys-fixed-game #resultOverlay.is-victory:not(.is-tutorial) .gilsys-result-actions button {
-    height: clamp(56px, 19vw, 78px) !important;
-    font-size: clamp(16px, 5.2vw, 22px) !important;
-  }
-}

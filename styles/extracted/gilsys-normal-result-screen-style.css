@@ -254,26 +254,4 @@ html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-actions {
   justify-content: center;
 }
 
-@media (max-width: 620px) {
-  html.gilsys-fixed-game .gilsys-normal-result-frame {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto auto;
-    align-content: center;
-    padding: 24px 14px;
-    overflow: auto;
-  }
-  html.gilsys-fixed-game #resultTitle,
-  html.gilsys-fixed-game #resultSub,
-  html.gilsys-fixed-game .gilsys-result-summary,
-  html.gilsys-fixed-game .gilsys-result-rate-panel,
-  html.gilsys-fixed-game .gilsys-result-actions {
-    grid-column: 1;
-    grid-row: auto;
-  }
-  html.gilsys-fixed-game .gilsys-result-summary,
-  html.gilsys-fixed-game .gilsys-result-actions { grid-template-columns: 1fr; }
-  html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-summary,
-  html.gilsys-fixed-game #resultOverlay.is-tutorial .gilsys-result-actions {
-    grid-template-columns: 1fr;
-  }
-}
+
