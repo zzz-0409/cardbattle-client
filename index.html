@@ -1858,6 +1858,36 @@ body.debug #battleStage {
   height:100%;
   object-fit:contain;
 }
+.warrior-skill1-bg-effect{
+  position:absolute;
+  left:50%;
+  top:36%;
+  width:150%;
+  max-width:280px;
+  aspect-ratio:1 / 1;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  user-select:none;
+  mix-blend-mode:screen;
+  z-index:81;
+  overflow:visible;
+  filter:
+    drop-shadow(0 0 12px rgba(255,226,120,.64))
+    drop-shadow(0 0 28px rgba(255,118,38,.34));
+  animation:warriorSkill1Frame 1.25s ease-out forwards;
+}
+.warrior-skill1-bg-effect .warrior-skill1-bg{
+  position:absolute;
+  left:50%;
+  top:78%;
+  width:116%;
+  height:116%;
+  object-fit:contain;
+  transform:translate(-50%,-92%) scale(.72);
+  transform-origin:50% 92%;
+  opacity:0;
+  animation:warriorSkill1BgFlare 1.16s cubic-bezier(.16,.74,.2,1) forwards;
+}
 .warrior-skill1-blade{
   position:absolute;
   inset:0;
@@ -1872,6 +1902,7 @@ body.debug #battleStage {
     drop-shadow(0 0 10px rgba(255,250,190,.78))
     drop-shadow(0 0 18px rgba(255,156,48,.58))
     drop-shadow(0 0 26px rgba(255,72,32,.32));
+  z-index:2;
   animation:warriorSkill1BladeDrop 1.02s cubic-bezier(.16,.74,.2,1) .08s forwards;
 }
 .warrior-skill1-hit{
@@ -1883,7 +1914,7 @@ body.debug #battleStage {
   border-radius:50%;
   transform:translate(-50%,-50%) scale(.35);
   opacity:0;
-  z-index:0;
+  z-index:1;
   background:
     radial-gradient(ellipse, rgba(255,255,255,.95) 0 18%, rgba(255,226,120,.86) 19% 34%, rgba(255,86,35,.38) 35% 58%, transparent 68%);
   filter:
@@ -2207,6 +2238,8 @@ body.debug #battleStage {
 @media (prefers-reduced-motion: reduce) {
   .skill-effect-image,
   .warrior-skill1-effect,
+  .warrior-skill1-bg-effect,
+  .warrior-skill1-bg,
   .warrior-skill1-blade,
   .warrior-skill2-self-effect,
   .warrior-skill2-aura,
@@ -2249,6 +2282,12 @@ body.debug #battleStage {
   10%{opacity:1;}
   76%{opacity:1;}
   100%{opacity:0;}
+}
+@keyframes warriorSkill1BgFlare{
+  0%{opacity:0;transform:translate(-50%,-92%) scale(.58) rotate(-2deg);}
+  14%{opacity:.9;}
+  46%{opacity:.86;transform:translate(-50%,-92%) scale(.86) rotate(.8deg);}
+  100%{opacity:0;transform:translate(-50%,-92%) scale(.98) rotate(2deg);}
 }
 @keyframes warriorSkill1BladeDrop{
   0%{opacity:0;transform:translateY(-38%) scale(.96);}
@@ -7565,9 +7604,12 @@ Object.values(SKILL_EFFECT_ASSETS).forEach(src => {
 });
 
 const WARRIOR_SKILL1_VERTICAL_SLASH_SRC = "Assets/effect/warrior_1_vertical_slash.png";
+const WARRIOR_SKILL1_BG_SRC = "Assets/effect/warrior_1_bg.png";
 {
-  const img = new Image();
-  img.src = WARRIOR_SKILL1_VERTICAL_SLASH_SRC;
+  [WARRIOR_SKILL1_BG_SRC, WARRIOR_SKILL1_VERTICAL_SLASH_SRC].forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
 }
 
 const WARRIOR_SKILL2_EFFECT_ASSETS = {
@@ -7669,13 +7711,18 @@ function showSkillEffectEvent(data) {
   }
 
   if (effectName === "warrior_1_target") {
+    const bgEl = document.createElement("div");
+    bgEl.className = `warrior-skill1-bg-effect job-skill-effect is-${targetSide} ${effectName}-bg`;
+    bgEl.innerHTML = `<img class="warrior-skill1-bg" src="${WARRIOR_SKILL1_BG_SRC}" alt="" draggable="false">`;
     const el = document.createElement("div");
     el.className = `warrior-skill1-effect job-skill-effect is-${targetSide} ${effectName}`;
     el.innerHTML = `
       <img class="warrior-skill1-blade" src="${WARRIOR_SKILL1_VERTICAL_SLASH_SRC}" alt="" draggable="false">
       <span class="warrior-skill1-hit" aria-hidden="true"></span>
     `;
+    targetSprite.appendChild(bgEl);
     targetSprite.appendChild(el);
+    setTimeout(() => bgEl.remove(), 1300);
     setTimeout(() => el.remove(), 1300);
     return;
   }
