@@ -6412,6 +6412,7 @@ function openNameChangeModal(initialName = "") {
           </div>
           <div id="nameChangeModalStatus" class="gilsys-name-modal-status"></div>
           <div class="gilsys-name-modal-actions">
+            <button id="nameChangeModalLogout" type="button">ログアウト</button>
             <button id="nameChangeModalCancel" type="button">キャンセル</button>
             <button id="nameChangeModalOk" type="button">変更</button>
           </div>
@@ -6429,6 +6430,7 @@ function openNameChangeModal(initialName = "") {
     const status = document.getElementById("nameChangeModalStatus");
     const ok = document.getElementById("nameChangeModalOk");
     const cancel = document.getElementById("nameChangeModalCancel");
+    const logout = document.getElementById("nameChangeModalLogout");
     const jobs = getProfileJobs();
     const currentIconJobId = getProfileJobId(LS_PROFILE_ICON_JOB_ID);
     const currentTitleJobId = getProfileTitleId();
@@ -6476,6 +6478,7 @@ function openNameChangeModal(initialName = "") {
       backdrop.classList.remove("is-open");
       ok.onclick = null;
       cancel.onclick = null;
+      if (logout) logout.onclick = null;
       backdrop.onclick = null;
       input.onkeydown = null;
       if (iconGrid) iconGrid.onclick = null;
@@ -6513,6 +6516,7 @@ function openNameChangeModal(initialName = "") {
     }
     ok.onclick = submit;
     cancel.onclick = () => close(null);
+    if (logout) logout.onclick = () => close({ logout: true });
     backdrop.onclick = event => {
       if (event.target === backdrop) close(null);
     };
@@ -6671,10 +6675,6 @@ async function ensureAccount() {
   let authUsername = localStorage.getItem(LS_AUTH_USERNAME);
 
   if (!aid || !authUsername) {
-    const backupAid = aid;
-    const backupJobs = backupAid ? (loadLocalJobRecord(backupAid) || {}) : {};
-    const backupDojoProgress = backupAid ? (loadLocalDojoProgress(backupAid) || {}) : {};
-
     while (!aid || !authUsername) {
       const auth = await openAuthModal(aname || "Player");
 
@@ -6697,9 +6697,7 @@ async function ensureAccount() {
           ? await apiPost("/api/auth/register", {
               username: auth.username,
               password: auth.password,
-              name: auth.name,
-              backup_jobs: backupJobs,
-              backup_dojo_progress: backupDojoProgress
+              name: auth.name
             })
           : await apiPost("/api/auth/login", {
               username: auth.username,
@@ -6880,9 +6878,25 @@ async function fetchAndRenderRanking(jobName) {
     renderRankingList({ ok: false });
   }
 }
+
+function logoutAccount() {
+  localStorage.removeItem(LS_ACCOUNT_ID);
+  localStorage.removeItem(LS_ACCOUNT_NAME);
+  localStorage.removeItem(LS_AUTH_USERNAME);
+  window.accountId = null;
+  window.accountName = null;
+  window.jobRecord = {};
+  window.dojoProgress = {};
+  location.reload();
+}
+
 async function changeNameFlow() {
   const profile = await openNameChangeModal(window.accountName || "");
   if (profile === null) return;
+  if (profile?.logout) {
+    if (confirm("ログアウトしますか？")) logoutAccount();
+    return;
+  }
 
   const name = String(profile.name || "");
   saveAccountProfile(profile);
