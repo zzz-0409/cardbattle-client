@@ -5888,6 +5888,7 @@ window.gilsysCssUrl = gilsysCssUrl;
 // ================= Account (localStorage + server) =================
 const LS_ACCOUNT_ID = "gs_account_id";
 const LS_ACCOUNT_NAME = "gs_account_name";
+const LS_AUTH_USERNAME = "gs_auth_username";
 const LS_PROFILE_ICON_JOB_ID = "gs_profile_icon_job_id";
 const LS_PROFILE_TITLE_JOB_ID = "gs_profile_title_job_id";
 const LS_PROFILE_FRAME_ID = "gs_profile_frame_id";
@@ -6527,9 +6528,202 @@ function openNameChangeModal(initialName = "") {
   });
 }
 
+function validateLoginUsernameClient(username) {
+  const value = String(username || "").trim().toLowerCase();
+  if (value.length < 3 || value.length > 24) return { ok: false, reason: "ユーザー名は3〜24文字です" };
+  if (!/^[a-z0-9_.-]+$/.test(value)) return { ok: false, reason: "ユーザー名は英数字、_、-、. のみ使えます" };
+  if (/^[_.-]|[_.-]$/.test(value)) return { ok: false, reason: "ユーザー名の先頭と末尾に記号は使えません" };
+  return { ok: true, username: value };
+}
+
+function validateLoginPasswordClient(password) {
+  const value = String(password || "");
+  if (value.length < 8) return { ok: false, reason: "パスワードは8文字以上です" };
+  if (value.length > 128) return { ok: false, reason: "パスワードが長すぎます" };
+  return { ok: true };
+}
+
+function openAuthModal(initialName = "") {
+  return new Promise(resolve => {
+    const host = document.getElementById("game-wrapper") || document.body;
+    let backdrop = document.getElementById("accountAuthModalBackdrop");
+    if (!backdrop) {
+      backdrop = document.createElement("div");
+      backdrop.id = "accountAuthModalBackdrop";
+      backdrop.className = "gilsys-name-modal-backdrop";
+      backdrop.innerHTML = `
+        <div class="gilsys-name-modal" role="dialog" aria-modal="true" aria-labelledby="accountAuthModalTitle">
+          <h3 id="accountAuthModalTitle">ログイン</h3>
+          <div class="gilsys-name-modal-actions" style="justify-content:flex-start;">
+            <button id="accountAuthLoginMode" type="button">ログイン</button>
+            <button id="accountAuthRegisterMode" type="button">新規登録</button>
+          </div>
+          <label class="gilsys-name-modal-field">
+            <span>ユーザー名</span>
+            <input id="accountAuthUsername" maxlength="24" autocomplete="username" />
+          </label>
+          <label class="gilsys-name-modal-field">
+            <span>パスワード</span>
+            <input id="accountAuthPassword" type="password" maxlength="128" autocomplete="current-password" />
+          </label>
+          <label class="gilsys-name-modal-field" id="accountAuthNameField">
+            <span>表示名</span>
+            <input id="accountAuthName" maxlength="12" autocomplete="nickname" />
+          </label>
+          <div id="accountAuthStatus" class="gilsys-name-modal-status"></div>
+          <div class="gilsys-name-modal-actions">
+            <button id="accountAuthGuest" type="button">ゲストで開始</button>
+            <button id="accountAuthOk" type="button">ログイン</button>
+          </div>
+        </div>
+      `;
+      host.appendChild(backdrop);
+    } else if (backdrop.parentElement !== host) {
+      host.appendChild(backdrop);
+    }
+
+    const title = document.getElementById("accountAuthModalTitle");
+    const loginMode = document.getElementById("accountAuthLoginMode");
+    const registerMode = document.getElementById("accountAuthRegisterMode");
+    const usernameInput = document.getElementById("accountAuthUsername");
+    const passwordInput = document.getElementById("accountAuthPassword");
+    const nameField = document.getElementById("accountAuthNameField");
+    const nameInput = document.getElementById("accountAuthName");
+    const status = document.getElementById("accountAuthStatus");
+    const guest = document.getElementById("accountAuthGuest");
+    const ok = document.getElementById("accountAuthOk");
+    let mode = "login";
+
+    const setMode = next => {
+      mode = next;
+      const isRegister = mode === "register";
+      title.textContent = isRegister ? "新規登録" : "ログイン";
+      ok.textContent = isRegister ? "登録して開始" : "ログイン";
+      nameField.style.display = isRegister ? "" : "none";
+      passwordInput.autocomplete = isRegister ? "new-password" : "current-password";
+      loginMode.classList.toggle("active", !isRegister);
+      registerMode.classList.toggle("active", isRegister);
+      status.textContent = "";
+    };
+
+    const close = value => {
+      backdrop.classList.remove("is-open");
+      loginMode.onclick = null;
+      registerMode.onclick = null;
+      guest.onclick = null;
+      ok.onclick = null;
+      usernameInput.onkeydown = null;
+      passwordInput.onkeydown = null;
+      nameInput.onkeydown = null;
+      resolve(value);
+    };
+
+    const submit = () => {
+      const user = validateLoginUsernameClient(usernameInput.value);
+      if (!user.ok) {
+        status.textContent = user.reason;
+        usernameInput.focus();
+        return;
+      }
+      const pass = validateLoginPasswordClient(passwordInput.value);
+      if (!pass.ok) {
+        status.textContent = pass.reason;
+        passwordInput.focus();
+        return;
+      }
+      const name = String(nameInput.value || "").trim();
+      if (mode === "register") {
+        const nv = validateNameClient(name);
+        if (!nv.ok) {
+          status.textContent = nv.reason;
+          nameInput.focus();
+          return;
+        }
+      }
+      close({ mode, username: user.username, password: passwordInput.value, name });
+    };
+
+    loginMode.onclick = () => setMode("login");
+    registerMode.onclick = () => setMode("register");
+    guest.onclick = () => close({ mode: "guest" });
+    ok.onclick = submit;
+    const keyHandler = event => {
+      if (event.key === "Enter") submit();
+    };
+    usernameInput.onkeydown = keyHandler;
+    passwordInput.onkeydown = keyHandler;
+    nameInput.onkeydown = keyHandler;
+
+    usernameInput.value = localStorage.getItem(LS_AUTH_USERNAME) || "";
+    passwordInput.value = "";
+    nameInput.value = initialName || "Player";
+    status.textContent = "";
+    setMode(usernameInput.value ? "login" : "register");
+    backdrop.classList.add("is-open");
+    setTimeout(() => {
+      (usernameInput.value ? passwordInput : usernameInput).focus();
+    }, 0);
+  });
+}
+
 async function ensureAccount() {
   let aid = localStorage.getItem(LS_ACCOUNT_ID);
   let aname = localStorage.getItem(LS_ACCOUNT_NAME);
+  let authUsername = localStorage.getItem(LS_AUTH_USERNAME);
+
+  if (!aid || !authUsername) {
+    const backupAid = aid;
+    const backupJobs = backupAid ? (loadLocalJobRecord(backupAid) || {}) : {};
+    const backupDojoProgress = backupAid ? (loadLocalDojoProgress(backupAid) || {}) : {};
+
+    while (!aid || !authUsername) {
+      const auth = await openAuthModal(aname || "Player");
+
+      if (!auth || auth.mode === "guest") {
+        if (!aid) {
+          aid = uuid();
+          localStorage.setItem(LS_ACCOUNT_ID, aid);
+        }
+        if (!aname) {
+          aname = "Player";
+          localStorage.setItem(LS_ACCOUNT_NAME, aname);
+        }
+        authUsername = "guest";
+        localStorage.setItem(LS_AUTH_USERNAME, authUsername);
+        break;
+      }
+
+      try {
+        const data = auth.mode === "register"
+          ? await apiPost("/api/auth/register", {
+              username: auth.username,
+              password: auth.password,
+              name: auth.name,
+              backup_jobs: backupJobs,
+              backup_dojo_progress: backupDojoProgress
+            })
+          : await apiPost("/api/auth/login", {
+              username: auth.username,
+              password: auth.password
+            });
+
+        if (!data?.ok || !data.account?.id) {
+          alert(data?.reason || "ログインに失敗しました");
+          continue;
+        }
+
+        aid = data.account.id;
+        aname = data.account.name || auth.name || auth.username || "Player";
+        authUsername = data.account.username || auth.username;
+        localStorage.setItem(LS_ACCOUNT_ID, aid);
+        localStorage.setItem(LS_ACCOUNT_NAME, aname);
+        localStorage.setItem(LS_AUTH_USERNAME, authUsername);
+      } catch (e) {
+        console.warn("auth failed:", e);
+        alert("サーバーに接続できませんでした");
+      }
+    }
+  }
 
   if (!aid) {
     aid = uuid();
