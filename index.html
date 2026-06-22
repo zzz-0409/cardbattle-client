@@ -5885,6 +5885,163 @@ function gilsysCssUrl(src) {
 window.gilsysAssetUrl = gilsysAssetUrl;
 window.gilsysCssUrl = gilsysCssUrl;
 
+function ensureGilsysDialogStyle() {
+  if (document.getElementById("gilsysCommonDialogStyle")) return;
+  const style = document.createElement("style");
+  style.id = "gilsysCommonDialogStyle";
+  style.textContent = `
+    .gilsys-common-dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.72);
+      box-sizing: border-box;
+    }
+    .gilsys-common-dialog {
+      width: min(92vw, 420px);
+      max-height: min(82vh, 520px);
+      overflow: auto;
+      box-sizing: border-box;
+      border: 1px solid rgba(219, 176, 88, 0.68);
+      border-radius: 8px;
+      background: rgba(12, 10, 10, 0.97);
+      color: #f5e7c8;
+      padding: 18px;
+      box-shadow: 0 20px 54px rgba(0, 0, 0, 0.62);
+    }
+    .gilsys-common-dialog-title {
+      margin: 0 0 10px;
+      color: #f2cf88;
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+    .gilsys-common-dialog-message {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: rgba(245, 231, 200, 0.92);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .gilsys-common-dialog-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+    .gilsys-common-dialog-actions button {
+      min-width: 96px;
+      min-height: 38px;
+      border: 1px solid rgba(219, 176, 88, 0.68);
+      border-radius: 4px;
+      background: rgba(35, 24, 18, 0.96);
+      color: #f5e7c8;
+      font: inherit;
+    }
+    .gilsys-common-dialog-actions button[data-primary="true"] {
+      background: rgba(129, 65, 95, 0.96);
+      border-color: rgba(255, 207, 228, 0.86);
+      color: #fff4fb;
+    }
+    .gilsys-common-dialog-actions button:focus-visible {
+      outline: 2px solid rgba(255, 231, 164, 0.95);
+      outline-offset: 2px;
+    }
+    @media (max-width: 520px) {
+      .gilsys-common-dialog-backdrop {
+        align-items: center;
+        padding: 14px;
+      }
+      .gilsys-common-dialog {
+        width: 100%;
+      }
+      .gilsys-common-dialog-actions {
+        flex-direction: column-reverse;
+      }
+      .gilsys-common-dialog-actions button {
+        width: 100%;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function showGilsysDialog({ title = "確認", message = "", okText = "OK", cancelText = "" } = {}) {
+  ensureGilsysDialogStyle();
+  return new Promise(resolve => {
+    const backdrop = document.createElement("div");
+    backdrop.className = "gilsys-common-dialog-backdrop";
+    backdrop.setAttribute("role", "dialog");
+    backdrop.setAttribute("aria-modal", "true");
+    backdrop.tabIndex = -1;
+
+    const panel = document.createElement("div");
+    panel.className = "gilsys-common-dialog";
+
+    const titleEl = document.createElement("h3");
+    titleEl.className = "gilsys-common-dialog-title";
+    titleEl.textContent = String(title || "確認");
+
+    const messageEl = document.createElement("p");
+    messageEl.className = "gilsys-common-dialog-message";
+    messageEl.textContent = String(message ?? "");
+
+    const actions = document.createElement("div");
+    actions.className = "gilsys-common-dialog-actions";
+
+    let cancelButton = null;
+    if (cancelText) {
+      cancelButton = document.createElement("button");
+      cancelButton.type = "button";
+      cancelButton.textContent = String(cancelText);
+      actions.appendChild(cancelButton);
+    }
+
+    const okButton = document.createElement("button");
+    okButton.type = "button";
+    okButton.dataset.primary = "true";
+    okButton.textContent = String(okText || "OK");
+    actions.appendChild(okButton);
+
+    panel.appendChild(titleEl);
+    panel.appendChild(messageEl);
+    panel.appendChild(actions);
+    backdrop.appendChild(panel);
+    document.body.appendChild(backdrop);
+
+    const close = value => {
+      backdrop.remove();
+      resolve(value);
+    };
+    okButton.onclick = () => close(true);
+    if (cancelButton) cancelButton.onclick = () => close(false);
+    backdrop.onclick = event => {
+      if (event.target === backdrop && cancelButton) close(false);
+    };
+    backdrop.onkeydown = event => {
+      if (event.key === "Escape" && cancelButton) close(false);
+      if (event.key === "Enter") close(true);
+    };
+    setTimeout(() => okButton.focus(), 0);
+  });
+}
+
+function gilsysAlert(message, title = "お知らせ") {
+  return showGilsysDialog({ title, message, okText: "OK" });
+}
+
+function gilsysConfirm(message, title = "確認") {
+  return showGilsysDialog({ title, message, okText: "OK", cancelText: "キャンセル" });
+}
+
+window.gilsysAlert = gilsysAlert;
+window.gilsysConfirm = gilsysConfirm;
+
 // ================= Account (localStorage + server) =================
 const LS_ACCOUNT_ID = "gs_account_id";
 const LS_ACCOUNT_NAME = "gs_account_name";
@@ -6705,7 +6862,7 @@ async function ensureAccount() {
             });
 
         if (!data?.ok || !data.account?.id) {
-          alert(data?.reason || "ログインに失敗しました");
+          await gilsysAlert(data?.reason || "ログインに失敗しました");
           continue;
         }
 
@@ -6717,7 +6874,7 @@ async function ensureAccount() {
         localStorage.setItem(LS_AUTH_USERNAME, authUsername);
       } catch (e) {
         console.warn("auth failed:", e);
-        alert("サーバーに接続できませんでした");
+        await gilsysAlert("サーバーに接続できませんでした");
       }
     }
   }
@@ -6894,7 +7051,7 @@ async function changeNameFlow() {
   const profile = await openNameChangeModal(window.accountName || "");
   if (profile === null) return;
   if (profile?.logout) {
-    if (confirm("ログアウトしますか？")) logoutAccount();
+    if (await gilsysConfirm("ログアウトしますか？")) logoutAccount();
     return;
   }
 
@@ -6913,10 +7070,10 @@ async function changeNameFlow() {
     if (!data?.ok) {
       if (data?.nextNameChangeAt) {
         const d = new Date(data.nextNameChangeAt);
-        alert(`${data.reason}
+        await gilsysAlert(`${data.reason}
 次回変更可能：${d.toLocaleString()}`);
       } else {
-        alert(data?.reason || "変更に失敗しました");
+        await gilsysAlert(data?.reason || "変更に失敗しました");
       }
       return;
     }
@@ -6927,7 +7084,7 @@ async function changeNameFlow() {
     await fetchAndRenderRanking(currentRankingJob);
   } catch (e) {
     console.warn("change name failed:", e);
-    alert("変更に失敗しました");
+    await gilsysAlert("変更に失敗しました");
   }
 }
 
@@ -10897,7 +11054,7 @@ function attachWsHandlers() {
             // 失敗 → カテゴリ選択に戻す
             document.getElementById("itemCategoryPopup").style.display = "flex";
             if (data.message) {
-                alert(data.message);
+                gilsysAlert(data.message);
             }
         }
         return;
@@ -10908,7 +11065,7 @@ function attachWsHandlers() {
 /* ==================== 接続（対人戦） ==================== */
 function join() {
   if (!selectedJobId) {
-    alert("職業を選択してください");
+    gilsysAlert("職業を選択してください");
     return;
   }
 
@@ -10934,7 +11091,7 @@ function join() {
 
 function join() {
   if (!selectedJobId) {
-    alert("職業を選択してください");
+    gilsysAlert("職業を選択してください");
     return;
   }
 
@@ -10960,13 +11117,13 @@ function join() {
 
 function joinRoom() {
   if (!selectedJobId) {
-    alert("職業を選択してください");
+    gilsysAlert("職業を選択してください");
     return;
   }
 
   const roomCode = (document.getElementById("roomCodeInput")?.value ?? "").trim();
   if (!/^\d{4}$/.test(roomCode)) {
-    alert("ルーム番号は4桁の数字で入力してください");
+    gilsysAlert("ルーム番号は4桁の数字で入力してください");
     return;
   }
 
@@ -10993,7 +11150,7 @@ function joinCpu() {
   if (ws) return;
 
   if (!selectedJobId) {
-    alert("職業を選択してください");
+    gilsysAlert("職業を選択してください");
     return;
   }
 
@@ -11050,7 +11207,7 @@ function joinTutorial() {
 function joinDojo() {
   if (ws) return;
   if (Number(selectedJobId) !== 1) {
-    alert("フェーズ1では戦士のみ挑戦できます。");
+    gilsysAlert("フェーズ1では戦士のみ挑戦できます。");
     return;
   }
   myJob = selectedJobId;
@@ -14457,14 +14614,14 @@ document.getElementById("btnConnectPhase1").onclick = () => {
 
   // ★ 職業未選択なら接続不可
   if (!selectedJobId) {
-    alert("職業を選択してください");
+    gilsysAlert("職業を選択してください");
     return;
   }
 
   if (window.matchMode === "room") {
     const roomCode = (document.getElementById("roomCodeInput")?.value ?? "").trim();
     if (!/^\d{4}$/.test(roomCode)) {
-      alert("ルーム番号は4桁の数字で入力してください");
+      gilsysAlert("ルーム番号は4桁の数字で入力してください");
       return;
     }
   }
@@ -14494,7 +14651,7 @@ document.getElementById("btnConnectPhase1").onclick = () => {
       isConnecting = false;
       document.getElementById("btnConnectPhase1").disabled = false;
       document.getElementById("connectStatus").textContent = "フェーズ1では戦士のみ挑戦できます";
-      alert("フェーズ1では戦士のみ挑戦できます。");
+      gilsysAlert("フェーズ1では戦士のみ挑戦できます。");
       return;
     }
     document.getElementById("connectStatus").textContent = "達人への道に接続中...";
