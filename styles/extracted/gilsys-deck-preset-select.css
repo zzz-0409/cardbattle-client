@@ -1,0 +1,253 @@
+html.gilsys-fixed-game #phase1.gilsys-deck-preset-mode #jobSelectArea {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-deck-preset-mode #jobDetailPanel,
+html.gilsys-fixed-game #phase1.gilsys-deck-preset-mode #jobSelectedDetail,
+html.gilsys-fixed-game #phase1.gilsys-deck-preset-mode .job-detail-panel {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #gilsysDeckPresetSelection[hidden] {
+  display: none !important;
+}
+
+html.gilsys-fixed-game #gilsysDeckPresetSelection {
+  width: min(980px, calc(100% - 28px)) !important;
+  margin: 14px auto !important;
+  display: grid !important;
+  grid-template-rows: auto 1fr !important;
+  gap: 12px !important;
+  color: #f8e8c2 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-head {
+  min-height: 64px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  padding: 12px 16px !important;
+  border: 1px solid rgba(177, 129, 71, .64) !important;
+  background:
+    linear-gradient(90deg, rgba(34, 23, 16, .92), rgba(11, 20, 30, .88)),
+    rgba(8, 8, 8, .9) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 30px rgba(0,0,0,.3) !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-head p {
+  margin: 0 0 4px !important;
+  color: rgba(141, 225, 255, .72) !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-head h3 {
+  margin: 0 !important;
+  color: #fff1bd !important;
+  font-size: clamp(22px, 2.4vw, 32px) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-head > span {
+  flex: 0 0 auto !important;
+  padding: 9px 12px !important;
+  border: 1px solid rgba(116, 221, 255, .54) !important;
+  border-radius: 999px !important;
+  background: rgba(8, 36, 56, .78) !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-card {
+  position: relative !important;
+  min-width: 0 !important;
+  min-height: 236px !important;
+  display: grid !important;
+  grid-template-rows: 1fr auto !important;
+  gap: 8px !important;
+  padding: 10px !important;
+  border: 1px solid rgba(155, 104, 56, .7) !important;
+  border-radius: 7px !important;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(85, 149, 190, .2), transparent 34%),
+    linear-gradient(180deg, rgba(34, 25, 18, .94), rgba(6, 8, 11, .96)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 12px 26px rgba(0,0,0,.32) !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-card.is-selected {
+  border-color: rgba(116, 221, 255, .88) !important;
+  box-shadow: 0 0 24px rgba(74, 178, 255, .22), inset 0 0 0 1px rgba(255,255,255,.1) !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-card > button[data-preset-key] {
+  width: 100% !important;
+  min-height: 170px !important;
+  display: grid !important;
+  grid-template-columns: 54px 1fr auto !important;
+  grid-template-rows: auto auto 1fr auto !important;
+  gap: 6px 10px !important;
+  align-items: center !important;
+  padding: 12px !important;
+  border: 1px solid rgba(133, 94, 56, .62) !important;
+  border-radius: 6px !important;
+  background: rgba(4, 5, 7, .42) !important;
+  color: #f8e8c2 !important;
+  text-align: left !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-card > button[data-preset-key]:hover,
+html.gilsys-fixed-game .gilsys-deck-preset-card > button[data-preset-key].is-selected {
+  border-color: rgba(116, 221, 255, .8) !important;
+  filter: brightness(1.12) saturate(1.08) !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-icon {
+  grid-row: 1 / 4 !important;
+  width: 54px !important;
+  height: 54px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(116, 221, 255, .48) !important;
+  background: radial-gradient(circle, rgba(35, 98, 142, .96), rgba(8, 25, 42, .98)) !important;
+  color: #ffffff !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-card b {
+  color: #fff5d8 !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-card small {
+  justify-self: end !important;
+  padding: 4px 7px !important;
+  border-radius: 999px !important;
+  background: rgba(95, 55, 25, .74) !important;
+  color: #ffe1a6 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-card em {
+  grid-column: 2 / 4 !important;
+  min-height: 44px !important;
+  color: rgba(242, 232, 210, .76) !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+  line-height: 1.45 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-card i {
+  grid-column: 1 / 4 !important;
+  display: block !important;
+  padding: 8px 9px !important;
+  border: 1px solid rgba(116, 221, 255, .34) !important;
+  border-radius: 5px !important;
+  background: rgba(5, 24, 36, .74) !important;
+  color: #d9f6ff !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
+  text-align: center !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-edit {
+  width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  border: 1px solid rgba(195, 145, 78, .74) !important;
+  border-radius: 5px !important;
+  background: linear-gradient(180deg, rgba(54, 40, 26, .95), rgba(17, 15, 13, .96)) !important;
+  color: #f7e3b8 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+html.gilsys-fixed-game .gilsys-deck-preset-edit:hover {
+  border-color: rgba(116, 221, 255, .76) !important;
+  color: #ffffff !important;
+}
+
+html.gilsys-fixed-game #phase1.gilsys-deck-preset-mode #connectStatus {
+  color: rgba(236, 251, 255, .82) !important;
+}
+
+@media (max-width: 840px), (orientation: landscape) and (max-height: 560px) {
+  html.gilsys-fixed-game #gilsysDeckPresetSelection {
+    width: min(760px, calc(100% - 18px)) !important;
+    margin-top: 8px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-head {
+    min-height: 52px !important;
+    padding: 8px 11px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-head h3 {
+    font-size: 20px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-grid {
+    gap: 8px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-card {
+    min-height: 190px !important;
+    padding: 8px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-card > button[data-preset-key] {
+    min-height: 140px !important;
+    grid-template-columns: 42px 1fr auto !important;
+    padding: 9px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-icon {
+    width: 42px !important;
+    height: 42px !important;
+    font-size: 16px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-card b {
+    font-size: 16px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-card em {
+    min-height: 36px !important;
+    font-size: 10px !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-card i {
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  html.gilsys-fixed-game .gilsys-deck-preset-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  html.gilsys-fixed-game .gilsys-deck-preset-card {
+    min-height: 148px !important;
+  }
+}
